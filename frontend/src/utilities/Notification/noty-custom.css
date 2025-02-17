@@ -1,0 +1,5 @@
+/* Customize success notifications */
+.noty_type__lilac {
+    background-color: #B580D1 !important; /* For success Employee */
+    color: white !important;
+  }
