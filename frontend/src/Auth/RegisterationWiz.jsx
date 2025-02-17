@@ -1,5 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
+import React, { useState } from 'react';
 
 import RegSidebar from './SignupWizard/RegSidebar';
 import Guardian from './SignupWizard/Guardian';
@@ -7,7 +6,6 @@ import AddStudent from './SignupWizard/AddStudent';
 import Final from './SignupWizard/Final';
 
 const RegisterationWiz = () => {
-  const { showOverlay, hideOverlay, showNotification } = useContext(AppContext);
   const [activeStep, setActiveStep] = useState(1);
 
   const handlePrevStep = () => {
@@ -21,11 +19,11 @@ const RegisterationWiz = () => {
   const renderSteps = () => {
     switch (activeStep) {
       case 1:
-        return <Guardian activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} showOverlay={showOverlay} hideOverlay={hideOverlay} showNotification={showNotification} />;
+        return <Guardian activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 2:
-        return <AddStudent activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} showOverlay={showOverlay} hideOverlay={hideOverlay} showNotification={showNotification} />;
+        return <AddStudent activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 3:
-        return <Final activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} showOverlay={showOverlay} hideOverlay={hideOverlay} showNotification={showNotification} />;
+        return <Final activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       default:
         return null;
     }

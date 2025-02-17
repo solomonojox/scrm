@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
+import { AppContext } from '../../context/AppContext';
 
-const Guardian = ({ nextStep, showOverlay, hideOverlay, showNotification }) => {
+const Guardian = ({ nextStep }) => {
+    const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext)
     const [formData, setFormData] = useState({
         firstname: "",
         lastname: "",
@@ -24,13 +26,13 @@ const Guardian = ({ nextStep, showOverlay, hideOverlay, showNotification }) => {
 
         try {
             const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Guardian/AddStudentGuardian', formData);
-            if (res.data.responseMessage){
-                showNotification(res.data.responseMessage, 'success')
+            if (res.data.responseMessage) {
+                notifySuccess(res.data.responseMessage)
                 nextStep()
             }
         } catch (err) {
             // console.log(err.response)
-            showNotification(err.response.data.responseMessage, 'error')
+            notifyError(err.response.data.responseMessage)
         } finally {
             hideOverlay()
         }

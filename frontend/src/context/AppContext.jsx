@@ -1,4 +1,5 @@
 import React, { createContext, useState, useCallback } from "react";
+import { ToastContainer, toast } from 'react-toastify'
 
 export const AppContext = createContext();
 
@@ -58,6 +59,10 @@ const ContextProvider = (props) => {
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+  const notifySuccess = (message, options = {}) => toast.success(message, options);
+  const notifyError = (message, options = {}) => toast.error(message, options);
+  const notifyInfo = (message, options = {}) => toast.info(message, options);
+  const notifyWarn = (message, options = {}) => toast.warn(message, options);
 
   const contextValue = {
     formatCurrency: (number) =>
@@ -80,12 +85,17 @@ const ContextProvider = (props) => {
     formatNumberWithCommas,
     capitalizeText,
     formatDate,
-    formatAmount
+    formatAmount,
+    notifySuccess,
+    notifyError,
+    notifyInfo,
+    notifyWarn
   };
 
   return (
     <AppContext.Provider value={contextValue}>
       {props.children}
+      <ToastContainer/>
     </AppContext.Provider>
   );
 };

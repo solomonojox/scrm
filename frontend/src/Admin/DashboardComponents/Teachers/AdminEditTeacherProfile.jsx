@@ -6,7 +6,7 @@ import { MdAddAPhoto } from 'react-icons/md';
 import assets from '../../../Assets/assets';
 
 const AdminEditTeacherProfile = ({ teacherId }) => {
-    const { showOverlay, hideOverlay, showNotification } = useContext(AppContext)
+    const { showOverlay, hideOverlay, notifySuccess, notifyError } = useContext(AppContext)
     const [message, setMessage] = useState('');
     const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
     const [trigger, setTrigger] = useState(false);
@@ -95,10 +95,10 @@ const AdminEditTeacherProfile = ({ teacherId }) => {
                 { imageUrl }
             );
 
-            showNotification(res.data.responseMessage, 'success');
+            notifySuccess(res.data.responseMessage);
             setProfilePhotoUrl(res.data.data.imageUrl);
         } catch (err) {
-            showNotification(err.response.data.responseMessage, 'error');
+            notifyError(err.response.data.responseMessage);
         } finally {
             hideOverlay()
         }
@@ -112,11 +112,11 @@ const AdminEditTeacherProfile = ({ teacherId }) => {
                 `https://scrmapi.tranquility.org.ng/api/Student/UpdateStudent/${teacherId}`,
                 teacherData
             );
-            showNotification(res.data.responseMessage, 'success');
+            notifySuccess(res.data.responseMessage);
             setTrigger(!trigger);
         } catch (err) {
             console.log(err.response);
-            showNotification(err.response.data.responseMessage, 'error')
+            notifyError(err.response.data.responseMessage);
         } finally {
             hideOverlay()
         }

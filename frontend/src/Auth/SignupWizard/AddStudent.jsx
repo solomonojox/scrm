@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { AppContext } from '../../context/AppContext';
 
-const AddStudent = ({ nextStep, showOverlay, hideOverlay, showNotification }) => {
+const AddStudent = ({ nextStep }) => {
+    const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext)
     const [guardian, setGuardian] = useState([])
     useEffect(() => {
         const getGuardian = async () => {
@@ -18,7 +20,7 @@ const AddStudent = ({ nextStep, showOverlay, hideOverlay, showNotification }) =>
 
         getGuardian()
     }, [])
-    
+
     const [teacher, setTeacher] = useState([])
     useEffect(() => {
         const getGuardian = async () => {
@@ -54,12 +56,12 @@ const AddStudent = ({ nextStep, showOverlay, hideOverlay, showNotification }) =>
             const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Student/AddStudent', formData)
             console.log(res.data)
             if (res.data.responseMessage) {
-                showNotification(res.data.responseMessage, 'success')
+                notifySuccess(res.data.responseMessage)
                 nextStep()
             }
         } catch (err) {
             console.log(err.response.data)
-            showNotification(err.response.data.responseMessage, 'error')
+            notifyError(err.response.data.responseMessage)
         } finally {
             hideOverlay()
         }
@@ -124,7 +126,7 @@ const AddStudent = ({ nextStep, showOverlay, hideOverlay, showNotification }) =>
                         <select name="teacher" id="teacher" className='w-full p-3 border rounded-md outline-none focus:border-primary' onChange={(e) => setFormData({ ...formData, teacherId: e.target.value })}>
                             <option value="Select">Select Teacher</option>
                             {teacher !== null && teacher !== undefined ? teacher.map(teacher => (
-                                <option key={teacher.teacherId } value={teacher.teacherId}>{teacher.firstname} {guardian.lastname}</option>
+                                <option key={teacher.teacherId} value={teacher.teacherId}>{teacher.firstname} {guardian.lastname}</option>
                             )) : null}
                         </select>
                     </div>

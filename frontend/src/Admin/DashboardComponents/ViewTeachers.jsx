@@ -11,7 +11,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewTeachers = () => {
-  const { showNotification, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const handleClickOutside = (e) => {
@@ -111,12 +111,12 @@ const ViewTeachers = () => {
 
     try {
       const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/AddTeacher', teacherData);
-      showNotification(`${res.data.firstname} added successfully`, 'success');
+      notifySuccess(`${res.data.firstname} added successfully`);
       setAddMemberModal(false);
       setTrigger(!trigger)
     } catch (error) {
       console.error(error.response.data);
-      showNotification(error.response.data.responseMessage, 'error');
+      notifyError(error.response.data.responseMessage);
     } finally {
       hideOverlay();
     }

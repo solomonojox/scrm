@@ -8,7 +8,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const MainLogin = () => {
-  const { showNotification, showOverlay, hideOverlay } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,10 +23,10 @@ const MainLogin = () => {
         password: password
       });
       console.log(res.data);
-      showNotification(res.data.responseMessage, 'success');
+      notifySuccess(res.data.responseMessage);
     } catch (err) {
       console.log(err.response.data);
-      showNotification(err.response.data.responseMessage, 'error');
+      notifyError(err.response.data.responseMessage);
     } finally {
       hideOverlay()
     }
@@ -59,7 +59,7 @@ const MainLogin = () => {
 
           </div>
 
-          <button className={`rounded-2xl p-2 ${isNotValidated ? "bg-gray-600" : "bg-primary hover:bg-primaryHover"} w-full text-white`}
+          <button className={`rounded-2xl p-2 ${isNotValidated ? "bg-gray-600" : "bg-primary-bg hover:bg-primary-hover"} w-full text-white`}
             disabled={isNotValidated}>SIGN IN</button>
 
           <Link to={'/registrationwiz'} className="flex justify-center text-center hover:underline">New registration</Link>
