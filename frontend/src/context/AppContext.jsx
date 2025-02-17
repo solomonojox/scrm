@@ -1,5 +1,4 @@
 import React, { createContext, useState, useCallback } from "react";
-import { showNotification } from "../utilities/Notification/Noty";
 
 export const AppContext = createContext();
 
@@ -61,7 +60,6 @@ const ContextProvider = (props) => {
 
 
   const contextValue = {
-    showNotification,
     formatCurrency: (number) =>
       new Intl.NumberFormat("en-NG", {
         style: "currency",
