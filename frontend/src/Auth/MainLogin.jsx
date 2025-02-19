@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 
@@ -8,6 +8,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const MainLogin = () => {
+  const navigate = useNavigate()
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("")
@@ -39,10 +40,11 @@ const MainLogin = () => {
         username: username,
         password: password
       });
-      console.log(res.data);
+      // console.log(res.data);
       notifySuccess(res.data.responseMessage);
+      navigate('/admin/dashboard')
     } catch (err) {
-      console.log(err.response.data);
+      // console.log(err.response.data);
       notifyError(err.response.data.responseMessage);
     } finally {
       hideOverlay();
@@ -57,10 +59,10 @@ const MainLogin = () => {
         email: email,
         password: password
       });
-      console.log(res.data);
+      // console.log(res.data);
       notifySuccess(res.data.responseMessage);
     } catch (err) {
-      console.log(err.response.data);
+      // console.log(err.response.data);
       notifyError(err.response.data.responseMessage);
     } finally {
       hideOverlay();
@@ -75,10 +77,11 @@ const MainLogin = () => {
         email: email,
         password: password
       });
-      console.log(res.data);
+      // console.log(res.data);
       notifySuccess(res.data.responseMessage);
+      navigate('/studentdashboard')
     } catch (err) {
-      console.log(err.response.data);
+      // console.log(err.response.data);
       notifyError(err.response.data.responseMessage);
     } finally {
       hideOverlay();
@@ -108,7 +111,7 @@ const MainLogin = () => {
                     checked={selectedLogin === role}
                     onChange={handleRoleChange}
                   />
-                  <label htmlFor={role} className="font-semibold capitalize">{role}</label>
+                  <label htmlFor={role} className="font-semibold capitalize cursor-pointer">{role}</label>
                 </div>
               ))}
             </div>

@@ -38,6 +38,7 @@ const App = () => {
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
+        
         <Route path='/registrationwiz' element={<RegisterationWiz />}/>
         <Route path='/studentdashboard' element={<StudentDashboard />}/>
         <Route path='/studentdata' element={<StudentData />}/>
