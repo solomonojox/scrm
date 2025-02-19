@@ -6,14 +6,10 @@ const NavbarDashboard = () => {
   const location = useLocation();
   const navItems = [
     { name: 'Dashboard', href: '/admin/dashboard', active: true },
-    { name: 'Students', href: '/admin/students', active: false },
-    { name: 'Teachers', href: '/admin/teachers', active: false },
-    { name: 'Guardian', href: '/admin/guardians', active: false },
-    { name: 'Classroom', href: '/admin/classrooms', active: false },
-    { name: 'School fees', href: '/admin/schoolfees', active: false },
-    { name: 'News', href: '/admin/news', active: false },
-    { name: 'Events', href: '/admin/events', active: false },
-  ];
+    { name: 'Students', href: '/Teacher/students', active: false },
+    { name: 'Result', href: '/admin/teachers', active: false },
+    { name: 'Assignment', href: '/admin/guardians', active: false },
+      ];
 
   const handleActive = (href) => {
     navItems.forEach((item) => {

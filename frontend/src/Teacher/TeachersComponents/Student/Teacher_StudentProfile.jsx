@@ -14,7 +14,7 @@ import AdminEditStudetProfile from "./AdminEditStudetProfile";
 import Results from "./Results";
 import Guardian from "./Guardian";
 
-function AdminStudentProfile() {
+function TeacherStudentProfile() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -67,4 +67,4 @@ function AdminStudentProfile() {
   );
 }
 
-export default AdminStudentProfile;
+export default TeacherStudentProfile;
