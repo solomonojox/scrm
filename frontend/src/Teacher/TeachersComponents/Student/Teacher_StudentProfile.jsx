@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import NavbarDashboard from "../../NavbarDashboard";
+import TeacherNavbarDashboard from "../../TeacherNavbarDashboard";
 // import AdminEditMemberProfile from './Admin_EditMemberProfile';
 // import Security from "./Security";
 
@@ -32,7 +32,7 @@ function TeacherStudentProfile() {
   return (
     <div className='bg-gray-100'>
       <div className='sticky top-0 z-50'>
-        <NavbarDashboard />
+        <TeacherNavbarDashboard />
       </div>
 
       <div className='w-full'>

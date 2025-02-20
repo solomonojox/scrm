@@ -6,7 +6,7 @@ const NavbarDashboard = () => {
   const location = useLocation();
   const navItems = [
     { name: 'Dashboard', href: '/admin/dashboard', active: true },
-    { name: 'Students', href: '/Teacher/students', active: false },
+    { name: 'Students', href: '/admin/students', active: false },
     { name: 'Teachers', href: '/admin/teachers', active: false },
     { name: 'Guardian', href: '/admin/guardians', active: false },
     { name: 'Classroom', href: '/admin/classrooms', active: false },
@@ -37,17 +37,17 @@ const NavbarDashboard = () => {
           {/* Navigation Links */}
           <div className="flex items-center gap-8">
             {navItems.map((item) => (
-              <a
+              <Link
                 onClick={handleActive(item)}
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className={`text-sm ${item.active
                   ? 'text-white font-medium'
                   : 'text-gray-400 hover:text-gray-200'
                   } transition-colors`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

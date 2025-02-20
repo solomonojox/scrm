@@ -25,6 +25,7 @@ import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
 import EventPage from './Pages/Event.jsx';
+import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 
 const App = () => {
   return (
@@ -40,19 +41,21 @@ const App = () => {
         <Route path='/admin/students' element={<ViewStudents />} />
         <Route path='/admin/student/:studentId' element={<AdminStudentProfile />} />
         {/* Use the teacher-specific component for teacher students */}
-        <Route path='/Teacher/students' element={<TeacherViewStudents />} />
         <Route path='/admin/teachers' element={<ViewTeachers />} />
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
         
-        <Route path='/studentdashboard' element={<StudentDashboard />} />
+        <Route path='/student/dashboard' element={<StudentDashboard />} />
         <Route path='/studentdata' element={<StudentData />} />
         <Route path='/assignment' element={<Assignment />} />
         <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/news' element={<News />} />
         <Route path='/event' element={<EventPage />} />
+
         <Route path='/teacher/dashboard' element={<TeachersDashboard />} />
+        <Route path='/teacher/students' element={<TeacherViewStudents />} />
+        <Route path='/teacher/student/:studentId' element={<TeacherStudentProfile />} />
       </Routes>
     </Router>
   );

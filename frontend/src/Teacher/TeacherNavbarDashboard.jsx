@@ -2,13 +2,13 @@ import React from 'react';
 import { Search, MessageSquare, Bell, Settings } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-const NavbarDashboard = () => {
+const TeacherNavbarDashboard = () => {
   const location = useLocation();
   const navItems = [
-    { name: 'Dashboard', href: '/admin/dashboard', active: true },
-    { name: 'Students', href: '/Teacher/students', active: false },
-    { name: 'Result', href: '/admin/teachers', active: false },
-    { name: 'Assignment', href: '/admin/guardians', active: false },
+    { name: 'Dashboard', href: '/teacher/dashboard', active: true },
+    { name: 'Students', href: '/teacher/students', active: false },
+    { name: 'Result', href: '/teacher/result', active: false },
+    { name: 'Assignment', href: '/teacher/assignment', active: false },
       ];
 
   const handleActive = (href) => {
@@ -33,17 +33,17 @@ const NavbarDashboard = () => {
           {/* Navigation Links */}
           <div className="flex items-center gap-8">
             {navItems.map((item) => (
-              <a
+              <Link
                 onClick={handleActive(item)}
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className={`text-sm ${item.active
                   ? 'text-white font-medium'
                   : 'text-gray-400 hover:text-gray-200'
                   } transition-colors`}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -68,4 +68,4 @@ const NavbarDashboard = () => {
   );
 };
 
-export default NavbarDashboard;
+export default TeacherNavbarDashboard;

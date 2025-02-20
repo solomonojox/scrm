@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../../context/AppContext';
-import NavbarDashboard from '../../NavbarDashboard';
+import NavbarDashboard from '../../TeacherNavbarDashboard';
 import assets from '../../../Assets/assets';
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -67,7 +67,7 @@ const ViewStudents = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/admin/student/${id}`, { state: id });
+    navigate(`/teacher/student/${id}`, { state: id });
   };
 
   const findStudentByName = (students, searchQuery) => {

@@ -6,7 +6,7 @@ import AssignmentsCard from "./TeachersComponents/AssignmentsCard";
 import ProjectProgressCard from "./TeachersComponents/ProjectProgressCard";
 import CalendarCard from "./TeachersComponents/CalendarCard";
 
-import NavbarDashboard from './NavbarDashboard';
+import NavbarDashboard from './TeacherNavbarDashboard';
 
 const TeachersDashboard = () => {
     return (

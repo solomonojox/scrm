@@ -18,7 +18,7 @@ const Sidebar = () => {
         <div className="flex flex-col mt-1 space-y-5">
           <div className='flex items-center space-x-3 mt-5'>
             <MdDashboard className='' />
-            <Link to='/studentdashboard' > <p className=''> Dashboard</p> </Link>
+            <Link to='/student/dashboard' > <p className=''> Dashboard</p> </Link>
           </div>
           <div className='flex space-x-3 mt-5'>
             <FaBookReader className='text-xl' />
