@@ -1,9 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Login from './Auth/Login.jsx'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLogin from './Auth/MainLogin.jsx';
 // import Student from './StudentDashboard/Student.jsx'
-import Welcome from './Pages/Welcome.jsx';
+// import Welcome from './Pages/Welcome.jsx';
 import Dashboard from './Pages/Welcome.jsx';
 import RegisterationWiz from './Auth/RegisterationWiz.jsx';
 
@@ -31,16 +30,14 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Welcome />} />
+        <Route path='/' element={<Navigate to="/login" replace />} />
         <Route path='/login' element={<MainLogin />} />
-        {/* <Route path='/student' element={<Student />} /> */}
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/registrationwiz' element={<RegisterationWiz />} />
         
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/students' element={<ViewStudents />} />
         <Route path='/admin/student/:studentId' element={<AdminStudentProfile />} />
-        {/* Use the teacher-specific component for teacher students */}
         <Route path='/admin/teachers' element={<ViewTeachers />} />
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />

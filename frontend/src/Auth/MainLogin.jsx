@@ -218,7 +218,7 @@ const MainLogin = () => {
           )}
 
           <Link to={'/registrationwiz'} className="flex justify-center text-center hover:underline">
-            New registration
+            Register Student
           </Link>
         </form>
 
