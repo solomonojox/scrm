@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import NavbarDashboard from "../../NavbarDashboard";
+import NavbarDashboard from "../../../Admin/NavbarDashboard";
 // import AdminEditMemberProfile from './Admin_EditMemberProfile';
 // import Security from "./Security";
 

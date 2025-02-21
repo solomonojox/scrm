@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
-import NavbarDashboard from '../NavbarDashboard';
+import NavbarDashboard from '../../Admin/NavbarDashboard';
 import assets from '../../Assets/assets';
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";

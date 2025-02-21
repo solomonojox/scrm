@@ -30,7 +30,7 @@ import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
 import EventPage from './Pages/Event.jsx';
-import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
+// import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 
 const App = () => {
   return (
@@ -59,7 +59,7 @@ const App = () => {
         <Route path='/news' element={<News />} />
         <Route path='/event' element={<EventPage />} />
 
-        <Route path='/teacher/dashboard' element={<TeachersDashboard />} />
+        {/* <Route path='/teacher/dashboard' element={<TeachersDashboard />} /> */}
         <Route path='/teacher/students' element={<TeacherViewStudents />} />
         <Route path='/teacher/student/:studentId' element={<TeacherStudentProfile />} />
       
