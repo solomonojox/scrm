@@ -13,13 +13,19 @@ import ViewStudents from './Admin/DashboardComponents/Student/ViewStudents.jsx';
 import ViewTeachers from './Admin/DashboardComponents/ViewTeachers.jsx';
 import ViewGuardians from './Admin/DashboardComponents/ViewGuardians.jsx';
 import AdminStudentProfile from './Admin/DashboardComponents/Student/Admin_StudentProfile.jsx';
-import AdminTeacherProfile from './Admin/DashboardComponents/Teachers/Admin_TeacherProfile.jsx';
+import AdminTeacherProfile from './Admin/DashboardComponents/Teachers/Teacher_TeacherProfile.jsx';
 import AdminGuardianProfile from './Admin/DashboardComponents/Guardian/Admin_GuardianProfile.jsx';
 
-import TeachersDashboard from './Teacher/TeachersDashboard.jsx';
+// Teacher Imports
+import TeacherDashboard from './Teacher/TeachersDashboard.jsx';
 import TeacherViewStudents from './Teacher/TeachersComponents/Student/TeacherViewStudents.jsx';
+import TeacherViewTeachers from './Teacher/TeachersComponents/ViewTeachers.jsx';
+import TeacherViewGuardians from './Teacher/TeachersComponents/ViewGuardians.jsx';
+import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
+import TeacherTeacherProfile from './Teacher/TeachersComponents/Teachers/Admin_TeacherProfile.jsx';
+import TeacherGuardianProfile from './Teacher/TeachersComponents/Guardian/Teacher_GuardianProfile.jsx'; // corrected to match file name "Teacher_GuardianProfile.jsx"
 
-import StudentDashboard from './Pages/StudentDashboard.jsx';
+import StudentDashboard from './Pages/GuardianDashboard.jsx';
 import StudentData from './Pages/StudentData.jsx';
 import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
@@ -39,20 +45,28 @@ const App = () => {
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/students' element={<ViewStudents />} />
         <Route path='/admin/student/:studentId' element={<AdminStudentProfile />} />
-        {/* Use the teacher-specific component for teacher students */}
-        <Route path='/Teacher/students' element={<TeacherViewStudents />} />
-        <Route path='/admin/teachers' element={<ViewTeachers />} />
+        
+  
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
         
-        <Route path='/studentdashboard' element={<StudentDashboard />} />
+        <Route path='/guardian/dashboard' element={<StudentDashboard />} />
         <Route path='/studentdata' element={<StudentData />} />
         <Route path='/assignment' element={<Assignment />} />
         <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/news' element={<News />} />
         <Route path='/event' element={<EventPage />} />
-        <Route path='/teacher/dashboard' element={<TeachersDashboard />} />
+      
+      
+        {/* Teacher Routes */}
+        <Route path='/teacher/dashboard' element={<TeacherDashboard />} />
+        <Route path='/teacher/students' element={<TeacherViewStudents />} />
+        <Route path='/teacher/student/:studentId' element={<TeacherStudentProfile />} />
+        <Route path='/teacher/teachers' element={<TeacherViewTeachers />} />
+        <Route path='/teacher/teacher/:teacherId' element={<TeacherTeacherProfile />} />
+        <Route path='/teacher/guardians' element={<TeacherViewGuardians />} />
+        <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
       </Routes>
     </Router>
   );

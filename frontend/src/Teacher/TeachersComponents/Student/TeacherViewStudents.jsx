@@ -67,7 +67,7 @@ const ViewStudents = () => {
   };
 
   const handleView = (id) => {
-    navigate(`/admin/student/${id}`, { state: id });
+    navigate(`/teacher/students/${id}`, { state: id });
   };
 
   const findStudentByName = (students, searchQuery) => {
