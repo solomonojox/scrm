@@ -128,7 +128,7 @@ const MainLogin = () => {
         password: password
       });
       notifySuccess(res.data.responseMessage);
-      navigate('/studentdashboard');
+      navigate('/guardian/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
     } finally {
@@ -142,7 +142,7 @@ const MainLogin = () => {
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-4">
       <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 grid items-center">
-        <div>LOGO</div>
+        <div><img src={assets.scrm} alt="" width={150}/></div>
 
         <h2 className="font-bold">WELCOME TO OUR WEBSITE</h2>
 

@@ -6,6 +6,7 @@ import school3 from './school3.webp'
 import school4 from './school4.jpg'
 import school5 from './school5.jpeg'
 import school6 from './school6.jpg'
+import scrm from './scrm.png'
 
 const assets = {
     woman,
@@ -15,7 +16,8 @@ const assets = {
     school3,
     school4,
     school5,
-    school6
+    school6,
+    scrm,
 }
 
 export default assets;

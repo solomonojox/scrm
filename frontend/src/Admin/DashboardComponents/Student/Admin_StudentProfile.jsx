@@ -13,6 +13,7 @@ import { GiTakeMyMoney } from "react-icons/gi";
 import AdminEditStudetProfile from "./AdminEditStudetProfile";
 import Results from "./Results";
 import Guardian from "./Guardian";
+import SchoolFees from "./SchoolFees";
 
 function AdminStudentProfile() {
   const location = useLocation();
@@ -23,7 +24,7 @@ function AdminStudentProfile() {
   const [activeTab, setActiveTab] = useState('Edit Profile');
   const tabs = [
     { id: 1, label: 'Edit Profile', value: <AdminEditStudetProfile studentId={location.state} />, icon: <FaRegEdit /> },
-    { id: 2, label: 'School fees', value: "School", icon: <GiTakeMyMoney /> },
+    { id: 2, label: 'School fees', value: <SchoolFees studentId={location.state}/>, icon: <GiTakeMyMoney /> },
     { id: 3, label: 'Results', value: <Results studentId={location.state} />, icon: <TiDocumentText /> },
     { id: 4, label: 'Guardian', value: <Guardian/>, icon: <RiParentFill /> },
     // { id: 5, label: 'Security', value: "<Security studentId={location.state}/>", icon: <IoKey /> }

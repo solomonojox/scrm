@@ -1,6 +1,6 @@
 import React from 'react'
 import { MdDashboard } from "react-icons/md";
-import { FaBookReader, FaGraduationCap } from "react-icons/fa";
+import { FaBookReader } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { RiCommunityFill } from "react-icons/ri";
 import { MdOutlineEventSeat } from "react-icons/md";
@@ -9,28 +9,28 @@ import { BiSolidReport } from "react-icons/bi";
 import { MdOutlinePayments } from "react-icons/md";
 import { SiGoogleanalytics } from "react-icons/si";
 import { Link } from "react-router-dom";
+import assets from '../Assets/assets';
 
 const Sidebar = () => {
   return (
     <div className="bg-gray-100 w-[200px] fixed h-screen px-5 py-5">
-      <p className="font-bold text-2xl">SCRM</p>
+      {/* <p className="font-bold text-2xl">SCRM</p> */}
       <div className="flex flex-col mt-1 space-y-5">
-        <div className='flex items-center space-x-3 mt-5'>
-          <MdDashboard className='' />
-          <Link to='/student/dashboard' > <p className=''> Dashboard</p> </Link>
+        <div className='flex flex-col items-center space-x-3 mt-5'>
+          {/* <MdDashboard className='' /> */}
+          {/* <Link to='/student/dashboard' > <p className=''> Dashboard</p> </Link> */}
           {/* Enhanced Logo Section */}
           <div className="flex items-center space-x-2 pb-4 border-b border-gray-300">
-            <FaGraduationCap className="text-4xl " />
-            <span className="text-3xl font-extrabold  tracking-wide">
-              eduCat
-            </span>
+            <Link to={"/guardian/dashboard"}>
+              <img src={assets.scrm} alt="" width={100} />
+            </Link>
           </div>
 
           {/* Navigation Links */}
           <div className="flex flex-col mt-5 space-y-5">
             <div className="flex items-center space-x-3">
               <MdDashboard className="text-xl " />
-              <Link to="/studentdashboard">
+              <Link to="/guardian/dashboard">
                 <p>Dashboard</p>
               </Link>
             </div>
