@@ -55,14 +55,11 @@ const getGrade = (score) => {
 
 const StudentResultPage = ({ studentId }) => {
     const { capitalizeText } = useContext(AppContext)
-
-    const [studentResults, setStudentResult] = useState([]);
     useEffect(() => {
         const getResult = async () => {
             try {
                 const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
-                console.log(res.data.data[0].subjects);
-                setStudentResult(res.data.data[0].subjects)
+                console.log(res.data)
             } catch (err) {
                 console.log(err.response.data)
             }
@@ -71,7 +68,7 @@ const StudentResultPage = ({ studentId }) => {
         if (studentId) {
             getResult()
         }
-    }, [studentId]);
+    });
 
     const [selectedTerm, setSelectedTerm] = useState("firstTerm");
     const printRef = useRef();
@@ -93,24 +90,22 @@ const StudentResultPage = ({ studentId }) => {
 
     return (
         <div className="container mx-auto p-6 bg-white">
-            <div className="flex justify-between">
-                <h2 className="text-2xl font-semibold mb-4 text-center">
-                    {studentResult.name}'s Result Sheet
-                </h2>
+            <h2 className="text-2xl font-semibold mb-4 text-center">
+                {studentResult.name}'s Result Sheet
+            </h2>
 
-                {/* Term Selection */}
-                <div className="mb-4 text-center">
-                    <label className="mr-2 font-medium">Select Term:</label>
-                    <select
-                        className="border border-primary-bg rounded px-3 py-1 w-80"
-                        value={selectedTerm}
-                        onChange={(e) => setSelectedTerm(e.target.value)}
-                    >
-                        <option value="firstTerm">First Term</option>
-                        <option value="secondTerm">Second Term</option>
-                        <option value="thirdTerm">Third Term</option>
-                    </select>
-                </div>
+            {/* Term Selection */}
+            <div className="mb-4 text-center">
+                <label className="mr-2 font-medium">Select Term:</label>
+                <select
+                    className="border border-primary-bg rounded px-3 py-2 w-80"
+                    value={selectedTerm}
+                    onChange={(e) => setSelectedTerm(e.target.value)}
+                >
+                    <option value="firstTerm">First Term</option>
+                    <option value="secondTerm">Second Term</option>
+                    <option value="thirdTerm">Third Term</option>
+                </select>
             </div>
 
             {/* Printable Section */}

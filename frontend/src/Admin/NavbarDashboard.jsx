@@ -1,29 +1,29 @@
-import React from 'react';
-import { Search, MessageSquare, Bell, Settings } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Search, MessageSquare, Bell, Settings } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const NavbarDashboard = () => {
   const location = useLocation();
-  const navItems = [
-    { name: 'Dashboard', href: '/admin/dashboard', active: true },
-    { name: 'Students', href: '/admin/students', active: false },
-    { name: 'Teachers', href: '/admin/teachers', active: false },
-    { name: 'Guardian', href: '/admin/guardians', active: false },
-    { name: 'Classroom', href: '/admin/classrooms', active: false },
-    { name: 'School fees', href: '/admin/schoolfees', active: false },
-    { name: 'News', href: '/admin/news', active: false },
-    { name: 'Events', href: '/admin/events', active: false },
-  ];
+  const [navItems, setNavItems] = useState([
+    { name: "Dashboard", href: "/admin/dashboard", active: false },
+    { name: "Students", href: "/admin/students", active: false },
+    { name: "Teachers", href: "/admin/teachers", active: false },
+    { name: "Guardian", href: "/admin/guardians", active: false },
+    { name: "Classroom", href: "/admin/classrooms", active: false },
+    { name: "School fees", href: "/admin/schoolfees", active: false },
+    { name: "News", href: "/admin/news", active: false },
+    { name: "Events", href: "/admin/events", active: false },
+  ]);
 
-  const handleActive = (href) => {
-    navItems.forEach((item) => {
-      if (item.href === location.pathname) {
-        item.active = true;
-      } else {
-        item.active = false;
-      }
-    });
-  };
+  useEffect(() => {
+    // Update active state based on current location
+    setNavItems((prevItems) =>
+      prevItems.map((item) => ({
+        ...item,
+        active: location.pathname.startsWith(item.href),
+      }))
+    );
+  }, [location.pathname]);
 
   return (
     <nav className="bg-gray-900 px-6 py-4">
@@ -38,13 +38,13 @@ const NavbarDashboard = () => {
           <div className="flex items-center gap-8">
             {navItems.map((item) => (
               <Link
-                onClick={handleActive(item)}
                 key={item.name}
                 to={item.href}
-                className={`text-sm ${item.active
-                  ? 'text-white font-medium'
-                  : 'text-gray-400 hover:text-gray-200'
-                  } transition-colors`}
+                className={`text-sm ${
+                  item.active
+                    ? "text-white font-medium underline"
+                    : "text-gray-400 hover:text-gray-200"
+                } transition-colors`}
               >
                 {item.name}
               </Link>

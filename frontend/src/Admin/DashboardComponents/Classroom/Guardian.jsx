@@ -3,7 +3,7 @@ import assets from '../../../Assets/assets'
 
 const Guardian = () => {
     return (
-        <div className='p-6 h-[100dvh]'>
+        <div className='p-6'>
             <div className="w-full h-36 bg-white p-4 rounded-lg flex items-center gap-4 relative">
                 <div className="w-28 h-28 rounded-full overflow-hidden flex items-center justify-center">
                     <img

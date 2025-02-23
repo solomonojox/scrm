@@ -30,6 +30,7 @@ import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
 import EventPage from './Pages/Event.jsx';
+import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 
 const App = () => {
@@ -45,11 +46,13 @@ const App = () => {
         <Route path='/admin/students' element={<ViewStudents />} />
         <Route path='/admin/student/:studentId' element={<AdminStudentProfile />} />
         <Route path='/admin/teachers' element={<ViewTeachers />} />
-        
   
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
+
+        {/* Classrooms */}
+        <Route path='/admin/classrooms' element={<ViewClassrooms />} />
         
         <Route path='/student/dashboard' element={<StudentDashboard />} />
         <Route path='/guardian/dashboard' element={<StudentDashboard />} />
