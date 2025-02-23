@@ -127,8 +127,13 @@ const MainLogin = () => {
         email: email,
         password: password
       });
-      notifySuccess(res.data.responseMessage);
-      navigate('/guardian/dashboard');
+      console.log(res.data);
+      if(res.data.status === true){
+        notifySuccess(res.data.responseMessage);
+        navigate('/guardian/dashboard');
+        localStorage.setItem('guardian', JSON.stringify(res.data));
+        hideOverlay();
+      }
     } catch (err) {
       notifyError(err.response.data.responseMessage);
     } finally {

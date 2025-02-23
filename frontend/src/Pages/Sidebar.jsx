@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import { MdDashboard } from "react-icons/md";
 import { FaBookReader } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -9,14 +9,17 @@ import { BiSolidReport } from "react-icons/bi";
 import { MdOutlinePayments } from "react-icons/md";
 import { SiGoogleanalytics } from "react-icons/si";
 import { Link } from "react-router-dom";
-import assets from '../Assets/assets';
+import assets from "../Assets/assets";
 
 const Sidebar = () => {
+  // const guardianData = JSON.parse(localStorage.getItem('guardian'));
+  // console.log("Guardian Data",guardianData);
+
   return (
-    <div className="bg-gray-100 w-[200px] fixed h-screen px-5 py-5">
+    <div className="bg-gray-100 w-[230px] fixed h-screen p-5">
       {/* <p className="font-bold text-2xl">SCRM</p> */}
       <div className="flex flex-col mt-1 space-y-5">
-        <div className='flex flex-col items-center space-x-3 mt-5'>
+        <div className="flex flex-col  space-x-3 mt-5">
           {/* <MdDashboard className='' /> */}
           {/* <Link to='/student/dashboard' > <p className=''> Dashboard</p> </Link> */}
           {/* Enhanced Logo Section */}
@@ -28,51 +31,69 @@ const Sidebar = () => {
 
           {/* Navigation Links */}
           <div className="flex flex-col mt-5 space-y-5">
-            <div className="flex items-center space-x-3">
+            <Link
+              to={"/guardian/dashboard"}
+              className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <MdDashboard className="text-xl " />
-              <Link to="/guardian/dashboard">
+              <div>
                 <p>Dashboard</p>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+              </div>
+            </Link>
+            <Link
+              to={"/studentdata"}
+              className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <FaBookReader className="text-xl " />
               <Link to="/studentdata">
                 <p>My Pupils</p>
               </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+            </Link>
+            <Link
+              to={"/assignment"}
+              className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <SiGoogleanalytics className="text-xl " />
-              <Link to="/assignment">
+              <div>
                 <p>Assignment</p>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+              </div>
+            </Link>
+            <Link
+              to="/news"
+              className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <RiCommunityFill className="text-xl " />
-              <Link to="/news">
+              <div>
                 <p>News</p>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+              </div>
+            </Link>
+            <Link
+              to={"/event"}
+              className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <MdOutlineEventSeat className="text-xl " />
-              <Link to="/event">
+              <div>
                 <p>Event</p>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+              </div>
+            </Link>
+            <div className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer">
               <FaMessage className="text-xl " />
               <p>Message</p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer">
               <BiSolidReport className="text-xl " />
               <p>Result</p>
             </div>
-            <div className="flex items-center space-x-3">
+            <Link
+              to={"/fee"}
+              className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
+            >
               <MdOutlinePayments className="text-xl " />
-              <Link to="/fee">
+              <div>
                 <p>Fees</p>
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
+              </div>
+            </Link>
+            <div className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer">
               <IoSettingsSharp className="text-xl " />
               <p>Settings</p>
             </div>
