@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
 import assets from "../../../Assets/assets";
-import axios from "axios";
+// import axios from "axios";
 import './print.css'
 
 const studentResult = {
@@ -56,22 +56,22 @@ const getGrade = (score) => {
 const StudentResultPage = ({ studentId }) => {
     const { capitalizeText } = useContext(AppContext)
 
-    const [studentResults, setStudentResult] = useState([]);
-    useEffect(() => {
-        const getResult = async () => {
-            try {
-                const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
-                console.log(res.data.data[0].subjects);
-                setStudentResult(res.data.data[0].subjects)
-            } catch (err) {
-                console.log(err.response.data)
-            }
-        }
+    // const [studentResults, setStudentResult] = useState([]);
+    // useEffect(() => {
+    //     const getResult = async () => {
+    //         try {
+    //             const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
+    //             console.log(res.data.data[0].subjects);
+    //             setStudentResult(res.data.data[0].subjects)
+    //         } catch (err) {
+    //             console.log(err.response.data)
+    //         }
+    //     }
 
-        if (studentId) {
-            getResult()
-        }
-    }, [studentId]);
+    //     if (studentId) {
+    //         getResult()
+    //     }
+    // }, [studentId]);
 
     const [selectedTerm, setSelectedTerm] = useState("firstTerm");
     const printRef = useRef();
