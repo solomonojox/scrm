@@ -84,6 +84,8 @@ const ProgressCard = ({ color, title, tasks, percentage }) => {
 };
 
 const StudentDashboard = () => {
+  const guardianData = JSON.parse(localStorage.getItem('guardian'));
+  // console.log("Guardian Data",guardianData);
   return (
     <div className="flex bg-gray-100 flex-row">
        <div className='fixed'>
@@ -91,8 +93,8 @@ const StudentDashboard = () => {
        </div>
 
       {/* Main Content */}
-      <div className="flex-1 bg-white h-dvh px-10 ml-[180px] py-12">
-        <p className="font-bold text-4xl">Welcome Back, Royal</p>
+      <div className="flex-1 bg-white h-dvh px-10 ml-[220px] py-12">
+        <p className="font-bold text-4xl">Welcome Back, {guardianData.data.firstname}</p>
         <p className="text-gray-700">04, October, 2022</p>
         
         <div className="flex space-x-72 items-center mt-5">
