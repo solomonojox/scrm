@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.17.1",
     "axios": "^1.7.9",
-    "framer-motion": "^12.4.5",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
     "react-circular-progressbar": "^2.1.0",

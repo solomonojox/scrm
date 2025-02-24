@@ -31,6 +31,8 @@ import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
 import EventPage from './Pages/Event.jsx';
 import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
+import Newss from './Admin/DashboardComponents/Newss.jsx';
+import Event from './Admin/DashboardComponents/Event.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 
 const App = () => {
@@ -53,6 +55,8 @@ const App = () => {
 
         {/* Classrooms */}
         <Route path='/admin/classrooms' element={<ViewClassrooms />} />
+        <Route path='/admin/newss' element={<Newss/>} />
+        <Route path='/admin/events' element={<Event/>} />
         
         <Route path='/student/dashboard' element={<StudentDashboard />} />
         <Route path='/guardian/dashboard' element={<StudentDashboard />} />
