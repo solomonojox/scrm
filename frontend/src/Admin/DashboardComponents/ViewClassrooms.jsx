@@ -3,42 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import NavbarDashboard from '../NavbarDashboard';
-// import assets from '../../Assets/assets';
-
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-// import { PiStudentFill } from "react-icons/pi";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewClassrooms = () => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
+
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
       setOpenEditMenu(false);
     }
-  }
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-    }
+    };
   }, []);
 
   const [classroom, setClassroom] = useState([]);
   const [teachers, setTeachers] = useState([]);
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [trigger, setTrigger] = useState(false)
-
-  // function countElements(arr) {
-  //   let count = 0;
-  //   for (let i = 0; i < arr.length; i++) {
-  //     count++;
-  //   }
-  //   return count;
-  // }
+  const [trigger, setTrigger] = useState(false);
 
   useEffect(() => {
     const fetchClassroom = async () => {
@@ -71,21 +62,22 @@ const ViewClassrooms = () => {
       } catch (error) {
         // console.error(error);
         if (error.response) {
-          setMessage(error.response.data.responseMessage)
+          setMessage(error.response.data.responseMessage);
         } else {
-          setMessage(`${error.message}, check your internet connection`)
+          setMessage(`${error.message}, check your internet connection`);
         }
       } finally {
-        hideOverlay()
+        hideOverlay();
       }
-    }
-    fetchTeachers();
+    };
+    fetchClassrooms();
   }, [showOverlay, hideOverlay, trigger]);
 
+  // For edit menu functionality
   const [openEditMenu, setOpenEditMenu] = useState(false);
   const [classroomId, setClassroomId] = useState(null);
 
-  const toggleEditMenu = (item) => {
+  const toggleEditMenu = (id) => {
     setOpenEditMenu(!openEditMenu);
     setClassroomId(item);
   };
@@ -97,6 +89,10 @@ const ViewClassrooms = () => {
   const findClassroomByName = (classroom, searchQuery) => {
     if (!searchQuery) return;
     const lowerCaseQuery = searchQuery.toLowerCase();
+    return classrooms.filter(classroom =>
+      classroom.name.toLowerCase().includes(lowerCaseQuery)
+    );
+  };
 
     const result = classroom.filter(teacher => teacher.lastname.toLowerCase().includes(lowerCaseQuery));
     return result || null;
@@ -137,7 +133,10 @@ const ViewClassrooms = () => {
     } finally {
       hideOverlay();
     }
-  }
+  };
+
+  // Determine which classrooms to display based on search query
+  const filteredClassrooms = searchQuery ? findClassroomByName(classrooms, searchQuery) : currentClassrooms;
 
   return (
     <div className="bg-gray-100 pb-8">
@@ -146,17 +145,17 @@ const ViewClassrooms = () => {
       </div>
 
       <div className="container mb-10 mx-auto p-2">
-        <div className=''>
+        <div>
           <div className="flex flex-col lg:flex-row justify-between lg:items-center mb-4">
             <h2 className="text-2xl font-medium mb-4 text-start">
               All Classroom
             </h2>
-            <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between ">
+            <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
               <button
                 className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
                 onClick={() => setAddClassroomModal(true)}
               >
-                Add Class
+                Add Classroom
               </button>
               <div className="flex gap-2">
                 <input
@@ -170,18 +169,24 @@ const ViewClassrooms = () => {
                   Search
                 </button>
 
-                <div className='flex items-center bg-primary-bg py-2 px-4 text-white gap-2'>
+                <div className="flex items-center bg-primary-bg py-2 px-4 text-white gap-2">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={`${currentPage === 1 ? 'opacity-20' : 'opacity-100'}`}
-                  ><FaAngleLeft className='text-2xl' /></button>
-                  <span className='font-medium'>page {currentPage} of {pageNumbers.length}</span>
+                  >
+                    <FaAngleLeft className="text-2xl" />
+                  </button>
+                  <span className="font-medium">
+                    page {currentPage} of {pageNumbers.length}
+                  </span>
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === pageNumbers.length}
                     className={`${currentPage === pageNumbers.length ? 'opacity-20' : 'opacity-100'}`}
-                  ><FaAngleRight className='text-2xl' /></button>
+                  >
+                    <FaAngleRight className="text-2xl" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -189,12 +194,12 @@ const ViewClassrooms = () => {
         </div>
 
         <div className="overflow-x-auto p-1 pb-24">
-          <table className="min-w-full table-auto  rounded-lg shadow-md">
+          <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
               <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
                 <th className="px-4 py-4 text-left">Classroom Id</th>
-                <th className="px-2 py-4 text-left">Classroom name</th>
-                <th className="px-2 py-4 text-left">Classroom capacity</th>
+                <th className="px-2 py-4 text-left">Classroom Name</th>
+                <th className="px-2 py-4 text-left">Capacity</th>
                 <th className="px-2 py-4 text-left"></th>
               </tr>
             </thead>
@@ -263,8 +268,19 @@ const ViewClassrooms = () => {
                       </div>
                     </td>
                   </tr>
-                );
-              })()}
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="px-4 py-2 text-center text-gray-500 whitespace-nowrap h-40"
+                  >
+                    <div className="flex justify-center">
+                      {message || "No classroom(s) found"}
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -272,8 +288,8 @@ const ViewClassrooms = () => {
 
       {addClassroomModal && (
         <div>
-          <div className="fixed inset-0 z-30 flex items-center justify-center p-4 lg:overflow-y-auto lg:px-[10%] bg-black bg-opacity-50">
-            <div className="bg-white lg:mt-40 lg:mb-10 p-4 lg:p-10 rounded-lg shadow-lg w-full relative">
+          <div className="fixed inset-0 z-30 flex items-center justify-center p-4 bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
               <IoMdCloseCircle
                 className="absolute top-4 right-4 text-3xl text-primary cursor-pointer"
                 onClick={() => setAddClassroomModal(false)}
@@ -324,10 +340,9 @@ const ViewClassrooms = () => {
                     </select>
                   </div>
                 </div>
-
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded lg text-white"
+                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded text-white"
                 >
                   Add Classroom
                 </button>
@@ -338,6 +353,6 @@ const ViewClassrooms = () => {
       )}
     </div>
   );
-}
+};
 
-export default ViewClassrooms
+export default ViewClassrooms;

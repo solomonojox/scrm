@@ -10,8 +10,8 @@ const NavbarDashboard = () => {
     { name: "Teachers", href: "/admin/teachers", active: false },
     { name: "Guardian", href: "/admin/guardians", active: false },
     { name: "Classroom", href: "/admin/classrooms", active: false },
-    { name: "School fees", href: "/admin/schoolfees", active: false },
-    { name: "News", href: "/admin/news", active: false },
+   
+    { name: "News", href: "/admin/newss", active: false },
     { name: "Events", href: "/admin/events", active: false },
   ]);
 
