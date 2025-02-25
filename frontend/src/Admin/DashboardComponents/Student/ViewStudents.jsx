@@ -43,9 +43,9 @@ const ViewStudents = () => {
       try {
         const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Student/GetAllStudent');
         setStudents(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         if (error.response) {
           setMessage(error.response.data.responseMessage)
         } else {

@@ -31,7 +31,7 @@ const AdminEditStudetProfile = ({ studentId }) => {
                 const response = await axios.get(
                     `https://scrmapi.tranquility.org.ng/api/Student/GetStudentById/${studentId}`
                 );
-                console.log(response.data.data)
+                // console.log(response.data.data)
                 if (response.data.data) {
                     setUserData(response.data.data);
                     setStudentData({
