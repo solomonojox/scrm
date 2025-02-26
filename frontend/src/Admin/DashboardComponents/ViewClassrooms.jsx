@@ -70,14 +70,14 @@ const ViewClassrooms = () => {
         hideOverlay();
       }
     };
-    fetchClassrooms();
+    fetchTeachers();
   }, [showOverlay, hideOverlay, trigger]);
 
   // For edit menu functionality
   const [openEditMenu, setOpenEditMenu] = useState(false);
   const [classroomId, setClassroomId] = useState(null);
 
-  const toggleEditMenu = (id) => {
+  const toggleEditMenu = (item) => {
     setOpenEditMenu(!openEditMenu);
     setClassroomId(item);
   };
@@ -89,14 +89,14 @@ const ViewClassrooms = () => {
   const findClassroomByName = (classroom, searchQuery) => {
     if (!searchQuery) return;
     const lowerCaseQuery = searchQuery.toLowerCase();
-    return classrooms.filter(classroom =>
-      classroom.name.toLowerCase().includes(lowerCaseQuery)
-    );
-  };
 
-    const result = classroom.filter(teacher => teacher.lastname.toLowerCase().includes(lowerCaseQuery));
+    const result = classroom.filter(classroom => classroom.name.toLowerCase().includes(lowerCaseQuery));
+
     return result || null;
-  }
+    // return classrooms.filter(classroom =>
+    //   classroom.name.toLowerCase().includes(lowerCaseQuery)
+    // );
+  };
 
   const [classroomPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,6 +104,12 @@ const ViewClassrooms = () => {
   const iLastClassroom = currentPage * classroomPerPage;
   const iFirstClassroom = iLastClassroom - classroomPerPage;
   const currentClassroom = classroom.slice(iFirstClassroom, iLastClassroom);
+
+  // const totalPages = Math.ceil(classroom.length / classroomPerPage);
+
+  // const handlePageChange = (increment) => {
+  //   setCurrentPage(prev => Math.min(Math.max(prev + increment, 1), totalPages));
+  // };
 
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(classroom.length / classroomPerPage); i++) {
@@ -136,8 +142,7 @@ const ViewClassrooms = () => {
   };
 
   // Determine which classrooms to display based on search query
-  const filteredClassrooms = searchQuery ? findClassroomByName(classrooms, searchQuery) : currentClassrooms;
-
+  // const filteredClassrooms = searchQuery ? findClassroomByName(classrooms, searchQuery) : currentClassrooms;
   return (
     <div className="bg-gray-100 pb-8">
       <div className="sticky top-0 mb-10">
@@ -220,10 +225,10 @@ const ViewClassrooms = () => {
                       <td className="px-2 py-2">{classroom.classroomId}</td>
                       <td className="flex items-center gap-2 px-4 py-2">
                         {/* <img
-                          src={teacher.imageUrl || assets.avatar}
-                          alt="thumb"
-                          className="w-10 h-10 rounded-full object-cover"
-                        /> */}
+                            src={teacher.imageUrl || assets.avatar}
+                            alt="thumb"
+                            className="w-10 h-10 rounded-full object-cover"
+                          /> */}
                         <div>
                           <h3 className="font-medium">
                             {capitalizeText(classroom.name)}
@@ -249,8 +254,8 @@ const ViewClassrooms = () => {
                                 Edit
                               </p>
                               {/* <p className="cursor-pointer hover:bg-red-500 hover:text-white py-1 px-2 rounded transition-colors">
-                                Delete
-                              </p> */}
+                                  Delete
+                                </p> */}
                             </div>
                           ) : null}
                         </div>
@@ -268,19 +273,8 @@ const ViewClassrooms = () => {
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="px-4 py-2 text-center text-gray-500 whitespace-nowrap h-40"
-                  >
-                    <div className="flex justify-center">
-                      {message || "No classroom(s) found"}
-                    </div>
-                  </td>
-                </tr>
-              )}
+                );
+              })()}
             </tbody>
           </table>
         </div>
@@ -302,7 +296,7 @@ const ViewClassrooms = () => {
                 onSubmit={addClassoom}
                 className="w-[100%] space-y-4"
               >
-                <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+                <div className='grid gap-2 grid-cols-1 md:grid-cols-2'>
                   <div className="">
                     <select name="teacher" id="teacher" onChange={(e) => setTeacherId(e.target.value)} className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full">
                       <option value="Select teacher">Select teacher</option>
@@ -353,6 +347,6 @@ const ViewClassrooms = () => {
       )}
     </div>
   );
-};
+}
 
 export default ViewClassrooms;
