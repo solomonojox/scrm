@@ -24,7 +24,7 @@ const Sidebar = () => {
           {/* <Link to='/student/dashboard' > <p className=''> Dashboard</p> </Link> */}
           {/* Enhanced Logo Section */}
           <div className="flex items-center space-x-2 pb-4 border-b border-gray-300">
-            <Link to={"/guardian/dashboard"}>
+            <Link to={"/student/dashboard"}>
               <img src={assets.scrm} alt="" width={100} />
             </Link>
           </div>
@@ -32,7 +32,7 @@ const Sidebar = () => {
           {/* Navigation Links */}
           <div className="flex flex-col mt-5 space-y-5">
             <Link
-              to={"/guardian/dashboard"}
+              to={"/student/dashboard"}
               className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md cursor-pointer"
             >
               <MdDashboard className="text-xl " />
@@ -45,9 +45,7 @@ const Sidebar = () => {
               className="flex items-center space-x-3  hover:bg-gray-200 p-2 rounded-md cursor-pointer"
             >
               <FaBookReader className="text-xl " />
-              <Link to="/studentdata">
-                <p>My Pupils</p>
-              </Link>
+              <p>My Pupils</p>
             </Link>
             <Link
               to={"/assignment"}

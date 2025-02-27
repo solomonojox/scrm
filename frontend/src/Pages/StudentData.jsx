@@ -18,6 +18,7 @@ const StudentData = () => {
             try {
                 setIsLoading(true);
                 const response = await axios.get(`https://scrmapi.tranquility.org.ng/api/Student/GetGuardianStudents/${GuardianId}`);
+                console.log("Student Data", response.data.data);
                 setStudents(response.data.data);
                 setShowMore(new Array(response.data.data.length).fill(false));
                 
@@ -46,6 +47,7 @@ const StudentData = () => {
                 ...prev,
                 [teacherId]: response.data.data
             }));
+            console.log("Teacher Data", response.data.data);
         } catch (error) {
             console.error("Error fetching teacher:", error);
         }
