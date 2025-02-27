@@ -1,29 +1,29 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import NavbarDashboard from '../NavbarDashboard';
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+// import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Newss = () => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
-  const navigate = useNavigate();
-  const menuRef = useRef(null);
+  // const navigate = useNavigate();
+  // const menuRef = useRef(null);
 
-  const handleClickOutside = (e) => {
-    if (menuRef.current && !menuRef.current.contains(e.target)) {
-      setOpenEditMenu(false);
-    }
-  };
+  // const handleClickOutside = (e) => {
+  //   if (menuRef.current && !menuRef.current.contains(e.target)) {
+  //     setOpenEditMenu(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   // State for news items and messaging
   const [newsItems, setNewsItems] = useState([]);
@@ -53,17 +53,17 @@ const Newss = () => {
   }, [showOverlay, hideOverlay, trigger]);
 
   // For edit menu functionality
-  const [openEditMenu, setOpenEditMenu] = useState(false);
-  const [selectedNewsId, setSelectedNewsId] = useState(null);
+  // const [openEditMenu, setOpenEditMenu] = useState(false);
+  // const [selectedNewsId, setSelectedNewsId] = useState(null);
 
-  const toggleEditMenu = (id) => {
-    setOpenEditMenu(!openEditMenu);
-    setSelectedNewsId(id);
-  };
+  // const toggleEditMenu = (id) => {
+  //   setOpenEditMenu(!openEditMenu);
+  //   setSelectedNewsId(id);
+  // };
 
-  const handleView = (id) => {
-    navigate(`/admin/news/${id}`, { state: id });
-  };
+  // const handleView = (id) => {
+  //   navigate(`/admin/news/${id}`, { state: id });
+  // };
 
   // Search/filter function (by news title)
   const findNewsByTitle = (newsItems, searchQuery) => {
@@ -101,7 +101,7 @@ const Newss = () => {
 
     try {
       const res = await axios.post('https://scrmapi.tranquility.org.ng/api/News/AddNews', newsData);
-      notifySuccess(`${res.data.title} added successfully`);
+      notifySuccess(res.data.responseMessage);
       setAddNewsModal(false);
       setTrigger(!trigger);
     } catch (error) {
@@ -178,7 +178,7 @@ const Newss = () => {
                 <th className="px-2 py-4 text-left">Title</th>
                 <th className="px-2 py-4 text-left">Content</th>
                 <th className="px-2 py-4 text-left">Publish Date</th>
-                <th className="px-2 py-4 text-left"></th>
+                {/* <th className="px-2 py-4 text-left"></th> */}
               </tr>
             </thead>
             <tbody>
@@ -197,7 +197,7 @@ const Newss = () => {
                     <td className="px-2 py-2">{newsItem.content}</td>
                     <td className="px-2 py-2">{newsItem.publishDate}</td>
                     <td className="px-4 py-2">
-                      <div className="relative">
+                      {/* <div className="relative">
                         <HiOutlineDotsHorizontal
                           className="text-[25px] text-gray-500 cursor-pointer transition-transform transform hover:scale-110"
                           onClick={() => toggleEditMenu(newsItem.newsId)}
@@ -215,7 +215,7 @@ const Newss = () => {
                             </p>
                           </div>
                         )}
-                      </div>
+                      </div> */}
                     </td>
                   </tr>
                 ))

@@ -1,32 +1,32 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import NavbarDashboard from '../NavbarDashboard';
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+// import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Event = () => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
-  const navigate = useNavigate();
-  const menuRef = useRef(null);
+  // const navigate = useNavigate();
+  // const menuRef = useRef(null);
 
-  const handleClickOutside = (e) => {
-    if (menuRef.current && !menuRef.current.contains(e.target)) {
-      setOpenEditMenu(false);
-    }
-  };
+  // const handleClickOutside = (e) => {
+  //   if (menuRef.current && !menuRef.current.contains(e.target)) {
+  //     setOpenEditMenu(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   // State for events and messaging (assuming the list still comes from a news endpoint, adjust as needed)
-  const [newsItems, setNewsItems] = useState([]);
+  const [events, setevents] = useState([]);
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [trigger, setTrigger] = useState(false);
@@ -35,8 +35,8 @@ const Event = () => {
     const fetchNews = async () => {
       showOverlay();
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/News/GetAllNews');
-        setNewsItems(response.data.data);
+        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Event/GetAllEvents');
+        setevents(response.data.data);
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -53,17 +53,17 @@ const Event = () => {
   }, [showOverlay, hideOverlay, trigger]);
 
   // For edit menu functionality
-  const [openEditMenu, setOpenEditMenu] = useState(false);
-  const [selectedNewsId, setSelectedNewsId] = useState(null);
+  // const [openEditMenu, setOpenEditMenu] = useState(false);
+  // const [selectedNewsId, setSelectedNewsId] = useState(null);
 
-  const toggleEditMenu = (id) => {
-    setOpenEditMenu(!openEditMenu);
-    setSelectedNewsId(id);
-  };
+  // const toggleEditMenu = (id) => {
+  //   setOpenEditMenu(!openEditMenu);
+  //   setSelectedNewsId(id);
+  // };
 
-  const handleView = (id) => {
-    navigate(`/admin/news/${id}`, { state: id });
-  };
+  // const handleView = (id) => {
+  //   navigate(`/admin/news/${id}`, { state: id });
+  // };
 
   // Search/filter function (by news title)
   const findNewsByTitle = (items, query) => {
@@ -80,10 +80,10 @@ const Event = () => {
 
   const iLastNews = currentPage * newsPerPage;
   const iFirstNews = iLastNews - newsPerPage;
-  const currentNews = newsItems.slice(iFirstNews, iLastNews);
+  const currentNews = events.slice(iFirstNews, iLastNews);
 
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(newsItems.length / newsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(events.length / newsPerPage); i++) {
     pageNumbers.push(i);
   }
 
@@ -91,11 +91,12 @@ const Event = () => {
   // (Renamed from news to event for clarity.)
   const [addEventModal, setAddEventModal] = useState(false);
   const [eventData, setEventData] = useState({
-    title: '',
-    content: '',
-    publishDate: '',
-    location: '',
-    eventTime: ''
+    eventTitle: '',
+    eventDescription: '',
+    eventVenue: '',
+    eventDate: '',
+    eventTime: '',
+    eventType: ''
   });
 
   const addEvent = async (e) => {
@@ -104,8 +105,8 @@ const Event = () => {
 
     try {
       // Adjust the endpoint as necessary for events.
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Events/AddEvent', eventData);
-      notifySuccess(`${res.data.title} added successfully`);
+      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Event/AddEvent', eventData);
+      notifySuccess(res.data.responseMessage);
       setAddEventModal(false);
       setTrigger(!trigger);
     } catch (error) {
@@ -117,7 +118,7 @@ const Event = () => {
   };
 
   // Determine which items to display based on search query
-  const filteredNews = searchQuery ? findNewsByTitle(newsItems, searchQuery) : currentNews;
+  const filteredNews = searchQuery ? findNewsByTitle(events, searchQuery) : currentNews;
 
   return (
     <div className="bg-gray-100 pb-8">
@@ -178,39 +179,39 @@ const Event = () => {
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
               <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
-                <th className="px-4 py-4 text-left">Event ID</th>
+                {/* <th className="px-4 py-4 text-left">Event ID</th> */}
                 <th className="px-2 py-4 text-left">Title</th>
                 <th className="px-2 py-4 text-left">Content</th>
-                <th className="px-2 py-4 text-left">Publish Date</th>
-                <th className="px-2 py-4 text-left"></th>
+                <th className="px-2 py-4 text-left">Event Date</th>
+                {/* <th className="px-2 py-4 text-left"></th> */}
               </tr>
             </thead>
             <tbody>
-              {filteredNews && filteredNews.length > 0 ? (
-                filteredNews.map((newsItem, index) => (
+              {filteredNews !== null && filteredNews.length > 0 ? (
+                filteredNews.map((event, index) => (
                   <tr
-                    key={newsItem.newsId}
+                    key={event.eventId}
                     className={`${index % 2 === 0 ? "bg-blue-50" : "bg-green-50"} hover:bg-gradient-to-r hover:from-green-100 hover:to-purple-100 border-b text-sm text-gray-700 transition-colors`}
                   >
-                    <td className="px-2 py-2">{newsItem.newsId}</td>
+                    {/* <td className="px-2 py-2">{event.newsId}</td> */}
                     <td className="px-4 py-2">
                       <h3 className="font-medium">
-                        {capitalizeText(newsItem.title)}
+                        {event.eventTitle !== null ? capitalizeText(event?.eventTitle) : ''}
                       </h3>
                     </td>
-                    <td className="px-2 py-2">{newsItem.content}</td>
-                    <td className="px-2 py-2">{newsItem.publishDate}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-2 py-2">{event.eventDescription}</td>
+                    <td className="px-2 py-2">{event.eventDate}</td>
+                    {/* <td className="px-4 py-2">
                       <div className="relative">
                         <HiOutlineDotsHorizontal
                           className="text-[25px] text-gray-500 cursor-pointer transition-transform transform hover:scale-110"
-                          onClick={() => toggleEditMenu(newsItem.newsId)}
+                          onClick={() => toggleEditMenu(event.newsId)}
                         />
-                        {selectedNewsId === newsItem.newsId && openEditMenu && (
+                        {selectedNewsId === event.newsId && openEditMenu && (
                           <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
                             <p
                               className="cursor-pointer hover:bg-blue-500 hover:text-white py-1 px-2 rounded transition-colors"
-                              onClick={() => handleView(newsItem.newsId)}
+                              onClick={() => handleView(event.newsId)}
                             >
                               View
                             </p>
@@ -220,7 +221,7 @@ const Event = () => {
                           </div>
                         )}
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               ) : (
@@ -263,7 +264,7 @@ const Event = () => {
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        title: e.target.value,
+                        eventTitle: e.target.value,
                       })
                     }
                   />
@@ -278,7 +279,7 @@ const Event = () => {
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        content: e.target.value,
+                        eventDescription: e.target.value,
                       })
                     }
                   ></textarea>
@@ -287,13 +288,13 @@ const Event = () => {
                   <input
                     type="date"
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="publishDate"
-                    name="publishDate"
+                    id="eventdate"
+                    name="eventdate"
                     required
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        publishDate: e.target.value,
+                        eventDate: e.target.value,
                       })
                     }
                   />
@@ -302,14 +303,14 @@ const Event = () => {
                   <input
                     type="text"
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="eventLocation"
-                    name="eventLocation"
+                    id="eventVenue"
+                    name="eventVenue"
                     required
-                    placeholder="Event Location"
+                    placeholder="Event venue"
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        location: e.target.value,
+                        eventVenue: e.target.value,
                       })
                     }
                   />
@@ -325,6 +326,22 @@ const Event = () => {
                       setEventData({
                         ...eventData,
                         eventTime: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder='Event Type'
+                    className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
+                    id="eventtype"
+                    name="eventtype"
+                    required
+                    onChange={(e) =>
+                      setEventData({
+                        ...eventData,
+                        eventType: e.target.value,
                       })
                     }
                   />

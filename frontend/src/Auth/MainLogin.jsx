@@ -130,7 +130,7 @@ const MainLogin = () => {
       console.log(res.data);
       if(res.data.status === true){
         notifySuccess(res.data.responseMessage);
-        navigate('/guardian/dashboard');
+        navigate('/student/dashboard');
         localStorage.setItem('guardian', JSON.stringify(res.data));
         hideOverlay();
       }
