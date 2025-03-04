@@ -6,7 +6,6 @@ import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 
 import { PiEyeClosed } from "react-icons/pi";
 import { IoEyeOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import assets from "../Assets/assets";
 
 const MainLogin = () => {
@@ -17,7 +16,7 @@ const MainLogin = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
-  
+
   // Animation controls for each image
   const controls1 = useAnimation();
   const controls2 = useAnimation();
@@ -36,36 +35,36 @@ const MainLogin = () => {
         filter: ["brightness(100%)", "brightness(110%)", "brightness(100%)"],
         transition: { duration: 4, repeat: Infinity, repeatType: "reverse" }
       });
-      
+
       controls2.start({
         y: [0, -20, 0, 20, 0],
         transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
       });
-      
+
       controls3.start({
         x: [0, 15, 0, -15, 0],
         transition: { duration: 5, repeat: Infinity, ease: "easeInOut" }
       });
-      
+
       // Second row animations
       controls4.start({
         y: [0, 20, 0, -20, 0],
         transition: { duration: 7, repeat: Infinity, ease: "easeInOut" }
       });
-      
+
       controls5.start({
         scale: [1, 1.15, 1],
         rotate: [0, 2, 0, -2, 0],
         filter: ["brightness(100%)", "brightness(115%)", "brightness(100%)"],
         transition: { duration: 8, repeat: Infinity, ease: "easeInOut" }
       });
-      
+
       controls6.start({
         x: [0, -15, 0, 15, 0],
         transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
       });
     };
-    
+
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
 
@@ -104,7 +103,7 @@ const MainLogin = () => {
 
   const loginTeacher = async () => {
     showOverlay();
-    
+
     try {
       const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/Login', {
         email: email,
@@ -128,7 +127,7 @@ const MainLogin = () => {
         password: password
       });
       console.log(res.data);
-      if(res.data.status === true){
+      if (res.data.status === true) {
         notifySuccess(res.data.responseMessage);
         navigate('/student/dashboard');
         localStorage.setItem('guardian', JSON.stringify(res.data));
@@ -147,12 +146,12 @@ const MainLogin = () => {
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-4">
       <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 grid items-center">
-        <div><img src={assets.scrm} alt="" width={150}/></div>
+        <div><img src={assets.scrm} alt="" width={150} /></div>
 
         <h2 className="font-bold">WELCOME TO OUR WEBSITE</h2>
 
         <form action="submit" className="space-y-8" onSubmit={handleLogin}>
-          <div className="space-y-1">
+          <div className="space-y-4">
             <div className="flex gap-2 text-sm">
               {["admin", "teacher", "student", "guardian"].map((role) => (
                 <div key={role} className="flex items-center gap-1">
@@ -221,10 +220,6 @@ const MainLogin = () => {
               SIGN IN
             </button>
           )}
-
-          <Link to={'/registrationwiz'} className="flex justify-center text-center hover:underline">
-            Register Student
-          </Link>
         </form>
 
         <p className="text-[12px] text-center">
@@ -243,76 +238,76 @@ const MainLogin = () => {
                 animate={controls1}
                 initial={{ scale: 1 }}
               >
-                <img 
-                  src={assets.school1} 
-                  alt="" 
+                <img
+                  src={assets.school1}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>
             </div>
-            
+
             <div className="overflow-hidden rounded-lg">
               <motion.div
                 className="w-full h-60 rounded-lg overflow-hidden"
                 animate={controls2}
               >
-                <img 
-                  src={assets.school5} 
-                  alt="" 
+                <img
+                  src={assets.school5}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>
             </div>
-            
+
             <div className="overflow-hidden rounded-lg">
               <motion.div
                 className="w-full h-60 rounded-lg overflow-hidden"
                 animate={controls3}
               >
-                <img 
-                  src={assets.school3} 
-                  alt="" 
+                <img
+                  src={assets.school3}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>
             </div>
-            
+
             {/* Second row */}
             <div className="overflow-hidden rounded-lg">
               <motion.div
                 className="w-full h-60 rounded-lg overflow-hidden"
                 animate={controls4}
               >
-                <img 
-                  src={assets.school2} 
-                  alt="" 
+                <img
+                  src={assets.school2}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>
             </div>
-            
+
             <div className="overflow-hidden rounded-lg">
               <motion.div
                 className="w-full h-60 rounded-lg overflow-hidden"
                 animate={controls5}
                 initial={{ scale: 1, rotate: 0 }}
               >
-                <img 
-                  src={assets.school4} 
-                  alt="" 
+                <img
+                  src={assets.school4}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>
             </div>
-            
+
             <div className="overflow-hidden rounded-lg">
               <motion.div
                 className="w-full h-60 rounded-lg overflow-hidden"
                 animate={controls6}
               >
-                <img 
-                  src={assets.school6} 
-                  alt="" 
+                <img
+                  src={assets.school6}
+                  alt=""
                   className="w-full h-full object-cover"
                 />
               </motion.div>

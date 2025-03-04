@@ -33,6 +33,7 @@ import EventPage from './Pages/Event.jsx';
 import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
 import Newss from './Admin/DashboardComponents/Newss.jsx';
 import Event from './Admin/DashboardComponents/Event.jsx';
+import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 
 const App = () => {
@@ -43,21 +44,22 @@ const App = () => {
         <Route path='/login' element={<MainLogin />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/registrationwiz' element={<RegisterationWiz />} />
-        
+
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/students' element={<ViewStudents />} />
         <Route path='/admin/student/:studentId' element={<AdminStudentProfile />} />
         <Route path='/admin/teachers' element={<ViewTeachers />} />
-  
+
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
 
-        {/* Classrooms */}
         <Route path='/admin/classrooms' element={<ViewClassrooms />} />
-        <Route path='/admin/newss' element={<Newss/>} />
-        <Route path='/admin/events' element={<Event/>} />
-        
+        <Route path='/admin/newss' element={<Newss />} />
+        <Route path='/admin/events' element={<Event />} />
+
+        <Route path='/admin/classroom/:name' element={<AdminClassroom />} />
+
         <Route path='/student/dashboard' element={<StudentDashboard />} />
         {/* <Route path='/guardian/dashboard' element={<StudentDashboard />} /> */}
         <Route path='/studentdata' element={<StudentData />} />
@@ -69,8 +71,8 @@ const App = () => {
         {/* <Route path='/teacher/dashboard' element={<TeachersDashboard />} /> */}
         <Route path='/teacher/students' element={<TeacherViewStudents />} />
         <Route path='/teacher/student/:studentId' element={<TeacherStudentProfile />} />
-      
-      
+
+
         {/* Teacher Routes */}
         <Route path='/teacher/dashboard' element={<TeacherDashboard />} />
         <Route path='/teacher/students' element={<TeacherViewStudents />} />

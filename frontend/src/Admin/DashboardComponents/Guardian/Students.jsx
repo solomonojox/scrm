@@ -35,7 +35,7 @@ const Students = ({ guardianId }) => {
     }, [guardianId, showOverlay, hideOverlay]);
 
     return (
-        <div className='p-6'>
+        <div className='p-6 h-[100dvh]'>
             {students.length > 0 ? (
                 students.map(student => (
                     <div key={student.studentId} className="w-full h-36 bg-white p-4 rounded-lg flex items-center gap-4 relative">

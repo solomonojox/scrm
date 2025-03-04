@@ -5,16 +5,17 @@ import NavbarDashboard from "../../NavbarDashboard";
 // import AdminEditMemberProfile from './Admin_EditMemberProfile';
 // import Security from "./Security";
 
-import { FaRegEdit } from "react-icons/fa";
+// import { FaRegEdit } from "react-icons/fa";
 // import { IoKey } from "react-icons/io5";
 // import { RiParentFill } from "react-icons/ri";
 // import { TiDocumentText } from "react-icons/ti";
-import { GiTakeMyMoney } from "react-icons/gi";
+// import { GiTakeMyMoney } from "react-icons/gi";
 // import Results from "./Results";
 // import Guardian from "./Guardian";
-import AdminEditTeacherProfile from "./AdminEditTeacherProfile";
+import { FaSchoolFlag } from "react-icons/fa6";
+import ClassroomProfile from "./ClassroomProfile";
 
-function AdminTeacherProfile() {
+function AdminClassroom() {
   const location = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -22,8 +23,8 @@ function AdminTeacherProfile() {
 
   const [activeTab, setActiveTab] = useState('Edit Profile');
   const tabs = [
-    { id: 1, label: 'Edit Profile', value: <AdminEditTeacherProfile teacherId={location.state} />, icon: <FaRegEdit /> },
-    { id: 2, label: 'Classroom', value: "School", icon: <GiTakeMyMoney /> },
+    { id: 1, label: 'Classroom', value: <ClassroomProfile teacherId={location.state} />, icon: <FaSchoolFlag /> },
+    // { id: 2, label: 'Classroom', value: "School", icon: <GiTakeMyMoney /> },
     // { id: 3, label: 'Results', value: <Results studentId={location.state} />, icon: <TiDocumentText /> },
     // { id: 4, label: 'Guardian', value: <Guardian/>, icon: <RiParentFill /> },
     // { id: 5, label: 'Security', value: "<Security studentId={location.state}/>", icon: <IoKey /> }
@@ -67,4 +68,4 @@ function AdminTeacherProfile() {
   );
 }
 
-export default AdminTeacherProfile;
+export default AdminClassroom;

@@ -195,7 +195,7 @@ const Newss = () => {
                       </h3>
                     </td>
                     <td className="px-2 py-2">{newsItem.content}</td>
-                    <td className="px-2 py-2">{newsItem.publishDate}</td>
+                    <td className="px-2 py-2">{newsItem.publishedDate}</td>
                     <td className="px-4 py-2">
                       {/* <div className="relative">
                         <HiOutlineDotsHorizontal
