@@ -11,7 +11,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewTeachers = () => {
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const handleClickOutside = (e) => {
