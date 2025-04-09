@@ -9,6 +9,8 @@ import { IoEyeOutline } from "react-icons/io5";
 import assets from "../Assets/assets";
 
 const MainLogin = () => {
+  // Define the base URL for the API from react app env file
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const navigate = useNavigate();
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   const [email, setEmail] = useState("");
@@ -88,7 +90,7 @@ const MainLogin = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Admin/AdminLogin', {
+      const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
         username: username,
         password: password
       });

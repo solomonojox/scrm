@@ -8,6 +8,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Event = () => {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   // const navigate = useNavigate();
   // const menuRef = useRef(null);
@@ -35,7 +36,7 @@ const Event = () => {
     const fetchNews = async () => {
       showOverlay();
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Event/GetAllEvents');
+        const response = await axios.get(`${baseUrl}/api/Event/GetAllEvents`);
         setevents(response.data.data);
         console.log(response.data);
       } catch (error) {
@@ -50,7 +51,7 @@ const Event = () => {
       }
     };
     fetchNews();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   // For edit menu functionality
   // const [openEditMenu, setOpenEditMenu] = useState(false);
@@ -105,7 +106,7 @@ const Event = () => {
 
     try {
       // Adjust the endpoint as necessary for events.
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Event/AddEvent', eventData);
+      const res = await axios.post(`${baseUrl}/api/Event/AddEvent`, eventData);
       notifySuccess(res.data.responseMessage);
       setAddEventModal(false);
       setTrigger(!trigger);

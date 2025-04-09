@@ -11,7 +11,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewTeachers = () => {
-  const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
   const handleClickOutside = (e) => {
@@ -205,15 +205,15 @@ const ViewTeachers = () => {
                         />
                         <div>
                           <h3 className="font-medium">
-                            {/* {capitalizeText(teacher.firstname)} {capitalizeText(teacher.lastname)} */}
+                            {capitalizeText(teacher.firstname)} {capitalizeText(teacher.lastname)}
                           </h3>
                         </div>
                       </td>
                       <td className="px-2 py-2">{teacher.email}</td>
-                      {/* <td className="px-2 py-2">{capitalizeText(teacher.classroom)}</td> */}
+                      <td className="px-2 py-2">{capitalizeText(teacher.classroom)}</td>
                       <td className="px-2 py-2">{teacher.username}</td>
                       <td className="px-2 py-2 whitespace-wrap">
-                        {/* {capitalizeText(teacher.homeAddress)} */}
+                        {capitalizeText(teacher.homeAddress)}
                       </td>
                       <td className="px-4 py-2">
                         <div className="relative">
