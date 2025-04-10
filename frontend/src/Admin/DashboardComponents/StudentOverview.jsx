@@ -9,11 +9,11 @@ const StudentOverview = () => {
     useEffect(() => {
         const fetchStudentCount = async () => {
             try {
-                const response = await axios.get('https://api.example.com/students/total'); // Replace with your real API
-                setTotalStudents(response.data.total); // Adjust this depending on API shape
+                const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Student/GetTotalStudentCount'); 
+                setTotalStudents(response.data.total); 
             } catch (error) {
                 console.error('Error fetching student count:', error);
-                setTotalStudents(0); // fallback or handle error
+                setTotalStudents(0); 
             }
         };
 
@@ -52,7 +52,8 @@ const StudentOverview = () => {
                                             </div>
                                             <div>
                                                 <div className="text-xl font-bold">
-                                                    {totalStudents !== null ? totalStudents : '...'}
+                                                {typeof totalStudents === 'number' ? totalStudents : 'Loading...'}
+
                                                 </div>
                                                 <div className="text-gray-400 text-sm">Total students</div>
                                             </div>
