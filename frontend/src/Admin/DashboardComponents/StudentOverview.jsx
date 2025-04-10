@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';
 
 const StudentOverview = () => {
+    const [totalStudents, setTotalStudents] = useState(null);
+
+    useEffect(() => {
+        const fetchStudentCount = async () => {
+            try {
+                const response = await axios.get('https://api.example.com/students/total'); // Replace with your real API
+                setTotalStudents(response.data.total); // Adjust this depending on API shape
+            } catch (error) {
+                console.error('Error fetching student count:', error);
+                setTotalStudents(0); // fallback or handle error
+            }
+        };
+
+        fetchStudentCount();
+    }, []);
+
     return (
         <div className="bg-gray-900 text-white">
             <h2 className="text-2xl font-semibold mb-4">Overview</h2>
@@ -28,13 +45,15 @@ const StudentOverview = () => {
                             <tbody>
                                 <tr className='border-b'>
                                     <td className="pb-6 pr-20 border-r">
-                                        {/* Earning Points */}
+                                        {/* Total Students */}
                                         <div className="flex items-center gap-3">
                                             <div className="bg-blue-500/20 p-2 rounded-lg">
                                                 <MessageCircle className="w-6 h-6 text-blue-400" />
                                             </div>
                                             <div>
-                                                <div className="text-xl font-bold">126</div>
+                                                <div className="text-xl font-bold">
+                                                    {totalStudents !== null ? totalStudents : '...'}
+                                                </div>
                                                 <div className="text-gray-400 text-sm">Total students</div>
                                             </div>
                                         </div>
