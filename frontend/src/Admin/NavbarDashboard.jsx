@@ -31,7 +31,7 @@ const NavbarDashboard = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="bg-gray-900 px-6 py-4">
+    <nav className="bg-gray-900 px-6 py-4">y
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-12">

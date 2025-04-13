@@ -109,7 +109,7 @@ const ViewTeachers = () => {
     e.preventDefault();
     showOverlay();
 
-    try {
+    try { 
       const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/AddTeacher', teacherData);
       showNotification(`${res.data.firstname} added successfully`, 'success');
       setAddMemberModal(false);
