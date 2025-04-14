@@ -1,8 +1,38 @@
-import React from 'react';
+
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';
+import React, { useEffect, useState } from 'react';
 
-const StudentOverview = () => {
+function StudentOverview () {
+  const [studentCount, setStudentCount] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://scrmapi.tranquility.org.ng/api/Student/GetTotalStudentCount');
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        setStudentCount(data); // 
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+
+
     return (
         <div className="bg-gray-900 text-white">
             <h2 className="text-2xl font-semibold mb-4">Overview</h2>
@@ -28,13 +58,16 @@ const StudentOverview = () => {
                             <tbody>
                                 <tr className='border-b'>
                                     <td className="pb-6 pr-20 border-r">
-                                        {/* Earning Points */}
+                                        {/* Total Students */}
                                         <div className="flex items-center gap-3">
                                             <div className="bg-blue-500/20 p-2 rounded-lg">
                                                 <MessageCircle className="w-6 h-6 text-blue-400" />
                                             </div>
                                             <div>
-                                                <div className="text-xl font-bold">126</div>
+                                                <div className="text-xl font-bold">
+                                                {studentCount !== null ? studentCount : '_'}
+
+                                                </div>
                                                 <div className="text-gray-400 text-sm">Total students</div>
                                             </div>
                                         </div>
