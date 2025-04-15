@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import TeacherNavbarDashboard from '../TeacherNavbarDashboard';
 import { IoMdCloseCircle } from 'react-icons/io';
+import { AppContext } from '../../context/AppContext';
 
 function Assignments() {
+  const { formatDate, showOverlay, hideOverlay } = useContext(AppContext)
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [classroomId, setClassroomId] = useState('');
@@ -18,8 +20,8 @@ function Assignments() {
       );
       SetData(response.data.data);
       console.log(response.data)
-      ;
-      
+        ;
+
     } catch (error) {
       console.log(error);
     }
@@ -31,6 +33,7 @@ function Assignments() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showOverlay();
 
     const form = {
       title,
@@ -54,13 +57,15 @@ function Assignments() {
         setMessage('');
       }, 2000);
       fetchAssignment();
-      
+
       console.log(response.data);
     } catch (error) {
       setMessage(
         error.response?.data?.message || 'Failed to create assignment'
       );
       console.error('Error:', error);
+    } finally{
+      hideOverlay()
     }
   };
 
@@ -137,11 +142,10 @@ function Assignments() {
 
                 {message && (
                   <div
-                    className={`p-2 text-sm rounded-md mb-3 ${
-                      message.includes('successfully')
+                    className={`p-2 text-sm rounded-md mb-3 ${message.includes('successfully')
                         ? 'bg-green-100 text-green-700'
                         : 'bg-red-100 text-red-700'
-                    }`}
+                      }`}
                   >
                     {message}
                   </div>
@@ -158,27 +162,27 @@ function Assignments() {
           </div>
         )}
 
-<div className="overflow-x-auto mt-6">
-  <table className="min-w-full border border-gray-200 rounded-md overflow-hidden shadow">
-    <thead className="bg-gray-100 text-gray-700 text-sm uppercase font-semibold">
-    <tr>
-                <th className="px-6 py-3 text-left border-b">ID</th>
+        <div className="overflow-x-auto mt-6">
+          <table className="min-w-full border border-gray-200 rounded-md overflow-hidden shadow">
+            <thead className="bg-gray-100 text-gray-700 text-sm uppercase font-semibold">
+              <tr>
+                {/* <th className="px-6 py-3 text-left border-b">ID</th> */}
                 <th className="px-6 py-3 text-left border-b">Title</th>
                 <th className="px-6 py-3 text-left border-b">Description</th>
                 <th className="px-6 py-3 text-left border-b">Classroom ID</th>
                 <th className="px-6 py-3 text-left border-b">Due Date</th>
               </tr>
-    </thead>
-    <tbody className="text-sm text-gray-800">
+            </thead>
+            <tbody className="text-sm text-gray-800">
               {data?.length > 0 ? (
                 data.map((assignment, index) => (
                   <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 border-b">{assignment.assignmentId}</td>
+                    {/* <td className="px-6 py-4 border-b">{assignment.assignmentId}</td> */}
                     <td className="px-6 py-4 border-b">{assignment.title}</td>
                     <td className="px-6 py-4 border-b">{assignment.description}</td>
                     <td className="px-6 py-4 border-b">{assignment.classroomId}</td>
-                    <td className="px-6 py-4 border-b">{assignment.dueDate}</td>
-                     
+                    <td className="px-6 py-4 border-b">{formatDate(assignment.dueDate)}</td>
+
                   </tr>
                 ))
               ) : (
@@ -189,8 +193,8 @@ function Assignments() {
                 </tr>
               )}
             </tbody>
-  </table>
-</div>
+          </table>
+        </div>
 
       </div>
     </>
