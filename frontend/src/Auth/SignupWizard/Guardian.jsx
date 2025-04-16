@@ -125,9 +125,14 @@ const Guardian = ({ nextStep }) => {
                     </div>
                 </div>
 
+                <div>
+                    <button
+                        disabled={isNotValidated}
+                        className={`${isNotValidated ? 'bg-gray-400' : 'bg-primary-bg hover:bg-primary-hover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
+                </div>
                 <button
-                    disabled={isNotValidated}
-                    className={`${isNotValidated ? 'bg-gray-400' : 'bg-primary hover:bg-primaryHover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
+                    onClick={nextStep}
+                    className={`bg-primary-bg hover:bg-primary-hover py-3 px-10 rounded-lg text-white`}>Already have a guardian? Next</button>
             </form>
         </div>
     )

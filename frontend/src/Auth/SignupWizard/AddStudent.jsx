@@ -45,7 +45,10 @@ const AddStudent = ({ nextStep }) => {
         age: '',
         homeAddress: "",
         guardianId: "",
-        teacherId: ""
+        teacherId: "",
+        sessionId:"",
+        currentTerm:"",
+        dateofbirth:""
     })
 
     const addStudent = async (e) => {
@@ -94,12 +97,12 @@ const AddStudent = ({ nextStep }) => {
                         <select id="enteredClass" value={formData.enteredClass} className='w-full p-3 border rounded-md outline-none focus:border-primary-bg'
                             onChange={(e) => setFormData({ ...formData, enteredClass: e.target.value })} >
                             <option value="Select class">Select class</option>
-                            <option value="JSS 1">JSS 1</option>
-                            <option value="JSS 2">JSS 2</option>
-                            <option value="JSS 3">JSS 3</option>
-                            <option value="SS 1">SS 1</option>
-                            <option value="SS 2">SS 2</option>
-                            <option value="SS 3">SS 3</option>
+                            <option value={1}>JSS 1</option>
+                            <option value={2}>JSS 2</option>
+                            <option value={3}>JSS 3</option>
+                            <option value={4}>SS 1</option>
+                            <option value={6}>SS 2</option>
+                            <option value={7}>SS 3</option>
                         </select>
                     </div>
                     <div>
@@ -134,7 +137,7 @@ const AddStudent = ({ nextStep }) => {
 
                 <button
                     disabled={isNotalidated}
-                    className={`${isNotalidated ? 'bg-gray-400' : 'bg-primary hover:bg-primaryHover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
+                    className={`${isNotalidated ? 'bg-gray-400' : 'bg-primary-bg hover:bg-primary-hover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
             </form>
         </div>
     )
