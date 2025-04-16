@@ -36,6 +36,7 @@ const ViewClassrooms = () => {
       showOverlay();
       try {
         const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Classroom/GetAllClassroom');
+        localStorage.setItem('classroomId' , response.data.data.classroomId)
         setClassrooms(response.data.data);
         console.log(response.data);
       } catch (error) {
@@ -104,6 +105,7 @@ const ViewClassrooms = () => {
       notifySuccess(`${res.data.name} added successfully`);
       setAddMemberModal(false);
       setTrigger(!trigger);
+      
     } catch (error) {
       console.error(error.response?.data);
       notifyError(error.response?.data.responseMessage || 'Error adding classroom');

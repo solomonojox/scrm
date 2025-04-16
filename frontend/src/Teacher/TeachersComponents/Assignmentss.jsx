@@ -19,7 +19,8 @@ function Assignments() {
         'https://scrmapi.tranquility.org.ng/api/Assignment/GetAssignmentByClassId/1'
       );
       SetData(response.data.data);
-      console.log(response.data)
+      console.log(response.data);
+      
         ;
 
     } catch (error) {

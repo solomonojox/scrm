@@ -94,6 +94,7 @@ const MainLogin = () => {
         password: password
       });
       notifySuccess(res.data.responseMessage);
+      
       navigate('/admin/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);

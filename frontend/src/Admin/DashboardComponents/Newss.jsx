@@ -8,7 +8,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Newss = () => {
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText,formatDate } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
@@ -174,7 +174,7 @@ const Newss = () => {
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
               <tr className="bg-gray-800   text-white rounded-t-lg">
-                <th className="px-4 py-4 text-left">News ID</th>
+                
                 <th className="px-2 py-4 text-left">Title</th>
                 <th className="px-2 py-4 text-left">Content</th>
                 <th className="px-2 py-4 text-left">Publish Date</th>
@@ -188,14 +188,14 @@ const Newss = () => {
                     key={newsItem.newsId}
                     className={`${index % 2 === 0 ? "bg-blue-50" : "bg-green-50"} hover:bg-gradient-to-r hover:from-green-100 hover:to-purple-100 border-b text-sm text-gray-700 transition-colors`}
                   >
-                    <td className="px-2 py-2">{newsItem.newsId}</td>
+                    {/* <td className="px-2 py-2">{newsItem.newsId}</td> */}
                     <td className="px-4 py-2">
                       <h3 className="font-medium">
                         {capitalizeText(newsItem.title)}
                       </h3>
                     </td>
                     <td className="px-2 py-2">{newsItem.content}</td>
-                    <td className="px-2 py-2">{newsItem.publishDate}</td>
+                    <td className="px-2 py-2">{formatDate(newsItem.publishDate)}</td>
                     <td className="px-4 py-2">
                       <div className="relative">
                         <HiOutlineDotsHorizontal
