@@ -2,7 +2,9 @@ import React from 'react';
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';
 
+
 const StudentOverview = () => {
+    
     return (
         <div className="bg-gray-900 text-white">
             <h2 className="text-2xl font-semibold mb-4">Overview</h2>
@@ -17,8 +19,9 @@ const StudentOverview = () => {
                             className="w-16 h-16 rounded-full bg-white object-cover"
                         />
                         <div>
-                            <h3 className="text-lg font-semibold">Brooklyn Simmons</h3>
-                            <p className="text-gray-400 text-sm">Student • Beginner</p>
+                            
+                            <h3 className="text-lg font-semibold">mrs David</h3>
+                            <p className="text-gray-400 text-sm">primary 1</p>
                         </div>
                     </div>
 

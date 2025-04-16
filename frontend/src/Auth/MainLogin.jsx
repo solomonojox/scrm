@@ -105,13 +105,17 @@ const MainLogin = () => {
 
   const loginTeacher = async () => {
     showOverlay();
-
+   
     try {
       const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/Login', {
         email: email,
         password: password
       });
       notifySuccess(res.data.responseMessage);
+     
+      // console.log(res.data);
+      localStorage.setItem('teacherId', res.data.data.teacherId)
+      localStorage.setItem('teacherData', JSON.stringify(res.data.data))
       navigate('/teacher/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);

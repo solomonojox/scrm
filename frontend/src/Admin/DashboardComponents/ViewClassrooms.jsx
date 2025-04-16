@@ -11,6 +11,7 @@ const ViewClassrooms = () => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
+  const [addMemberModal, setAddMemberModal] = useState(false);
 
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -157,8 +158,8 @@ const ViewClassrooms = () => {
             </h2>
             <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
               <button
-                className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
-                onClick={() => setAddClassroomModal(true)}
+                className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
+                onClick={() => setAddMemberModal(true)}
               >
                 Add Classroom
               </button>
@@ -170,11 +171,11 @@ const ViewClassrooms = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className="flex items-center bg-primary-bg py-2 px-4 text-white gap-2">
+                <div className="flex items-center bg-gray-900 py-2 px-4 text-white gap-2">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -201,7 +202,7 @@ const ViewClassrooms = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
+              <tr className="bg-gradient-to-r bg-gray-800 text-white rounded-t-lg">
                 <th className="px-4 py-4 text-left">Classroom Id</th>
                 <th className="px-2 py-4 text-left">Classroom Name</th>
                 <th className="px-2 py-4 text-left">Capacity</th>
@@ -336,7 +337,7 @@ const ViewClassrooms = () => {
                 </div>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded text-white"
+                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded text-white"
                 >
                   Add Classroom
                 </button>

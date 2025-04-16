@@ -22,6 +22,7 @@ import TeacherViewTeachers from './Teacher/TeachersComponents/ViewTeachers.jsx';
 import TeacherViewGuardians from './Teacher/TeachersComponents/ViewGuardians.jsx';
 import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 import TeacherTeacherProfile from './Teacher/TeachersComponents/Teachers/Admin_TeacherProfile.jsx';
+import Assignmentss from './Teacher/TeachersComponents/Assignmentss.jsx'
 import TeacherGuardianProfile from './Teacher/TeachersComponents/Guardian/Teacher_GuardianProfile.jsx'; // corrected to match file name "Teacher_GuardianProfile.jsx"
 
 import StudentDashboard from './Pages/GuardianDashboard.jsx';
@@ -53,6 +54,7 @@ const App = () => {
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
+        <Route path='/assignmentss' element ={<Assignmentss/>} />
 
         <Route path='/admin/classrooms' element={<ViewClassrooms />} />
         <Route path='/admin/newss' element={<Newss />} />

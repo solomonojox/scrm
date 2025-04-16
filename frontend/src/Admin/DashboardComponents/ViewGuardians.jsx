@@ -112,11 +112,11 @@ const ViewGuardians = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className='flex items-center bg-primary-bg py-2 px-4 text-white gap-2'>
+                <div className='flex items-center bg-gray-900 py-2 px-4 text-white gap-2'>
                   <button
                     onClick={() => handlePageChange(-1)}
                     disabled={currentPage === 1}
@@ -143,7 +143,7 @@ const ViewGuardians = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto  rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
+              <tr className="bg-gradient-to-r bg-gray-900 text-white rounded-t-lg">
                 <th className="px-4 py-4 text-left">Guardian Name</th>
                 <th className="px-2 py-4 text-left">Email</th>
                 <th className="px-2 py-4 text-left">Username</th>
@@ -193,12 +193,12 @@ const ViewGuardians = () => {
                           {guardianId === guardian.guardianId && openEditMenu ? (
                             <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
                               <p
-                                className="cursor-pointer hover:bg-blue-500 hover:text-white py-1 px-2 rounded transition-colors"
+                                className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors"
                                 onClick={() => handleView(guardian.guardianId)}
                               >
                                 View
                               </p>
-                              <p className="cursor-pointer hover:bg-green-500 hover:text-white py-1 px-2 rounded transition-colors">
+                              <p className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors">
                                 Edit
                               </p>
                               {/* <p className="cursor-pointer hover:bg-red-500 hover:text-white py-1 px-2 rounded transition-colors">

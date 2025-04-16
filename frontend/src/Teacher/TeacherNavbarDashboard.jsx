@@ -8,7 +8,7 @@ const TeacherNavbarDashboard = () => {
     { name: 'Dashboard', href: '/teacher/dashboard', active: true },
     { name: 'Students', href: '/teacher/students', active: false },
     { name: 'Result', href: '/teacher/result', active: false },
-    { name: 'Assignment', href: '/teacher/assignment', active: false },
+    { name: 'Assignment', href: '/assignmentss', active: false },
       ];
 
   const handleActive = (href) => {

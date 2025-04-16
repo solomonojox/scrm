@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Search, MessageSquare, Bell, Settings } from "lucide-react";
+import {
+  Search,
+  MessageSquare,
+  Bell,
+  Settings,
+  GraduationCap,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 const NavbarDashboard = () => {
@@ -10,7 +16,6 @@ const NavbarDashboard = () => {
     { name: "Teachers", href: "/admin/teachers", active: false },
     { name: "Guardian", href: "/admin/guardians", active: false },
     { name: "Classroom", href: "/admin/classrooms", active: false },
-   
     { name: "News", href: "/admin/newss", active: false },
     { name: "Events", href: "/admin/events", active: false },
   ]);
@@ -26,11 +31,12 @@ const NavbarDashboard = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="bg-gray-900 px-6 py-4">
+    <nav className="bg-gray-900 px-6 py-4">y
       <div className="flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-12">
-          <Link to="#" className="text-white font-bold text-xl">
+          <Link to="#" className="flex items-center gap-2 text-white font-bold text-xl">
+            <GraduationCap className="w-10 h-10 text-indigo-400" />
             SCRM
           </Link>
 
