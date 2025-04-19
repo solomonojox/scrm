@@ -132,11 +132,14 @@ const MainLogin = () => {
         email: email,
         password: password
       });
+      
       console.log(res.data);
+      
       if(res.data.status === true){
         notifySuccess(res.data.responseMessage);
         navigate('/guardian/dashboard');
-        localStorage.setItem('guardian', JSON.stringify(res.data));
+        localStorage.setItem('guardianId' , res.data.data.guardianId);
+        localStorage.setItem('guardian', JSON.stringify(res.data.data));
         hideOverlay();
       }
     } catch (err) {

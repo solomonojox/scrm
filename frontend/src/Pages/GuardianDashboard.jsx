@@ -94,7 +94,7 @@ const StudentDashboard = () => {
 
       {/* Main Content */}
       <div className="flex-1 bg-white h-dvh px-10 ml-[220px] py-12">
-        <p className="font-bold text-4xl">Welcome Back, {guardianData.data.firstname}</p>
+        <p className="font-bold text-4xl">Welcome Back, {guardianData.firstname}</p>
         <p className="text-gray-700">04, October, 2022</p>
         
         <div className="flex space-x-72 items-center mt-5">
