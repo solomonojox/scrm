@@ -95,6 +95,7 @@ const MainLogin = () => {
         password: password
       });
       notifySuccess(res.data.responseMessage);
+      
       navigate('/admin/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
@@ -132,11 +133,14 @@ const MainLogin = () => {
         email: email,
         password: password
       });
+      
       console.log(res.data);
-      if (res.data.status === true) {
+      
+      if(res.data.status === true){
         notifySuccess(res.data.responseMessage);
-        navigate('/student/dashboard');
-        localStorage.setItem('guardian', JSON.stringify(res.data));
+        navigate('/guardian/dashboard');
+        localStorage.setItem('guardianId' , res.data.data.guardianId);
+        localStorage.setItem('guardian', JSON.stringify(res.data.data));
         hideOverlay();
       }
     } catch (err) {

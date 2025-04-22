@@ -37,8 +37,9 @@ const ViewClassrooms = () => {
       showOverlay()
       try {
         const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Classroom/GetAllClassroom');
-        setClassroom(response.data.data);
-        // console.log(response.data)
+        localStorage.setItem('classroomId' , response.data.data.classroomId)
+        setClassrooms(response.data.data);
+        console.log(response.data);
       } catch (error) {
         // console.error(error);
         if (error.response) {
@@ -125,15 +126,11 @@ const ViewClassrooms = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Classroom/AddClassroom', {
-        name,
-        teacherId
-      });
-
-      notifySuccess(res.data.responseMessage);
-      setAddClassroomModal(false);
-      setTrigger(!trigger)
-      // console.log(res.data);
+      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Classroom/AddClassroom', classroomData);
+      notifySuccess(`${res.data.name} added successfully`);
+      setAddMemberModal(false);
+      setTrigger(!trigger);
+      
     } catch (error) {
       // console.error(error.response.data);
       notifyError(error.response.data.responseMessage);

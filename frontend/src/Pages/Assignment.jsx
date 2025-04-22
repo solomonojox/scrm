@@ -1,103 +1,103 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../Pages/Sidebar";
-import { FaFileAlt } from "react-icons/fa";
-import { MdOutlineAccessTime } from "react-icons/md";
-import { FaCircleNotch } from "react-icons/fa";
-import bookId from "../Assets/images (1).jpeg";
+import axios from "axios";
+
 const Assignment = () => {
+  const [studentData, setStudentData] = useState([]);
+  const [assignmentData, setAssignmentData] = useState([]);
+  const [classroomId, setClassroomId] = useState(0);
+  let guardianId = localStorage.getItem("guardianId");
+
+  // Fetch students when component loads
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const response = await axios.get(
+          `https://scrmapi.tranquility.org.ng/api/Student/GetGuardianStudents/${guardianId}`
+        );
+        setStudentData(response.data.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    fetchStudent();
+  }, [guardianId]);
+
+  // Fetch assignments when classroomId changes
+  useEffect(() => {
+    if (classroomId !== 0) {
+      const fetchAssignment = async () => {
+        try {
+          const response = await axios.get(
+            `https://scrmapi.tranquility.org.ng/api/Assignment/GetAssignmentByClassId/${classroomId}`
+          );
+          setAssignmentData(response.data.data);
+          console.log(response.data.data)
+        } catch (error) {
+          console.error("error", error.response);
+        }
+      };
+      fetchAssignment();
+    }
+  }, [classroomId]);
+
   return (
     <div className="flex">
       <div className="fixed">
         <Sidebar />
       </div>
-
       <div className="ml-[280px] mt-5">
         <p className="font-bold text-xl">Assignment List</p>
-        <div className="w-[1000px] flex   space-x-10 rounded-md px-5 py-3 mt-4 h-32 bg-white border-2 ">
-          <div className="flex items-center space-x-4 ">
-            <div className=" h-28 w-32 rounded-md ">
-              <img
-                src={bookId}
-                alt=""
-                className="h-28 object-cover rounded-md"
-              />
-            </div>
-            <div className=" space-y-2">
-              <p className="  capitalize ">courses</p>
-              <p className="text-lg font-bold capitalize ">
-                mastering UI/ux design: a guide..
-              </p>
-            </div>
+
+        {/* Student select box */}
+        <select
+        
+          onChange={(e) => setClassroomId(e.target.value)}
+          className="border px-4 py-2 mt-4"
+        >
+          <option value="">Select student</option>
+          {studentData.map((student,index) => (
+            <option key={index} value={student.classroomId}>
+              {student.firstname}
+            </option>
+          ))}
+        </select>
+
+        {assignmentData.length > 0 ? (
+          <div className="overflow-x-auto mt-4">
+            <table className="min-w-full divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200">
+                {/* Header row */}
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                    Title
+                  </td>
+                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                    Description
+                  </td>
+                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                    Due Date
+                  </td>
+                </tr>
+                {assignmentData.map((assignment,index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {assignment.title}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {assignment.description}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {assignment.dueDate}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="space-y-3 mt-8 ">
-            <p className="text-gray-700">Content</p>
-            <div className="flex items-center space-x-2">
-              <FaFileAlt className="" />
-              <p className="font-bold "> 5 Material</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-3 ml-10">
-            <p className="text-gray-700">Completion</p>
-            <p>___</p>
-          </div>
-          <div className="mt-8 space-y-3 ">
-            <p>Deadline</p>
-            <div className="flex space-x-1 items-center">
-              <MdOutlineAccessTime className="" />
-              <p className=" font-bold">1 Day</p>
-            </div>
-          </div>
-          <div>
-            {" "}
-            <button className="px-5 py-3 border-2 bg-white rounded-md mt-8">
-              Start
-            </button>
-          </div>
-        </div>
-        <div className="w-[1000px] flex   space-x-10 rounded-md px-5 py-3 mt-4 h-32 bg-white border-2 ">
-          <div className="flex items-center space-x-4 ">
-            <div className=" h-24 w-32 rounded-md ">
-              <img
-                src={bookId}
-                alt=""
-                className="h-24 object-cover rounded-md"
-              />
-            </div>
-            <div className=" space-y-2">
-              <p className="  capitalize ">courses</p>
-              <p className="text-lg font-bold capitalize ">
-                creating engaging learning jour..
-              </p>
-            </div>
-          </div>
-          <div className="space-y-3 mt-8 ">
-            <p className="text-gray-700">Content</p>
-            <div className="flex items-center space-x-2">
-              <FaFileAlt className="" />
-              <p className="font-bold "> 12 Material</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-4 ml-10">
-            <p className="text-gray-700">Completion</p>
-            <div className="flex items-center space-x-2">
-              <FaCircleNotch className="text-blue-600" />
-              <p className="font-bold">64%</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-3 ">
-            <p>Deadline</p>
-            <div className="flex space-x-1 items-center">
-              <MdOutlineAccessTime className="text-red-600" />
-              <p className=" font-bold">12 hrs</p>
-            </div>
-          </div>
-          <div>
-            {" "}
-            <button className="px-5 py-3 border-2 bg-white rounded-md mt-8">
-              Continue
-            </button>
-          </div>
-        </div>
+        ) : (
+          <div className="mt-4 text-gray-700">No assignments available.</div>
+        )}
       </div>
     </div>
   );
