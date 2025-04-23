@@ -11,6 +11,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewTeachers = () => {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -43,7 +44,7 @@ const ViewTeachers = () => {
     const fetchTeachers = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers');
+        const response = await axios.get(`${baseUrl}/api/Teacher/GetAllTeachers`);
         setTeachers(response.data);
         console.log(response.data)
       } catch (error) {
@@ -58,7 +59,7 @@ const ViewTeachers = () => {
       }
     }
     fetchTeachers();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   const [openEditMenu, setOpenEditMenu] = useState(false);
   const [teacherId, setTeacherId] = useState(null);
@@ -110,7 +111,7 @@ const ViewTeachers = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/AddTeacher', teacherData);
+      const res = await axios.post(`${baseUrl}/api/Teacher/AddTeacher`, teacherData);
       notifySuccess(`${res.data.firstname} added successfully`);
       setAddMemberModal(false);
       setTrigger(!trigger)

@@ -271,7 +271,7 @@
 import React, { useState, useMemo, useEffect, useContext, useCallback } from 'react';
 import { AppContext } from '../../../context/AppContext';
 import axios from 'axios';
-
+const baseUrl = process.env.REACT_APP_BASEURL
 const StudentFeePaymentTable = ({ studentId }) => {
   const { showOverlay, hideOverlay, formatAmount } = useContext(AppContext);
 
@@ -285,7 +285,7 @@ const StudentFeePaymentTable = ({ studentId }) => {
     const getPayment = async () => {
       showOverlay()
       try {
-        const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Payment/GetStudentPaymentForSession?studentId=${studentId}&sessionId=${session}`)
+        const res = await axios.get(`${baseUrl}/api/Payment/GetStudentPaymentForSession?studentId=${studentId}&sessionId=${session}`)
 
         console.log('Payments', res.data.data)
         setPayments(res.data.data.payments)
@@ -311,7 +311,7 @@ const StudentFeePaymentTable = ({ studentId }) => {
     showOverlay();
     try {
       const res = await axios.get(
-        `https://scrmapi.tranquility.org.ng/api/Payment/GetStudentPaymentBalance?studentId=${studentId}&sessionId=${session}`
+        `${baseUrl}/api/Payment/GetStudentPaymentBalance?studentId=${studentId}&sessionId=${session}`
       );
 
       console.log(res.data.data);
@@ -330,7 +330,7 @@ const StudentFeePaymentTable = ({ studentId }) => {
     showOverlay();
     try {
       const res = await axios.get(
-        `https://scrmapi.tranquility.org.ng/api/Classroom/GetClassSchoolFee?classroomId=${classroomId}&sessionId=${session}`
+        `${baseUrl}/api/Classroom/GetClassSchoolFee?classroomId=${classroomId}&sessionId=${session}`
       );
 
       console.log(res.data.data);

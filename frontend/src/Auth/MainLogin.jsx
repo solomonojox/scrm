@@ -108,7 +108,7 @@ const MainLogin = () => {
     showOverlay();
    
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/Login', {
+      const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
         email: email,
         password: password
       });
@@ -129,7 +129,7 @@ const MainLogin = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Guardian/Login', {
+      const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
         email: email,
         password: password
       });

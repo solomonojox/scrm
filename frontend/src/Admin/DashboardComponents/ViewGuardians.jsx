@@ -10,6 +10,7 @@ import assets from '../../Assets/assets';
 // import { PiStudentFill } from "react-icons/pi";
 
 const ViewGuardians = () => {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const { showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -41,7 +42,7 @@ const ViewGuardians = () => {
     const fetchStudents = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Guardian/GetAllGuardians');
+        const response = await axios.get(`${baseUrl}/api/Guardian/GetAllGuardians`);
         setGuardians(response.data);
         // console.log(response.data)
       } catch (error) {
@@ -56,7 +57,7 @@ const ViewGuardians = () => {
       }
     }
     fetchStudents();
-  }, [showOverlay, hideOverlay]);
+  }, [showOverlay, hideOverlay, baseUrl]);
 
   const [openEditMenu, setOpenEditMenu] = useState(false);
   const [guardianId, setGuardianId] = useState(null);

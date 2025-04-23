@@ -3,6 +3,8 @@ import { AppContext } from '../../../context/AppContext';
 import axios from 'axios';
 import assets from '../../../Assets/assets'
 
+const baseUrl = process.env.REACT_APP_BASEURL
+
 const Students = ({ guardianId }) => {
     const { showOverlay, hideOverlay } = useContext(AppContext)
     const [students, setStudents] = useState([]);
@@ -12,7 +14,7 @@ const Students = ({ guardianId }) => {
             showOverlay();
             try {
                 const response = await axios.get(
-                    `https://scrmapi.tranquility.org.ng/api/Guardian/GetGuardianById/${guardianId}`
+                    `${baseUrl}/api/Guardian/GetGuardianById/${guardianId}`
                 );
                 console.log(response.data.data.students[0])
                 if (response.data.data) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Pages/Sidebar";
 import axios from "axios";
-
+const baseUrl = process.env.REACT_APP_BASEURL
 const Assignment = () => {
   const [studentData, setStudentData] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -13,7 +13,7 @@ const Assignment = () => {
     const fetchStudent = async () => {
       try {
         const response = await axios.get(
-          `https://scrmapi.tranquility.org.ng/api/Student/GetGuardianStudents/${guardianId}`
+          `${baseUrl}/api/Student/GetGuardianStudents/${guardianId}`
         );
         setStudentData(response.data.data);
       } catch (error) {
@@ -29,7 +29,7 @@ const Assignment = () => {
       const fetchAssignment = async () => {
         try {
           const response = await axios.get(
-            `https://scrmapi.tranquility.org.ng/api/Assignment/GetAssignmentByClassId/${classroomId}`
+            `${baseUrl}/api/Assignment/GetAssignmentByClassId/${classroomId}`
           );
           setAssignmentData(response.data.data);
           console.log(response.data.data)

@@ -32,7 +32,7 @@ const Sidebar = () => {
           {/* Navigation Links */}
           <div className="flex flex-col mt-5 space-y-5">
             <Link
-              to={"/student/dashboard"}
+              to={"/guardian/dashboard"}
               className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md cursor-pointer"
             >
               <MdDashboard className="text-xl " />

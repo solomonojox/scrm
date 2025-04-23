@@ -3,6 +3,7 @@ import womanId from "../Assets/woman.jpeg";
 import Sidebar from "../Pages/Sidebar";
 import axios from 'axios';
 import { IoClose } from "react-icons/io5";
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const StudentData = () => {
     const guardianData = JSON.parse(localStorage.getItem('guardian'));
@@ -17,7 +18,7 @@ const StudentData = () => {
         const getStudentByGuardian = async () => {
             try {
                 setIsLoading(true);
-                const response = await axios.get(`https://scrmapi.tranquility.org.ng/api/Student/GetGuardianStudents/${GuardianId}`);
+                const response = await axios.get(`${baseUrl}/api/Student/GetGuardianStudents/${GuardianId}`);
                 console.log("Student Data", response.data.data);
                 setStudents(response.data.data);
                 setShowMore(new Array(response.data.data.length).fill(false));
@@ -42,7 +43,7 @@ const StudentData = () => {
 
     const getTeacherById = async (teacherId) => {
         try {
-            const response = await axios.get(`https://scrmapi.tranquility.org.ng/api/Teacher/GetTeacherById/${teacherId}`);
+            const response = await axios.get(`${baseUrl}/api/Teacher/GetTeacherById/${teacherId}`);
             setTeacherDetails(prev => ({
                 ...prev,
                 [teacherId]: response.data.data

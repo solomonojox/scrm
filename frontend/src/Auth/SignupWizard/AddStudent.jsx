@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
+const baseUrl = process.env.REACT_APP_BASEURL
 
 const AddStudent = ({ nextStep }) => {
     const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext)
@@ -8,7 +9,7 @@ const AddStudent = ({ nextStep }) => {
     useEffect(() => {
         const getGuardian = async () => {
             try {
-                const res = await axios.get('https://scrmapi.tranquility.org.ng/api/Guardian/GetAllGuardians')
+                const res = await axios.get(`${baseUrl}/api/Guardian/GetAllGuardians`)
                 console.log(res.data)
                 if (res.data) {
                     setGuardian(res.data)
@@ -25,7 +26,7 @@ const AddStudent = ({ nextStep }) => {
     useEffect(() => {
         const getGuardian = async () => {
             try {
-                const res = await axios.get('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers')
+                const res = await axios.get(`${baseUrl}/api/Teacher/GetAllTeachers`)
                 console.log(res.data)
                 if (res.data) {
                     setTeacher(res.data)
@@ -56,7 +57,7 @@ const AddStudent = ({ nextStep }) => {
         showOverlay()
 
         try {
-            const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Student/AddStudent', formData)
+            const res = await axios.post(`${baseUrl}/api/Student/AddStudent`, formData)
             console.log(res.data)
             if (res.data.responseMessage) {
                 notifySuccess(res.data.responseMessage)

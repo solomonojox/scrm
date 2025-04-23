@@ -8,6 +8,7 @@ import assets from '../../../Assets/assets';
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 // import { PiStudentFill } from "react-icons/pi";
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const ViewStudents = () => {
   const { showOverlay, hideOverlay, capitalizeText, formatDate } = useContext(AppContext);
@@ -41,7 +42,7 @@ const ViewStudents = () => {
     const fetchStudents = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Student/GetAllStudent');
+        const response = await axios.get(`${baseUrl}/api/Student/GetAllStudent`);
         setStudents(response.data);
         console.log(response.data)
       } catch (error) {

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,6 +9,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewClassrooms = () => {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
@@ -36,9 +38,9 @@ const ViewClassrooms = () => {
     const fetchClassroom = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Classroom/GetAllClassroom');
+        const response = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom`);
         localStorage.setItem('classroomId' , response.data.data.classroomId)
-        setClassrooms(response.data.data);
+        setClassroom(response.data.data);
         console.log(response.data);
       } catch (error) {
         // console.error(error);
@@ -52,13 +54,13 @@ const ViewClassrooms = () => {
       }
     }
     fetchClassroom();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers');
+        const response = await axios.get(`${baseUrl}/api/Teacher/GetAllTeachers`);
         setTeachers(response.data);
         // console.log(response.data)
       } catch (error) {
@@ -73,7 +75,7 @@ const ViewClassrooms = () => {
       }
     };
     fetchTeachers();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   // For edit menu functionality
   const [openEditMenu, setOpenEditMenu] = useState(false);
@@ -125,8 +127,13 @@ const ViewClassrooms = () => {
     e.preventDefault();
     showOverlay();
 
+    const classroomData = {
+      name,
+      teacherId
+    };
+
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Classroom/AddClassroom', classroomData);
+      const res = await axios.post(`${baseUrl}/api/Classroom/AddClassroom`, classroomData);
       notifySuccess(`${res.data.name} added successfully`);
       setAddMemberModal(false);
       setTrigger(!trigger);

@@ -8,9 +8,10 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Newss = () => {
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText,formatDate } = useContext(AppContext);
-  const navigate = useNavigate();
-  const menuRef = useRef(null);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText, formatDate } = useContext(AppContext);
+  const baseUrl = process.env.REACT_APP_BASEURL;
+  // const navigate = useNavigate();
+  // const menuRef = useRef(null);
 
   // const handleClickOutside = (e) => {
   //   if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -174,7 +175,7 @@ const Newss = () => {
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
               <tr className="bg-gray-800   text-white rounded-t-lg">
-                
+
                 <th className="px-2 py-4 text-left">Title</th>
                 <th className="px-2 py-4 text-left">Content</th>
                 <th className="px-2 py-4 text-left">Publish Date</th>
@@ -196,27 +197,6 @@ const Newss = () => {
                     </td>
                     <td className="px-2 py-2">{newsItem.content}</td>
                     <td className="px-2 py-2">{formatDate(newsItem.publishedDate)}</td>
-                    <td className="px-4 py-2">
-                      {/* <div className="relative">
-                        <HiOutlineDotsHorizontal
-                          className="text-[25px] text-gray-500 cursor-pointer transition-transform transform hover:scale-110"
-                          onClick={() => toggleEditMenu(newsItem.newsId)}
-                        />
-                        {selectedNewsId === newsItem.newsId && openEditMenu && (
-                          <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
-                            <p
-                              className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors"
-                              onClick={() => handleView(newsItem.newsId)}
-                            >
-                              View
-                            </p>
-                            <p className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors">
-                              Edit
-                            </p>
-                          </div>
-                        )}
-                      </div> */}
-                    </td>
                   </tr>
                 ))
               ) : (

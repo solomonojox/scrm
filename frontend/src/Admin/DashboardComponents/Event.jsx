@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -9,7 +10,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 
 const Event = () => {
   const baseUrl = process.env.REACT_APP_BASEURL;
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText, formatDate, addAmPm } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
 
@@ -37,11 +38,11 @@ const Event = () => {
       showOverlay();
       try {
         // Updated endpoint for events
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Events/GetAllEvents');
+        const response = await axios.get(`${baseUrl}/api/Event/GetAllEvents`);
         setEvents(response.data.data);
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         if (error.response) {
           setMessage(error.response.data.responseMessage);
         } else {
@@ -52,7 +53,7 @@ const Event = () => {
       }
     };
     fetchEvents();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   // For edit menu functionality
   const [openEditMenu, setOpenEditMenu] = useState(false);
@@ -105,8 +106,8 @@ const Event = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Events/AddEvent', eventData);
-      notifySuccess(`${res.data.eventTitle} added successfully`);
+      const res = await axios.post(`${baseUrl}/api/Event/AddEvent`, eventData);
+      notifySuccess(`Event added successfully`);
       setAddEventModal(false);
       setTrigger(!trigger);
     } catch (error) {
@@ -179,7 +180,6 @@ const Event = () => {
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
               <tr className="bg-gradient-to-r bg-gray-900 text-white rounded-t-lg">
-                <th className="px-4 py-4 text-left">Event ID</th>
                 <th className="px-4 py-4 text-left">Event Title</th>
                 <th className="px-4 py-4 text-left">Event Description</th>
                 <th className="px-4 py-4 text-left">Event Venue</th>
@@ -196,7 +196,6 @@ const Event = () => {
                     key={eventItem.eventId}
                     className={`${index % 2 === 0 ? "bg-blue-50" : "bg-green-50"} hover:bg-gradient-to-r hover:from-green-100 hover:to-purple-100 border-b text-sm text-gray-700 transition-colors`}
                   >
-                    <td className="px-2 py-2">{eventItem.eventId}</td>
                     <td className="px-4 py-2">
                       <h3 className="font-medium">
                         {capitalizeText(eventItem.eventTitle)}
@@ -204,8 +203,8 @@ const Event = () => {
                     </td>
                     <td className="px-2 py-2">{eventItem.eventDescription}</td>
                     <td className="px-2 py-2">{eventItem.eventVenue}</td>
-                    <td className="px-2 py-2">{eventItem.eventDate}</td>
-                    <td className="px-2 py-2">{eventItem.eventTime}</td>
+                    <td className="px-2 py-2">{formatDate(eventItem.eventDate)}</td>
+                    <td className="px-2 py-2">{addAmPm(eventItem.eventTime)}</td>
                     <td className="px-2 py-2">{eventItem.eventType}</td>
                     <td className="px-4 py-2">
                       {/* <div className="relative">

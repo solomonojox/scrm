@@ -14,7 +14,7 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/News/GetAllNews');
+        const response = await axios.get(`$/api/News/GetAllNews`);
         
         if (response.data.status && response.data.data) {
           setNews(response.data.data); // Set the news array from the API response

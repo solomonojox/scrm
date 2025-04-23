@@ -3,6 +3,7 @@ import axios from 'axios';
 import TeacherNavbarDashboard from '../TeacherNavbarDashboard';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { AppContext } from '../../context/AppContext';
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 function Assignments() {
   const { formatDate, showOverlay, hideOverlay } = useContext(AppContext)
@@ -16,7 +17,7 @@ function Assignments() {
   const fetchAssignment = async () => {
     try {
       const response = await axios.get(
-        'https://scrmapi.tranquility.org.ng/api/Assignment/GetAssignmentByClassId/1'
+        `${baseUrl}/api/Assignment/GetAssignmentByClassId/1`
       );
       SetData(response.data.data);
       console.log(response.data);
@@ -45,7 +46,7 @@ function Assignments() {
 
     try {
       const response = await axios.post(
-        'https://scrmapi.tranquility.org.ng/api/Assignment/CreateAssignment',
+        `${baseUrl}/api/Assignment/CreateAssignment`,
         form
       );
 

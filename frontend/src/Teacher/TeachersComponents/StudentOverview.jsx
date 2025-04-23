@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 function StudentOverview() {
   const [studentCount, setStudentCount] = useState(null);
@@ -9,7 +10,7 @@ function StudentOverview() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('https://scrmapi.tranquility.org.ng/api/Student/GetTotalStudentCount');
+        const response = await fetch(`${baseUrl}/api/Student/GetTotalStudentCount`);
         if (!response.ok) throw new Error('Failed to fetch student count');
         const data = await response.json();
         setStudentCount(data?.count ?? data); // Adjust this line based on the actual response shape

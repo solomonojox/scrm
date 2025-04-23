@@ -53,12 +53,14 @@ const getGrade = (score) => {
     return "F";
 };
 
+const baseUrl = process.env.REACT_APP_BASEURL;
+
 const StudentResultPage = ({ studentId }) => {
     const { capitalizeText } = useContext(AppContext)
     useEffect(() => {
         const getResult = async () => {
             try {
-                const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
+                const res = await axios.get(`${baseUrl}/api/Result/GetStudentResult/${studentId}`)
                 console.log(res.data)
             } catch (err) {
                 console.log(err.response.data)

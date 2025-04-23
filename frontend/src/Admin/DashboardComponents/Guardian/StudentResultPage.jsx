@@ -4,6 +4,7 @@ import assets from "../../../Assets/assets";
 import axios from "axios";
 import './print.css'
 
+const baseUrl = process.env.REACT_APP_BASEURL;
 const studentResult = {
     id: 'SRC-25189BA',
     name: "Alice Johnson",
@@ -58,7 +59,7 @@ const StudentResultPage = ({ studentId }) => {
     useEffect(() => {
         const getResult = async () => {
             try {
-                const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
+                const res = await axios.get(`${baseUrl}/api/Result/GetStudentResult/${studentId}`)
                 console.log(res.data)
             } catch (err) {
                 console.log(err.response.data)
@@ -68,7 +69,7 @@ const StudentResultPage = ({ studentId }) => {
         if (studentId) {
             getResult()
         }
-    });
+    }, [studentId]);
 
     const [selectedTerm, setSelectedTerm] = useState("firstTerm");
     const printRef = useRef();

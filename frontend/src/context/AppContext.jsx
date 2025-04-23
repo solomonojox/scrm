@@ -59,6 +59,18 @@ const ContextProvider = (props) => {
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+  function addAmPm(timeStr) {
+    let [hourStr, minute] = timeStr.split(':');
+    let hour = parseInt(hourStr, 10);
+
+    const suffix = hour >= 12 ? 'PM' : 'AM';
+
+    // Convert hour from 24hr to 12hr
+    hour = hour % 12 || 12; // 0 becomes 12, 13 becomes 1, etc.
+
+    return `${hour}:${minute} ${suffix}`;
+  }
+
   const notifySuccess = (message, options = {}) => toast.success(message, options);
   const notifyError = (message, options = {}) => toast.error(message, options);
   const notifyInfo = (message, options = {}) => toast.info(message, options);
@@ -89,13 +101,14 @@ const ContextProvider = (props) => {
     notifySuccess,
     notifyError,
     notifyInfo,
-    notifyWarn
+    notifyWarn,
+    addAmPm,
   };
 
   return (
     <AppContext.Provider value={contextValue}>
       {props.children}
-      <ToastContainer/>
+      <ToastContainer />
     </AppContext.Provider>
   );
 };

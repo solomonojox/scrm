@@ -3,6 +3,7 @@ import assets from '../../Assets/assets';
 import React, { useEffect, useState } from 'react';
 
 function StudentOverview() {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const [studentCount, setStudentCount] = useState(null);
   const [teacherCount, setTeacherCount] = useState(null);
   const [studentError, setStudentError] = useState(null);
@@ -11,7 +12,7 @@ function StudentOverview() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('https://scrmapi.tranquility.org.ng/api/Student/GetTotalStudentCount');
+        const response = await fetch(`${baseUrl}/api/Student/GetTotalStudentCount`);
         if (!response.ok) throw new Error('Failed to fetch student count');
         const data = await response.json();
         setStudentCount(data?.count ?? data); // adjust based on actual API response
@@ -21,12 +22,12 @@ function StudentOverview() {
       }
     };
     fetchStudents();
-  }, []);
+  }, [baseUrl]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const response = await fetch('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers');
+        const response = await fetch(`${baseUrl}/api/Teacher/GetAllTeachers`);
         if (!response.ok) throw new Error('Failed to fetch teacher count');
         const data = await response.json();
         setTeacherCount(data?.length ?? data); // assumes it's an array of teachers
@@ -36,7 +37,7 @@ function StudentOverview() {
       }
     };
     fetchTeachers();
-  }, []);
+  }, [baseUrl]);
 
   if (studentError || teacherError) {
     return <div>Error: {studentError || teacherError}</div>;
