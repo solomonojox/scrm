@@ -58,30 +58,35 @@ const News = () => {
         </div>
 
         {/* Display fetched news */}
-        {news.map((newsItem, index) => (
-          <div key={index} className='px-5 mt-2 rounded-2xl shadow-md h-44 w-[1000px] border flex space-x-5 py-5'>
-            <div className='h-32 w-48'>
-              <img src={newsId} alt="" className='object-cover h-32 w-48 rounded-2xl shadow-md' />
-            </div>
-            <div className='flex flex-col space-y-4'>
-              <div className='flex flex-row space-x-2'>
-                <p className='text-blue-700 capitalize'>School News . </p>
-                <p className='text-gray-700'>
-                  {new Date(newsItem.publishedDate).toLocaleDateString()} {/* Display published date */}
-                </p>
-              </div>
-              <div className='font-bold text-xl capitalize'>
-                <p>{newsItem.title || 'No Title'}</p> {/* Fallback for null title */}
-              </div>
-              <button
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded-2xl w-[100px] shadow-md capitalize relative left-[590px] bottom-4'
-                onClick={() => openModal(newsItem)}
-              >
-                View more
-              </button>
-            </div>
-          </div>
-        ))}
+        {news.length > 0 ? (
+  news.map((newsItem, index) => (
+    <div key={index} className='px-5 mt-2 rounded-2xl shadow-md h-44 w-[1000px] border flex space-x-5 py-5'>
+      <div className='h-32 w-48'>
+        <img src={newsId} alt="" className='object-cover h-32 w-48 rounded-2xl shadow-md' />
+      </div>
+      <div className='flex flex-col space-y-4'>
+        <div className='flex flex-row space-x-2'>
+          <p className='text-blue-700 capitalize'>School News . </p>
+          <p className='text-gray-700'>
+            {new Date(newsItem.publishedDate).toLocaleDateString()}
+          </p>
+        </div>
+        <div className='font-bold text-xl capitalize'>
+          <p>{newsItem.title || 'No Title'}</p>
+        </div>
+        <button
+          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded-2xl w-[100px] shadow-md capitalize relative left-[590px] bottom-4'
+          onClick={() => openModal(newsItem)}
+        >
+          View more
+        </button>
+      </div>
+    </div>
+  ))
+) : (
+  <div className='text-gray-500 text-lg ml-4 mt-10'>No news added yet.</div>
+)}
+
       </div>
 
       {/* Modal to show news details */}
