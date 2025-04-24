@@ -12,7 +12,7 @@ const StudentData = () => {
     
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
-    const [showMore, setShowMore] = useState([]);
+    const [showMore, setShowMore] =  useState([]);
    
 
     useEffect(() => {
