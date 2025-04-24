@@ -1,104 +1,127 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../Pages/Sidebar";
 import axios from "axios";
-const baseUrl = process.env.REACT_APP_BASEURL
+
+const baseUrl = process.env.REACT_APP_BASEURL;
+
 const Assignment = () => {
   const [studentData, setStudentData] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
   const [classroomId, setClassroomId] = useState(0);
-  let guardianId = localStorage.getItem("guardianId");
+  const guardianId = localStorage.getItem("guardianId");
 
-  // Fetch students when component loads
+  // Fetch students on mount
   useEffect(() => {
-    const fetchStudent = async () => {
+    const fetchStudents = async () => {
       try {
-        const response = await axios.get(
+        const res = await axios.get(
           `${baseUrl}/api/Student/GetGuardianStudents/${guardianId}`
         );
-        setStudentData(response.data.data);
-      } catch (error) {
-        console.error("error", error);
+        setStudentData(res.data.data);
+      } catch (err) {
+        console.error("Error fetching students: ", err);
       }
     };
-    fetchStudent();
+    fetchStudents();
   }, [guardianId]);
 
-  // Fetch assignments when classroomId changes
+  // Fetch assignments when classroom changes
   useEffect(() => {
-    if (classroomId !== 0) {
-      const fetchAssignment = async () => {
-        try {
-          const response = await axios.get(
-            `${baseUrl}/api/Assignment/GetAssignmentByClassId/${classroomId}`
-          );
-          setAssignmentData(response.data.data);
-          console.log(response.data.data)
-        } catch (error) {
-          console.error("error", error.response);
-        }
-      };
-      fetchAssignment();
-    }
+    if (!classroomId) return;
+    const fetchAssignments = async () => {
+      try {
+        const res = await axios.get(
+          `${baseUrl}/api/Assignment/GetAssignmentByClassId/${classroomId}`
+        );
+        setAssignmentData(res.data.data);
+      } catch (err) {
+        console.error("Error fetching assignments: ", err);
+      }
+    };
+    fetchAssignments();
   }, [classroomId]);
 
   return (
-    <div className="flex">
-      <div className="fixed">
+    <div className="flex h-screen ">
+      <aside className="w-72">
         <Sidebar />
-      </div>
-      <div className="ml-[280px] mt-5">
-        <p className="font-bold text-xl">Assignment List</p>
+      </aside>
+      <main className="flex-1 p-6">
+        <h1 className="text-2xl font-bold text-gray-800">Assignment List</h1>
 
-        {/* Student select box */}
-        <select
-        
-          onChange={(e) => setClassroomId(e.target.value)}
-          className="border px-4 py-2 mt-4"
-        >
-          <option value="">Select student</option>
-          {studentData.map((student,index) => (
-            <option key={index} value={student.classroomId}>
-              {student.firstname}
-            </option>
-          ))}
-        </select>
+        <div className="mt-4">
+          <label htmlFor="student" className="block text-sm font-medium text-gray-700">
+            Select Student
+          </label>
+          <select
+            id="student"
+            onChange={(e) => setClassroomId(e.target.value)}
+            className="mt-1 block w-full max-w-xs border border-gray-300 bg-white py-2 px-3 rounded-md shadow-sm focus:outline-none"
+          >
+            <option value="">-- choose --</option>
+            {studentData.map((student) => (
+              <option key={student.id} value={student.classroomId}>
+                {student.firstname} {student.lastname}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {assignmentData.length > 0 ? (
-          <div className="overflow-x-auto mt-4">
-            <table className="min-w-full divide-y divide-gray-200">
-              <tbody className="bg-white divide-y divide-gray-200">
-                {/* Header row */}
-                <tr className="bg-gray-50">
-                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                    Title
-                  </td>
-                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                    Description
-                  </td>
-                  <td className="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                    Due Date
-                  </td>
-                </tr>
-                {assignmentData.map((assignment,index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {assignment.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {assignment.description}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {assignment.dueDate}
-                    </td>
+          <div className="mt-6 overflow-x-auto">
+            <div className="inline-block min-w-full shadow-md overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-500">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Title
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Description
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Due Date
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {assignmentData.map((assignment) => (
+                    <tr
+                      key={assignment.id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                        {assignment.title}
+                      </td>
+                      <td className="px-6 py-4 whitespace-normal text-sm text-gray-700 max-w-xl">
+                        {assignment.description}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {new Date(assignment.dueDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
-          <div className="mt-4 text-gray-700">No assignments available.</div>
+          <p className="mt-6 text-gray-600">No assignments available for this student.</p>
         )}
-      </div>
+      </main>
     </div>
   );
 };
