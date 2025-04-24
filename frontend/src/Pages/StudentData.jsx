@@ -9,7 +9,7 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const StudentData = () => {
     const { showOverlay, hideOverlay } = useContext(AppContext)
     const guardianData = JSON.parse(localStorage.getItem('guardian'));
-    const GuardianId = guardianData?.data?.guardianId;
+    const GuardianId = guardianData?.guardianId;
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
     const [showMore, setShowMore] = useState([]);
