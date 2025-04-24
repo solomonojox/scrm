@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
-// import { useNavigate } from 'react-router-dom';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 import NavbarDashboard from '../NavbarDashboard';
@@ -9,38 +10,39 @@ import { IoMdCloseCircle } from "react-icons/io";
 
 const Event = () => {
   const baseUrl = process.env.REACT_APP_BASEURL;
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
-  // const navigate = useNavigate();
-  // const menuRef = useRef(null);
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText, formatDate, addAmPm } = useContext(AppContext);
+  const navigate = useNavigate();
+  const menuRef = useRef(null);
 
-  // const handleClickOutside = (e) => {
-  //   if (menuRef.current && !menuRef.current.contains(e.target)) {
-  //     setOpenEditMenu(false);
-  //   }
-  // };
+  const handleClickOutside = (e) => {
+    if (menuRef.current && !menuRef.current.contains(e.target)) {
+      setOpenEditMenu(false);
+    }
+  };
 
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-  // State for events and messaging (assuming the list still comes from a news endpoint, adjust as needed)
-  const [events, setevents] = useState([]);
+  // State for events and messaging
+  const [events, setEvents] = useState([]);
   const [message, setMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [trigger, setTrigger] = useState(false);
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetchEvents = async () => {
       showOverlay();
       try {
+        // Updated endpoint for events
         const response = await axios.get(`${baseUrl}/api/Event/GetAllEvents`);
-        setevents(response.data.data);
-        console.log(response.data);
+        setEvents(response.data.data);
+        // console.log(response.data);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
         if (error.response) {
           setMessage(error.response.data.responseMessage);
         } else {
@@ -50,46 +52,45 @@ const Event = () => {
         hideOverlay();
       }
     };
-    fetchNews();
+    fetchEvents();
   }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   // For edit menu functionality
-  // const [openEditMenu, setOpenEditMenu] = useState(false);
-  // const [selectedNewsId, setSelectedNewsId] = useState(null);
+  const [openEditMenu, setOpenEditMenu] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
-  // const toggleEditMenu = (id) => {
-  //   setOpenEditMenu(!openEditMenu);
-  //   setSelectedNewsId(id);
-  // };
+  const toggleEditMenu = (id) => {
+    setOpenEditMenu(!openEditMenu);
+    setSelectedEventId(id);
+  };
 
-  // const handleView = (id) => {
-  //   navigate(`/admin/news/${id}`, { state: id });
-  // };
+  const handleView = (id) => {
+    navigate(`/admin/events/${id}`, { state: id });
+  };
 
-  // Search/filter function (by news title)
-  const findNewsByTitle = (items, query) => {
+  // Search/filter function (by event title)
+  const findEventsByTitle = (items, query) => {
     if (!query) return items;
     const lowerCaseQuery = query.toLowerCase();
     return items.filter(item =>
-      item.title.toLowerCase().includes(lowerCaseQuery)
+      item.eventTitle.toLowerCase().includes(lowerCaseQuery)
     );
   };
 
   // Pagination setup
-  const [newsPerPage] = useState(10);
+  const [eventsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const iLastNews = currentPage * newsPerPage;
-  const iFirstNews = iLastNews - newsPerPage;
-  const currentNews = events.slice(iFirstNews, iLastNews);
+  const iLastEvent = currentPage * eventsPerPage;
+  const iFirstEvent = iLastEvent - eventsPerPage;
+  const currentEvents = events.slice(iFirstEvent, iLastEvent);
 
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(events.length / newsPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(events.length / eventsPerPage); i++) {
     pageNumbers.push(i);
   }
 
   // Modal state and function for adding an event
-  // (Renamed from news to event for clarity.)
   const [addEventModal, setAddEventModal] = useState(false);
   const [eventData, setEventData] = useState({
     eventTitle: '',
@@ -105,9 +106,8 @@ const Event = () => {
     showOverlay();
 
     try {
-      // Adjust the endpoint as necessary for events.
       const res = await axios.post(`${baseUrl}/api/Event/AddEvent`, eventData);
-      notifySuccess(res.data.responseMessage);
+      notifySuccess(`Event added successfully`);
       setAddEventModal(false);
       setTrigger(!trigger);
     } catch (error) {
@@ -119,7 +119,7 @@ const Event = () => {
   };
 
   // Determine which items to display based on search query
-  const filteredNews = searchQuery ? findNewsByTitle(events, searchQuery) : currentNews;
+  const filteredEvents = searchQuery ? findEventsByTitle(events, searchQuery) : currentEvents;
 
   return (
     <div className="bg-gray-100 pb-8">
@@ -135,7 +135,7 @@ const Event = () => {
             </h2>
             <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
               <button
-                className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
+                className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
                 onClick={() => setAddEventModal(true)}
               >
                 Add Event
@@ -148,11 +148,11 @@ const Event = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className="flex items-center bg-primary-bg py-2 px-4 text-white gap-2">
+                <div className="flex items-center bg-gray-900 py-2 px-4 text-white gap-2">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -179,56 +179,60 @@ const Event = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
-                {/* <th className="px-4 py-4 text-left">Event ID</th> */}
-                <th className="px-2 py-4 text-left">Title</th>
-                <th className="px-2 py-4 text-left">Content</th>
-                <th className="px-2 py-4 text-left">Event Date</th>
-                {/* <th className="px-2 py-4 text-left"></th> */}
+              <tr className="bg-gradient-to-r bg-gray-900 text-white rounded-t-lg">
+                <th className="px-4 py-4 text-left">Event Title</th>
+                <th className="px-4 py-4 text-left">Event Description</th>
+                <th className="px-4 py-4 text-left">Event Venue</th>
+                <th className="px-4 py-4 text-left">Event Date</th>
+                <th className="px-4 py-4 text-left">Event Time</th>
+                <th className="px-4 py-4 text-left">Event Type</th>
+                <th className="px-2 py-4 text-left"></th>
               </tr>
             </thead>
             <tbody>
-              {filteredNews !== null && filteredNews.length > 0 ? (
-                filteredNews.map((event, index) => (
+              {filteredEvents && filteredEvents.length > 0 ? (
+                filteredEvents.map((eventItem, index) => (
                   <tr
-                    key={event.eventId}
+                    key={eventItem.eventId}
                     className={`${index % 2 === 0 ? "bg-blue-50" : "bg-green-50"} hover:bg-gradient-to-r hover:from-green-100 hover:to-purple-100 border-b text-sm text-gray-700 transition-colors`}
                   >
-                    {/* <td className="px-2 py-2">{event.newsId}</td> */}
                     <td className="px-4 py-2">
                       <h3 className="font-medium">
-                        {event.eventTitle !== null ? capitalizeText(event?.eventTitle) : ''}
+                        {capitalizeText(eventItem.eventTitle)}
                       </h3>
                     </td>
-                    <td className="px-2 py-2">{event.eventDescription}</td>
-                    <td className="px-2 py-2">{event.eventDate}</td>
-                    {/* <td className="px-4 py-2">
-                      <div className="relative">
+                    <td className="px-2 py-2">{eventItem.eventDescription}</td>
+                    <td className="px-2 py-2">{eventItem.eventVenue}</td>
+                    <td className="px-2 py-2">{formatDate(eventItem.eventDate)}</td>
+                    <td className="px-2 py-2">{addAmPm(eventItem.eventTime)}</td>
+                    <td className="px-2 py-2">{eventItem.eventType}</td>
+                    <td className="px-4 py-2">
+                      {/* <div className="relative">
                         <HiOutlineDotsHorizontal
                           className="text-[25px] text-gray-500 cursor-pointer transition-transform transform hover:scale-110"
-                          onClick={() => toggleEditMenu(event.newsId)}
+                          onClick={() => toggleEditMenu(eventItem.eventId)}
                         />
-                        {selectedNewsId === event.newsId && openEditMenu && (
+                        {selectedEventId === eventItem.eventId && openEditMenu && (
                           <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
                             <p
-                              className="cursor-pointer hover:bg-blue-500 hover:text-white py-1 px-2 rounded transition-colors"
-                              onClick={() => handleView(event.newsId)}
+                              className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors"
+                              onClick={() => handleView(eventItem.eventId)}
                             >
                               View
                             </p>
-                            <p className="cursor-pointer hover:bg-green-500 hover:text-white py-1 px-2 rounded transition-colors">
+                            <p className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors">
                               Edit
                             </p>
                           </div>
                         )}
-                      </div>
-                    </td> */}
+                      </div> */}
+                    </td> 
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan="6"
+                    colSpan="8"
                     className="px-4 py-2 text-center text-gray-500 whitespace-nowrap h-40"
                   >
                     <div className="flex justify-center">
@@ -273,8 +277,8 @@ const Event = () => {
                 <div>
                   <textarea
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="eventContent"
-                    name="eventContent"
+                    id="eventDescription"
+                    name="eventDescription"
                     required
                     placeholder="Event Description"
                     onChange={(e) =>
@@ -287,31 +291,31 @@ const Event = () => {
                 </div>
                 <div>
                   <input
-                    type="date"
+                    type="text"
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="eventdate"
-                    name="eventdate"
+                    id="eventVenue"
+                    name="eventVenue"
                     required
+                    placeholder="Event Venue"
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        eventDate: e.target.value,
+                        eventVenue: e.target.value,
                       })
                     }
                   />
                 </div>
                 <div>
                   <input
-                    type="text"
+                    type="date"
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="eventVenue"
-                    name="eventVenue"
+                    id="eventDate"
+                    name="eventDate"
                     required
-                    placeholder="Event venue"
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
-                        eventVenue: e.target.value,
+                        eventDate: e.target.value,
                       })
                     }
                   />
@@ -334,11 +338,11 @@ const Event = () => {
                 <div>
                   <input
                     type="text"
-                    placeholder='Event Type'
                     className="border border-gray-300 rounded-md p-2 focus:border-primary outline-none w-full"
-                    id="eventtype"
-                    name="eventtype"
+                    id="eventType"
+                    name="eventType"
                     required
+                    placeholder="Event Type"
                     onChange={(e) =>
                       setEventData({
                         ...eventData,
@@ -349,7 +353,7 @@ const Event = () => {
                 </div>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded text-white"
+                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded text-white"
                 >
                   Add Event
                 </button>

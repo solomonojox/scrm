@@ -8,6 +8,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import assets from '../../Assets/assets';
 // import { PiStudentFill } from "react-icons/pi";
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const ViewGuardians = () => {
   const { showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
@@ -41,7 +42,7 @@ const ViewGuardians = () => {
     const fetchStudents = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Guardian/GetAllGuardians');
+        const response = await axios.get(`${baseUrl}/api/Guardian/GetAllGuardians`);
         setGuardians(response.data);
         // console.log(response.data)
       } catch (error) {

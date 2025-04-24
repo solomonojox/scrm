@@ -102,8 +102,8 @@ const StudentDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 bg-white px-4 py-6 md:py-12 md:ml-0 lg:ml-[230px]">
-        <p className="font-bold text-2xl md:text-3xl">Welcome Back, {guardianData !== null && guardianData.data.firstname !== null ? guardianData.data.firstname : null}</p>
+      <div className="flex-1 bg-white h-dvh px-10 ml-[220px] py-12">
+        <p className="font-bold text-4xl">Welcome Back, {guardianData.firstname}</p>
         <p className="text-gray-700">04, October, 2022</p>
 
         <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mt-5">

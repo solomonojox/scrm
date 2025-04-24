@@ -8,8 +8,8 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Newss = () => {
+  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText, formatDate } = useContext(AppContext);
   const baseUrl = process.env.REACT_APP_BASEURL;
-  const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   // const navigate = useNavigate();
   // const menuRef = useRef(null);
 
@@ -130,7 +130,7 @@ const Newss = () => {
             </h2>
             <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
               <button
-                className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
+                className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
                 onClick={() => setAddNewsModal(true)}
               >
                 Add News
@@ -143,11 +143,11 @@ const Newss = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className="flex items-center bg-primary-bg py-2 px-4 text-white gap-2">
+                <div className="flex items-center bg-gray-900 py-2 px-4 text-white gap-2">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -174,8 +174,8 @@ const Newss = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
-                <th className="px-4 py-4 text-left">News ID</th>
+              <tr className="bg-gray-800   text-white rounded-t-lg">
+
                 <th className="px-2 py-4 text-left">Title</th>
                 <th className="px-2 py-4 text-left">Content</th>
                 <th className="px-2 py-4 text-left">Publish Date</th>
@@ -189,35 +189,14 @@ const Newss = () => {
                     key={newsItem.newsId}
                     className={`${index % 2 === 0 ? "bg-blue-50" : "bg-green-50"} hover:bg-gradient-to-r hover:from-green-100 hover:to-purple-100 border-b text-sm text-gray-700 transition-colors`}
                   >
-                    <td className="px-2 py-2">{newsItem.newsId}</td>
+                    {/* <td className="px-2 py-2">{newsItem.newsId}</td> */}
                     <td className="px-4 py-2">
                       <h3 className="font-medium">
                         {capitalizeText(newsItem.title)}
                       </h3>
                     </td>
                     <td className="px-2 py-2">{newsItem.content}</td>
-                    <td className="px-2 py-2">{newsItem.publishedDate}</td>
-                    <td className="px-4 py-2">
-                      {/* <div className="relative">
-                        <HiOutlineDotsHorizontal
-                          className="text-[25px] text-gray-500 cursor-pointer transition-transform transform hover:scale-110"
-                          onClick={() => toggleEditMenu(newsItem.newsId)}
-                        />
-                        {selectedNewsId === newsItem.newsId && openEditMenu && (
-                          <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
-                            <p
-                              className="cursor-pointer hover:bg-blue-500 hover:text-white py-1 px-2 rounded transition-colors"
-                              onClick={() => handleView(newsItem.newsId)}
-                            >
-                              View
-                            </p>
-                            <p className="cursor-pointer hover:bg-green-500 hover:text-white py-1 px-2 rounded transition-colors">
-                              Edit
-                            </p>
-                          </div>
-                        )}
-                      </div> */}
-                    </td>
+                    <td className="px-2 py-2">{formatDate(newsItem.publishedDate)}</td>
                   </tr>
                 ))
               ) : (
@@ -297,7 +276,7 @@ const Newss = () => {
                 </div>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded text-white"
+                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded text-white"
                 >
                   Add News
                 </button>

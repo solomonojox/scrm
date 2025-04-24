@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
-
+const baseUrl = process.env.REACT_APP_BASEURL
 const Guardian = ({ nextStep }) => {
     const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext)
     const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ const Guardian = ({ nextStep }) => {
         showOverlay()
 
         try {
-            const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Guardian/AddStudentGuardian', formData);
+            const res = await axios.post(`${baseUrl}/api/Guardian/AddStudentGuardian`, formData);
             if (res.data.responseMessage) {
                 notifySuccess(res.data.responseMessage)
                 nextStep()
@@ -125,9 +125,14 @@ const Guardian = ({ nextStep }) => {
                     </div>
                 </div>
 
+                <div>
+                    <button
+                        disabled={isNotValidated}
+                        className={`${isNotValidated ? 'bg-gray-400' : 'bg-primary-bg hover:bg-primary-hover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
+                </div>
                 <button
-                    disabled={isNotValidated}
-                    className={`${isNotValidated ? 'bg-gray-400' : 'bg-primary hover:bg-primaryHover'} py-3 px-10 rounded-lg text-white`}>Submit</button>
+                    onClick={nextStep}
+                    className={`bg-primary-bg hover:bg-primary-hover py-3 px-10 rounded-lg text-white`}>Already have a guardian? Next</button>
             </form>
         </div>
     )

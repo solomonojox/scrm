@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { MdAddAPhoto } from 'react-icons/md';
 import assets from '../../../Assets/assets';
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const AdminEditStudetProfile = ({ studentId }) => {
     const { showOverlay, hideOverlay, showNotification } = useContext(AppContext)
@@ -29,7 +30,7 @@ const AdminEditStudetProfile = ({ studentId }) => {
             showOverlay();
             try {
                 const response = await axios.get(
-                    `https://scrmapi.tranquility.org.ng/api/Student/GetStudentById/${studentId}`
+                    `${baseUrl}/api/Student/GetStudentById/${studentId}`
                 );
                 console.log(response.data.data)
                 if (response.data.data) {
@@ -89,7 +90,7 @@ const AdminEditStudetProfile = ({ studentId }) => {
 
         try {
             const res = await axios.post(
-                `https://api.tranquility.org.ng/api/Member/ImageUrl/${studentId}`,
+                `${baseUrl}/api/Member/ImageUrl/${studentId}`,
                 { imageUrl }
             );
 
@@ -107,7 +108,7 @@ const AdminEditStudetProfile = ({ studentId }) => {
         showOverlay()
         try {
             const res = await axios.put(
-                `https://scrmapi.tranquility.org.ng/api/Student/UpdateStudent/${studentId}`,
+                `${baseUrl}/api/Student/UpdateStudent/${studentId}`,
                 studentData
             );
             showNotification(res.data.responseMessage, 'success');

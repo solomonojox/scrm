@@ -6,6 +6,7 @@ import { MdAddAPhoto } from 'react-icons/md';
 import assets from '../../../Assets/assets';
 
 const AdminEditGuardianProfile = ({ guardianId }) => {
+    const baseUrl = process.env.REACT_APP_BASEURL;
     const { showOverlay, hideOverlay, notifySuccess, notifyError } = useContext(AppContext)
     const [message, setMessage] = useState('');
     const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
@@ -29,7 +30,7 @@ const AdminEditGuardianProfile = ({ guardianId }) => {
             showOverlay();
             try {
                 const response = await axios.get(
-                    `https://scrmapi.tranquility.org.ng/api/Guardian/GetGuardianById/${guardianId}`
+                    `${baseUrl}/api/Guardian/GetGuardianById/${guardianId}`
                 );
                 console.log(response.data.data)
                 if (response.data.data) {
@@ -60,7 +61,7 @@ const AdminEditGuardianProfile = ({ guardianId }) => {
         if (guardianId) {
             getUser();
         }
-    }, [guardianId, profilePhotoUrl, trigger, showOverlay, hideOverlay]);
+    }, [guardianId, profilePhotoUrl, trigger, showOverlay, hideOverlay, baseUrl]);
 
     const handleIconClick = () => {
         document.getElementById('fileInput').click();
@@ -89,7 +90,7 @@ const AdminEditGuardianProfile = ({ guardianId }) => {
 
         try {
             const res = await axios.post(
-                `https://api.tranquility.org.ng/api/Member/ImageUrl/${guardianId}`,
+                `${baseUrl}/api/Member/ImageUrl/${guardianId}`,
                 { imageUrl }
             );
 
@@ -107,7 +108,7 @@ const AdminEditGuardianProfile = ({ guardianId }) => {
         showOverlay()
         try {
             const res = await axios.put(
-                `https://scrmapi.tranquility.org.ng/api/Student/UpdateStudent/${guardianId}`,
+                `${baseUrl}/api/Student/UpdateStudent/${guardianId}`,
                 guardianData
             );
             notifySuccess(res.data.responseMessage);

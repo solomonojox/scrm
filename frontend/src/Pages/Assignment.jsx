@@ -1,104 +1,127 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../Pages/Sidebar";
-import { FaFileAlt } from "react-icons/fa";
-import { MdOutlineAccessTime } from "react-icons/md";
-import { FaCircleNotch } from "react-icons/fa";
-import bookId from "../Assets/images (1).jpeg";
-const Assignment = () => {
-  return (
-    <div className="flex">
-      <div className="fixed">
-        <Sidebar />
-      </div>
+import axios from "axios";
 
-      <div className="ml-[280px] mt-5">
-        <p className="font-bold text-xl">Assignment List</p>
-        <div className="w-[1000px] flex   space-x-10 rounded-md px-5 py-3 mt-4 h-32 bg-white border-2 ">
-          <div className="flex items-center space-x-4 ">
-            <div className=" h-28 w-32 rounded-md ">
-              <img
-                src={bookId}
-                alt=""
-                className="h-28 object-cover rounded-md"
-              />
-            </div>
-            <div className=" space-y-2">
-              <p className="  capitalize ">courses</p>
-              <p className="text-lg font-bold capitalize ">
-                mastering UI/ux design: a guide..
-              </p>
-            </div>
-          </div>
-          <div className="space-y-3 mt-8 ">
-            <p className="text-gray-700">Content</p>
-            <div className="flex items-center space-x-2">
-              <FaFileAlt className="" />
-              <p className="font-bold "> 5 Material</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-3 ml-10">
-            <p className="text-gray-700">Completion</p>
-            <p>___</p>
-          </div>
-          <div className="mt-8 space-y-3 ">
-            <p>Deadline</p>
-            <div className="flex space-x-1 items-center">
-              <MdOutlineAccessTime className="" />
-              <p className=" font-bold">1 Day</p>
-            </div>
-          </div>
-          <div>
-            {" "}
-            <button className="px-5 py-3 border-2 bg-white rounded-md mt-8">
-              Start
-            </button>
-          </div>
+const baseUrl = process.env.REACT_APP_BASEURL;
+
+const Assignment = () => {
+  const [studentData, setStudentData] = useState([]);
+  const [assignmentData, setAssignmentData] = useState([]);
+  const [classroomId, setClassroomId] = useState(0);
+  const guardianId = localStorage.getItem("guardianId");
+
+  // Fetch students on mount
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await axios.get(
+          `${baseUrl}/api/Student/GetGuardianStudents/${guardianId}`
+        );
+        setStudentData(res.data.data);
+      } catch (err) {
+        console.error("Error fetching students: ", err);
+      }
+    };
+    fetchStudents();
+  }, [guardianId]);
+
+  // Fetch assignments when classroom changes
+  useEffect(() => {
+    if (!classroomId) return;
+    const fetchAssignments = async () => {
+      try {
+        const res = await axios.get(
+          `${baseUrl}/api/Assignment/GetAssignmentByClassId/${classroomId}`
+        );
+        setAssignmentData(res.data.data);
+      } catch (err) {
+        console.error("Error fetching assignments: ", err);
+      }
+    };
+    fetchAssignments();
+  }, [classroomId]);
+
+  return (
+    <div className="flex h-screen ">
+      <aside className="w-72">
+        <Sidebar />
+      </aside>
+      <main className="flex-1 p-6">
+        <h1 className="text-2xl font-bold text-gray-800">Assignment List</h1>
+
+        <div className="mt-4">
+          <label htmlFor="student" className="block text-sm font-medium text-gray-700">
+            Select Student
+          </label>
+          <select
+            id="student"
+            onChange={(e) => setClassroomId(e.target.value)}
+            className="mt-1 block w-full max-w-xs border border-gray-300 bg-white py-2 px-3 rounded-md shadow-sm focus:outline-none"
+          >
+            <option value="">-- choose --</option>
+            {studentData.map((student) => (
+              <option key={student.id} value={student.classroomId}>
+                {student.firstname} {student.lastname}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="w-[1000px] flex   space-x-10 rounded-md px-5 py-3 mt-4 h-32 bg-white border-2 ">
-          <div className="flex items-center space-x-4 ">
-            <div className=" h-24 w-32 rounded-md ">
-              <img
-                src={bookId}
-                alt=""
-                className="h-24 object-cover rounded-md"
-              />
-            </div>
-            <div className=" space-y-2">
-              <p className="  capitalize ">courses</p>
-              <p className="text-lg font-bold capitalize ">
-                creating engaging learning jour..
-              </p>
+
+        {assignmentData.length > 0 ? (
+          <div className="mt-6 overflow-x-auto">
+            <div className="inline-block min-w-full shadow-md overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-500">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Title
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Description
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                    >
+                      Due Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {assignmentData.map((assignment) => (
+                    <tr
+                      key={assignment.id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                        {assignment.title}
+                      </td>
+                      <td className="px-6 py-4 whitespace-normal text-sm text-gray-700 max-w-xl">
+                        {assignment.description}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {new Date(assignment.dueDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div className="space-y-3 mt-8 ">
-            <p className="text-gray-700">Content</p>
-            <div className="flex items-center space-x-2">
-              <FaFileAlt className="" />
-              <p className="font-bold "> 12 Material</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-4 ml-10">
-            <p className="text-gray-700">Completion</p>
-            <div className="flex items-center space-x-2">
-              <FaCircleNotch className="text-blue-600" />
-              <p className="font-bold">64%</p>
-            </div>
-          </div>
-          <div className="mt-8 space-y-3 ">
-            <p>Deadline</p>
-            <div className="flex space-x-1 items-center">
-              <MdOutlineAccessTime className="text-red-600" />
-              <p className=" font-bold">12 hrs</p>
-            </div>
-          </div>
-          <div>
-            {" "}
-            <button className="px-5 py-3 border-2 bg-white rounded-md mt-8">
-              Continue
-            </button>
-          </div>
-        </div>
-      </div>
+        ) : (
+          <p className="mt-6 text-gray-600">No assignments available for this student.</p>
+        )}
+      </main>
     </div>
   );
 };

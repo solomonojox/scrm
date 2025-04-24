@@ -5,7 +5,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { MdAccessTime } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
 import newsId from '../Assets/news.jpg';
-
+const baseUrl = process.env.REACT_APP_BASEURL
 const EventPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [events, setEvents] = useState([]); // State to store the fetched events
@@ -15,7 +15,7 @@ const EventPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Event/GetAllEvents');
+        const response = await axios.get(`${baseUrl}/api/Event/GetAllEvents`);
         
         if (response.data.status && response.data.data) {
           setEvents(response.data.data); // Set the events array from the API response
