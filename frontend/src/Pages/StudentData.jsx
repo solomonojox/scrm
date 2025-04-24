@@ -8,7 +8,6 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const StudentData = () => {
     const guardianData = JSON.parse(localStorage.getItem('guardian'));
     const GuardianId = guardianData?.data?.guardianId;
-    
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
     const [showMore, setShowMore] = useState([]);
