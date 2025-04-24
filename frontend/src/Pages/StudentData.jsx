@@ -1,44 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import womanId from "../Assets/woman.jpeg";
 import Sidebar from "../Pages/Sidebar";
 import axios from 'axios';
 import { IoClose } from "react-icons/io5";
+import { AppContext } from '../context/AppContext'
 const baseUrl = process.env.REACT_APP_BASEURL;
 
 const StudentData = () => {
+    const { showOverlay, hideOverlay } = useContext(AppContext)
     const guardianData = JSON.parse(localStorage.getItem('guardian'));
     const GuardianId = guardianData?.data?.guardianId;
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
     const [showMore, setShowMore] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+
 
     useEffect(() => {
         const getStudentByGuardian = async () => {
+            showOverlay()
             try {
-                setIsLoading(true);
                 const response = await axios.get(`${baseUrl}/api/Student/GetGuardianStudents/${GuardianId}`);
                 console.log("Student Data", response.data.data);
                 setStudents(response.data.data);
                 setShowMore(new Array(response.data.data.length).fill(false));
-                
+
                 // Fetch teacher details for each student
                 const teacherPromises = response.data.data
                     .filter(student => student.teacherId)
                     .map(student => getTeacherById(student.teacherId));
-                
+
                 await Promise.all(teacherPromises);
-                setIsLoading(false);
+
             } catch (error) {
                 console.error("Error fetching students:", error);
-                setIsLoading(false);
+
+            }
+            finally {
+                hideOverlay()
             }
         };
 
         if (GuardianId) {
             getStudentByGuardian();
         }
-    }, [GuardianId]);
+    }, [GuardianId, showOverlay, hideOverlay]);
 
     const getTeacherById = async (teacherId) => {
         try {
@@ -59,13 +64,7 @@ const StudentData = () => {
         setShowMore(updatedShowMore);
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p>Loading...</p>
-            </div>
-        );
-    }
+
 
     return (
         <div>
@@ -77,9 +76,9 @@ const StudentData = () => {
                     {students.map((student, index) => (
                         <div key={student.studentId} className='flex pr-6 border rounded-md shadow-md h-56 items-center space-x-4'>
                             <div className='w-44 h-56 rounded-md'>
-                                <img 
-                                    src={student.imagePath || womanId} 
-                                    alt='profile Pic' 
+                                <img
+                                    src={student.imagePath || womanId}
+                                    alt='profile Pic'
                                     className='h-56  rounded-md object-cover'
                                 />
                             </div>
@@ -90,33 +89,33 @@ const StudentData = () => {
                                 <p>Student No: {student.studentNo}</p>
                                 <p>Class: {student.classroomId ? `Class ${student.classroomId}` : 'Not assigned'}</p>
                                 <div className='flex items-center space-x-5'>
-                                    <button 
+                                    <button
                                         className='px-5 py-2 mt-6 ml bg-primary-bg rounded-md text-white'
                                         onClick={() => handleToggle(index)}
                                     >
                                         View teacher details
                                     </button>
-                                   
+
                                 </div>
                             </div>
 
                             {showMore[index] && (
-                                <div 
+                                <div
                                     className='bg-[#00000099] h-[100dvh] fixed flex justify-center items-center top-0 -left-4  w-full'
                                     onClick={() => handleToggle(index)}
                                 >
-                                    <div 
+                                    <div
                                         className='bg-white  h-[350px] flex items-center space-x-10 px-5 py-5 w-[600px] rounded-md relative'
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        
-                                        <IoClose 
+
+                                        <IoClose
                                             className='absolute top-4 right-4 text-xl cursor-pointer'
                                             onClick={() => handleToggle(index)}
                                         />
                                         <div className="">
                                             <h1 className='text-2xl font-bold my-6'>Class Teacher's Details</h1>
-                                            <img 
+                                            <img
                                                 src={womanId}
                                                 alt="Teacher"
                                                 className='rounded-md object-cover h-[250px] w-[250px]'
