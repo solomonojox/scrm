@@ -12,13 +12,10 @@ const StudentData = () => {
     const GuardianId = guardianData?.data?.guardianId;
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
-<<<<<<< HEAD
     const [showMore, setShowMore] =  useState([]);
    
-=======
-    const [showMore, setShowMore] = useState([]);
+    
 
->>>>>>> DevBranch
 
     useEffect(() => {
         const getStudentByGuardian = async () => {
