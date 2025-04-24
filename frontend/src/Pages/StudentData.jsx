@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import womanId from "../Assets/woman.jpeg";
 import Sidebar from "../Pages/Sidebar";
 import axios from 'axios';
 import { IoClose } from "react-icons/io5";
+import {AppContext} from '../context/AppContext'
 
 const StudentData = () => {
+    const {showOverlay,hideOverlay}=useContext(AppContext)
     const guardianData = JSON.parse(localStorage.getItem('guardian'));
     const GuardianId = guardianData?.data?.guardianId;
     
     const [students, setStudents] = useState([]);
     const [teacherDetails, setTeacherDetails] = useState({});
     const [showMore, setShowMore] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+   
 
     useEffect(() => {
         const getStudentByGuardian = async () => {
             try {
-                setIsLoading(true);
+               showOverlay()
                 const response = await axios.get(`https://scrmapi.tranquility.org.ng/api/Student/GetGuardianStudents/${GuardianId}`);
                 console.log("Student Data", response.data.data);
                 setStudents(response.data.data);
@@ -28,10 +30,13 @@ const StudentData = () => {
                     .map(student => getTeacherById(student.teacherId));
                 
                 await Promise.all(teacherPromises);
-                setIsLoading(false);
+               
             } catch (error) {
                 console.error("Error fetching students:", error);
-                setIsLoading(false);
+                
+            }
+            finally{
+                hideOverlay()
             }
         };
 
@@ -59,13 +64,7 @@ const StudentData = () => {
         setShowMore(updatedShowMore);
     };
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p>Loading...</p>
-            </div>
-        );
-    }
+    
 
     return (
         <div>
