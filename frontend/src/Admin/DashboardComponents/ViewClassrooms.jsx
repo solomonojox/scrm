@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,9 +9,11 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const ViewClassrooms = () => {
+  const baseUrl = process.env.REACT_APP_BASEURL;
   const { notifySuccess, notifyError, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
   const navigate = useNavigate();
   const menuRef = useRef(null);
+  const [addMemberModal, setAddMemberModal] = useState(false);
 
   const handleClickOutside = (e) => {
     if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -35,9 +38,10 @@ const ViewClassrooms = () => {
     const fetchClassroom = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Classroom/GetAllClassroom');
+        const response = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom`);
+        localStorage.setItem('classroomId' , response.data.data.classroomId)
         setClassroom(response.data.data);
-        // console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         // console.error(error);
         if (error.response) {
@@ -50,13 +54,13 @@ const ViewClassrooms = () => {
       }
     }
     fetchClassroom();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers');
+        const response = await axios.get(`${baseUrl}/api/Teacher/GetAllTeachers`);
         setTeachers(response.data);
         // console.log(response.data)
       } catch (error) {
@@ -71,7 +75,7 @@ const ViewClassrooms = () => {
       }
     };
     fetchTeachers();
-  }, [showOverlay, hideOverlay, trigger]);
+  }, [showOverlay, hideOverlay, trigger, baseUrl]);
 
   // For edit menu functionality
   const [openEditMenu, setOpenEditMenu] = useState(false);
@@ -123,16 +127,17 @@ const ViewClassrooms = () => {
     e.preventDefault();
     showOverlay();
 
-    try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Classroom/AddClassroom', {
-        name,
-        teacherId
-      });
+    const classroomData = {
+      name,
+      teacherId
+    };
 
-      notifySuccess(res.data.responseMessage);
-      setAddClassroomModal(false);
-      setTrigger(!trigger)
-      // console.log(res.data);
+    try {
+      const res = await axios.post(`${baseUrl}/api/Classroom/AddClassroom`, classroomData);
+      notifySuccess(`${res.data.name} added successfully`);
+      setAddMemberModal(false);
+      setTrigger(!trigger);
+      
     } catch (error) {
       // console.error(error.response.data);
       notifyError(error.response.data.responseMessage);
@@ -157,8 +162,8 @@ const ViewClassrooms = () => {
             </h2>
             <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
               <button
-                className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
-                onClick={() => setAddClassroomModal(true)}
+                className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
+                onClick={() => setAddMemberModal(true)}
               >
                 Add Classroom
               </button>
@@ -170,11 +175,11 @@ const ViewClassrooms = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className="flex items-center bg-primary-bg py-2 px-4 text-white gap-2">
+                <div className="flex items-center bg-gray-900 py-2 px-4 text-white gap-2">
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -201,7 +206,7 @@ const ViewClassrooms = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
+              <tr className="bg-gradient-to-r bg-gray-800 text-white rounded-t-lg">
                 <th className="px-4 py-4 text-left">Classroom Id</th>
                 <th className="px-2 py-4 text-left">Classroom Name</th>
                 <th className="px-2 py-4 text-left">Capacity</th>
@@ -336,7 +341,7 @@ const ViewClassrooms = () => {
                 </div>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-bg hover:bg-primary-hover rounded text-white"
+                  className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded text-white"
                 >
                   Add Classroom
                 </button>

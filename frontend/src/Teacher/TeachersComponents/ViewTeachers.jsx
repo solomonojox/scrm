@@ -9,6 +9,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 // import { PiStudentFill } from "react-icons/pi";
 import { IoMdCloseCircle } from "react-icons/io";
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const ViewTeachers = () => {
   const { showNotification, showOverlay, hideOverlay, capitalizeText } = useContext(AppContext);
@@ -43,7 +44,7 @@ const ViewTeachers = () => {
     const fetchTeachers = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Teacher/GetAllTeachers');
+        const response = await axios.get(`${baseUrl}/api/Teacher/GetAllTeachers`);
         setTeachers(response.data);
         console.log(response.data)
       } catch (error) {
@@ -109,8 +110,8 @@ const ViewTeachers = () => {
     e.preventDefault();
     showOverlay();
 
-    try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/AddTeacher', teacherData);
+    try { 
+      const res = await axios.post(`${baseUrl}/api/Teacher/AddTeacher`, teacherData);
       showNotification(`${res.data.firstname} added successfully`, 'success');
       setAddMemberModal(false);
       setTrigger(!trigger)

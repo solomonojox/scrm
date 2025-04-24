@@ -95,6 +95,7 @@ const MainLogin = () => {
         password: password
       });
       notifySuccess(res.data.responseMessage);
+      
       navigate('/admin/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
@@ -105,13 +106,17 @@ const MainLogin = () => {
 
   const loginTeacher = async () => {
     showOverlay();
-
+   
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Teacher/Login', {
+      const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
         email: email,
         password: password
       });
       notifySuccess(res.data.responseMessage);
+     
+      // console.log(res.data);
+      localStorage.setItem('teacherId', res.data.data.teacherId)
+      localStorage.setItem('teacherData', JSON.stringify(res.data.data))
       navigate('/teacher/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
@@ -124,15 +129,18 @@ const MainLogin = () => {
     showOverlay();
 
     try {
-      const res = await axios.post('https://scrmapi.tranquility.org.ng/api/Guardian/Login', {
+      const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
         email: email,
         password: password
       });
+      
       console.log(res.data);
-      if (res.data.status === true) {
+      
+      if(res.data.status === true){
         notifySuccess(res.data.responseMessage);
-        navigate('/student/dashboard');
-        localStorage.setItem('guardian', JSON.stringify(res.data));
+        navigate('/guardian/dashboard');
+        localStorage.setItem('guardianId' , res.data.data.guardianId);
+        localStorage.setItem('guardian', JSON.stringify(res.data.data));
         hideOverlay();
       }
     } catch (err) {

@@ -21,7 +21,7 @@ function AdminClassroom() {
     window.scrollTo(0, 0);
   });
 
-  const [activeTab, setActiveTab] = useState('Edit Profile');
+  const [activeTab, setActiveTab] = useState('Classroom');
   const tabs = [
     { id: 1, label: 'Classroom', value: <ClassroomProfile teacherId={location.state} />, icon: <FaSchoolFlag /> },
     // { id: 2, label: 'Classroom', value: "School", icon: <GiTakeMyMoney /> },
@@ -40,7 +40,7 @@ function AdminClassroom() {
 
         <div className="lg:px-4 flex flex-col lg:flex-row mt-5">
           {/* SidTab */}
-          <div className="bg-white w-full flex lg:flex-col lg:space-y-4 lg:w-48 p-4 rounded-lg lg:h-[100dvh] sticky top-[80px] lg:fixed mb-6 z-40 ">
+          <div className="bg-white w-full flex lg:flex-col lg:space-y-4 lg:w-48 p-4 rounded-lg lg:h-[100dvh] sticky top-[80px] lg:fixed mb-6 z-40 mt-6 ">
             {tabs.map(tab => (
               <button
                 key={tab.id}

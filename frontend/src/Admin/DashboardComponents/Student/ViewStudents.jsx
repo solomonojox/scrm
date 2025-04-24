@@ -8,6 +8,7 @@ import assets from '../../../Assets/assets';
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 // import { PiStudentFill } from "react-icons/pi";
+const baseUrl = process.env.REACT_APP_BASEURL
 
 const ViewStudents = () => {
   const { showOverlay, hideOverlay, capitalizeText, formatDate } = useContext(AppContext);
@@ -41,7 +42,7 @@ const ViewStudents = () => {
     const fetchStudents = async () => {
       showOverlay()
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/Student/GetAllStudent');
+        const response = await axios.get(`${baseUrl}/api/Student/GetAllStudent`);
         setStudents(response.data);
         // console.log(response.data)
       } catch (error) {
@@ -105,7 +106,7 @@ const ViewStudents = () => {
             </h2>
             <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between ">
               <button
-                className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded mr-2"
+                className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
                 onClick={() => navigate('/registrationwiz')}
               >
                 Add Student
@@ -118,11 +119,11 @@ const ViewStudents = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-primary-bg text-white hover:bg-primary-hover transition-all duration-300 px-4 py-2 rounded">
+                <button className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded">
                   Search
                 </button>
 
-                <div className='flex items-center bg-primary-bg py-2 px-4 text-white gap-2'>
+                <div className='flex items-center bg-gray-900 py-2 px-4 text-white gap-2'>
                   <button
                     onClick={() => handlePageChange(-1)}
                     disabled={currentPage === 1}
@@ -149,7 +150,7 @@ const ViewStudents = () => {
         <div className="overflow-x-auto p-1 pb-24">
           <table className="min-w-full table-auto  rounded-lg shadow-md">
             <thead>
-              <tr className="bg-gradient-to-r from-primary-bg to-green-800 text-white rounded-t-lg">
+              <tr className="bg-gradient-to-r bg-gray-900 text-white rounded-t-lg">
                 <th className="px-4 py-4 text-left">Student Name</th>
                 <th className="px-2 py-4 text-left">Age</th>
                 <th className="px-2 py-4 text-left">Classroom</th>
@@ -199,12 +200,12 @@ const ViewStudents = () => {
                           {studentId === student.studentId && openEditMenu ? (
                             <div ref={menuRef} className="shadow-lg px-2 py-4 rounded-lg border absolute right-8 top-4 bg-white text-[14px] text-left grid gap-4 w-[150px] z-50">
                               <p
-                                className="cursor-pointer hover:bg-blue-500 hover:text-white py-1 px-2 rounded transition-colors"
+                                className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors"
                                 onClick={() => handleView(student.studentId)}
                               >
                                 View
                               </p>
-                              <p className="cursor-pointer hover:bg-green-500 hover:text-white py-1 px-2 rounded transition-colors">
+                              <p className="cursor-pointer hover:bg-gray-800 hover:text-white py-1 px-2 rounded transition-colors">
                                 Edit
                               </p>
                               {/* <p className="cursor-pointer hover:bg-red-500 hover:text-white py-1 px-2 rounded transition-colors">

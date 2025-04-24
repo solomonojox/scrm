@@ -5,6 +5,7 @@ import axios from "axios";
 import './print.css'
 
 const studentResult = {
+    const baseUrl = process.env.REACT_APP_BASEURL;
     id: 'SRC-25189BA',
     name: "Alice Johnson",
     class: "SS 2A",
@@ -58,7 +59,7 @@ const StudentResultPage = ({ studentId }) => {
     useEffect(() => {
         const getResult = async () => {
             try {
-                const res = await axios.get(`https://scrmapi.tranquility.org.ng/api/Result/GetStudentResult/${studentId}`)
+                const res = await axios.get(`${baseUrl}/api/Result/GetStudentResult/${studentId}`)
                 console.log(res.data)
             } catch (err) {
                 console.log(err.response.data)
