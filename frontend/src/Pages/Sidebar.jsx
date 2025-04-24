@@ -20,7 +20,7 @@ const navItems = [
   { to: "/event",             icon: <MdOutlineEventSeat />, label: "Event" },
   // { to: "/message",           icon: <FaMessage />, label: "Message" },
   // { to: "/result",            icon: <BiSolidReport />, label: "Result" },
-  { to: "/fee",               icon: <MdOutlinePayments />, label: "Fees" },
+  // { to: "/fee",               icon: <MdOutlinePayments />, label: "Fees" },
   // { to: "/settings",          icon: <IoSettingsSharp />, label: "Settings" },
 ];
 
