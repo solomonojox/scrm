@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
+// import { MdDashboard } from "react-icons/md";
 import { FaBookReader } from "react-icons/fa";
 // import { IoSettingsSharp } from "react-icons/io5";
 import { RiCommunityFill } from "react-icons/ri";
@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import assets from "../Assets/assets";
 
 const navItems = [
-  { to: "/guardian/dashboard", icon: <MdDashboard />, label: "Dashboard" },
+  // { to: "/guardian/dashboard", icon: <MdDashboard />, label: "Dashboard" },
   { to: "/studentdata",       icon: <FaBookReader />, label: "My Pupils" },
   { to: "/assignment",        icon: <SiGoogleanalytics />, label: "Assignment" },
   { to: "/news",              icon: <RiCommunityFill />, label: "News" },
