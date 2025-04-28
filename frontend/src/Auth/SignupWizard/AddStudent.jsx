@@ -43,14 +43,14 @@ const AddStudent = ({ nextStep }) => {
         firstname: "",
         lastname: "",
         enteredClass: "",
-        age: '',
         homeAddress: "",
         guardianId: "",
         teacherId: "",
         sessionId:"",
-        currentTerm:"",
+        currentTerm: 0,
         dateofbirth:""
     })
+    console.log(formData.currentTerm)
 
     const addStudent = async (e) => {
         e.preventDefault();
@@ -74,7 +74,7 @@ const AddStudent = ({ nextStep }) => {
     const isNotalidated = !formData.firstname ||
         !formData.lastname ||
         !formData.enteredClass ||
-        !formData.age ||
+        
         !formData.homeAddress ||
         !formData.guardianId ||
         !formData.teacherId
@@ -106,10 +106,29 @@ const AddStudent = ({ nextStep }) => {
                             <option value={7}>SS 3</option>
                         </select>
                     </div>
+                   
                     <div>
-                        <label htmlFor="age">Age</label>
-                        <input type="number" id='age' value={formData.age} placeholder='Enter your age' className='w-full p-3 border rounded-md outline-none focus:border-primary-bg'
-                            onChange={(e) => setFormData({ ...formData, age: e.target.value })} />
+                        <label htmlFor="currentTerm">CurrentTerm</label>
+                        <select name="" id="currentTerm" value={formData.currentTerm} className='w-full p-3 border rounded-md outline-none focus:border-primary-bg' onChange={(e) => setFormData({...formData, currentTerm:e.target.value})}>
+                            <option value="">Select Current Term</option>
+                            <option value={1}>1st term</option>
+                            <option value={2}>2nd term</option>
+                            <option value={3}>3rd term</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor=" dateofbirth">date of birth</label>
+                        <input type="date" id=' dateofbirth' value={formData.dateofbirth}  className='w-full p-3 border rounded-md outline-none focus:border-primary-bg'
+                            onChange={(e) => setFormData({ ...formData,  dateofbirth: e.target.value })} />
+                    </div>
+                    <div>
+                        <label htmlFor="sessionId" >session id</label>
+                        <select name="" id="sessionId" className='w-full p-3 border rounded-md outline-none focus:border-primary-bg' onChange={(e)=> setFormData({...formData, sessionId: e.target.value})}>
+                            <option value="">Select session</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
                     </div>
                     <div>
                         <label htmlFor="homeAddress">Home address</label>
