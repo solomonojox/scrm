@@ -13,7 +13,7 @@ function Assignments() {
   const [message, setMessage] = useState('');
   const [isModal, setIsModal] = useState(false);
   const [data, SetData] = useState([]);
-
+  const [classroomData, setClassroomData]=useState([])
   const fetchAssignment = async () => {
     try {
       const response = await axios.get(
@@ -71,6 +71,19 @@ function Assignments() {
     }
   };
 
+  const fetchclassroom = async (e) =>{
+    try {
+       const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom
+`);
+ setClassroomData(res.data.data)
+ console.log(res.data.data)
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+  useEffect(()=>{
+     fetchclassroom()
+  });
   return (
     <>
       <div>
@@ -130,16 +143,14 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
-                    Classroom ID
+                    Classroom 
                   </label>
-                  <input
-                    type="number"
-                    id="classroom"
-                    value={classroomId}
-                    onChange={(e) => setClassroomId(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700"
-                    required
-                  />
+                    <select name="" id="" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
+                      <option value="">Select classroom</option>
+                      {classroomData.map((classroomData, index)=>(
+                         <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
+                      ))}
+                    </select>
                 </div>
 
                 {message && (
@@ -155,7 +166,7 @@ function Assignments() {
 
                 <button
                   type="submit"
-                  className="w-full py-2 px-4 bg-gray-700 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                  className="w-full py-2 px-4 mt-5 bg-gray-700 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700"
                 >
                   Create Assignment
                 </button>
