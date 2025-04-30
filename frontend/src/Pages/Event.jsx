@@ -45,11 +45,12 @@ const EventPage = () => {
       <div className='fixed h-full'>
         <Sidebar />
       </div>
-      <div className='ml-[220px] mt-8 p-6 w-full'>
-        <p className='font-bold text-2xl mb-6'>Upcoming Events</p>
+      <div className='ml-[220px] mt-2 p-6 w-full'>
+        <p className='font-bold text-2xl mb-6 ml-6'>Upcoming Events</p>
 
         {/* Display fetched events */}
-        {events.map((event, index) => (
+        { events.lenght > 0 ?(
+        events.map((event, index) => (
           <div key={index} className='w-full max-w-[1000px] flex items-center rounded-lg px-6 py-4 bg-white shadow-md border mb-4'>
             <img src={newsId} alt='Event' className='w-32 h-32 object-cover rounded-md' />
             <div className='flex flex-col ml-6 space-y-2'>
@@ -86,7 +87,9 @@ const EventPage = () => {
               </button>
             </div>
           </div>
-        ))}
+        ))): ( <div className='text-gray-500 text-lg ml-6 mt-10'>No event added yet.</div>)}
+
+        
 
         {/* Modal to show event details */}
         {isModalOpen && selectedEvent && (
