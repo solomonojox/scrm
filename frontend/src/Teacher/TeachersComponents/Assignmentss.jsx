@@ -13,16 +13,17 @@ function Assignments() {
   const [message, setMessage] = useState('');
   const [isModal, setIsModal] = useState(false);
   const [data, SetData] = useState([]);
-  const [classroomData, setClassroomData]=useState([])
+  const [classroomData, setClassroomData] = useState([])
+
+  console.log(classroomId)
   const fetchAssignment = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}/api/Assignment/GetAssignmentByClassId/1`
+        `${baseUrl}/api/Assignment/GetAssignmentByClassId/3`
       );
       SetData(response.data.data);
       console.log(response.data);
       
-        ;
 
     } catch (error) {
       console.log(error);
@@ -66,24 +67,25 @@ function Assignments() {
         error.response?.data?.message || 'Failed to create assignment'
       );
       console.error('Error:', error);
-    } finally{
+    } finally {
       hideOverlay()
     }
   };
 
-  const fetchclassroom = async (e) =>{
+  const fetchclassroom = async (e) => {
     try {
-       const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom
-`);
- setClassroomData(res.data.data)
- console.log(res.data.data)
+      const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom`);
+      setClassroomData(res.data.data)
+      // console.log(res.data.data)
     } catch (error) {
       console.error('error', error);
     }
   }
-  useEffect(()=>{
-     fetchclassroom()
-  });
+
+  useEffect(() => {
+    fetchclassroom()
+  }, []);
+
   return (
     <>
       <div>
@@ -143,21 +145,21 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
-                    Classroom 
+                    Classroom
                   </label>
-                    <select name="" id="" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
-                      <option value="">Select classroom</option>
-                      {classroomData.map((classroomData, index)=>(
-                         <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
-                      ))}
-                    </select>
+                  <select name="" id="" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700" value={classroomId} onChange={(e) => setClassroomId(e.target.value)}>
+                    <option value="">Select classroom</option>
+                    {classroomData.map((classroomData, index) => (
+                      <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 {message && (
                   <div
                     className={`p-2 text-sm rounded-md mb-3 ${message.includes('successfully')
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                       }`}
                   >
                     {message}
