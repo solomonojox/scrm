@@ -96,7 +96,7 @@ function Assignments() {
         <div className="flex flex-col lg:flex-row justify-between ml-10 lg:items-center mb-4">
           <h2 className="text-2xl font-medium mb-4 text-start">All Assignments</h2>
 
-            <select name="" id="" onChange={(e) => setSelectedId(e.target.value)} value={selectedId} className="mt-1 block w-[200px] ml-[650px] mb-1 text-white px-3  py-2 border bg-gray-900 rounded-md">
+            <select name="" id=""  onChange={(e) => setSelectedId(e.target.value)} value={selectedId} className="mt-1 block w-[200px] ml-[650px] mb-1 text-white px-3  py-2 border bg-gray-900 rounded-md">
                <option value="" className='bg-white text-black'>select classroom</option>
                {classroomData.map((classroomData, index)=>(
                  <option className='bg-white text-black' value={classroomData.classroomId} key={index}>{classroomData.name}</option>
