@@ -13,11 +13,13 @@ function Assignments() {
   const [message, setMessage] = useState('');
   const [isModal, setIsModal] = useState(false);
   const [data, SetData] = useState([]);
-  const [classroomData, setClassroomData]=useState([])
+  const [classroomData, setClassroomData]=useState([]);
+  const [selectedId , setSelectedId] =useState('');
   const fetchAssignment = async () => {
+    if (!selectedId) return;
     try {
       const response = await axios.get(
-        `${baseUrl}/api/Assignment/GetAssignmentByClassId/1`
+        `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
       );
       SetData(response.data.data);
       console.log(response.data);
@@ -31,7 +33,7 @@ function Assignments() {
 
   useEffect(() => {
     fetchAssignment();
-  }, []);
+  }, [selectedId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,6 +95,13 @@ function Assignments() {
       <div className="container mb-10 mx-auto p-2">
         <div className="flex flex-col lg:flex-row justify-between ml-10 lg:items-center mb-4">
           <h2 className="text-2xl font-medium mb-4 text-start">All Assignments</h2>
+
+            <select name="" id="" onChange={(e) => setSelectedId(e.target.value)} value={selectedId} className="mt-1 block w-[200px] ml-[650px] mb-1 text-white px-3  py-2 border bg-gray-900 rounded-md">
+               <option value="" className='bg-white text-black'>select classroom</option>
+               {classroomData.map((classroomData, index)=>(
+                 <option className='bg-white text-black' value={classroomData.classroomId} key={index}>{classroomData.name}</option>
+               ))}
+            </select>
           <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
             <button
               className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
@@ -102,7 +111,7 @@ function Assignments() {
             </button>
           </div>
         </div>
-
+             
         {/* Modal for adding new assignment */}
         {isModal && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -145,7 +154,7 @@ function Assignments() {
                   <label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
                     Classroom 
                   </label>
-                    <select name="" id="" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
+                    <select name="" id="" onChange={(e) => setClassroomId(e.target.value)} value={classroomId} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
                       <option value="">Select classroom</option>
                       {classroomData.map((classroomData, index)=>(
                          <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
