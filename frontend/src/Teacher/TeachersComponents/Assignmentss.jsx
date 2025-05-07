@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext,useCallback  } from 'react';
+import { useState, useEffect, useContext  } from 'react';
 import axios from 'axios';
 import TeacherNavbarDashboard from '../TeacherNavbarDashboard';
 import { IoMdCloseCircle } from 'react-icons/io';
