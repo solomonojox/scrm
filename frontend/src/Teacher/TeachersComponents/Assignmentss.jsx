@@ -23,7 +23,7 @@ function Assignments() {
       );
       SetData(response.data.data);
       console.log(response.data);
-      
+
 
     } catch (error) {
       console.log(error);
@@ -117,7 +117,7 @@ function Assignments() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                    Title
+                    Subject
                   </label>
                   <input
                     type="text"
@@ -131,7 +131,7 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description
+                    Questions
                   </label>
                   <input
                     type="text"
@@ -182,9 +182,9 @@ function Assignments() {
             <thead className="bg-gray-100 text-gray-700 text-sm uppercase font-semibold">
               <tr>
                 {/* <th className="px-6 py-3 text-left border-b">ID</th> */}
-                <th className="px-6 py-3 text-left border-b">Title</th>
-                <th className="px-6 py-3 text-left border-b">Description</th>
-                <th className="px-6 py-3 text-left border-b">Classroom ID</th>
+                <th className="px-6 py-3 text-left border-b">Subject</th>
+                <th className="px-6 py-3 text-left border-b">Question</th>
+                <th className="px-6 py-3 text-left border-b">Classroom</th>
                 <th className="px-6 py-3 text-left border-b">Due Date</th>
               </tr>
             </thead>
