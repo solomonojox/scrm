@@ -17,24 +17,24 @@ function Assignments() {
   const [classroomData, setClassroomData]=useState([]);
   const [selectedId , setSelectedId] =useState('');
   
-  const fetchAssignment = async () => {
-    if (!selectedId) return;
-    try {
-      const response = await axios.get(
-
-        `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
-
-      );
-      SetData(response.data.data);
-      console.log(response.data);
-
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  
   useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!selectedId) return;
+      try {
+        const response = await axios.get(
+  
+          `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
+  
+        );
+        SetData(response.data.data);
+        console.log(response.data);
+  
+  
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAssignment();
   }, [selectedId ]);
 
