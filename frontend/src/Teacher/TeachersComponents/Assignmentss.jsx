@@ -13,18 +13,21 @@ function Assignments() {
   const [message, setMessage] = useState('');
   const [isModal, setIsModal] = useState(false);
   const [data, SetData] = useState([]);
+
   const [classroomData, setClassroomData]=useState([]);
   const [selectedId , setSelectedId] =useState('');
+  
   const fetchAssignment = async () => {
     if (!selectedId) return;
     try {
       const response = await axios.get(
+
         `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
+
       );
       SetData(response.data.data);
       console.log(response.data);
-      
-        ;
+
 
     } catch (error) {
       console.log(error);
@@ -68,24 +71,25 @@ function Assignments() {
         error.response?.data?.message || 'Failed to create assignment'
       );
       console.error('Error:', error);
-    } finally{
+    } finally {
       hideOverlay()
     }
   };
 
-  const fetchclassroom = async (e) =>{
+  const fetchclassroom = async (e) => {
     try {
-       const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom
-`);
- setClassroomData(res.data.data)
- console.log(res.data.data)
+      const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom`);
+      setClassroomData(res.data.data)
+      // console.log(res.data.data)
     } catch (error) {
       console.error('error', error);
     }
   }
-  useEffect(()=>{
-     fetchclassroom()
-  });
+
+  useEffect(() => {
+    fetchclassroom()
+  }, []);
+
   return (
     <>
       <div>
@@ -124,7 +128,7 @@ function Assignments() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                    Title
+                    Subject
                   </label>
                   <input
                     type="text"
@@ -138,7 +142,7 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description
+                    Questions
                   </label>
                   <input
                     type="text"
@@ -152,21 +156,23 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
-                    Classroom 
+                    Classroom
                   </label>
+
                     <select name="" id="" onChange={(e) => setClassroomId(e.target.value)} value={classroomId} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
                       <option value="">Select classroom</option>
                       {classroomData.map((classroomData, index)=>(
                          <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
                       ))}
                     </select>
+
                 </div>
 
                 {message && (
                   <div
                     className={`p-2 text-sm rounded-md mb-3 ${message.includes('successfully')
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                       }`}
                   >
                     {message}
@@ -189,9 +195,9 @@ function Assignments() {
             <thead className="bg-gray-100 text-gray-700 text-sm uppercase font-semibold">
               <tr>
                 {/* <th className="px-6 py-3 text-left border-b">ID</th> */}
-                <th className="px-6 py-3 text-left border-b">Title</th>
-                <th className="px-6 py-3 text-left border-b">Description</th>
-                <th className="px-6 py-3 text-left border-b">Classroom ID</th>
+                <th className="px-6 py-3 text-left border-b">Subject</th>
+                <th className="px-6 py-3 text-left border-b">Question</th>
+                <th className="px-6 py-3 text-left border-b">Classroom</th>
                 <th className="px-6 py-3 text-left border-b">Due Date</th>
               </tr>
             </thead>
