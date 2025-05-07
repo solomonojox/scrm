@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext,useCallback  } from 'react';
 import axios from 'axios';
 import TeacherNavbarDashboard from '../TeacherNavbarDashboard';
 import { IoMdCloseCircle } from 'react-icons/io';
@@ -15,25 +15,25 @@ function Assignments() {
   const [data, SetData] = useState([]);
   const [classroomData, setClassroomData]=useState([]);
   const [selectedId , setSelectedId] =useState('');
-  const fetchAssignment = async () => {
-    if (!selectedId) return;
-    try {
-      const response = await axios.get(
-        `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
-      );
-      SetData(response.data.data);
-      console.log(response.data);
-      
-        ;
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  
   useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!selectedId) return;
+      try {
+        const response = await axios.get(
+          `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
+        );
+        SetData(response.data.data);
+        console.log(response.data);
+        
+          ;
+  
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAssignment();
-  }, [selectedId]);
+  }, [selectedId ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +60,7 @@ function Assignments() {
         setIsModal(false);
         setMessage('');
       }, 2000);
-      fetchAssignment();
+      setSelectedId(selectedId); 
 
       console.log(response.data);
     } catch (error) {
@@ -85,7 +85,7 @@ function Assignments() {
   }
   useEffect(()=>{
      fetchclassroom()
-  });
+  },[]);
   return (
     <>
       <div>
