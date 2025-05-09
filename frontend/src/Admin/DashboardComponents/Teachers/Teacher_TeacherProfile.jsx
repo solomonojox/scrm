@@ -13,24 +13,49 @@ import { GiTakeMyMoney } from "react-icons/gi";
 // import Results from "./Results";
 // import Guardian from "./Guardian";
 import AdminEditTeacherProfile from "./AdminEditTeacherProfile";
-
+import axios from "axios";
+const baseUrl = process.env.REACT_APP_BASEURL;
 function AdminTeacherProfile() {
   const location = useLocation();
+  const teacherId = location.state;
+  console.log(teacherId);
+  
+ 
+  const [Classroom, setClassroom]=useState([]);
   useEffect(() => {
+    const fetchclassroom = async() =>{
+      try {
+        const res = await axios.get(`${baseUrl}/api/Classroom/GetClassroomByTeacherId/${teacherId}`)
+        setClassroom(res.data.data);
+        console.log(res.data.data);
+      } catch (error) {
+        console.error('error', error);
+      }
+    }
+    fetchclassroom();
     window.scrollTo(0, 0);
-  });
-
+  },[teacherId]);
   const [activeTab, setActiveTab] = useState('Edit Profile');
   const tabs = [
     { id: 1, label: 'Edit Profile', value: <AdminEditTeacherProfile teacherId={location.state} />, icon: <FaRegEdit /> },
-    { id: 2, label: 'Classroom', value: "School", icon: <GiTakeMyMoney /> },
+    { id: 2, label: 'Classroom', value:(
+      <div className="mt-20 space-y-6"> 
+        {Classroom.length > 0 ?(
+          Classroom.map((Classroom,index)=>(
+            <div key={index}>
+              <h3>Classroom : {Classroom.name}</h3>
+            </div>
+          ))
+        ):( <p>no classroom assigned to this teacher</p> )}
+        </div>
+    ), icon: <GiTakeMyMoney /> },
     // { id: 3, label: 'Results', value: <Results studentId={location.state} />, icon: <TiDocumentText /> },
     // { id: 4, label: 'Guardian', value: <Guardian/>, icon: <RiParentFill /> },
     // { id: 5, label: 'Security', value: "<Security studentId={location.state}/>", icon: <IoKey /> }
   ];
 
   return (
-    <div className='bg-gray-100'>
+    <div className='bg-gray-100 h-screen'>
       <div className='sticky top-0 z-50'>
         <NavbarDashboard />
       </div>
