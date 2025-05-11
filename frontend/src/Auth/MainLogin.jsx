@@ -95,7 +95,8 @@ const MainLogin = () => {
         password: password
       });
       notifySuccess(res.data.responseMessage);
-      
+      localStorage.setItem('adminId', res.data.data.adminId)
+      localStorage.setItem('adminData', JSON.stringify(res.data.data))
       navigate('/admin/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);

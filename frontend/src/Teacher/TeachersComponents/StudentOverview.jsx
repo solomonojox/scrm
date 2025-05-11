@@ -6,6 +6,18 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 function StudentOverview() {
   const [studentCount, setStudentCount] = useState(null);
   const [studentError, setStudentError] = useState(null);
+   const[username,setUsername] = useState("");
+
+
+   
+   useEffect(() => {
+    const storedAdminData = localStorage.getItem("adminData");
+    if (storedAdminData) {
+      const admin = JSON.parse(storedAdminData);
+      setUsername(admin.username);
+    }
+  }, []);
+  
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -41,7 +53,7 @@ function StudentOverview() {
               className="w-16 h-16 rounded-full bg-white object-cover"
             />
             <div>
-              <h3 className="text-lg font-semibold">Brooklyn Simmons</h3>
+              <h3 className="text-lg font-semibold">{username}</h3>
               <p className="text-gray-400 text-sm">Student • Beginner</p>
             </div>
           </div>
