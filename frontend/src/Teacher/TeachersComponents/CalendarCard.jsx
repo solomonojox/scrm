@@ -72,7 +72,7 @@ const CalendarCard = ({ events = {} }) => {
       {/* Calendar Grid */}
       <div className="border border-gray-300 rounded-lg p-2 mb-4">
         <div className="grid grid-cols-7 text-center font-semibold mb-2 text-gray-700">
-          {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d => (
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => (
             <div key={d}>{d}</div>
           ))}
         </div>
