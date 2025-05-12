@@ -1,34 +1,39 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
+import { NavLink, useNavigate } from "react-router-dom";
+// import { MdDashboard } from "react-icons/md";
 import { FaBookReader } from "react-icons/fa";
-import { IoSettingsSharp } from "react-icons/io5";
+// import { IoSettingsSharp } from "react-icons/io5";
 import { RiCommunityFill } from "react-icons/ri";
 import { MdOutlineEventSeat } from "react-icons/md";
-import { FaMessage } from "react-icons/fa6";
-import { BiSolidReport } from "react-icons/bi";
-import { MdOutlinePayments } from "react-icons/md";
+// import { FaMessage } from "react-icons/fa6";
+// import { BiSolidReport } from "react-icons/bi";
+// import { MdOutlinePayments } from "react-icons/md";
 import { SiGoogleanalytics } from "react-icons/si";
 import { Link } from "react-router-dom";
 import assets from "../Assets/assets";
 
 const navItems = [
-  { to: "/guardian/dashboard", icon: <MdDashboard />, label: "Dashboard" },
+  // { to: "/guardian/dashboard", icon: <MdDashboard />, label: "Dashboard" },
   { to: "/studentdata",       icon: <FaBookReader />, label: "My Pupils" },
   { to: "/assignment",        icon: <SiGoogleanalytics />, label: "Assignment" },
   { to: "/news",              icon: <RiCommunityFill />, label: "News" },
   { to: "/event",             icon: <MdOutlineEventSeat />, label: "Event" },
-  { to: "/message",           icon: <FaMessage />, label: "Message" },
-  { to: "/result",            icon: <BiSolidReport />, label: "Result" },
-  { to: "/fee",               icon: <MdOutlinePayments />, label: "Fees" },
-  { to: "/settings",          icon: <IoSettingsSharp />, label: "Settings" },
+  // { to: "/message",           icon: <FaMessage />, label: "Message" },
+  // { to: "/result",            icon: <BiSolidReport />, label: "Result" },
+  // { to: "/fee",               icon: <MdOutlinePayments />, label: "Fees" },
+  // { to: "/settings",          icon: <IoSettingsSharp />, label: "Settings" },
 ];
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
   return (
     <aside className="bg-gray-100 w-60 fixed h-screen p-5">
       <div className="flex items-center pb-4 border-b border-gray-300">
-        <Link to="/guardian/dashboard">
+        <Link to="/studentdata">
           <img src={assets.scrm} alt="Logo" width={100} />
         </Link>
       </div>
@@ -47,6 +52,8 @@ const Sidebar = () => {
             <span className="font-medium">{label}</span>
           </NavLink>
         ))}
+
+        <button className="flex items-center space-x-3 p-2 rounded-md cursor-pointer transition-colors duration-150 text-gray-700 bg-amber-200 font-semibold hover:bg-amber-300" onClick={handleLogout}>Logout</button>
       </nav>
     </aside>
   );

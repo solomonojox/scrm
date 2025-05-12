@@ -34,6 +34,7 @@ const Assignment = () => {
           `${baseUrl}/api/Assignment/GetAssignmentByClassId/${classroomId}`
         );
         setAssignmentData(res.data.data);
+        console.log(res.data.data)
       } catch (err) {
         console.error("Error fetching assignments: ", err);
       }
@@ -60,7 +61,7 @@ const Assignment = () => {
           >
             <option value="">-- choose --</option>
             {studentData.map((student) => (
-              <option key={student.id} value={student.classroomId}>
+              <option key={student.studentId} value={student.classroomId}>
                 {student.firstname} {student.lastname}
               </option>
             ))}
@@ -96,7 +97,7 @@ const Assignment = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {assignmentData.map((assignment) => (
                     <tr
-                      key={assignment.id}
+                      key={assignment.assignmentId}
                       className="hover:bg-gray-50 transition-colors duration-150"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">

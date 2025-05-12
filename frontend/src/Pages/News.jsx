@@ -5,6 +5,7 @@ import { IoMdSearch } from 'react-icons/io';
 import newsId from '../Assets/news.jpg';
 import { MdOutlineCancel } from 'react-icons/md';
 
+const baseUrl = process.env.REACT_APP_BASEURL;
 const News = () => {
   const [isModal, setIsModal] = useState(false);
   const [news, setNews] = useState([]);
@@ -13,7 +14,7 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get('https://scrmapi.tranquility.org.ng/api/News/GetAllNews');
+        const response = await axios.get(`${baseUrl}/api/News/GetAllNews`);
         if (response.data.status && response.data.data) {
           setNews(response.data.data);
         }
