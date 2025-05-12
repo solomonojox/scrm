@@ -6,18 +6,29 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 function StudentOverview() {
   const [studentCount, setStudentCount] = useState(null);
   const [studentError, setStudentError] = useState(null);
-  const[email,setEmail] = useState("");
+  const[username,setUsername] = useState("");
+  const [email,setEmail]=useState("");
   
   
-     
-   useEffect(() => {
-    const storedTeacherData = localStorage.getItem("teacherData");
-    if (storedTeacherData) {
+useEffect(() => {
+  const storedTeacherData = localStorage.getItem("teacherData");
+  if (storedTeacherData) {
+    try {
       const teacher = JSON.parse(storedTeacherData);
-      console.log("Loaded teacher data:", teacher); // Helps debugging
-      setEmail(teacher.email || teacher.teacherName || "Teacher");
+      console.log("Loaded teacher data:", teacher); 
+      setUsername(teacher.username || teacher.adminName || "Teacher");
+      setEmail(teacher.email || "email@not-found.com"); 
+    } catch (error) {
+      console.error("Failed to parse teacherData from localStorage:", error);
+      setUsername("Teacher");
+      setEmail("email@not-found.com");
     }
-  }, []);
+  } else {
+    console.warn("No teacherData found in localStorage");
+    setUsername("Teacher");
+    setEmail("email@not-found.com");
+  }
+}, []);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -53,8 +64,8 @@ function StudentOverview() {
               className="w-16 h-16 rounded-full bg-white object-cover"
             />
             <div>
-              <h3 className="text-lg font-semibold">{email}</h3>
-              <p className="text-gray-400 text-sm">Student • Beginner</p>
+              <h3 className="text-lg font-semibold">{username}</h3>
+              <p className="text-gray-400 text-sm">{email}</p>
             </div>
           </div>
 
@@ -83,7 +94,7 @@ function StudentOverview() {
                       </div>
                       <div>
                         <div className="text-xl font-bold">04</div>
-                        <div className="text-gray-400 text-sm">Pending Courses</div>
+                        <div className="text-gray-400 text-sm">Pending Assignment </div>
                       </div>
                     </div>
                   </td>
