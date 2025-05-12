@@ -1,149 +1,137 @@
 import React, { useState, useEffect, useContext } from 'react';
-import womanId from "../Assets/woman.jpeg";
 import Sidebar from "../Pages/Sidebar";
+import defaultAvatar from "../Assets/woman.jpeg";
 import axios from 'axios';
 import { IoClose } from "react-icons/io5";
-import { AppContext } from '../context/AppContext'
+import { AppContext } from '../context/AppContext';
+
 const baseUrl = process.env.REACT_APP_BASEURL;
 
-const StudentData = () => {
-    const { showOverlay, hideOverlay } = useContext(AppContext)
-    const guardianData = JSON.parse(localStorage.getItem('guardian'));
-    const GuardianId = guardianData?.guardianId;
-    const [students, setStudents] = useState([]);
-    const [teacherDetails, setTeacherDetails] = useState({});
-    const [showMore, setShowMore] =  useState([]);
+export default function StudentData() {
+  const { showOverlay, hideOverlay } = useContext(AppContext);
+  const guardianData = JSON.parse(localStorage.getItem('guardian')) || {};
+  const guardianId = guardianData.guardianId;
 
-    useEffect(() => {
-        const getStudentByGuardian = async () => {
-            showOverlay()
-            try {
-                const response = await axios.get(`${baseUrl}/api/Student/GetGuardianStudents/${GuardianId}`);
-                console.log("Student Data", response.data.data);
-                setStudents(response.data.data);
-                setShowMore(new Array(response.data.data.length).fill(false));
+  const [students, setStudents] = useState([]);
+  const [teacherMap, setTeacherMap] = useState({});
+  const [expandedIndex, setExpandedIndex] = useState(-1);
 
-                // Fetch teacher details for each student
-                const teacherPromises = response.data.data
-                    .filter(student => student.teacherId)
-                    .map(student => getTeacherById(student.teacherId));
+  useEffect(() => {
+    if (!guardianId) return;
+    async function fetchStudents() {
+      showOverlay();
+      try {
+        const { data } = await axios.get(
+          `${baseUrl}/api/Student/GetGuardianStudents/${guardianId}`
+        );
+        const studentList = data.data || [];
+        setStudents(studentList);
 
-                await Promise.all(teacherPromises);
+        // Fetch all teacher details in parallel
+        const teacherIds = Array.from(
+          new Set(
+            studentList
+              .filter((s) => s.teacherId)
+              .map((s) => s.teacherId)
+          )
+        );
 
-            } catch (error) {
-                console.error("Error fetching students:", error);
+        const teacherResponses = await Promise.all(
+          teacherIds.map((tid) => axios.get(
+            `${baseUrl}/api/Teacher/GetTeacherById/${tid}`
+          ))
+        );
 
-            }
-            finally {
-                hideOverlay()
-            }
-        };
+        const map = {};
+        teacherResponses.forEach((res) => {
+          const t = res.data.data;
+          map[t.teacherId] = t;
+        });
+        setTeacherMap(map);
+      } catch (err) {
+        console.error('Error loading students or teachers', err);
+      } finally {
+        hideOverlay();
+      }
+    }
+    fetchStudents();
+  }, [guardianId, showOverlay, hideOverlay]);
 
-        if (GuardianId) {
-            getStudentByGuardian();
-        }
-    }, [GuardianId, showOverlay, hideOverlay]);
+  const toggleDetails = (idx) => {
+    setExpandedIndex(prev => (prev === idx ? -1 : idx));
+  };
 
-    const getTeacherById = async (teacherId) => {
-        try {
-            const response = await axios.get(`${baseUrl}/api/Teacher/GetTeacherById/${teacherId}`);
-            setTeacherDetails(prev => ({
-                ...prev,
-                [teacherId]: response.data.data
-            }));
-            console.log("Teacher Data", response.data.data);
-        } catch (error) {
-            console.error("Error fetching teacher:", error);
-        }
-    };
+  return (
+    <div className="flex">
+      <Sidebar />
+      <main className="flex-1 mt-10 ml-64 px-8">
+        {students.length === 0 ? (
+          <p className="text-center text-gray-500 text-lg">No students available.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-8">
+            {students.map((student, idx) => {
+              const teacher = teacherMap[student.teacherId] || {};
+              const isOpen = expandedIndex === idx;
+              return (
+                <div key={student.studentId} className="relative border rounded-lg shadow p-4 flex">
+                  <img
+                    src={student.imagePath || defaultAvatar}
+                    alt={`${student.firstname} ${student.lastname}`}
+                    className="w-32 h-32 rounded-md object-cover mr-4"
+                  />
+                  <div>
+                    <h2 className="text-xl font-semibold">
+                      {student.firstname} {student.lastname}
+                    </h2>
+                    <p>Student No: {student.studentNo}</p>
+                    <p>Class: {student.classroomId ? `Class ${student.classroomId}` : 'Not assigned'}</p>
+                    <button
+                      onClick={() => toggleDetails(idx)}
+                      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+                    >
+                      {isOpen ? 'Close Details' : 'View Teacher Details'}
+                    </button>
 
-    const handleToggle = (index) => {
-        const updatedShowMore = [...showMore];
-        updatedShowMore[index] = !updatedShowMore[index];
-        setShowMore(updatedShowMore);
-    };
-
-
-
-    return (
-        <div>
-            <div className='flex'>
-                <div>
-                    <Sidebar />
-                </div>
-                <div className=' mt-10 flex justify-between space-x-8 px-10 w-[1100px] ml-[250px] h-56'>
-                    {students.map((student, index) => (
-                        <div key={student.studentId} className='flex pr-6 border rounded-md shadow-md h-56 items-center space-x-4'>
-                            <div className='w-44 h-56 rounded-md'>
-                                <img
-                                    src={student.imagePath || womanId}
-                                    alt='profile Pic'
-                                    className='h-56  rounded-md object-cover'
-                                />
+                    {isOpen && (
+                      <div
+                        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                        onClick={() => toggleDetails(idx)}
+                      >
+                        <div
+                          className="bg-white rounded-lg p-6 w-96 relative shadow-lg"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <IoClose
+                            className="absolute top-4 right-4 text-2xl cursor-pointer"
+                            onClick={() => toggleDetails(idx)}
+                          />
+                          <h3 className="text-2xl font-bold mb-4">Class Teacher</h3>
+                          <img
+                            src={teacher.imagePath || defaultAvatar}
+                            alt={`${teacher.firstName} ${teacher.lastName}`}
+                            className="w-40 h-40 object-cover rounded-md mb-4"
+                          />
+                          {teacher.teacherId ? (
+                            <div className="space-y-2">
+                              <p><strong>Name:</strong> {teacher.firstName} {teacher.lastName}</p>
+                              <p><strong>Email:</strong> {teacher.email || 'N/A'}</p>
+                              <p><strong>Phone:</strong> {teacher.phoneNumber || 'N/A'}</p>
+                              <p><strong>Gender:</strong> {teacher.gender || 'N/S'}</p>
+                              <p><strong>Class:</strong> {student.classroomId ? `Class ${student.classroomId}` : 'N/A'}</p>
                             </div>
-                            <div>
-                                <p className='text-2xl font-bold mt-3'>
-                                    {student.firstname} {student.lastname}
-                                </p>
-                                <p>Student No: {student.studentNo}</p>
-                                <p>Class: {student.classroomId ? `Class ${student.classroomId}` : 'Not assigned'}</p>
-                                <div className='flex items-center space-x-5'>
-                                    <button
-                                        className='px-5 py-2 mt-6 ml bg-primary-bg rounded-md text-white'
-                                        onClick={() => handleToggle(index)}
-                                    >
-                                        View teacher details
-                                    </button>
-
-                                </div>
-                            </div>
-
-                            {showMore[index] && (
-                                <div
-                                    className='bg-[#00000099] h-[100dvh] fixed flex justify-center items-center top-0 -left-4  w-full'
-                                    onClick={() => handleToggle(index)}
-                                >
-                                    <div
-                                        className='bg-white  h-[350px] flex items-center space-x-10 px-5 py-5 w-[600px] rounded-md relative'
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-
-                                        <IoClose
-                                            className='absolute top-4 right-4 text-xl cursor-pointer'
-                                            onClick={() => handleToggle(index)}
-                                        />
-                                        <div className="">
-                                            <h1 className='text-2xl font-bold my-6'>Class Teacher's Details</h1>
-                                            <img
-                                                src={womanId}
-                                                alt="Teacher"
-                                                className='rounded-md object-cover h-[250px] w-[250px]'
-                                            />
-                                        </div>
-                                        <div className='space-y-4'>
-                                            {student.teacherId && teacherDetails[student.teacherId] ? (
-                                                <>
-                                                    <p className='text-2xl font-bold'>
-                                                        {teacherDetails[student.teacherId].firstName} {teacherDetails[student.teacherId].lastName}
-                                                    </p>
-                                                    <p><b>Email:</b> {teacherDetails[student.teacherId].email || 'Not available'}</p>
-                                                    <p><b>Phone:</b> {teacherDetails[student.teacherId].phoneNumber || 'Not available'}</p>
-                                                    <p><b>Gender:</b> {teacherDetails[student.teacherId].gender || 'Not specified'}</p>
-                                                    <p><b>Class:</b> {student.classroomId ? `Class ${student.classroomId}` : 'Not assigned'}</p>
-                                                </>
-                                            ) : (
-                                                <p>No teacher assigned or loading teacher details...</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                          ) : (
+                            <p className="text-gray-500">Teacher info unavailable.</p>
+                          )}
                         </div>
-                    ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-            </div>
-        </div>
-    );
-};
-
-export default StudentData;
+              );
+            })}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
