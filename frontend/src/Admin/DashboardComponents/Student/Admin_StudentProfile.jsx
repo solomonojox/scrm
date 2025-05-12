@@ -40,7 +40,7 @@ function AdminStudentProfile() {
 
         <div className="lg:px-4 flex flex-col lg:flex-row mt-5">
           {/* SidTab */}
-          <div className="bg-white w-full flex lg:flex-col lg:space-y-4 lg:w-48 p-4 rounded-lg lg:h-[100dvh] sticky top-[80px] lg:fixed mb-6 z-40 ">
+          <div className="bg-white w-full flex lg:flex-col lg:space-y-4 lg:w-48 p-4 rounded-lg lg:h-[100dvh] sticky top-[80px] lg:fixed mb-6 z-40 mt-14">
             {tabs.map(tab => (
               <button
                 key={tab.id}

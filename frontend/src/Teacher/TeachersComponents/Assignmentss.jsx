@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext  } from 'react';
 import axios from 'axios';
 import TeacherNavbarDashboard from '../TeacherNavbarDashboard';
 import { IoMdCloseCircle } from 'react-icons/io';
@@ -14,24 +14,29 @@ function Assignments() {
   const [isModal, setIsModal] = useState(false);
   const [data, SetData] = useState([]);
 
-  const fetchAssignment = async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}/api/Assignment/GetAssignmentByClassId/1`
-      );
-      SetData(response.data.data);
-      console.log(response.data);
-      
-        ;
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  const [classroomData, setClassroomData]=useState([]);
+  const [selectedId , setSelectedId] =useState('');
+  
+  
   useEffect(() => {
+    const fetchAssignment = async () => {
+      if (!selectedId) return;
+      try {
+        const response = await axios.get(
+  
+          `${baseUrl}/api/Assignment/GetAssignmentByClassId/${selectedId}`
+  
+        );
+        SetData(response.data.data);
+        console.log(response.data);
+  
+  
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchAssignment();
-  }, []);
+  }, [selectedId ]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,7 +63,7 @@ function Assignments() {
         setIsModal(false);
         setMessage('');
       }, 2000);
-      fetchAssignment();
+      setSelectedId(selectedId); 
 
       console.log(response.data);
     } catch (error) {
@@ -66,11 +71,23 @@ function Assignments() {
         error.response?.data?.message || 'Failed to create assignment'
       );
       console.error('Error:', error);
-    } finally{
+    } finally {
       hideOverlay()
     }
   };
 
+  const fetchclassroom = async (e) => {
+    try {
+      const res = await axios.get(`${baseUrl}/api/Classroom/GetAllClassroom`);
+      setClassroomData(res.data.data)
+      // console.log(res.data.data)
+    } catch (error) {
+      console.error('error', error);
+    }
+  }
+  useEffect(()=>{
+     fetchclassroom()
+  },[]);
   return (
     <>
       <div>
@@ -80,6 +97,13 @@ function Assignments() {
       <div className="container mb-10 mx-auto p-2">
         <div className="flex flex-col lg:flex-row justify-between ml-10 lg:items-center mb-4">
           <h2 className="text-2xl font-medium mb-4 text-start">All Assignments</h2>
+
+            <select name="" id=""  onChange={(e) => setSelectedId(e.target.value)} value={selectedId} className="mt-1 block w-[200px] ml-[650px] mb-1 text-white px-3  py-2 border bg-gray-900 rounded-md">
+               <option value="" className='bg-white text-black'>select classroom</option>
+               {classroomData.map((classroomData, index)=>(
+                 <option className='bg-white text-black' value={classroomData.classroomId} key={index}>{classroomData.name}</option>
+               ))}
+            </select>
           <div className="gap-2 flex items-center flex-col md:flex-row md:justify-between">
             <button
               className="bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300 px-4 py-2 rounded mr-2"
@@ -89,7 +113,7 @@ function Assignments() {
             </button>
           </div>
         </div>
-
+             
         {/* Modal for adding new assignment */}
         {isModal && (
           <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -102,7 +126,7 @@ function Assignments() {
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                    Title
+                    Subject
                   </label>
                   <input
                     type="text"
@@ -116,7 +140,7 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description
+                    Questions
                   </label>
                   <input
                     type="text"
@@ -130,23 +154,23 @@ function Assignments() {
 
                 <div className="mb-4">
                   <label htmlFor="classroom" className="block text-sm font-medium text-gray-700">
-                    Classroom ID
+                    Classroom
                   </label>
-                  <input
-                    type="number"
-                    id="classroom"
-                    value={classroomId}
-                    onChange={(e) => setClassroomId(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700"
-                    required
-                  />
+
+                    <select name="" id="" onChange={(e) => setClassroomId(e.target.value)} value={classroomId} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700">
+                      <option value="">Select classroom</option>
+                      {classroomData.map((classroomData, index)=>(
+                         <option value={classroomData.classroomId} key={index}>{classroomData.name}</option>
+                      ))}
+                    </select>
+
                 </div>
 
                 {message && (
                   <div
                     className={`p-2 text-sm rounded-md mb-3 ${message.includes('successfully')
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
                       }`}
                   >
                     {message}
@@ -155,7 +179,7 @@ function Assignments() {
 
                 <button
                   type="submit"
-                  className="w-full py-2 px-4 bg-gray-700 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                  className="w-full py-2 px-4 mt-5 bg-gray-700 text-white font-semibold rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-700"
                 >
                   Create Assignment
                 </button>
@@ -169,9 +193,9 @@ function Assignments() {
             <thead className="bg-gray-100 text-gray-700 text-sm uppercase font-semibold">
               <tr>
                 {/* <th className="px-6 py-3 text-left border-b">ID</th> */}
-                <th className="px-6 py-3 text-left border-b">Title</th>
-                <th className="px-6 py-3 text-left border-b">Description</th>
-                <th className="px-6 py-3 text-left border-b">Classroom ID</th>
+                <th className="px-6 py-3 text-left border-b">Subject</th>
+                <th className="px-6 py-3 text-left border-b">Question</th>
+                <th className="px-6 py-3 text-left border-b">Classroom</th>
                 <th className="px-6 py-3 text-left border-b">Due Date</th>
               </tr>
             </thead>

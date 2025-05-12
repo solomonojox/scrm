@@ -9,6 +9,7 @@ import CalendarCard from "./TeachersComponents/CalendarCard";
 import NavbarDashboard from './TeacherNavbarDashboard';
 
 const TeachersDashboard = () => {
+    console.log(JSON.parse(localStorage.getItem('teacherData')));
     return (
         <div>
             <NavbarDashboard />
