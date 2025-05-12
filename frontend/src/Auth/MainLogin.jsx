@@ -97,6 +97,8 @@ const MainLogin = () => {
       notifySuccess(res.data.responseMessage);
       localStorage.setItem('adminId', res.data.data.adminId)
       localStorage.setItem('adminData', JSON.stringify(res.data.data))
+      console.log("Admin login response data:", res.data.data);
+
       navigate('/admin/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
@@ -118,6 +120,7 @@ const MainLogin = () => {
       // console.log(res.data);
       localStorage.setItem('teacherId', res.data.data.teacherId)
       localStorage.setItem('teacherData', JSON.stringify(res.data.data))
+      console.log("Teacher login response data:", res.data.data);
       navigate('/teacher/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
