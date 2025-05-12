@@ -39,11 +39,11 @@ function AdminTeacherProfile() {
   const tabs = [
     { id: 1, label: 'Edit Profile', value: <AdminEditTeacherProfile teacherId={location.state} />, icon: <FaRegEdit /> },
     { id: 2, label: 'Classroom', value:(
-      <div className="mt-20 space-y-6"> 
+      <div className="mt-20 space-y-6 "> 
         {Classroom.length > 0 ?(
           Classroom.map((Classroom,index)=>(
-            <div key={index}>
-              <h3>Classroom : {Classroom.name}</h3>
+            <div key={index} className="bg-white p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 mt-20 space-y-6">
+              <h3 className="text-lg font-semibold text-primary-bg mb-2">Classroom : {Classroom.name}</h3>
             </div>
           ))
         ):( <p>no classroom assigned to this teacher</p> )}
