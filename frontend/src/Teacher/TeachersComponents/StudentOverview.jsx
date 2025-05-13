@@ -121,7 +121,7 @@ useEffect(() => {
                       </div>
                       <div>
                         <div className="text-xl font-bold">   {pendingAssignmentsCount !== null ? pendingAssignmentsCount : '_'}</div>
-                        <div className="text-gray-400 text-sm">Pending Assignment </div
+                        <div className="text-gray-400 text-sm">Pending Assignment </div>
                       </div>
                     </div>
                   </td>
