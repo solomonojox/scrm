@@ -1,81 +1,121 @@
 import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';
+
 const baseUrl = process.env.REACT_APP_BASEURL;
 
 function StudentOverview() {
   const [studentCount, setStudentCount] = useState(null);
-  const [studentError, setStudentError] = useState(null);
-  const[username,setUsername] = useState("");
-  const [email,setEmail]=useState("");
-const [assignments, setAssignments] = useState([]);
-const [pendingAssignmentsCount, setPendingAssignmentsCount] = useState(0);
-const [assignmentError, setAssignmentError] = useState(null);
+  const [username, setUsername] = useState("Teacher");
+  const [email, setEmail] = useState("email@not-found.com");
+  const [assignments, setAssignments] = useState([]);
+  const [pendingAssignmentsCount, setPendingAssignmentsCount] = useState(0);
+  const [teacherId, setTeacherId] = useState(null);
+  const [classroomIds, setClassroomIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-useEffect(() => {
-  const fetchAssignments = async () => {
-    try {
-      const response = await fetch(`${baseUrl}/api/Assignment/GetAllAssignments`);
-      if (!response.ok) throw new Error('Failed to fetch assignments');
-      const data = await response.json();
-      console.log("Fetched Assignments:", data);
-
-      setAssignments(data);
-
-      // Filter pending assignments where due date is ahead of today
-      const today = new Date();
-      const pending = data.filter(assignment => new Date(assignment.dueDate) > today);
-      setPendingAssignmentsCount(pending.length);
-
-    } catch (err) {
-      setAssignmentError(err.message);
-      console.error('Assignment fetch error:', err);
-    }
-  };
-
-  fetchAssignments();
-}, []);
-
-  
-useEffect(() => {
-  const storedTeacherData = localStorage.getItem("teacherData");
-  if (storedTeacherData) {
-    try {
-      const teacher = JSON.parse(storedTeacherData);
-      console.log("Loaded teacher data:", teacher); 
-      setUsername(teacher.username || teacher.adminName || "Teacher");
-      setEmail(teacher.email || "email@not-found.com"); 
-    } catch (error) {
-      console.error("Failed to parse teacherData from localStorage:", error);
-      setUsername("Teacher");
-      setEmail("email@not-found.com");
-    }
-  } else {
-    console.warn("No teacherData found in localStorage");
-    setUsername("Teacher");
-    setEmail("email@not-found.com");
-  }
-}, []);
-
+  // Load teacher data
   useEffect(() => {
-    const fetchStudents = async () => {
+    if (!baseUrl) {
+      console.error("REACT_APP_BASEURL is not set.");
+      setError("Base URL missing in environment config.");
+      return;
+    }
+
+    const storedTeacherData = localStorage.getItem("teacherData");
+    if (storedTeacherData) {
       try {
-        const response = await fetch(`${baseUrl}/api/Student/GetTotalStudentCount`);
-        if (!response.ok) throw new Error('Failed to fetch student count');
-        const data = await response.json();
-        setStudentCount(data?.count ?? data); // Adjust this line based on the actual response shape
+        const teacher = JSON.parse(storedTeacherData);
+        console.log("Loaded teacher data:", teacher);
+
+        setUsername(teacher.username || teacher.adminName || "Teacher");
+        setEmail(teacher.email || "email@not-found.com");
+        setTeacherId(teacher.id ?? teacher.teacherId ?? null);
       } catch (err) {
-        setStudentError(err.message);
-        console.error('Student fetch error:', err);
+        console.error("Failed to parse teacherData:", err);
+        setError("Failed to load teacher data.");
+      }
+    } else {
+      console.warn("No teacherData found in localStorage.");
+      setError("Teacher data not found.");
+    }
+  }, []);
+
+  // Fetch data pipeline
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!teacherId) return;
+
+      try {
+        // Fetch Students
+        const studentRes = await fetch(`${baseUrl}/api/Student/GetTotalStudentCount`);
+        if (studentRes.ok) {
+          const studentData = await studentRes.json();
+          console.log("Student API Data:", studentData);
+          setStudentCount(studentData?.count ?? studentData);
+        } else {
+          throw new Error('Failed to fetch student count');
+        }
+
+        // Fetch Classrooms
+        const classroomRes = await fetch(`${baseUrl}/api/Classroom/GetClassroomsByTeacherId/${teacherId}`);
+        let ids = [];
+        if (classroomRes.ok) {
+          const classroomData = await classroomRes.json();
+          ids = classroomData.map(cls => cls.id);
+        } else {
+          console.warn('Failed to fetch classrooms');
+          ids = []; // Empty array if no classrooms are found or request fails
+        }
+        setClassroomIds(ids);
+
+        // Fetch Assignments
+        let allAssignments = [];
+        if (classroomRes.ok) {
+          for (const classId of ids) {
+            const assignRes = await fetch(`${baseUrl}/api/Assignment/GetAssignmentByClassId/${classId}`);
+            if (assignRes.ok) {
+              const assignmentData = await assignRes.json();
+              if (Array.isArray(assignmentData)) {
+                allAssignments = [...allAssignments, ...assignmentData];
+              }
+            } else {
+              console.warn(`Failed to fetch assignments for class ${classId}`);
+            }
+          }
+        }
+
+        // Set Assignments
+        setAssignments(allAssignments);
+
+        // Pending Assignments
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const pending = allAssignments.filter(assignment => {
+          if (!assignment.dueDate) return false;
+          const dueDate = new Date(assignment.dueDate);
+          dueDate.setHours(0, 0, 0, 0);
+          return dueDate >= today;
+        });
+        setPendingAssignmentsCount(pending.length);
+
+        console.log("Assignments Loaded:", allAssignments);
+        console.log("Pending Assignments:", pending.length);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchStudents();
-  }, []);
+    fetchData();
+  }, [teacherId]);
 
-  if (studentError) {
-    return <div>Error: {studentError}</div>;
-  }
+  if (loading) return <div className="text-white p-4">Loading...</div>;
+  if (error) return <div className="text-red-500 p-4">Error: {error}</div>;
 
   return (
     <div className="bg-gray-900 text-white">
@@ -100,35 +140,36 @@ useEffect(() => {
           <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
             <table>
               <tbody>
-                <tr className='border-b'>
+                <tr className="border-b">
                   <td className="pb-6 pr-20 border-r">
-                    {/* Total Students */}
                     <div className="flex items-center gap-3">
                       <div className="bg-blue-500/20 p-2 rounded-lg">
                         <MessageCircle className="w-6 h-6 text-blue-400" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold">{studentCount !== null ? studentCount : '_'}</div>
-                        <div className="text-gray-400 text-sm">Total students</div>
+                        <div className="text-xl font-bold">
+                          {studentCount ?? 0}
+                        </div>
+                        <div className="text-gray-400 text-sm">Total Students</div>
                       </div>
                     </div>
                   </td>
                   <td className="pb-6 pl-20">
-                    {/* Pending Courses */}
                     <div className="flex items-center gap-3">
                       <div className="bg-orange-500/20 p-2 rounded-lg">
                         <Calendar className="w-6 h-6 text-orange-400" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold">   {pendingAssignmentsCount !== null ? pendingAssignmentsCount : '_'}</div>
-                        <div className="text-gray-400 text-sm">Pending Assignment </div>
+                        <div className="text-xl font-bold">
+                          {pendingAssignmentsCount ?? 0}
+                        </div>
+                        <div className="text-gray-400 text-sm">Pending Assignments</div>
                       </div>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pt-6 pr-20 border-r">
-                    {/* Watch Time */}
                     <div className="flex items-center gap-3">
                       <div className="bg-pink-500/20 p-2 rounded-lg">
                         <Clock className="w-6 h-6 text-pink-400" />
@@ -140,7 +181,6 @@ useEffect(() => {
                     </div>
                   </td>
                   <td className="pt-6 pl-20">
-                    {/* Certificates */}
                     <div className="flex items-center gap-3">
                       <div className="bg-cyan-500/20 p-2 rounded-lg">
                         <Award className="w-6 h-6 text-cyan-400" />
