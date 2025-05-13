@@ -8,7 +8,34 @@ function StudentOverview() {
   const [studentError, setStudentError] = useState(null);
   const[username,setUsername] = useState("");
   const [email,setEmail]=useState("");
-  
+const [assignments, setAssignments] = useState([]);
+const [pendingAssignmentsCount, setPendingAssignmentsCount] = useState(0);
+const [assignmentError, setAssignmentError] = useState(null);
+
+useEffect(() => {
+  const fetchAssignments = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/Assignment/GetAllAssignments`);
+      if (!response.ok) throw new Error('Failed to fetch assignments');
+      const data = await response.json();
+      console.log("Fetched Assignments:", data);
+
+      setAssignments(data);
+
+      // Filter pending assignments where due date is ahead of today
+      const today = new Date();
+      const pending = data.filter(assignment => new Date(assignment.dueDate) > today);
+      setPendingAssignmentsCount(pending.length);
+
+    } catch (err) {
+      setAssignmentError(err.message);
+      console.error('Assignment fetch error:', err);
+    }
+  };
+
+  fetchAssignments();
+}, []);
+
   
 useEffect(() => {
   const storedTeacherData = localStorage.getItem("teacherData");
@@ -93,7 +120,7 @@ useEffect(() => {
                         <Calendar className="w-6 h-6 text-orange-400" />
                       </div>
                       <div>
-                        <div className="text-xl font-bold">04</div>
+                        <div className="text-xl font-bold">   {pendingAssignmentsCount !== null ? pendingAssignmentsCount : '_'}</div>
                         <div className="text-gray-400 text-sm">Pending Assignment </div>
                       </div>
                     </div>
