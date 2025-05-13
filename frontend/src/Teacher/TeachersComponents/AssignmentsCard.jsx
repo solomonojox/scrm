@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // Needed for navigation
 
 const assignments = [
   {
@@ -22,6 +23,12 @@ const assignments = [
 ];
 
 const AssignmentsCard = () => {
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    navigate("/assignmentss"); 
+  };
+
   return (
     <div className="flex-1 border border-gray-200 rounded-lg p-4">
       {/* Header */}
@@ -29,7 +36,12 @@ const AssignmentsCard = () => {
         <h3 className="font-semibold">
           Assignments (<span className="text-blue-600">20</span>)
         </h3>
-        <span className="text-gray-500 text-sm">36% Complete</span>
+        <button
+          onClick={handleViewAll}
+          className="text-blue-600 text-sm font-medium hover:underline"
+        >
+          View All
+        </button>
       </div>
 
       {/* List */}
@@ -43,9 +55,6 @@ const AssignmentsCard = () => {
                 Due: {item.date} • Progress: {item.progress}
               </p>
             </div>
-            <button className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
-              View
-            </button>
           </li>
         ))}
       </ul>
