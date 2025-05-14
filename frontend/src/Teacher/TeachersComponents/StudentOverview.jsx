@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Clock, Calendar, Award, MessageCircle } from 'lucide-react';
 import assets from '../../Assets/assets';

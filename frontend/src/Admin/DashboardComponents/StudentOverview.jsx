@@ -8,18 +8,18 @@ function StudentOverview() {
   const [teacherCount, setTeacherCount] = useState(null);
   const [studentError, setStudentError] = useState(null);
   const [teacherError, setTeacherError] = useState(null);
- const[username,setUsername] = useState("");
+  const [username, setUsername] = useState("");
 
 
-   
- useEffect(() => {
-  const storedAdminData = localStorage.getItem("adminData");
-  if (storedAdminData) {
-    const admin = JSON.parse(storedAdminData);
-    console.log("Loaded admin data:", admin); // Helps debugging
-    setUsername(admin.username || admin.adminName || "Admin");
-  }
-}, []);
+
+  useEffect(() => {
+    const storedAdminData = localStorage.getItem("adminData");
+    if (storedAdminData) {
+      const admin = JSON.parse(storedAdminData);
+      console.log("Loaded admin data:", admin); // Helps debugging
+      setUsername(admin.username || admin.adminName || "Admin");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchStudents = async () => {
