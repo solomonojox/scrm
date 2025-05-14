@@ -23,18 +23,18 @@ const TeachersDashboard = () => {
             </div>
 
             <div className="flex flex-col gap-8 m-8">
-      {/* Top row */}
-      <div className="flex flex-col md:flex-row gap-8">
-        <TaskProgressCard />
-        <AssignmentsCard />
-      </div>
+                {/* Top row */}
+                <div className="flex flex-col md:flex-row gap-8">
+                    <TaskProgressCard />
+                    <AssignmentsCard />
+                </div>
 
-      {/* Bottom row */}
-      <div className="flex flex-col md:flex-row gap-8">
-        <ProjectProgressCard />
-        <CalendarCard />
-      </div>
-    </div>
+                {/* Bottom row */}
+                <div className="flex flex-col md:flex-row gap-8">
+                    <ProjectProgressCard />
+                    <CalendarCard />
+                </div>
+            </div>
         </div>
     )
 }
