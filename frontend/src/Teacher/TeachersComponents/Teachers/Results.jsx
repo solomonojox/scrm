@@ -40,6 +40,22 @@ const Students = () => {
   console.log("Result Data:", data);
   console.log("Subject Data:", datas);
 
+  useEffect(() => {
+    if (!messageForm.text) return;
+    const id = setTimeout(() => {
+      setMessageForm({ text: '', type: '' });
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [messageForm.text]);
+
+  // Clear subject‐level messages after 3 seconds
+  useEffect(() => {
+    if (!messageSubject.text) return;
+    const id = setTimeout(() => {
+      setMessageSubject({ text: '', type: '' });
+    }, 3000);
+    return () => clearTimeout(id);
+  }, [messageSubject.text]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
