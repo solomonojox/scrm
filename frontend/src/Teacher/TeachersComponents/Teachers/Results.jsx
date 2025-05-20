@@ -4,13 +4,13 @@ import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BASEURL;
 
 const Students = () => {
- 
+
   const [data, setData] = useState('');
 
   const [messageForm, setMessageForm] = useState({ text: '', type: '' });
-  
+
   const [messageSubject, setMessageSubject] = useState({ text: '', type: '' });
- 
+
   const [student, setStudent] = useState([]);
 
   const [datas, setDatas] = useState('');
@@ -33,18 +33,20 @@ const Students = () => {
     standingPercentage: '',
   });
 
- 
+
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
 
+  console.log("Result Data:", data);
+  console.log("Subject Data:", datas);
 
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post(`${baseUrl}/api/Result/AddResult`, formData);
       console.log('AddResult response:', res);
-      console.log('AddResult response data:', res.data);
+      console.log(res.data);
       setData(res.data);
       setMessageForm({ text: 'Added successfully', type: 'success' });
 
@@ -87,7 +89,7 @@ const Students = () => {
     }
   };
 
- 
+
   useEffect(() => {
     const fetchStudent = async () => {
       try {
@@ -107,7 +109,7 @@ const Students = () => {
       <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">Add Student Result</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-   
+
         <div>
           <label htmlFor="session" className="block text-sm font-medium text-gray-700 mb-1">
             Session
@@ -128,7 +130,7 @@ const Students = () => {
           </select>
         </div>
 
-        
+
         <div>
           <label htmlFor="dateTaken" className="block text-sm font-medium text-gray-700 mb-1">
             Date Taken
@@ -161,7 +163,7 @@ const Students = () => {
           </select>
         </div>
 
-    
+
         <div>
           <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-1">
             Select Student
@@ -189,7 +191,7 @@ const Students = () => {
           Add Student Result
         </button>
 
-        
+
         {messageForm.text && (
           <p
             className={`mt-4 text-center font-semibold ${messageForm.type === 'error' ? 'text-red-600' : 'text-green-600'
@@ -200,7 +202,7 @@ const Students = () => {
         )}
       </form>
 
-   
+
       <h2 className="text-2xl font-bold text-gray-700 mt-10 mb-6 text-center">Add Subject Result</h2>
       <form onSubmit={submitFormsData} className="space-y-6">
         <div>
@@ -306,7 +308,7 @@ const Students = () => {
           Add Subject Result
         </button>
 
-        
+
         {messageSubject.text && (
           <p
             className={`mt-4 text-center font-semibold ${messageSubject.type === 'error' ? 'text-red-600' : 'text-green-600'
