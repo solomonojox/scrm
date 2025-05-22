@@ -55,7 +55,7 @@ const App = () => {
         <Route path='/admin/teacher/:teacherId' element={<AdminTeacherProfile />} />
         <Route path='/admin/guardians' element={<ViewGuardians />} />
         <Route path='/admin/guardian/:guardianId' element={<AdminGuardianProfile />} />
-        <Route path='/assignmentss' element ={<Assignmentss/>} />
+        <Route path='/assignmentss' element={<Assignmentss />} />
 
         <Route path='/admin/classrooms' element={<ViewClassrooms />} />
         <Route path='/admin/newss' element={<Newss />} />
@@ -69,7 +69,7 @@ const App = () => {
         <Route path='/assignment' element={<Assignment />} />
         <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/news' element={<News />} />
-          <Route path='/results/:studentId' element={<Result />} />
+        <Route path='/results/:studentId' element={<Result />} />
         <Route path='/event' element={<EventPage />} />
 
         {/* <Route path='/teacher/dashboard' element={<TeachersDashboard />} /> */}
@@ -85,7 +85,7 @@ const App = () => {
         <Route path='/teacher/teacher/:teacherId' element={<TeacherTeacherProfile />} />
         <Route path='/teacher/guardians' element={<TeacherViewGuardians />} />
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
-        <Route path='/teacher/result' element={<Results/>}/>
+        <Route path='/teacher/result' element={<Results />} />
       </Routes>
     </Router>
   );

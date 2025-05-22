@@ -9,10 +9,12 @@ import CalendarCard from "./TeachersComponents/CalendarCard";
 import NavbarDashboard from './TeacherNavbarDashboard';
 
 const TeachersDashboard = () => {
-    console.log(JSON.parse(localStorage.getItem('teacherData')));
+    // console.log(JSON.parse(localStorage.getItem('teacherData')));
     return (
         <div>
-            <NavbarDashboard />
+            <div className="sticky-top-0">
+                <NavbarDashboard />
+            </div>
             <div className="flex items-center px-20 bg-gray-900">
                 <div className='w-3/4'>
                     <StudentOverview />
