@@ -1,198 +1,178 @@
-import React, { useState } from 'react';
-import Sidebar from './Sidebar';
+import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import Sidebar from "../Pages/Sidebar"; // assumed present
+import axios from "axios";
 
-const Result = () => {
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [selectedSession, setSelectedSession] = useState("2023/2024");
-  const [selectedTerm, setSelectedTerm] = useState("First Term");
+const getGrade = (score) => {
+  if (score >= 90) return "A";
+  if (score >= 80) return "B";
+  if (score >= 70) return "C";
+  if (score >= 60) return "D";
+  return "F";
+};
 
-  // Options arrays for session and term.
-  const sessionOptions = ["2023/2024", "2024/2025", "2025/2026"];
-  const termOptions = ["First Term", "Second Term", "Third Term"];
+const StudentReportCard = () => {
+  const { studentId } = useParams();
+  const [studentData, setStudentData] = useState(null);
+  const [selectedTerm, setSelectedTerm] = useState(1);
+  const printRef = useRef();
 
-  // Results data for each student stored as objects keyed by term.
-  const johnResults = {
-    "First Term": [
-      { subject: "Polymer Sci.", theory: "30/40", practical: "38/40", assignment: "8/10", attendance: "73%", total: "88/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "30/40", practical: "38/40", assignment: "8/10", attendance: "73%", total: "75/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "30/40", practical: "38/40", assignment: "8/10", attendance: "73%", total: "64/100", totalClass: "text-yellow-600" }
-    ],
-    "Second Term": [
-      { subject: "Polymer Sci.", theory: "32/40", practical: "39/40", assignment: "9/10", attendance: "75%", total: "90/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "31/40", practical: "37/40", assignment: "8/10", attendance: "74%", total: "80/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "29/40", practical: "35/40", assignment: "7/10", attendance: "70%", total: "70/100", totalClass: "text-yellow-600" }
-    ],
-    "Third Term": [
-      { subject: "Polymer Sci.", theory: "33/40", practical: "40/40", assignment: "10/10", attendance: "80%", total: "95/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "34/40", practical: "39/40", assignment: "9/10", attendance: "78%", total: "92/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "32/40", practical: "38/40", assignment: "10/10", attendance: "82%", total: "90/100", totalClass: "text-yellow-600" }
-    ]
+  const schoolName = "Greenfield International School";
+  const schoolAddress = "101 Education Lane, Booktown, LearnState";
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await axios.get(`/api/Result/GetStudentResult/${studentId}`);
+        if (response.data.status && response.data.data.length > 0) {
+          setStudentData(response.data.data[0]);
+        } else {
+          setStudentData(null);
+          console.error("No student result found");
+        }
+      } catch (error) {
+        console.error("Failed to fetch student result:", error);
+        setStudentData(null);
+      }
+    };
+
+    if (studentId) loadData();
+  }, [studentId]);
+
+  const handlePrint = () => {
+    const content = printRef.current.innerHTML;
+    const original = document.body.innerHTML;
+    document.body.innerHTML = content;
+    window.print();
+    document.body.innerHTML = original;
+    window.location.reload();
   };
 
-  const janeResults = {
-    "First Term": [
-      { subject: "Polymer Sci.", theory: "26/40", practical: "36/40", assignment: "8/10", attendance: "80%", total: "85/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "27/40", practical: "35/40", assignment: "9/10", attendance: "82%", total: "80/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "28/40", practical: "34/40", assignment: "7/10", attendance: "75%", total: "78/100", totalClass: "text-yellow-600" }
-    ],
-    "Second Term": [
-      { subject: "Polymer Sci.", theory: "25/40", practical: "35/40", assignment: "9/10", attendance: "80%", total: "85/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "28/40", practical: "36/40", assignment: "8/10", attendance: "78%", total: "72/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "29/40", practical: "37/40", assignment: "7/10", attendance: "75%", total: "66/100", totalClass: "text-yellow-600" }
-    ],
-    "Third Term": [
-      { subject: "Polymer Sci.", theory: "30/40", practical: "37/40", assignment: "10/10", attendance: "85%", total: "90/100", totalClass: "text-green-600" },
-      { subject: "Solar Sci.", theory: "29/40", practical: "38/40", assignment: "9/10", attendance: "80%", total: "88/100", totalClass: "text-blue-600" },
-      { subject: "Urban Dev.", theory: "31/40", practical: "39/40", assignment: "8/10", attendance: "77%", total: "85/100", totalClass: "text-yellow-600" }
-    ]
-  };
+  if (!studentData) return <p className="p-8 text-lg">Loading student result...</p>;
 
-  // Helper functions to get the correct results and header info.
-  const getResults = () => {
-    if (selectedStudent === "John") return johnResults[selectedTerm] || [];
-    if (selectedStudent === "Jane") return janeResults[selectedTerm] || [];
-    return [];
-  };
+  // Filter subjects by selected term
+  const subjectsForTerm = studentData.subjects.filter(sub => sub.term === selectedTerm);
 
-  const getStudentHeader = () => {
-    if (selectedStudent === "John") return { name: "John Doe", class: "SS 3", teacher: "Mr. Smith" };
-    if (selectedStudent === "Jane") return { name: "Jane Smith", class: "SS 2", teacher: "Mrs. Johnson" };
-    return {};
-  };
+  const total = subjectsForTerm.reduce((acc, sub) => acc + sub.totalScore, 0);
+  const avg = subjectsForTerm.length ? total / subjectsForTerm.length : 0;
 
-  const studentHeader = getStudentHeader();
-  const results = getResults();
+  // Get attendance count for the term (assume isPresent = true means present)
+  // Adjust if your API defines attendance differently
+  const attendanceForTerm = studentData.student.attendances.filter(
+    att => new Date(att.date).getMonth() === selectedTerm - 1 && att.isPresent
+  ).length;
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64">
-          <Sidebar />
-        </div>
-        {/* Main Content */}
-        <div className="flex-1 p-8">
-          <header className="mb-8 border-b pb-4">
-            <h1 className="text-3xl font-bold text-gray-900">Student Results</h1>
-            <p className="mt-2 text-gray-600">
-              Select a student and filter results by session and term.
-            </p>
-          </header>
+    <div className="flex bg-gray-100 min-h-screen">
+      <Sidebar />
 
-          {/* Student Cards */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-4">
-              <div
-                onClick={() => setSelectedStudent("John")}
-                className={`cursor-pointer p-4 bg-white rounded shadow transition hover:shadow-md ${
-                  selectedStudent === "John" ? "border-2 border-blue-500" : "border border-gray-200"
-                }`}
-              >
-                <h2 className="text-xl font-semibold text-gray-800">John Doe</h2>
-               
-              </div>
-              
-              <div
-                onClick={() => setSelectedStudent("Jane")}
-                className={`cursor-pointer p-4 bg-white rounded shadow transition hover:shadow-md ${
-                  selectedStudent === "Jane" ? "border-2 border-blue-500" : "border border-gray-200"
-                }`}
-            
-              >
-                 
-                <h2 className="text-xl font-semibold text-gray-800">Jane Smith</h2>
-              </div>
-              
-
+      <main className="flex-1 px-6 py-10 max-w-6xl mx-auto">
+        {/* Report content to print */}
+        <div ref={printRef} className="bg-white rounded-xl shadow-md p-8">
+          {/* School Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-extrabold text-blue-800">{schoolName}</h1>
+            <p className="text-gray-700">{schoolAddress}</p>
+            <div className="mt-4">
+              <hr className="border-t-2 border-gray-300" />
             </div>
           </div>
-                     <p className=' mb-5'>2 student found</p>
-          {/* Results Section */}
-          {selectedStudent && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex flex-col md:flex-row md:justify-between md:items-center border-b pb-4 mb-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {studentHeader.name}'s Result
-                  </h2>
-                  <p className="mt-1 text-gray-600">
-                    Class: <span className="font-medium">{studentHeader.class}</span> | Teacher: <span className="font-medium">{studentHeader.teacher}</span>
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
-                  <div className="flex items-center">
-                    <label className="mr-2 text-gray-700">Session:</label>
-                    <select
-                      value={selectedSession}
-                      onChange={(e) => setSelectedSession(e.target.value)}
-                      className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                    >
-                      {sessionOptions.map((session, index) => (
-                        <option key={index} value={session}>
-                          {session}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex items-center">
-                    <label className="mr-2 text-gray-700">Term:</label>
-                    <select
-                      value={selectedTerm}
-                      onChange={(e) => setSelectedTerm(e.target.value)}
-                      className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                    >
-                      {termOptions.map((term, index) => (
-                        <option key={index} value={term}>
-                          {term}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
 
-              {/* Results Table */}
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">SUBJECT NAME</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">THEORY</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">PRACTICAL</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ASSIGNMENT</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ATTENDANCE</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">TOTAL</th>
+          {/* Report Card Header */}
+          <h2 className="text-2xl font-bold mb-6 text-blue-700">Student Report Card</h2>
+
+          {/* Student Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-lg">
+            <p><strong>Name:</strong> {studentData.student.firstname} {studentData.student.lastname}</p>
+            <p><strong>ID:</strong> {studentData.student.studentId}</p>
+            <p><strong>Class:</strong> {studentData.student.classroom?.name || "N/A"}</p>
+            <p>
+              <strong>Term:</strong>{" "}
+              {selectedTerm === 1 ? "First Term" : selectedTerm === 2 ? "Second Term" : "Third Term"}
+            </p>
+            <p><strong>Position:</strong> {/* Add position logic if available */} N/A</p>
+            <p><strong>Attendance:</strong> {attendanceForTerm}</p>
+          </div>
+
+          {/* Scores Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto border-collapse">
+              <thead>
+                <tr className="bg-blue-100 text-blue-800">
+                  <th className="border px-4 py-2 text-left">Subject</th>
+                  <th className="border px-4 py-2 text-center">Score</th>
+                  <th className="border px-4 py-2 text-center">Grade</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {subjectsForTerm.length > 0 ? (
+                  subjectsForTerm.map(({ subjectResultId, subjectName, totalScore }) => (
+                    <tr key={subjectResultId} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2 text-left">{subjectName}</td>
+                      <td className="border px-4 py-2">{totalScore}</td>
+                      <td className="border px-4 py-2">{getGrade(totalScore)}</td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {results.map((result, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-gray-800">{result.subject}</td>
-                        <td className="px-4 py-2 text-gray-800">{result.theory}</td>
-                        <td className="px-4 py-2 text-gray-800">{result.practical}</td>
-                        <td className="px-4 py-2 text-gray-800">{result.assignment}</td>
-                        <td className="px-4 py-2 text-gray-800">{result.attendance}</td>
-                        <td className={`px-4 py-2 font-semibold ${result.totalClass}`}>{result.total}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="border px-4 py-2 text-center text-gray-500">
+                      No results available for this term.
+                    </td>
+                  </tr>
+                )}
 
-              {/* Print Button */}
-              <div className="mt-6 text-right">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded focus:outline-none shadow">
-                  Print Result
-                </button>
-              </div>
-            </div>
-          )}
+                <tr className="bg-gray-100 font-semibold">
+                  <td className="border px-4 py-2 text-left">Total</td>
+                  <td className="border px-4 py-2">{total}</td>
+                  <td className="border px-4 py-2"></td>
+                </tr>
+                <tr className="bg-gray-100 font-semibold">
+                  <td className="border px-4 py-2 text-left">Average</td>
+                  <td className="border px-4 py-2">{avg.toFixed(2)}</td>
+                  <td className="border px-4 py-2">{getGrade(avg)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Remarks below the table */}
+          <div className="mt-6 p-4 bg-blue-50 rounded border border-blue-200">
+            <strong>Remarks:</strong>{" "}
+            {subjectsForTerm.length > 0 ? subjectsForTerm[0].remarks || "No remarks available" : "No remarks available"}
+          </div>
+
+          {/* Signature */}
+          <div className="mt-12 text-right">
+            <p className="font-semibold text-gray-700">Principal's Signature</p>
+            <div className="mt-6 border-t-2 border-gray-400 w-48 ml-auto" />
+          </div>
         </div>
-      </div>
+
+        {/* Term Selector & Print Button */}
+        <div className="mt-8 text-center">
+          <div className="flex justify-center items-center mb-4">
+            <label className="mr-3 font-medium text-lg">Select Term:</label>
+            <select
+              className="border border-gray-300 px-4 py-2 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              value={selectedTerm}
+              onChange={(e) => setSelectedTerm(parseInt(e.target.value, 10))}
+            >
+              <option value={1}>First Term</option>
+              <option value={2}>Second Term</option>
+              <option value={3}>Third Term</option>
+            </select>
+          </div>
+
+          <button
+            onClick={handlePrint}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md shadow-md transition duration-200"
+          >
+            Print Report Card
+          </button>
+        </div>
+      </main>
     </div>
   );
 };
 
-export default Result;
-
-
+export default StudentReportCard;

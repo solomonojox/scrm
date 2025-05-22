@@ -30,6 +30,7 @@ import StudentData from './Pages/StudentData.jsx';
 import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
+import Result from './Pages/Result.jsx';
 import EventPage from './Pages/Event.jsx';
 import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
 import Newss from './Admin/DashboardComponents/Newss.jsx';
@@ -68,6 +69,7 @@ const App = () => {
         <Route path='/assignment' element={<Assignment />} />
         <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/news' element={<News />} />
+          <Route path='/results/:studentId' element={<Result />} />
         <Route path='/event' element={<EventPage />} />
 
         {/* <Route path='/teacher/dashboard' element={<TeachersDashboard />} /> */}
