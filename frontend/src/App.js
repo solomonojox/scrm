@@ -30,13 +30,14 @@ import StudentData from './Pages/StudentData.jsx';
 import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
+import Result from './Pages/Result.jsx';
 import EventPage from './Pages/Event.jsx';
 import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
 import Newss from './Admin/DashboardComponents/Newss.jsx';
 import Event from './Admin/DashboardComponents/Event.jsx';
 import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
-
+import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
 const App = () => {
   return (
     <Router>
@@ -68,6 +69,7 @@ const App = () => {
         <Route path='/assignment' element={<Assignment />} />
         <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/news' element={<News />} />
+          <Route path='/results/:studentId' element={<Result />} />
         <Route path='/event' element={<EventPage />} />
 
         {/* <Route path='/teacher/dashboard' element={<TeachersDashboard />} /> */}
@@ -83,6 +85,7 @@ const App = () => {
         <Route path='/teacher/teacher/:teacherId' element={<TeacherTeacherProfile />} />
         <Route path='/teacher/guardians' element={<TeacherViewGuardians />} />
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
+        <Route path='/teacher/result' element={<Results/>}/>
       </Routes>
     </Router>
   );

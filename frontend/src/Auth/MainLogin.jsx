@@ -121,6 +121,7 @@ const MainLogin = () => {
       localStorage.setItem('teacherId', res.data.data.teacherId)
       localStorage.setItem('teacherData', JSON.stringify(res.data.data))
       console.log("Teacher login response data:", res.data.data);
+      
       navigate('/teacher/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);

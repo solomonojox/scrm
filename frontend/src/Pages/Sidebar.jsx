@@ -6,7 +6,7 @@ import { FaBookReader } from "react-icons/fa";
 import { RiCommunityFill } from "react-icons/ri";
 import { MdOutlineEventSeat } from "react-icons/md";
 // import { FaMessage } from "react-icons/fa6";
-// import { BiSolidReport } from "react-icons/bi";
+import { BiSolidReport } from "react-icons/bi";
 // import { MdOutlinePayments } from "react-icons/md";
 import { SiGoogleanalytics } from "react-icons/si";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ const navItems = [
   { to: "/news",              icon: <RiCommunityFill />, label: "News" },
   { to: "/event",             icon: <MdOutlineEventSeat />, label: "Event" },
   // { to: "/message",           icon: <FaMessage />, label: "Message" },
-  // { to: "/result",            icon: <BiSolidReport />, label: "Result" },
+   { to: "/results/123",            icon: <BiSolidReport />, label: "Results" },
   // { to: "/fee",               icon: <MdOutlinePayments />, label: "Fees" },
   // { to: "/settings",          icon: <IoSettingsSharp />, label: "Settings" },
 ];
