@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import Sidebar from "../Pages/Sidebar"; // assumed present
+import Sidebar from "../Pages/Sidebar"; 
 import axios from "axios";
 
 const getGrade = (score) => {
@@ -50,14 +50,13 @@ const StudentReportCard = () => {
 
   if (!studentData) return <p className="p-8 text-lg">Loading student result...</p>;
 
-  // Filter subjects by selected term
+ 
   const subjectsForTerm = studentData.subjects.filter(sub => sub.term === selectedTerm);
 
   const total = subjectsForTerm.reduce((acc, sub) => acc + sub.totalScore, 0);
   const avg = subjectsForTerm.length ? total / subjectsForTerm.length : 0;
 
-  // Get attendance count for the term (assume isPresent = true means present)
-  // Adjust if your API defines attendance differently
+ 
   const attendanceForTerm = studentData.student.attendances.filter(
     att => new Date(att.date).getMonth() === selectedTerm - 1 && att.isPresent
   ).length;
@@ -67,9 +66,9 @@ const StudentReportCard = () => {
       <Sidebar />
 
       <main className="flex-1 px-6 py-10 max-w-6xl mx-auto">
-        {/* Report content to print */}
+   
         <div ref={printRef} className="bg-white rounded-xl shadow-md p-8">
-          {/* School Header */}
+         
           <div className="text-center mb-8">
             <h1 className="text-4xl font-extrabold text-blue-800">{schoolName}</h1>
             <p className="text-gray-700">{schoolAddress}</p>
@@ -78,10 +77,9 @@ const StudentReportCard = () => {
             </div>
           </div>
 
-          {/* Report Card Header */}
+       
           <h2 className="text-2xl font-bold mb-6 text-blue-700">Student Report Card</h2>
 
-          {/* Student Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-lg">
             <p><strong>Name:</strong> {studentData.student.firstname} {studentData.student.lastname}</p>
             <p><strong>ID:</strong> {studentData.student.studentId}</p>
@@ -94,7 +92,7 @@ const StudentReportCard = () => {
             <p><strong>Attendance:</strong> {attendanceForTerm}</p>
           </div>
 
-          {/* Scores Table */}
+
           <div className="overflow-x-auto">
             <table className="w-full table-auto border-collapse">
               <thead>
@@ -135,20 +133,17 @@ const StudentReportCard = () => {
             </table>
           </div>
 
-          {/* Remarks below the table */}
           <div className="mt-6 p-4 bg-blue-50 rounded border border-blue-200">
             <strong>Remarks:</strong>{" "}
             {subjectsForTerm.length > 0 ? subjectsForTerm[0].remarks || "No remarks available" : "No remarks available"}
           </div>
 
-          {/* Signature */}
           <div className="mt-12 text-right">
             <p className="font-semibold text-gray-700">Principal's Signature</p>
             <div className="mt-6 border-t-2 border-gray-400 w-48 ml-auto" />
           </div>
         </div>
 
-        {/* Term Selector & Print Button */}
         <div className="mt-8 text-center">
           <div className="flex justify-center items-center mb-4">
             <label className="mr-3 font-medium text-lg">Select Term:</label>
