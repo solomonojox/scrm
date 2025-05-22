@@ -37,7 +37,7 @@ import Newss from './Admin/DashboardComponents/Newss.jsx';
 import Event from './Admin/DashboardComponents/Event.jsx';
 import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
-
+import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
 const App = () => {
   return (
     <Router>
@@ -85,6 +85,7 @@ const App = () => {
         <Route path='/teacher/teacher/:teacherId' element={<TeacherTeacherProfile />} />
         <Route path='/teacher/guardians' element={<TeacherViewGuardians />} />
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
+        <Route path='/teacher/result' element={<Results/>}/>
       </Routes>
     </Router>
   );
