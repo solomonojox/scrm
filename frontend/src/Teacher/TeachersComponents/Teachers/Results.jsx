@@ -192,7 +192,7 @@ const Students = () => {
   const availableResultsForThisStudent = allResults.filter(
     (r) => String(r.studentId) === String(formData.studentId)
   );
-
+ console.log(data)
   return (
     <div className="max-w-6xl mx-auto mt-14 p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
       {/* Wrap both forms side by side */}
