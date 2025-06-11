@@ -1,23 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import TeacherNavbarDashboard from '../../TeacherNavbarDashboard';
-
+import { AppContext } from '../../../context/AppContext';
 const baseUrl = process.env.REACT_APP_BASEURL;
 
 const Students = () => {
-  // ───────────────────────────────────────────────────────────────────────────
-  // 1) State for “Add Result” response
-  const [data, setData] = useState('');
-
-  // 2) State to hold all existing results (GET /api/Result/GetAllStudentsResult)
+  const { showOverlay, hideOverlay, notifySuccess, notifyError, } = useContext(AppContext)
   const [allResults, setAllResults] = useState([]);
-
-  // 3) Messages for “Add Result” and “Add Subject”
   const [messageForm, setMessageForm] = useState({ text: '', type: '' });
   const [messageSubject, setMessageSubject] = useState({ text: '', type: '' });
-
-  // 4) All students (for populating the student dropdown)
   const [student, setStudent] = useState([]);
+  const [trigger, setTrigger] = useState(false);
 
   // 5) formData for “Add Result”
   const [formData, setFormData] = useState({
@@ -37,6 +30,8 @@ const Students = () => {
     resultId: '',
     standingPercentage: '',
   });
+
+  console.log(formsData)
 
   // Convenience: next 10 years
   const currentYear = new Date().getFullYear();
@@ -76,24 +71,27 @@ const Students = () => {
     const fetchAllResults = async () => {
       try {
         const res = await axios.get(`${baseUrl}/api/Result/GetAllStudentsResult`);
+        console.log(res?.data)
         setAllResults(res.data || []);
       } catch (error) {
         console.error('Error fetching all results:', error);
       }
     };
     fetchAllResults();
-  }, []);
+  }, [trigger]);
 
   // ───────────────────────────────────────────────────────────────────────────
   // Handle “Add Student Result”
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showOverlay();
 
     try {
       const res = await axios.post(`${baseUrl}/api/Result/AddResult`, formData);
       console.log('AddResult response:', res.data);
-      setData(res.data);
       setMessageForm({ text: 'Result added successfully', type: 'success' });
+      notifySuccess('Result added successfully');
+      setTrigger(!trigger);
 
       // Grab the new resultId (adjust if your backend returns a different property)
       const newResultId = res.data.resultId || res.data.id || '';
@@ -127,6 +125,9 @@ const Students = () => {
         text: 'Something went wrong adding the result. Please try again.',
         type: 'error',
       });
+      notifyError('Something went wrong adding the result. Please try again.');
+    } finally {
+      hideOverlay();
     }
   };
 
@@ -134,6 +135,7 @@ const Students = () => {
   // Handle “Add Subject”
   const submitFormsData = async (e) => {
     e.preventDefault();
+    showOverlay();
 
     // Convert numeric fields
     const caNum = Number(formsData.ca);
@@ -167,6 +169,7 @@ const Students = () => {
       const res = await axios.post(`${baseUrl}/api/Result/AddSubject`, payload);
       console.log('AddSubject response:', res.data);
       setMessageSubject({ text: 'Subject added successfully', type: 'success' });
+      notifySuccess('Subject added successfully');
 
       // Clear only the subject-fields, but keep resultId so user can add multiple subjects
       setFormsData((prev) => ({
@@ -185,20 +188,17 @@ const Students = () => {
         text: 'Failed to add subject. Please check your input and try again.',
         type: 'error',
       });
+      notifyError('Failed to add subject. Please check your input and try again.');
+    } finally {
+      hideOverlay();
     }
   };
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // Filter to only those results belonging to the chosen student in “Add Result”
-  const availableResultsForThisStudent = allResults.filter(
-    (r) => String(r.studentId) === String(formData.studentId)
-  );
- console.log(data)
   return (
     <div>
-    <div>
-      <TeacherNavbarDashboard/>
-    </div>
+      <div>
+        <TeacherNavbarDashboard />
+      </div>
       {/* Wrap both forms side by side */}
       <div className="flex flex-col md:flex-row gap-5 mt-[50px] ml-5 mr-5">
         {/* ─────────── LEFT: Add Student Result ─────────── */}
@@ -289,16 +289,15 @@ const Students = () => {
 
             <button
               type="submit"
-              className="w-full bg-gray-600 hover:bg-gray-700 transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
+              className="w-full bg-gray-600 hover:bg-primary-bg transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
             >
               Add Student Result
             </button>
 
             {messageForm.text && (
               <p
-                className={`mt-4 text-center font-semibold ${
-                  messageForm.type === 'error' ? 'text-red-600' : 'text-gray-600'
-                }`}
+                className={`mt-4 text-center font-semibold ${messageForm.type === 'error' ? 'text-red-600' : 'text-gray-600'
+                  }`}
               >
                 {messageForm.text}
               </p>
@@ -309,7 +308,7 @@ const Students = () => {
         {/* ─────────── RIGHT: Add Subject Result ─────────── */}
         <div className="flex-1 bg-gray-50 p-6 rounded-lg border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">
-            Add Subject Result
+            Add Subject to Result
           </h2>
           <form onSubmit={submitFormsData} className="space-y-6">
             {/* Select which existing result this subject belongs to */}
@@ -327,9 +326,9 @@ const Students = () => {
                 required
               >
                 <option value="">Select a Result</option>
-                {availableResultsForThisStudent.map((r) => (
+                {allResults.map((r) => (
                   <option key={r.resultId} value={r.resultId}>
-                    {r.student?.firstname} {r.student?.lastname} 
+                    {r?.studentName}
                   </option>
                 ))}
               </select>
@@ -460,9 +459,8 @@ const Students = () => {
 
             {messageSubject.text && (
               <p
-                className={`mt-4 text-center font-semibold ${
-                  messageSubject.type === 'error' ? 'text-red-600' : 'text-gray-600'
-                }`}
+                className={`mt-4 text-center font-semibold ${messageSubject.type === 'error' ? 'text-red-600' : 'text-gray-600'
+                  }`}
               >
                 {messageSubject.text}
               </p>
