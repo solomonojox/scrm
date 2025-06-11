@@ -65,7 +65,7 @@ const StudentReportCard = () => {
     <div className="flex bg-gray-100 min-h-screen">
       <Sidebar />
 
-      <main className="flex-1 px-6 py-10 max-w-6xl mx-auto">
+      <main className="flex-1 px-6 py-10 max-w-6xl mx-auto ml-56">
 
         <div ref={printRef} className="bg-white rounded-xl shadow-md p-8">
 
