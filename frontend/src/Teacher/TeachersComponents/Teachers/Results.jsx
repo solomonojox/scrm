@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-// import TeacherNavbarDashboard from '../../TeacherNavbarDashboard';
+import TeacherNavbarDashboard from '../../TeacherNavbarDashboard';
 
 const baseUrl = process.env.REACT_APP_BASEURL;
 
@@ -195,9 +195,12 @@ const Students = () => {
   );
  console.log(data)
   return (
-    <div className="max-w-6xl mx-auto mt-14 p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+    <div>
+    <div>
+      <TeacherNavbarDashboard/>
+    </div>
       {/* Wrap both forms side by side */}
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-5 mt-[50px] ml-5 mr-5">
         {/* ─────────── LEFT: Add Student Result ─────────── */}
         <div className="flex-1 bg-gray-50 p-6 rounded-lg border border-gray-200">
           <h2 className="text-2xl font-bold text-gray-700 mb-6 text-center">
@@ -286,7 +289,7 @@ const Students = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
+              className="w-full bg-gray-600 hover:bg-gray-700 transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
             >
               Add Student Result
             </button>
@@ -294,7 +297,7 @@ const Students = () => {
             {messageForm.text && (
               <p
                 className={`mt-4 text-center font-semibold ${
-                  messageForm.type === 'error' ? 'text-red-600' : 'text-green-600'
+                  messageForm.type === 'error' ? 'text-red-600' : 'text-gray-600'
                 }`}
               >
                 {messageForm.text}
@@ -450,7 +453,7 @@ const Students = () => {
 
             <button
               type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
+              className="w-full bg-gray-600 hover:bg-gray-700 transition-colors duration-200 text-white font-semibold py-3 rounded-lg shadow-md"
             >
               Add Subject Result
             </button>
@@ -458,7 +461,7 @@ const Students = () => {
             {messageSubject.text && (
               <p
                 className={`mt-4 text-center font-semibold ${
-                  messageSubject.type === 'error' ? 'text-red-600' : 'text-green-600'
+                  messageSubject.type === 'error' ? 'text-red-600' : 'text-gray-600'
                 }`}
               >
                 {messageSubject.text}
