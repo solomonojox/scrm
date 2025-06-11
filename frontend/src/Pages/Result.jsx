@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import Sidebar from "../Pages/Sidebar"; 
+import Sidebar from "../Pages/Sidebar";
 import axios from "axios";
 
 const getGrade = (score) => {
@@ -48,16 +48,16 @@ const StudentReportCard = () => {
     window.location.reload();
   };
 
-  if (!studentData) return <p className="p-8 text-lg">Loading student result...</p>;
+  // if (!studentData) return <p className="p-8 text-lg">Loading student result...</p>;
 
- 
-  const subjectsForTerm = studentData.subjects.filter(sub => sub.term === selectedTerm);
 
-  const total = subjectsForTerm.reduce((acc, sub) => acc + sub.totalScore, 0);
-  const avg = subjectsForTerm.length ? total / subjectsForTerm.length : 0;
+  const subjectsForTerm = studentData?.subjects.filter(sub => sub.term === selectedTerm);
 
- 
-  const attendanceForTerm = studentData.student.attendances.filter(
+  const total = subjectsForTerm?.reduce((acc, sub) => acc + sub.totalScore, 0);
+  const avg = subjectsForTerm?.length ? total / subjectsForTerm.length : 0;
+
+
+  const attendanceForTerm = studentData?.student.attendances.filter(
     att => new Date(att.date).getMonth() === selectedTerm - 1 && att.isPresent
   ).length;
 
@@ -66,9 +66,9 @@ const StudentReportCard = () => {
       <Sidebar />
 
       <main className="flex-1 px-6 py-10 max-w-6xl mx-auto">
-   
+
         <div ref={printRef} className="bg-white rounded-xl shadow-md p-8">
-         
+
           <div className="text-center mb-8">
             <h1 className="text-4xl font-extrabold text-blue-800">{schoolName}</h1>
             <p className="text-gray-700">{schoolAddress}</p>
@@ -77,13 +77,13 @@ const StudentReportCard = () => {
             </div>
           </div>
 
-       
+
           <h2 className="text-2xl font-bold mb-6 text-blue-700">Student Report Card</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-lg">
-            <p><strong>Name:</strong> {studentData.student.firstname} {studentData.student.lastname}</p>
-            <p><strong>ID:</strong> {studentData.student.studentId}</p>
-            <p><strong>Class:</strong> {studentData.student.classroom?.name || "N/A"}</p>
+            <p><strong>Name:</strong> {studentData?.student?.firstname} {studentData?.student?.lastname}</p>
+            <p><strong>ID:</strong> {studentData?.student?.studentId}</p>
+            <p><strong>Class:</strong> {studentData?.student?.classroom?.name || "N/A"}</p>
             <p>
               <strong>Term:</strong>{" "}
               {selectedTerm === 1 ? "First Term" : selectedTerm === 2 ? "Second Term" : "Third Term"}
@@ -103,8 +103,8 @@ const StudentReportCard = () => {
                 </tr>
               </thead>
               <tbody className="text-center">
-                {subjectsForTerm.length > 0 ? (
-                  subjectsForTerm.map(({ subjectResultId, subjectName, totalScore }) => (
+                {subjectsForTerm?.length > 0 ? (
+                  subjectsForTerm?.map(({ subjectResultId, subjectName, totalScore }) => (
                     <tr key={subjectResultId} className="hover:bg-gray-50">
                       <td className="border px-4 py-2 text-left">{subjectName}</td>
                       <td className="border px-4 py-2">{totalScore}</td>
@@ -135,7 +135,7 @@ const StudentReportCard = () => {
 
           <div className="mt-6 p-4 bg-blue-50 rounded border border-blue-200">
             <strong>Remarks:</strong>{" "}
-            {subjectsForTerm.length > 0 ? subjectsForTerm[0].remarks || "No remarks available" : "No remarks available"}
+            {subjectsForTerm?.length > 0 ? subjectsForTerm[0].remarks || "No remarks available" : "No remarks available"}
           </div>
 
           <div className="mt-12 text-right">
