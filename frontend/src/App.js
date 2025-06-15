@@ -43,7 +43,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Navigate to="/login" replace />} />
+        <Route path='/' element={<Navigate to="/home" replace />} />
         <Route path='/login' element={<MainLogin />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/registrationwiz' element={<RegisterationWiz />} />
@@ -88,7 +88,7 @@ const App = () => {
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
         <Route path='/teacher/result' element={<Results />} />
 
-        <Route path='/landingpage' element={<LandingPage/>} />
+        <Route path='/home' element={<LandingPage/>} />
       </Routes>
     </Router>
   );

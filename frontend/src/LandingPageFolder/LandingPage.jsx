@@ -34,7 +34,7 @@ const LandingPage = () => {
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/95 backdrop-blur-lg shadow-lg' : 'bg-white/90 backdrop-blur-sm'
         }`}>
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20">
+          <div className="flex justify-between h-20 items-center">
             <div className="flex items-center">
               <div className="flex items-center space-x-2 group cursor-pointer">
                 <div className="w-24 h-10  rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -63,6 +63,11 @@ const LandingPage = () => {
                 );
               })}
             </div>
+
+            <button
+              className='px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md'
+              onClick={() => window.location.href = '/login'}
+            >Login</button>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center">
