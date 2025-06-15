@@ -65,7 +65,7 @@ const LandingPage = () => {
             </div>
 
             <button
-              className='px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md'
+              className='px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md hidden md:block'
               onClick={() => window.location.href = '/login'}
             >Login</button>
 
@@ -73,7 +73,7 @@ const LandingPage = () => {
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg transition-all duration-300"
+                className="p-2 rounded-lg bg-gradient-to-r from-primary-bg to-primary-bg/85 text-white hover:shadow-lg transition-all duration-300"
               >
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -83,7 +83,7 @@ const LandingPage = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t">
+          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t ">
             <div className="px-4 py-2 space-y-1">
               {['Home', 'About', 'Why Choose Us', 'Statistics', 'Contact'].map((item, index) => {
                 const sectionId = ['hero', 'about', 'why', 'stats', 'contact'][index];
@@ -98,6 +98,11 @@ const LandingPage = () => {
                 );
               })}
             </div>
+
+            <button
+              className='ml-4 mb-10 px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md md:hidden'
+              onClick={() => window.location.href = '/login'}
+            >Login</button>
           </div>
         )}
       </header>
