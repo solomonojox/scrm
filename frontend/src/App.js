@@ -38,6 +38,7 @@ import Event from './Admin/DashboardComponents/Event.jsx';
 import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom.jsx';
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
+import LandingPage from './LandingPageFolder/LandingPage.jsx';
 const App = () => {
   return (
     <Router>
@@ -86,6 +87,8 @@ const App = () => {
         <Route path='/teacher/guardians' element={<TeacherViewGuardians />} />
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
         <Route path='/teacher/result' element={<Results />} />
+
+        <Route path='/landingpage' element={<LandingPage/>} />
       </Routes>
     </Router>
   );
