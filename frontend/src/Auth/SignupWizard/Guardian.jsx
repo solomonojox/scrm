@@ -117,7 +117,7 @@ const Guardian = ({ nextStep }) => {
               id="City"
               name="City"
               placeholder="Enter city"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
+              className="w-full p-4 border rounded-md outline-none focus:border text-lg"
             />
           </div>
         </div>
