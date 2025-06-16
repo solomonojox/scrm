@@ -6,9 +6,9 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 
 const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
   const steps = [
-    { title: "Add guardian", description: "Provide the details of the guardian", icon: <FaRegUser className='text-2xl text-white' /> },
-    { title: "Add Student", description: "Enter the details of the student", icon: <MdOutlineMarkEmailRead className='text-2xl text-white' /> },
-    { title: "Welcome to Untitled", description: "Get up and running in 3 minutes", icon: <IoIosRocket className='text-2xl text-white' /> },
+    { title: "Add School", description: "Provide the details of the guardian", icon: <FaRegUser className='text-2xl text-white' /> },
+    { title: "Add Owner information ", description: "Enter the details of the student", icon: <MdOutlineMarkEmailRead className='text-2xl text-white' /> },
+    { title: "Welcome to Educat", description: "Get up and running in 3 minutes", icon: <IoIosRocket className='text-2xl text-white' /> },
   ];
 
   // const handleButtonClick = () => nextStep();
@@ -17,7 +17,7 @@ const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
     <div className='p-4 h-[100dvh]'>
       <div className="bg-gray-200 h-[100%] p-4 rounded-lg flex flex-col justify-between">
         <div className="space-y-14">
-          <h1 className="text-2xl font-semibold">Register a student</h1>
+          <h1 className="text-2xl font-semibold">Register a school</h1>
 
           <div className="space-y-12">
             {steps.map((step, index) => (
