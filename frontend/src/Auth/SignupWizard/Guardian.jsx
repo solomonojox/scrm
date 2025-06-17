@@ -2,12 +2,23 @@ import { useState, useContext } from 'react';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 const baseUrl = process.env.REACT_APP_BASEURL;
-
+import TermsModal from './TermsModal';
 const Guardian = ({ nextStep }) => {
+  const [showTerms, setShowTerms] = useState(false);
+
+  const handleAgree = () => {
+    setShowTerms(false);
+    // optionally save agreement state
+  };
+
+  const handleDecline = () => {
+    setShowTerms(false);
+    // optionally show a warning or prevent form progress
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Optional: collect or validate form data here
-    nextStep(); // Move to next step
+    nextStep(); // move to next step
   };
 
   return (
@@ -121,7 +132,17 @@ const Guardian = ({ nextStep }) => {
             />
           </div>
         </div>
+<TermsModal isOpen={showTerms} onAgree={handleAgree} onDecline={handleDecline} />
 
+<div className="pt-4">
+  <button
+    type="button"
+    onClick={() => setShowTerms(true)}
+    className="text-sm text-blue-600 underline hover:text-blue-800"
+  >
+    Agree To Terms and Conditions
+  </button>
+</div>
         <div className="flex mt-10">
           <button
             type="submit"
