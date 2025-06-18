@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Users, BookOpen, BarChart3, Shield, Clock, Smartphone, CheckCircle, Mail, Phone, MapPin, Star, ArrowRight, Menu, X } from 'lucide-react';
+import {
+  ChevronDown, Users, BookOpen, BarChart3, Shield,
+  Clock, Smartphone, CheckCircle, Mail, Phone,
+  MapPin, Star, ArrowRight, Menu, X
+} from 'lucide-react';
 import assets from '../Assets/assets';
 import { useInView } from 'react-intersection-observer';
 import CountUp from 'react-countup';
+import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   const { ref: statsRef, inView: statsInView } = useInView({ triggerOnce: true });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  // const [activeSection, setActiveSection] = useState('hero');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -23,31 +28,27 @@ const LandingPage = () => {
 
   return (
     <div className="font-sans text-gray-800 overflow-x-hidden">
-      {/* Animated Background Elements */}
+      {/* Background Effects */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-1/2 -left-40 w-96 h-96 bg-gradient-to-br from-green-400/20 to-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-gradient-to-br from-purple-400/20 to-pink-500/20 rounded-full blur-3xl animate-pulse delay-2000"></div>
       </div>
 
-      {/* Enhanced Header */}
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/95 backdrop-blur-lg shadow-lg' : 'bg-white/90 backdrop-blur-sm'
-        }`}>
+      {/* Header */}
+      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/95 backdrop-blur-lg shadow-lg' : 'bg-white/90 backdrop-blur-sm'}`}>
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
+            {/* Logo */}
             <div className="flex items-center">
               <div className="flex items-center space-x-2 group cursor-pointer">
-                <div className="w-24 h-10  rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  {/* <BookOpen className="w-6 h-6 text-white" /> */}
-                  <img src={assets.scrm} alt="" />
+                <div className="w-24 h-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <img src={assets.scrm} alt="Logo" />
                 </div>
-                {/* <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  SCRM
-                </span> */}
               </div>
             </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav */}
             <div className="hidden md:flex items-center space-x-1">
               {['Home', 'About', 'Why Choose Us', 'Statistics', 'Contact'].map((item, index) => {
                 const sectionId = ['hero', 'about', 'why', 'stats', 'contact'][index];
@@ -64,12 +65,15 @@ const LandingPage = () => {
               })}
             </div>
 
+            {/* Desktop Login Button */}
             <button
-              className='px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md hidden md:block'
+              className="px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md hidden md:block"
               onClick={() => window.location.href = '/login'}
-            >Login</button>
+            >
+              Login
+            </button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -83,7 +87,7 @@ const LandingPage = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t ">
+          <div className="md:hidden bg-white/95 backdrop-blur-lg border-t">
             <div className="px-4 py-2 space-y-1">
               {['Home', 'About', 'Why Choose Us', 'Statistics', 'Contact'].map((item, index) => {
                 const sectionId = ['hero', 'about', 'why', 'stats', 'contact'][index];
@@ -98,17 +102,19 @@ const LandingPage = () => {
                 );
               })}
             </div>
-
             <button
-              className='ml-4 mb-10 px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md md:hidden'
+              className="ml-4 mb-10 px-10 py-2 bg-primary-bg hover:bg-primary-bg/85 text-white rounded-md md:hidden"
               onClick={() => window.location.href = '/login'}
-            >Login</button>
+            >
+              Login
+            </button>
           </div>
         )}
       </header>
 
+      {/* Main Section */}
       <main className="pt-16 relative z-10">
-        {/* Hero Section */}
+        {/* Hero */}
         <section id="hero" className="min-h-screen flex items-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50"></div>
           <div className="max-w-7xl mx-auto px-4 py-20 text-center relative z-10">
@@ -127,14 +133,13 @@ const LandingPage = () => {
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <button
-                  onClick={() => scrollToSection('contact')}
+                  onClick={() => navigate('/registrationwiz')}
                   className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center">
                     Get Started
                     <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
                 <button
                   onClick={() => scrollToSection('about')}
