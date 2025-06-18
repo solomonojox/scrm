@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import TermsModal from './TermsModal';
 
 const baseUrl = process.env.REACT_APP_BASEURL;
-
+import TermsModal from './TermsModal';
 const Guardian = ({ nextStep }) => {
   const [formData, setFormData] = useState({
     schoolName: '',
