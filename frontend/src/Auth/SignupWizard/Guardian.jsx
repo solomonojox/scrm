@@ -1,90 +1,116 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { AppContext } from '../../context/AppContext';
-const baseUrl = process.env.REACT_APP_BASEURL;
 import TermsModal from './TermsModal';
+
+const baseUrl = process.env.REACT_APP_BASEURL;
+
 const Guardian = ({ nextStep }) => {
+  const [formData, setFormData] = useState({
+    schoolName: '',
+    schoolEmail: '',
+    schoolPhone: '',
+    address: '',
+    typeOfSchool: '',
+    country: '',
+    state: '',
+    city: '',
+    ownerName: '',
+    ownerPhone: '',
+    ownerEmail: '',
+    password: '',
+    hasAgreedToTerms: false,
+  });
+
   const [showTerms, setShowTerms] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleAgree = () => {
+    setFormData(prev => ({ ...prev, hasAgreedToTerms: true }));
     setShowTerms(false);
-    // optionally save agreement state
   };
 
   const handleDecline = () => {
+    setFormData(prev => ({ ...prev, hasAgreedToTerms: false }));
     setShowTerms(false);
-    // optionally show a warning or prevent form progress
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    nextStep(); // move to next step
+    setError('');
+
+    if (!formData.hasAgreedToTerms) {
+      setError('You must agree to the terms and conditions.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${baseUrl}/api/School/RegisterSchool`,
+        formData
+      );
+      console.log('School registered:', response.data);
+      nextStep();
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <form onSubmit={handleSubmit} className="p-10 lg:px-20 space-y-6 w-full max-w-5xl bg-white">
+    <div className="flex justify-center pt-12 pb-24 min-h-screen">
+      <form onSubmit={handleSubmit} className="p-10 lg:px-20 space-y-6 w-full max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="SchoolName" className="block mb-2 font-semibold text-gray-700 text-lg">
-              School Name
-            </label>
-            <input
-              type="text"
-              id="SchoolName"
-              name="SchoolName"
-              placeholder="Enter school name"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
+          {/* School Fields */}
+          {[
+            { label: 'School Name', name: 'schoolName' },
+            { label: 'School Email', name: 'schoolEmail', type: 'email' },
+            { label: 'School Phone', name: 'schoolPhone' },
+            { label: 'Address', name: 'address' },
+            { label: 'Country', name: 'country' },
+            { label: 'State', name: 'state' },
+            { label: 'City', name: 'city' },
+          ].map(({ label, name, type = 'text' }) => (
+            <div key={name}>
+              <label htmlFor={name} className="block mb-2 font-semibold text-gray-700 text-lg">
+                {label}
+              </label>
+              <input
+                type={type}
+                id={name}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                placeholder={`Enter ${label.toLowerCase()}`}
+                className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
+                required
+              />
+            </div>
+          ))}
 
+          {/* Type of School */}
           <div>
-            <label htmlFor="SchoolEmail" className="block mb-2 font-semibold text-gray-700 text-lg">
-              School Email
-            </label>
-            <input
-              type="email"
-              id="SchoolEmail"
-              name="SchoolEmail"
-              placeholder="Enter school email"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="SchoolPhone" className="block mb-2 font-semibold text-gray-700 text-lg">
-              School Phone
-            </label>
-            <input
-              type="text"
-              id="SchoolPhone"
-              name="SchoolPhone"
-              placeholder="Enter school phone"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="Address" className="block mb-2 font-semibold text-gray-700 text-lg">
-              Address
-            </label>
-            <input
-              type="text"
-              id="Address"
-              name="Address"
-              placeholder="Enter address"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="TypeOfSchool" className="block mb-2 font-semibold text-gray-700 text-lg">
+            <label htmlFor="typeOfSchool" className="block mb-2 font-semibold text-gray-700 text-lg">
               Type of School
             </label>
             <select
-              id="TypeOfSchool"
-              name="TypeOfSchool"
+              id="typeOfSchool"
+              name="typeOfSchool"
+              value={formData.typeOfSchool}
+              onChange={handleChange}
               className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
+              required
             >
               <option value="">Select type</option>
               <option value="Primary">Primary</option>
@@ -93,62 +119,52 @@ const Guardian = ({ nextStep }) => {
             </select>
           </div>
 
-          <div>
-            <label htmlFor="Country" className="block mb-2 font-semibold text-gray-700 text-lg">
-              Country
-            </label>
-            <input
-              type="text"
-              id="Country"
-              name="Country"
-              placeholder="Enter country"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="State" className="block mb-2 font-semibold text-gray-700 text-lg">
-              State
-            </label>
-            <input
-              type="text"
-              id="State"
-              name="State"
-              placeholder="Enter state"
-              className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="City" className="block mb-2 font-semibold text-gray-700 text-lg">
-              City
-            </label>
-            <input
-              type="text"
-              id="City"
-              name="City"
-              placeholder="Enter city"
-              className="w-full p-4 border rounded-md outline-none focus:border text-lg"
-            />
-          </div>
+          {/* Owner Info */}
+          {[
+            { label: 'Owner Name', name: 'ownerName' },
+            { label: 'Owner Email', name: 'ownerEmail', type: 'email' },
+            { label: 'Owner Phone', name: 'ownerPhone' },
+            { label: 'Password', name: 'password', type: 'password' },
+          ].map(({ label, name, type = 'text' }) => (
+            <div key={name}>
+              <label htmlFor={name} className="block mb-2 font-semibold text-gray-700 text-lg">
+                {label}
+              </label>
+              <input
+                type={type}
+                id={name}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                placeholder={`Enter ${label.toLowerCase()}`}
+                className="w-full p-4 border rounded-md outline-none focus:border-primary text-base"
+                required
+              />
+            </div>
+          ))}
         </div>
-<TermsModal isOpen={showTerms} onAgree={handleAgree} onDecline={handleDecline} />
 
-<div className="pt-4">
-  <button
-    type="button"
-    onClick={() => setShowTerms(true)}
-    className="text-sm text-blue-600 underline hover:text-blue-800"
-  >
-    Agree To Terms and Conditions
-  </button>
-</div>
+        <TermsModal isOpen={showTerms} onAgree={handleAgree} onDecline={handleDecline} />
+
+        <div className="pt-4">
+          <button
+            type="button"
+            onClick={() => setShowTerms(true)}
+            className="text-sm text-blue-600 underline hover:text-blue-800"
+          >
+            Agree To Terms and Conditions
+          </button>
+        </div>
+
+        {error && <p className="text-red-600 pt-4">{error}</p>}
+
         <div className="flex mt-10">
           <button
             type="submit"
+            disabled={loading}
             className="bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-24 rounded-lg text-lg shadow-md transition duration-200"
           >
-            Next
+            {loading ? 'Submitting...' : 'Next'}
           </button>
         </div>
       </form>

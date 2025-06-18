@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import RegSidebar from './SignupWizard/RegSidebar';
 import Guardian from './SignupWizard/Guardian';
-import AddStudent from './SignupWizard/AddStudent';
+import AddAdmin from './SignupWizard/AddAdmin';
 import Final from './SignupWizard/Final';
 
 const RegisterationWiz = () => {
@@ -13,7 +13,7 @@ const RegisterationWiz = () => {
   };
 
   const handleNextStep = () => {
-    if (activeStep < 5) setActiveStep(activeStep + 1);
+    if (activeStep < 4) setActiveStep(activeStep + 1); // now only 3 steps (1-3)
   };
 
   const renderSteps = () => {
@@ -21,7 +21,7 @@ const RegisterationWiz = () => {
       case 1:
         return <Guardian activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 2:
-        return <AddStudent activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
+        return <AddAdmin activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 3:
         return <Final activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       default:
