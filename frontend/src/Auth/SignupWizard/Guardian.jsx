@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react';
+import TermsModal from './TermsModal'
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
 const baseUrl = process.env.REACT_APP_BASEURL;
-import TermsModal from './TermsModal';
 const Guardian = ({ nextStep }) => {
   const [showTerms, setShowTerms] = useState(false);
 
