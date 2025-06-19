@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
+
 import { useState, useContext } from 'react';
 import axios from 'axios';
 import { AppContext } from '../../context/AppContext';
-const baseUrl = process.env.REACT_APP_BASEURL;
 import TermsModal from './TermsModal';
+const baseUrl = process.env.REACT_APP_BASEURL;
 const Guardian = ({ nextStep }) => {
   const [showTerms, setShowTerms] = useState(false);
 

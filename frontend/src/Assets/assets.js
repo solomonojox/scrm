@@ -7,6 +7,7 @@ import school4 from './school4.jpg'
 import school5 from './school5.jpeg'
 import school6 from './school6.jpg'
 import scrm from './scrm.png'
+import heroLanding from './landingHero.jpg'
 
 const assets = {
     woman,
@@ -18,6 +19,7 @@ const assets = {
     school5,
     school6,
     scrm,
+    heroLanding,
 }
 
 export default assets;
