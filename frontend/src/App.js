@@ -4,7 +4,7 @@ import MainLogin from './Auth/MainLogin.jsx';
 // import Student from './StudentDashboard/Student.jsx'
 // import Welcome from './Pages/Welcome.jsx';
 import Dashboard from './Pages/Welcome.jsx';
-import RegisterationWiz from './Auth/RegisterationWiz.jsx';
+// import RegisterationWiz from './Auth/RegisterationWiz.jsx';
 
 // Admin
 import AdminDashboard from './Admin/AdminDashboard.jsx';
@@ -39,6 +39,8 @@ import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
 import LandingPage from './LandingPageFolder/LandingPage.jsx';
+import Guardian from './Auth/SignupWizard/SchoolWizard/SchoolReg.jsx';
+import SchoolRegistration from './Auth/SchoolRegistration.jsx';
 const App = () => {
   return (
     <Router>
@@ -46,7 +48,7 @@ const App = () => {
         <Route path='/' element={<Navigate to="/home" replace />} />
         <Route path='/login' element={<MainLogin />} />
         <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/registrationwiz' element={<RegisterationWiz />} />
+        {/* <Route path='/registrationwiz' element={<RegisterationWiz />} /> */}
 
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/students' element={<ViewStudents />} />
@@ -89,6 +91,11 @@ const App = () => {
         <Route path='/teacher/result' element={<Results />} />
 
         <Route path='/home' element={<LandingPage/>} />
+        <Route path='/guardian' element={<Guardian/>} />
+
+        {/* School Registration */}
+        <Route path='/school-wizard' element={<SchoolRegistration/>} />
+
       </Routes>
     </Router>
   );

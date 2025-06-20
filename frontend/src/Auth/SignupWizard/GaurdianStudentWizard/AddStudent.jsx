@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { AppContext } from '../../context/AppContext';
+import { AppContext } from '../../../context/AppContext';
 const baseUrl = process.env.REACT_APP_BASEURL
 
 const AddStudent = ({ nextStep }) => {
