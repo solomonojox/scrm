@@ -115,12 +115,21 @@ const LandingPage = () => {
             </div>
 
             {/* Desktop Login Button */}
-            <button
+           <div className='flex space-x-3'>
+             <button
               className="px-10 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-md hidden md:block transition-all duration-300 hover:shadow-lg"
               onClick={() => window.location.href = '/login'}
             >
               Get Started
             </button>
+            <button
+              className="px-10 py-2  bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-md hidden md:block transition-all duration-300 hover:shadow-lg"
+              onClick={() => window.location.href = '/login'}
+            >
+              Login
+            </button>
+           </div>
+
 
             {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center">
