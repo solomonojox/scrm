@@ -109,19 +109,19 @@ const MainLogin = () => {
 
   const loginTeacher = async () => {
     showOverlay();
-   
+
     try {
       const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
         email: email,
         password: password
       });
       notifySuccess(res.data.responseMessage);
-     
+
       // console.log(res.data);
       localStorage.setItem('teacherId', res.data.data.teacherId)
       localStorage.setItem('teacherData', JSON.stringify(res.data.data))
       console.log("Teacher login response data:", res.data.data);
-      
+
       navigate('/teacher/dashboard');
     } catch (err) {
       notifyError(err.response.data.responseMessage);
@@ -138,13 +138,13 @@ const MainLogin = () => {
         email: email,
         password: password
       });
-      
+
       console.log(res.data);
-      
-      if(res.data.status === true){
+
+      if (res.data.status === true) {
         notifySuccess(res.data.responseMessage);
         navigate('/studentdata');
-        localStorage.setItem('guardianId' , res.data.data.guardianId);
+        localStorage.setItem('guardianId', res.data.data.guardianId);
         localStorage.setItem('guardian', JSON.stringify(res.data.data));
         hideOverlay();
       }
@@ -159,15 +159,19 @@ const MainLogin = () => {
   const isNotValidated2 = !username || !password || !selectedLogin;
 
   return (
-    <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-4">
-      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 grid items-center">
-        <div><img src={assets.scrm} alt="" width={150} /></div>
+    <div className="bg-orange-300 h-[100dvh] w-full p-2 flex ">
+      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-10 items-center">
+       <div>
+         <div><img src={assets.scrm} alt="" width={150}  /></div>
 
-        <h2 className="font-bold">WELCOME TO OUR WEBSITE</h2>
-
-        <form action="submit" className="space-y-8" onSubmit={handleLogin}>
-          <div className="space-y-4">
-            <div className="flex gap-2 text-sm">
+        <div className="mt-5">
+          <h2 className="font-bold text-xl">WELCOME BACK</h2>
+          <p className="text-sm">Please login</p>
+        </div>
+       </div>
+        <form action="submit" onSubmit={handleLogin}>
+          {/* <div className="space-y-4"> */}
+          {/* <div className="flex gap-2 text-sm">
               {["admin", "teacher", "student", "guardian"].map((role) => (
                 <div key={role} className="flex items-center gap-1">
                   <input
@@ -181,9 +185,9 @@ const MainLogin = () => {
                   <label htmlFor={role} className="font-semibold capitalize cursor-pointer">{role}</label>
                 </div>
               ))}
-            </div>
+            </div> */}
 
-            {selectedLogin === 'admin' ? (
+          {/* {selectedLogin === 'admin' ? (
               <input
                 type="text"
                 placeholder="username"
@@ -234,7 +238,27 @@ const MainLogin = () => {
             >
               SIGN IN
             </button>
-          )}
+          )} */}
+          <div className="space-y-4">
+            <input
+              type='text'
+              placeholder="School RegNo"
+              id="School Id"
+              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+            />
+            <input
+              type='text'
+              placeholder="Username"
+              id="Username"
+              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+            />
+            <input
+              type='text'
+              placeholder="password"
+              id="password"
+              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+            />
+          </div>
         </form>
 
         <p className="text-[12px] text-center">

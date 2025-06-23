@@ -7,8 +7,8 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
   const steps = [
     { title: "Add School", description: "Provide the details of the guardian", icon: <FaRegUser className='text-2xl text-white' /> },
-    { title: "Add Owner information ", description: "Enter the details of the student", icon: <MdOutlineMarkEmailRead className='text-2xl text-white' /> },
-    { title: "Welcome to Educat", description: "Get up and running in 3 minutes", icon: <IoIosRocket className='text-2xl text-white' /> },
+    { title: "Add School License", description: "License of school eg. CAC", icon: <MdOutlineMarkEmailRead className='text-2xl text-white' /> },
+    { title: "Add school Admin", description: "Admin of the school to monitor the application", icon: <IoIosRocket className='text-2xl text-white' /> },
   ];
 
   // const handleButtonClick = () => nextStep();

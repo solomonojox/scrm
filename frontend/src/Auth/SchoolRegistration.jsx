@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 import RegSidebar from './SignupWizard/RegSidebar';
-import Guardian from './SignupWizard/SchoolWizard/SchoolReg';
-import AddStudent from './SignupWizard/SchoolWizard/AddStudent';
-import Final from './SignupWizard/SchoolWizard/Final';
+import RegisterSchool from './SignupWizard/SchoolWizard/SchoolReg';
+import AddDocument from './SignupWizard/SchoolWizard/AddDocument';
+import AddSchoolAdmin from './SignupWizard/SchoolWizard/AddSchoolAdmin';
 
-const RegisterationWiz = () => {
+const SchoolRegistration = () => {
   const [activeStep, setActiveStep] = useState(1);
 
   const handlePrevStep = () => {
@@ -19,11 +19,11 @@ const RegisterationWiz = () => {
   const renderSteps = () => {
     switch (activeStep) {
       case 1:
-        return <Guardian activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
+        return <RegisterSchool activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 2:
-        return <AddStudent activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
+        return <AddDocument activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       case 3:
-        return <Final activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
+        return <AddSchoolAdmin activeStep={activeStep} prevStep={handlePrevStep} nextStep={handleNextStep} />;
       default:
         return null;
     }
@@ -44,4 +44,4 @@ const RegisterationWiz = () => {
   );
 };
 
-export default RegisterationWiz;
+export default SchoolRegistration;
