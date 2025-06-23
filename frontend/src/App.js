@@ -39,6 +39,7 @@ import AdminClassroom from './Admin/DashboardComponents/Classroom/AdminClassroom
 // import TeacherStudentProfile from './Teacher/TeachersComponents/Student/Teacher_StudentProfile.jsx';
 import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
 import LandingPage from './LandingPageFolder/LandingPage.jsx';
+import Guardian from './Auth/SignupWizard/Guardian.jsx';
 const App = () => {
   return (
     <Router>
@@ -89,6 +90,7 @@ const App = () => {
         <Route path='/teacher/result' element={<Results />} />
 
         <Route path='/home' element={<LandingPage/>} />
+        <Route path='/guardian' element={<Guardian/>} />
       </Routes>
     </Router>
   );
