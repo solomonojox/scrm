@@ -87,10 +87,10 @@ const Guardian = ({ nextStep }) => {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex justify-center items-center min-h-screenp-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8 space-y-8"
+        className="w-full max-w-4xl bg-white p-8 space-y-8"
       >
         <h2 className="text-3xl font-semibold text-gray-800 text-center">
           Register School
