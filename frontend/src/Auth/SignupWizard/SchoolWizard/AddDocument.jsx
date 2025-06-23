@@ -110,7 +110,7 @@ const AddDocument = ({ nextStep }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex justify-center items-center min-h-screen  p-4">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8 space-y-6"
