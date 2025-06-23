@@ -159,7 +159,7 @@ const MainLogin = () => {
   const isNotValidated2 = !username || !password || !selectedLogin;
 
   return (
-    <div className="bg-orange-300 h-[100dvh] w-full p-2 flex ">
+    <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">
       <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-10 items-center">
        <div>
          <div><img src={assets.scrm} alt="" width={150}  /></div>

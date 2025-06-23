@@ -118,7 +118,7 @@ const LandingPage = () => {
            <div className='flex space-x-3'>
              <button
               className="px-10 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-md hidden md:block transition-all duration-300 hover:shadow-lg"
-              onClick={() => window.location.href = '/login'}
+              onClick={() => window.location.href = '/school-wizard'}
             >
               Get Started
             </button>

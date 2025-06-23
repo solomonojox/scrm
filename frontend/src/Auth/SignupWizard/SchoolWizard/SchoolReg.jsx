@@ -47,10 +47,12 @@ const handleDecline = () => {
     try {
       const res = await axios.post(`${baseUrl}/api/School/RegisterSchool`, data);
       console.log("Submitted successfully:", res.data);
+      notifySuccess("School registration successful!");
       nextStep(); // ✅ Move to next step after success
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Something went wrong. Please try again.");
+      notifyError(error.response ? error.response.data.responseMessage : error.message);
+      console.error("Error details:", error.response ? error.response.data : error.message);
     }
     finally{
       hideOverlay()
