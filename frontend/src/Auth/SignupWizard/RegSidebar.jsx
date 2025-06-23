@@ -23,7 +23,7 @@ const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
             {steps.map((step, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div className="relative">
-                  <div className={`${activeStep >= index + 1 ? "bg-green-500" : "bg-gray-500"} h-10 w-10 rounded-full flex items-center justify-center`}>
+                  <div className={`${activeStep >= index + 1 ? "bg-orange-500" : "bg-gray-500"} h-10 w-10 rounded-full flex items-center justify-center`}>
                     {step.icon}
                   </div>
                   {index < steps.length - 1 && (
