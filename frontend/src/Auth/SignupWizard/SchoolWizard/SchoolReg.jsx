@@ -29,13 +29,13 @@ const Guardian = ({ nextStep }) => {
   const handleAgree = () => {
     setShowTerms(false);
     setData(prev => ({ ...prev, hasAgreedToTerms: true }));
-    notifySuccess && notifySuccess('Terms accepted. You can proceed.');
+    notifySuccess?.('Terms accepted. You can proceed.');
   };
 
   const handleDecline = () => {
     setShowTerms(false);
     setData(prev => ({ ...prev, hasAgreedToTerms: false }));
-    notifyError && notifyError('You must agree to the terms to proceed.');
+    notifyError?.('You must agree to the terms to proceed.');
   };
 
   const handleChange = useCallback((e) => {
@@ -47,27 +47,32 @@ const Guardian = ({ nextStep }) => {
     e.preventDefault();
 
     if (!data.hasAgreedToTerms) {
-      notifyError && notifyError('You must agree to the terms and conditions before continuing.');
+      notifyError?.('You must agree to the terms and conditions before continuing.');
       setShowTerms(true);
       return;
     }
 
-    showOverlay && showOverlay();
+    showOverlay?.();
     try {
       const res = await axios.post(`${baseUrl}/api/School/RegisterSchool`, data);
       console.log('Submitted successfully:', res.data);
       notifySuccess && notifySuccess('School registered successfully.');
+
+      // Assuming response shape { data: { data: { schoolId: ... }, ... } }
       const registeredSchoolId = res?.data?.data?.schoolId;
       if (registeredSchoolId) {
         localStorage.setItem('schoolId', registeredSchoolId);
       }
-      nextStep && nextStep();
+
+      notifySuccess?.('School registered successfully.');
+      // advance to next step if provided
+      nextStep?.();
     } catch (error) {
       console.error('Submission error:', error);
       const msg = error.response?.data?.message || 'Something went wrong. Please try again.';
-      notifyError && notifyError(msg);
+      notifyError?.(msg);
     } finally {
-      hideOverlay && hideOverlay();
+      hideOverlay?.();
     }
   };
 
@@ -87,10 +92,10 @@ const Guardian = ({ nextStep }) => {
   ];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex justify-center items-center min-h-screen p-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8 space-y-8"
+        className="w-full max-w-4xl bg-white  p-8 space-y-8"
       >
         <h2 className="text-3xl font-semibold text-gray-800 text-center">
           Register School
@@ -99,10 +104,7 @@ const Guardian = ({ nextStep }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {fields.slice(0, 7).map(({ label, name, type }) => (
             <div key={name}>
-              <label
-                htmlFor={name}
-                className="block mb-2 font-medium text-gray-700"
-              >
+              <label htmlFor={name} className="block mb-2 font-medium text-gray-700">
                 {label}
               </label>
               <input
@@ -114,16 +116,13 @@ const Guardian = ({ nextStep }) => {
                 placeholder={`Enter ${label}`}
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg outline-none 
-                           focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
+                  focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
               />
             </div>
           ))}
 
           <div>
-            <label
-              htmlFor="typeOfSchool"
-              className="block mb-2 font-medium text-gray-700"
-            >
+            <label htmlFor="typeOfSchool" className="block mb-2 font-medium text-gray-700">
               Type of School
             </label>
             <select
@@ -133,7 +132,7 @@ const Guardian = ({ nextStep }) => {
               onChange={handleChange}
               required
               className="w-full p-3 border border-gray-300 rounded-lg outline-none
-                         focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
+                focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
             >
               <option value="">Select type</option>
               <option value="Primary">Primary</option>
@@ -144,10 +143,7 @@ const Guardian = ({ nextStep }) => {
 
           {fields.slice(7).map(({ label, name, type }) => (
             <div key={name}>
-              <label
-                htmlFor={name}
-                className="block mb-2 font-medium text-gray-700"
-              >
+              <label htmlFor={name} className="block mb-2 font-medium text-gray-700">
                 {label}
               </label>
               <input
@@ -159,7 +155,7 @@ const Guardian = ({ nextStep }) => {
                 placeholder={`Enter ${label}`}
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg outline-none 
-                           focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
+                  focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
               />
             </div>
           ))}
@@ -192,16 +188,8 @@ const Guardian = ({ nextStep }) => {
           <motion.button
             type="submit"
             disabled={!data.hasAgreedToTerms}
-            whileHover={
-              data.hasAgreedToTerms
-                ? { scale: 1.03 }
-                : {}
-            }
-            whileTap={
-              data.hasAgreedToTerms
-                ? { scale: 0.97 }
-                : {}
-            }
+            whileHover={data.hasAgreedToTerms ? { scale: 1.03 } : {}}
+            whileTap={data.hasAgreedToTerms ? { scale: 0.97 } : {}}
             className={`font-medium py-4 px-16 rounded-xl shadow-md transition-colors
               ${
                 data.hasAgreedToTerms
