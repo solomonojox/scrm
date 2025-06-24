@@ -55,7 +55,6 @@ const Guardian = ({ nextStep }) => {
     showOverlay && showOverlay();
     try {
       const res = await axios.post(`${baseUrl}/api/School/RegisterSchool`, data);
-<<<<<<< HEAD
       console.log('Submitted successfully:', res.data);
       notifySuccess && notifySuccess('School registered successfully.');
       const registeredSchoolId = res?.data?.data?.schoolId;
@@ -69,18 +68,6 @@ const Guardian = ({ nextStep }) => {
       notifyError && notifyError(msg);
     } finally {
       hideOverlay && hideOverlay();
-=======
-      console.log("Submitted successfully:", res.data);
-      notifySuccess("School registration successful!");
-      nextStep(); // ✅ Move to next step after success
-    } catch (error) {
-      console.error("Submission error:", error);
-      notifyError(error.response ? error.response.data.responseMessage : error.message);
-      console.error("Error details:", error.response ? error.response.data : error.message);
-    }
-    finally{
-      hideOverlay()
->>>>>>> DevBranch
     }
   };
 
