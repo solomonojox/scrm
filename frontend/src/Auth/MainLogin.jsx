@@ -1,11 +1,12 @@
+/* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 
-import { PiEyeClosed } from "react-icons/pi";
-import { IoEyeOutline } from "react-icons/io5";
+// import { PiEyeClosed } from "react-icons/pi";
+// import { IoEyeOutline } from "react-icons/io5";
 import assets from "../Assets/assets";
 
 const MainLogin = () => {
@@ -70,9 +71,9 @@ const MainLogin = () => {
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
 
-  const handleRoleChange = (e) => {
-    setSelectedLogin(e.target.value);
-  };
+  // const handleRoleChange = (e) => {
+  //   setSelectedLogin(e.target.value);
+  // };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -155,8 +156,8 @@ const MainLogin = () => {
     }
   };
 
-  const isNotValidated = !email || !password || !selectedLogin;
-  const isNotValidated2 = !username || !password || !selectedLogin;
+  // const isNotValidated = !email || !password || !selectedLogin;
+  // const isNotValidated2 = !username || !password || !selectedLogin;
 
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">

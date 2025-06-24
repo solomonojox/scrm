@@ -69,7 +69,7 @@ const Guardian = ({ nextStep }) => {
       nextStep?.();
     } catch (error) {
       console.error('Submission error:', error);
-      const msg = error.response?.data?.message || 'Something went wrong. Please try again.';
+      const msg = error.response?.data?.responseMessage || 'Something went wrong. Please try again.';
       notifyError?.(msg);
     } finally {
       hideOverlay?.();

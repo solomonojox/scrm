@@ -2,11 +2,13 @@ import React, { useState, useContext, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { AppContext } from '../../../context/AppContext'; // adjust path if needed
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom'
 
 const baseUrl = process.env.REACT_APP_BASEURL; // https://scrmapi.tranquility.org.ng
 
 const SchoolAdminRegister = ({ nextStep }) => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
+  const navigate = useNavigate()
 
   const [schoolId, setSchoolId] = useState('');
   const [data, setData] = useState({
@@ -58,11 +60,11 @@ const SchoolAdminRegister = ({ nextStep }) => {
       );
       console.log('Admin registered:', res.data);
       notifySuccess?.('School admin registered successfully.');
-      nextStep?.();
+      navigate('/registration-successful')
     } catch (error) {
       console.error('Registration error:', error);
-      const msg = error.response?.data?.message 
-        || error.response?.data?.responseMessage 
+      const msg = error.response?.data?.message
+        || error.response?.data?.responseMessage
         || 'Something went wrong. Please try again.';
       notifyError?.(msg);
     } finally {
@@ -148,10 +150,9 @@ const SchoolAdminRegister = ({ nextStep }) => {
             whileHover={!isSubmitting && schoolId ? { scale: 1.03 } : {}}
             whileTap={!isSubmitting && schoolId ? { scale: 0.97 } : {}}
             className={`font-medium py-3 px-10 rounded-xl shadow-md transition-colors
-              ${
-                isSubmitting || !schoolId
-                  ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                  : 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer'
+              ${isSubmitting || !schoolId
+                ? 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                : 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer'
               }
             `}
           >
