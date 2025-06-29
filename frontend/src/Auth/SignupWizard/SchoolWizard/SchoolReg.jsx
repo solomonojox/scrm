@@ -66,7 +66,7 @@ const Guardian = ({ nextStep }) => {
       localStorage.setItem('regNumber', regNumber)
      };
       notifySuccess?.('School registered successfully.');
-      // advance to next step if provided
+     
       nextStep?.();
     } catch (error) {
       console.error('Submission error:', error);
