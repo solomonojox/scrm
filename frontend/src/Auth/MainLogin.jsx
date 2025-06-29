@@ -13,12 +13,17 @@ const MainLogin = () => {
   const baseUrl = process.env.REACT_APP_BASEURL;
   const navigate = useNavigate();
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
-
+  // const [email, setEmail] = useState("");
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
+ const [formData, setFormData] = useState({
+  schoolRegistrationNumber:localStorage.getItem('regNumber'),
+  email:'',
+  password:'',
+ })
+ console.log(formData.schoolRegistrationNumber)
   // Animation controls for each image
   const controls1 = useAnimation();
   const controls2 = useAnimation();
@@ -70,97 +75,101 @@ const MainLogin = () => {
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
 
-  const handleRoleChange = (e) => {
-    setSelectedLogin(e.target.value);
-  };
+  // const handleRoleChange = (e) => {
+  //   setSelectedLogin(e.target.value);
+  // };
 
-  const handleLogin = (e) => {
+  const handleLogin =  async(e) => {
     e.preventDefault();
+  //   if (selectedLogin === 'teacher') {
+  //     loginTeacher();
+  //   } else if (selectedLogin === 'guardian') {
+  //     loginGuardian();
+  //   } else if (selectedLogin === 'admin') {
+  //     loginAdmin();
+  //   }
+  // };
 
-    if (selectedLogin === 'teacher') {
-      loginTeacher();
-    } else if (selectedLogin === 'guardian') {
-      loginGuardian();
-    } else if (selectedLogin === 'admin') {
-      loginAdmin();
-    }
-  };
+  // const loginAdmin = async () => {
+  //   showOverlay();
 
-  const loginAdmin = async () => {
-    showOverlay();
+  //   try {
+  //     const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
+  //       username: username,
+  //       password: password
+  //     });
+  //     notifySuccess(res.data.responseMessage);
+  //     localStorage.setItem('adminId', res.data.data.adminId)
+  //     localStorage.setItem('adminData', JSON.stringify(res.data.data))
+  //     console.log("Admin login response data:", res.data.data);
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
-        username: username,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
-      localStorage.setItem('adminId', res.data.data.adminId)
-      localStorage.setItem('adminData', JSON.stringify(res.data.data))
-      console.log("Admin login response data:", res.data.data);
+  //     navigate('/admin/dashboard');
+  //   } catch (err) {
+  //     notifyError(err.response.data.responseMessage);
+  //   } finally {
+  //     hideOverlay();
+  //   }
+  // };
 
-      navigate('/admin/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
+  // const loginTeacher = async () => {
+  //   showOverlay();
 
-  const loginTeacher = async () => {
-    showOverlay();
+  //   try {
+  //     const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
+  //       email: email,
+  //       password: password
+  //     });
+  //     notifySuccess(res.data.responseMessage);
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
-        email: email,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
+  //     // console.log(res.data);
+  //     localStorage.setItem('teacherId', res.data.data.teacherId)
+  //     localStorage.setItem('teacherData', JSON.stringify(res.data.data))
+  //     console.log("Teacher login response data:", res.data.data);
 
-      // console.log(res.data);
-      localStorage.setItem('teacherId', res.data.data.teacherId)
-      localStorage.setItem('teacherData', JSON.stringify(res.data.data))
-      console.log("Teacher login response data:", res.data.data);
+  //     navigate('/teacher/dashboard');
+  //   } catch (err) {
+  //     notifyError(err.response.data.responseMessage);
+  //   } finally {
+  //     hideOverlay();
+  //   }
+  // };
 
-      navigate('/teacher/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
+  // const loginGuardian = async () => {
+  //   showOverlay();
 
-  const loginGuardian = async () => {
-    showOverlay();
+  //   try {
+  //     const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
+  //       email: email,
+  //       password: password
+  //     });
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
-        email: email,
-        password: password
-      });
+  //     console.log(res.data);
 
-      console.log(res.data);
+  //     if (res.data.status === true) {
+  //       notifySuccess(res.data.responseMessage);
+  //       navigate('/studentdata');
+  //       localStorage.setItem('guardianId', res.data.data.guardianId);
+  //       localStorage.setItem('guardian', JSON.stringify(res.data.data));
+  //       hideOverlay();
+  //     }
+  //   } catch (err) {
+  //     notifyError(err.response.data.responseMessage);
+  //   } finally {
+  //     hideOverlay();
+  //   }
+  // };
 
-      if (res.data.status === true) {
-        notifySuccess(res.data.responseMessage);
-        navigate('/studentdata');
-        localStorage.setItem('guardianId', res.data.data.guardianId);
-        localStorage.setItem('guardian', JSON.stringify(res.data.data));
-        hideOverlay();
-      }
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
-
-  const isNotValidated = !email || !password || !selectedLogin;
-  const isNotValidated2 = !username || !password || !selectedLogin;
-
+  // const isNotValidated = !email || !password || !selectedLogin;
+  // const isNotValidated2 = !username || !password || !selectedLogin;
+try {
+  
+} catch (error) {
+  
+}
+  }
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">
-      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-10 items-center">
+      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-8 items-center">
        <div>
          <div><img src={assets.scrm} alt="" width={150}  /></div>
 
@@ -240,17 +249,12 @@ const MainLogin = () => {
             </button>
           )} */}
           <div className="space-y-4">
-            <input
-              type='text'
-              placeholder="School RegNo"
-              id="School Id"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
-            />
+         
             <input
               type='text'
               placeholder="Username"
               id="Username"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]" onChange={(e)=> setFormData({...formData, e})}
             />
             <input
               type='text'
@@ -259,6 +263,9 @@ const MainLogin = () => {
               className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
             />
           </div>
+         <div className="flex justify-center">
+           <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-2  font-semibold text-lg text-white">Sign in</button>
+         </div>
         </form>
 
         <p className="text-[12px] text-center">
