@@ -17,7 +17,7 @@ const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
 
   return (
     <div className='p-4 h-[100dvh]'>
-      <div className="bg-gray-200 h-[100%] p-4 rounded-lg flex flex-col justify-between">
+      <div className="bg-orange-200 h-[100%] p-4 rounded-lg flex flex-col justify-between">
         <div className="space-y-14">
           <h1 className="text-2xl font-semibold">Register a school</h1>
 

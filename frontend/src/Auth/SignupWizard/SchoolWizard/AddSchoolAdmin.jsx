@@ -1,14 +1,18 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { AppContext } from '../../../context/AppContext'; // adjust path if needed
+import { AppContext } from '../../../context/AppContext'; 
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom'
 
-const baseUrl = process.env.REACT_APP_BASEURL; // https://scrmapi.tranquility.org.ng
+import { useNavigate } from 'react-router-dom';
+const baseUrl = process.env.REACT_APP_BASEURL; 
+
+
+
+
 
 const SchoolAdminRegister = ({ nextStep }) => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
-  const navigate = useNavigate()
+ 
 
   const [schoolId, setSchoolId] = useState('');
   const [data, setData] = useState({
@@ -17,8 +21,7 @@ const SchoolAdminRegister = ({ nextStep }) => {
     password: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Retrieve schoolId from localStorage on mount
+   const navigate = useNavigate();
   useEffect(() => {
     const storedId = localStorage.getItem('schoolId');
     if (storedId) {
@@ -60,7 +63,12 @@ const SchoolAdminRegister = ({ nextStep }) => {
       );
       console.log('Admin registered:', res.data);
       notifySuccess?.('School admin registered successfully.');
+
+      nextStep?.();
+      navigate('/login')
+
       navigate('/registration-successful')
+
     } catch (error) {
       console.error('Registration error:', error);
       const msg = error.response?.data?.message

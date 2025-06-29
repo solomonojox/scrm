@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 import { motion, useAnimation } from "framer-motion"; // Add useAnimation
@@ -12,14 +11,19 @@ import assets from "../Assets/assets";
 const MainLogin = () => {
   // Define the base URL for the API from react app env file
   const baseUrl = process.env.REACT_APP_BASEURL;
-  const navigate = useNavigate();
+  
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
-
+  // const [email, setEmail] = useState("");
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [showPassword, setShowPassword] = useState(false);
+  // const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
+  const [formData, setFormData] = useState({
+    schoolRegistrationNumber: localStorage.getItem('regNumber') || '',
+    email: '',
+    password: '',
+  })
+  console.log(formData.schoolRegistrationNumber)
   // Animation controls for each image
   const controls1 = useAnimation();
   const controls2 = useAnimation();
@@ -70,106 +74,142 @@ const MainLogin = () => {
 
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
+   const handleLogin = async (e) => {
+  e.preventDefault();
+  showOverlay();
+  try {
+    if (!formData.email || !formData.password || !formData.schoolRegistrationNumber) {
+      notifyError("Please fill in all fields");
+      return;
+    }
+
+    console.log("Logging in with:", formData); 
+
+    const res = await axios.post(`${baseUrl}/api/Login/Login`, formData);
+    console.log(res.data);
+    notifySuccess(res.data.responseMessage);
+
+    //
+  } catch (error) {
+    console.error("Login error:", error);
+    const message = error?.response?.data?.responseMessage || "Login failed";
+    notifyError(message);
+  }
+  finally{
+    hideOverlay();
+  }
+};
 
   // const handleRoleChange = (e) => {
   //   setSelectedLogin(e.target.value);
   // };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.post(`${baseUrl}/api/Login/Login`, formData);
+  //     notifySuccess(res.data.responseMessage);
 
-    if (selectedLogin === 'teacher') {
-      loginTeacher();
-    } else if (selectedLogin === 'guardian') {
-      loginGuardian();
-    } else if (selectedLogin === 'admin') {
-      loginAdmin();
-    }
-  };
 
-  const loginAdmin = async () => {
-    showOverlay();
+  //     console.log(res.data);
+  //     notifySuccess(res.data.responseMessage)
+  //   } catch (error) {
+  //     console.error('error', error)
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
-        username: username,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
-      localStorage.setItem('adminId', res.data.data.adminId)
-      localStorage.setItem('adminData', JSON.stringify(res.data.data))
-      console.log("Admin login response data:", res.data.data);
+  //   }
+  //   //   if (selectedLogin === 'teacher') {
+  //   //     loginTeacher();
+  //   //   } else if (selectedLogin === 'guardian') {
+  //   //     loginGuardian();
+  //   //   } else if (selectedLogin === 'admin') {
+  //   //     loginAdmin();
+  //   //   }
+  //   // };
 
-      navigate('/admin/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
+  //   // const loginAdmin = async () => {
+  //   //   showOverlay();
 
-  const loginTeacher = async () => {
-    showOverlay();
+  //   //   try {
+  //   //     const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
+  //   //       username: username,
+  //   //       password: password
+  //   //     });
+  //   //     notifySuccess(res.data.responseMessage);
+  //   //     localStorage.setItem('adminId', res.data.data.adminId)
+  //   //     localStorage.setItem('adminData', JSON.stringify(res.data.data))
+  //   //     console.log("Admin login response data:", res.data.data);
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
-        email: email,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
+  //   //     navigate('/admin/dashboard');
+  //   //   } catch (err) {
+  //   //     notifyError(err.response.data.responseMessage);
+  //   //   } finally {
+  //   //     hideOverlay();
+  //   //   }
+  //   // };
 
-      // console.log(res.data);
-      localStorage.setItem('teacherId', res.data.data.teacherId)
-      localStorage.setItem('teacherData', JSON.stringify(res.data.data))
-      console.log("Teacher login response data:", res.data.data);
+  //   // const loginTeacher = async () => {
+  //   //   showOverlay();
 
-      navigate('/teacher/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
+  //   //   try {
+  //   //     const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
+  //   //       email: email,
+  //   //       password: password
+  //   //     });
+  //   //     notifySuccess(res.data.responseMessage);
 
-  const loginGuardian = async () => {
-    showOverlay();
+  //   //     // console.log(res.data);
+  //   //     localStorage.setItem('teacherId', res.data.data.teacherId)
+  //   //     localStorage.setItem('teacherData', JSON.stringify(res.data.data))
+  //   //     console.log("Teacher login response data:", res.data.data);
 
-    try {
-      const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
-        email: email,
-        password: password
-      });
+  //   //     navigate('/teacher/dashboard');
+  //   //   } catch (err) {
+  //   //     notifyError(err.response.data.responseMessage);
+  //   //   } finally {
+  //   //     hideOverlay();
+  //   //   }
+  //   // };
 
-      console.log(res.data);
+  //   // const loginGuardian = async () => {
+  //   //   showOverlay();
 
-      if (res.data.status === true) {
-        notifySuccess(res.data.responseMessage);
-        navigate('/studentdata');
-        localStorage.setItem('guardianId', res.data.data.guardianId);
-        localStorage.setItem('guardian', JSON.stringify(res.data.data));
-        hideOverlay();
-      }
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
+  //   //   try {
+  //   //     const res = await axios.post(`${baseUrl}/api/Guardian/Login`, {
+  //   //       email: email,
+  //   //       password: password
+  //   //     });
 
-  // const isNotValidated = !email || !password || !selectedLogin;
-  // const isNotValidated2 = !username || !password || !selectedLogin;
+  //   //     console.log(res.data);
+
+  //   //     if (res.data.status === true) {
+  //   //       notifySuccess(res.data.responseMessage);
+  //   //       navigate('/studentdata');
+  //   //       localStorage.setItem('guardianId', res.data.data.guardianId);
+  //   //       localStorage.setItem('guardian', JSON.stringify(res.data.data));
+  //   //       hideOverlay();
+  //   //     }
+  //   //   } catch (err) {
+  //   //     notifyError(err.response.data.responseMessage);
+  //   //   } finally {
+  //   //     hideOverlay();
+  //   //   }
+  //   // };
+
+  //   // const isNotValidated = !email || !password || !selectedLogin;
+  //   // const isNotValidated2 = !username || !password || !selectedLogin;
+  // //   try {
 
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">
-      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-10 items-center">
-       <div>
-         <div><img src={assets.scrm} alt="" width={150}  /></div>
+      <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-8 items-center">
+        <div>
+          <div><img src={assets.scrm} alt="" width={150} /></div>
 
-        <div className="mt-5">
-          <h2 className="font-bold text-xl">WELCOME BACK</h2>
-          <p className="text-sm">Please login</p>
+          <div className="mt-5">
+            <h2 className="font-bold text-xl">WELCOME BACK</h2>
+            <p className="text-sm">Please login</p>
+          </div>
         </div>
-       </div>
         <form action="submit" onSubmit={handleLogin}>
           {/* <div className="space-y-4"> */}
           {/* <div className="flex gap-2 text-sm">
@@ -241,24 +281,24 @@ const MainLogin = () => {
             </button>
           )} */}
           <div className="space-y-4">
+
             <input
-              type='text'
-              placeholder="School RegNo"
-              id="School Id"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+              type='email'
+              placeholder="email"
+              id="email"
+              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]" onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
             <input
-              type='text'
-              placeholder="Username"
-              id="Username"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
-            />
-            <input
-              type='text'
+              type='password'
               placeholder="password"
               id="password"
               className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
+
+          </div>
+          <div className="flex justify-center">
+            <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-2  font-semibold text-lg text-white">Sign in</button>
           </div>
         </form>
 
