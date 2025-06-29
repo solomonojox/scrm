@@ -41,6 +41,7 @@ import Results from './Teacher/TeachersComponents/Teachers/Results.jsx'
 import LandingPage from './LandingPageFolder/LandingPage.jsx';
 import Guardian from './Auth/SignupWizard/SchoolWizard/SchoolReg.jsx';
 import SchoolRegistration from './Auth/SchoolRegistration.jsx';
+import SuccessPage from './Auth/SignupWizard/SchoolWizard/SuccessPage.jsx';
 const App = () => {
   return (
     <Router>
@@ -95,6 +96,7 @@ const App = () => {
 
         {/* School Registration */}
         <Route path='/school-wizard' element={<SchoolRegistration/>} />
+        <Route path='/registration-successful' element={<SuccessPage/>} />
 
       </Routes>
     </Router>
