@@ -1,12 +1,11 @@
-/* eslint-disable no-unused-vars */
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 
-// import { PiEyeClosed } from "react-icons/pi";
-// import { IoEyeOutline } from "react-icons/io5";
+import { PiEyeClosed } from "react-icons/pi";
+import { IoEyeOutline } from "react-icons/io5";
 import assets from "../Assets/assets";
 
 const MainLogin = () => {
@@ -75,73 +74,12 @@ const MainLogin = () => {
 
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
-
    const handleLogin = async (e) => {
   e.preventDefault();
   try {
     if (!formData.email || !formData.password || !formData.schoolRegistrationNumber) {
       notifyError("Please fill in all fields");
       return;
-
-
-  // const handleRoleChange = (e) => {
-  //   setSelectedLogin(e.target.value);
-  // };
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    if (selectedLogin === 'teacher') {
-      loginTeacher();
-    } else if (selectedLogin === 'guardian') {
-      loginGuardian();
-    } else if (selectedLogin === 'admin') {
-      loginAdmin();
-    }
-  };
-
-  const loginAdmin = async () => {
-    showOverlay();
-
-    try {
-      const res = await axios.post(`${baseUrl}/api/Admin/AdminLogin`, {
-        username: username,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
-      localStorage.setItem('adminId', res.data.data.adminId)
-      localStorage.setItem('adminData', JSON.stringify(res.data.data))
-      console.log("Admin login response data:", res.data.data);
-
-      navigate('/admin/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-    }
-  };
-
-  const loginTeacher = async () => {
-    showOverlay();
-
-    try {
-      const res = await axios.post(`${baseUrl}/api/Teacher/Login`, {
-        email: email,
-        password: password
-      });
-      notifySuccess(res.data.responseMessage);
-
-      // console.log(res.data);
-      localStorage.setItem('teacherId', res.data.data.teacherId)
-      localStorage.setItem('teacherData', JSON.stringify(res.data.data))
-      console.log("Teacher login response data:", res.data.data);
-
-      navigate('/teacher/dashboard');
-    } catch (err) {
-      notifyError(err.response.data.responseMessage);
-    } finally {
-      hideOverlay();
-
     }
 
     console.log("Logging in with:", formData); 
@@ -150,7 +88,6 @@ const MainLogin = () => {
     console.log(res.data);
     notifySuccess(res.data.responseMessage);
 
-
     //
   } catch (error) {
     console.error("Login error:", error);
@@ -158,10 +95,6 @@ const MainLogin = () => {
     notifyError(message);
   }
 };
-
-  // const isNotValidated = !email || !password || !selectedLogin;
-  // const isNotValidated2 = !username || !password || !selectedLogin;
-
 
   // const handleRoleChange = (e) => {
   //   setSelectedLogin(e.target.value);
@@ -260,7 +193,8 @@ const MainLogin = () => {
 
   //   // const isNotValidated = !email || !password || !selectedLogin;
   //   // const isNotValidated2 = !username || !password || !selectedLogin;
-  //
+  // //   try {
+
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">
       <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-8 items-center">
