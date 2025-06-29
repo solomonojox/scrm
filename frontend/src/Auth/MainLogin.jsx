@@ -11,7 +11,7 @@ import assets from "../Assets/assets";
 const MainLogin = () => {
   // Define the base URL for the API from react app env file
   const baseUrl = process.env.REACT_APP_BASEURL;
-  
+
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   // const [email, setEmail] = useState("");
   // const [username, setUsername] = useState("");
@@ -19,7 +19,8 @@ const MainLogin = () => {
   // const [showPassword, setShowPassword] = useState(false);
   // const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
   const [formData, setFormData] = useState({
-    schoolRegistrationNumber: localStorage.getItem('regNumber') || '',
+    // schoolRegistrationNumber: localStorage.getItem('regNumber') || '33555b52-7df2-4fc8-4357-08ddb275afd7',
+    schoolRegistrationNumber: '',
     email: '',
     password: '',
   })
@@ -74,31 +75,31 @@ const MainLogin = () => {
 
     startAnimations();
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
-   const handleLogin = async (e) => {
-  e.preventDefault();
-  showOverlay();
-  try {
-    if (!formData.email || !formData.password || !formData.schoolRegistrationNumber) {
-      notifyError("Please fill in all fields");
-      return;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    showOverlay();
+    try {
+      if (!formData.email || !formData.password || !formData.schoolRegistrationNumber) {
+        notifyError("Please fill in all fields");
+        return;
+      }
+
+      console.log("Logging in with:", formData);
+
+      const res = await axios.post(`${baseUrl}/api/Login/Login`, formData);
+      console.log(res.data);
+      notifySuccess(res.data.responseMessage);
+
+      //
+    } catch (error) {
+      console.error("Login error:", error);
+      const message = error?.response?.data?.responseMessage || "Login failed";
+      notifyError(message);
     }
-
-    console.log("Logging in with:", formData); 
-
-    const res = await axios.post(`${baseUrl}/api/Login/Login`, formData);
-    console.log(res.data);
-    notifySuccess(res.data.responseMessage);
-
-    //
-  } catch (error) {
-    console.error("Login error:", error);
-    const message = error?.response?.data?.responseMessage || "Login failed";
-    notifyError(message);
-  }
-  finally{
-    hideOverlay();
-  }
-};
+    finally {
+      hideOverlay();
+    }
+  };
 
   // const handleRoleChange = (e) => {
   //   setSelectedLogin(e.target.value);
@@ -283,22 +284,28 @@ const MainLogin = () => {
           <div className="space-y-4">
 
             <input
+              type='text'
+              placeholder="School Registration Number"
+              id="schoolRegistrationNumber"
+              className="rounded-full w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-gray-300 text-[12px]" onChange={(e) => setFormData({ ...formData, schoolRegistrationNumber: e.target.value })}
+            />
+            <input
               type='email'
-              placeholder="email"
+              placeholder="Email"
               id="email"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]" onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="rounded-full w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-gray-300 text-[12px]" onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
             <input
               type='password'
-              placeholder="password"
+              placeholder="Password"
               id="password"
-              className="rounded-2xl w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-white text-[12px]"
+              className="rounded-full w-full px-4 py-2 bg-gray-100 outline-none focus:border-primary focus:border border border-gray-300 text-[12px]"
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             />
 
           </div>
           <div className="flex justify-center">
-            <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-2  font-semibold text-lg text-white">Sign in</button>
+            <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-1  font-semibold text-lg text-white w-full">Sign in</button>
           </div>
         </form>
 

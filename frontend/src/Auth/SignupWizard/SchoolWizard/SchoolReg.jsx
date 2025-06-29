@@ -66,6 +66,7 @@ const Guardian = ({ nextStep }) => {
       }
      if(regNumber){
       localStorage.setItem('regNumber', regNumber)
+      alert('School registered successfully. Your Registration Number is: ' + regNumber);
      };
       notifySuccess?.('School registered successfully.');
      
