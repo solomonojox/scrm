@@ -193,12 +193,7 @@ const MainLogin = () => {
 
   //   // const isNotValidated = !email || !password || !selectedLogin;
   //   // const isNotValidated2 = !username || !password || !selectedLogin;
-  //   try {
-
-  //   } catch (error) {
-
-  //   }
-  // }
+  //
   return (
     <div className="bg-orange-300 h-[100dvh] w-full p-2 flex gap-6 ">
       <div className="w-full md:w-[350px] bg-white h-full rounded-2xl p-6 space-y-8 items-center">
