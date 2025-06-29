@@ -3,6 +3,7 @@ import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMarkEmailRead } from "react-icons/md";
 import { IoIosRocket } from "react-icons/io";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
 
 const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
   const steps = [
@@ -10,6 +11,7 @@ const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
     { title: "Add School License", description: "License of school eg. CAC", icon: <MdOutlineMarkEmailRead className='text-2xl text-white' /> },
     { title: "Add school Admin", description: "Admin of the school to monitor the application", icon: <IoIosRocket className='text-2xl text-white' /> },
   ];
+  const navigate = useNavigate()
 
   // const handleButtonClick = () => nextStep();
 
@@ -40,10 +42,10 @@ const RegSidebar = ({ activeStep, prevStep, nextStep }) => {
         </div>
 
         <div className="flex justify-between font-semibold">
-          <p className="flex items-center gap-2 cursor-pointer" onClick={prevStep}>
-            <FaArrowLeftLong className="text-xl" /> Back
+          <p className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/login')}>
+            <FaArrowLeftLong className="text-xl" /> Back to login
           </p>
-          {/* <button className={`${activeStep === 3 ? "hidden" : "block"}`} onClick={handleButtonClick}>
+          {/* <button className={`${activeStep === 3 ? "hidden" : "block"}`} onClick={nextStep}>
             {activeStep === 1 ? "Login" : "Next"}
           </button> */}
         </div>
