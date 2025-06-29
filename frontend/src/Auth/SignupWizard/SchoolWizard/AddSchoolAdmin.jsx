@@ -6,14 +6,13 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 const baseUrl = process.env.REACT_APP_BASEURL; 
 
-import { useNavigate } from 'react-router-dom'
 
-const baseUrl = process.env.REACT_APP_BASEURL; // https://scrmapi.tranquility.org.ng
+
 
 
 const SchoolAdminRegister = ({ nextStep }) => {
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
-  const navigate = useNavigate()
+ 
 
   const [schoolId, setSchoolId] = useState('');
   const [data, setData] = useState({
