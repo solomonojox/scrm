@@ -1,17 +1,17 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 
-import { PiEyeClosed } from "react-icons/pi";
-import { IoEyeOutline } from "react-icons/io5";
+// import { PiEyeClosed } from "react-icons/pi";
+// import { IoEyeOutline } from "react-icons/io5";
 import assets from "../Assets/assets";
 
 const MainLogin = () => {
   // Define the base URL for the API from react app env file
   const baseUrl = process.env.REACT_APP_BASEURL;
-  const navigate = useNavigate();
+  
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   // const [email, setEmail] = useState("");
   // const [username, setUsername] = useState("");
@@ -76,6 +76,7 @@ const MainLogin = () => {
   }, [controls1, controls2, controls3, controls4, controls5, controls6]);
    const handleLogin = async (e) => {
   e.preventDefault();
+  showOverlay();
   try {
     if (!formData.email || !formData.password || !formData.schoolRegistrationNumber) {
       notifyError("Please fill in all fields");
@@ -93,6 +94,9 @@ const MainLogin = () => {
     console.error("Login error:", error);
     const message = error?.response?.data?.responseMessage || "Login failed";
     notifyError(message);
+  }
+  finally{
+    hideOverlay();
   }
 };
 
