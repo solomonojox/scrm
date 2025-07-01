@@ -19,7 +19,7 @@ const MainLogin = () => {
   // const [showPassword, setShowPassword] = useState(false);
   // const [selectedLogin, setSelectedLogin] = useState(""); // State for selected role
   const [formData, setFormData] = useState({
-    schoolRegistrationNumber: localStorage.getItem('regNumber') || '',
+    schoolRegistrationNumber: '',
     email: '',
     password: '',
   })
