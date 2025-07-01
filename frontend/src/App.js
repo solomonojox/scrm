@@ -42,6 +42,7 @@ import LandingPage from './LandingPageFolder/LandingPage.jsx';
 import Guardian from './Auth/SignupWizard/SchoolWizard/SchoolReg.jsx';
 import SchoolRegistration from './Auth/SchoolRegistration.jsx';
 import SuccessPage from './Auth/SignupWizard/SchoolWizard/SuccessPage.jsx';
+import Mainlanding from './NewLanding/Mainlanding.jsx';
 const App = () => {
   return (
     <Router>
@@ -91,12 +92,14 @@ const App = () => {
         <Route path='/teacher/guardian/:guardianId' element={<TeacherGuardianProfile />} />
         <Route path='/teacher/result' element={<Results />} />
 
-        <Route path='/home' element={<LandingPage/>} />
-        <Route path='/guardian' element={<Guardian/>} />
+        <Route path='/home' element={<LandingPage />} />
+        <Route path='/guardian' element={<Guardian />} />
 
         {/* School Registration */}
-        <Route path='/school-wizard' element={<SchoolRegistration/>} />
-        <Route path='/registration-successful' element={<SuccessPage/>} />
+        <Route path='/school-wizard' element={<SchoolRegistration />} />
+        <Route path='/registration-successful' element={<SuccessPage />} />
+
+        <Route path='/new-landing' element={<Mainlanding/>}/>
 
       </Routes>
     </Router>
