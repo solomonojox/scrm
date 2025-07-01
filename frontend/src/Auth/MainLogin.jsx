@@ -21,7 +21,7 @@ const MainLogin = () => {
   const [formData, setFormData] = useState({
     schoolRegistrationNumber: '',
     // schoolRegistrationNumber: localStorage.getItem('regNumber') || '33555b52-7df2-4fc8-4357-08ddb275afd7',
-    schoolRegistrationNumber: '',
+    
     email: '',
     password: '',
   })
