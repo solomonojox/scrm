@@ -21,6 +21,7 @@ const NavbarDashboard = () => {
     { name: "Classroom", href: "/admin/classrooms", active: false },
     { name: "News", href: "/admin/newss", active: false },
     { name: "Events", href: "/admin/events", active: false },
+    { name: "Session", href: "/admin/session", active: false }, // 👈 Add this line
   ]);
 
   useEffect(() => {
