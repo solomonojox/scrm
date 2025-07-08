@@ -30,6 +30,7 @@ import StudentData from './Pages/StudentData.jsx';
 import Assignment from './Pages/Assignment.jsx';
 import Sidebar from './Pages/Sidebar.jsx';
 import News from './Pages/News.jsx';
+import Login2 from './Pages/login2.jsx';
 import Result from './Pages/Result.jsx';
 import EventPage from './Pages/Event.jsx';
 import ViewClassrooms from './Admin/DashboardComponents/ViewClassrooms.jsx';
@@ -48,6 +49,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Navigate to="/home" replace />} />
         <Route path='/login' element={<MainLogin />} />
+        <Route path='/login2' element={<Login2/>} />
         <Route path='/dashboard' element={<Dashboard />} />
         {/* <Route path='/registrationwiz' element={<RegisterationWiz />} /> */}
 
