@@ -5,7 +5,7 @@ import MainLogin from './Auth/MainLogin.jsx';
 // import Welcome from './Pages/Welcome.jsx';
 import Dashboard from './Pages/Welcome.jsx';
 import RegisterationWiz from './Auth/RegisterationWiz.jsx';
-
+import GetStarted  from './Getstarted.jsx';
 // Admin
 import AdminDashboard from './Admin/AdminDashboard.jsx';
 import ViewStudents from './Admin/DashboardComponents/Student/ViewStudents.jsx';
@@ -47,6 +47,7 @@ const App = () => {
         <Route path='/login' element={<MainLogin />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/registrationwiz' element={<RegisterationWiz />} />
+         <Route path='/Start' element={<GetStarted />} />
 
         <Route path='/admin/dashboard' element={<AdminDashboard />} />
         <Route path='/admin/students' element={<ViewStudents />} />

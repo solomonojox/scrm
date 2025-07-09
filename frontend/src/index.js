@@ -6,6 +6,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ContextProvider from './context/AppContext'
 import WaitingLoader from './context/WaitingLoader';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
