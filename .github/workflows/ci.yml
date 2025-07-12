@@ -1,0 +1,36 @@
+name: CI - Code Quality
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  checks-and-tests:
+    name: Test Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Use the Node.js version your project requires
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Run Linter (ESLint)
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false  # Fails the workflow if linting fails
+
+      # Step 5: Build Project
+      - name: Build Project
+        run: npm run build

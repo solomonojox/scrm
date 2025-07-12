@@ -1,0 +1,47 @@
+# Root EditorConfig file
+root = true
+
+# Match all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Enforce spaces for indentation
+indent_style = space
+indent_size = 2
+
+# Set the maximum line length for better readability
+max_line_length = 100
+
+# JavaScript and React specific settings
+[*.{js,jsx,ts,tsx}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# CSS and SCSS
+[*.{css,scss}]
+indent_style = space
+indent_size = 2
+
+# YAML files
+[*.yml]
+indent_style = space
+indent_size = 2
+
+# Ignore config files for line length
+[*.{config,json,yml}]
+max_line_length = off

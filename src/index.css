@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap");
+@import "tailwindcss";
+
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+      border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer base {
+
+  input::placeholder,
+  textarea::placeholder {
+      color: var(--color-gray-400);
+  }
+}
+
+@theme {
+  --font-display: "Lato", "sans-serif";
+  --breakpoint-3xl: 120rem;
+
+  --color-primary: #05654a;
+  --color-secondary: #facc15
+      /* ... */
+}
+
+@layer base {
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+      cursor: pointer;
+  }
+}
