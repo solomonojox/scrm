@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import Sidebar from './Sidebar';          
+import Sidebar from '../Sidebar';          
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBell,
   faEnvelope,
   faBars,
 } from '@fortawesome/free-solid-svg-icons';
-
+import { Link } from "react-router-dom";
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -38,11 +38,14 @@ export default function Dashboard() {
 
             <input
               placeholder="Search..."
-              className="flex-1 md:w-1/3 px-3 py-1 border rounded-full outline-none"
+           className="px-3 py-1 border rounded-full outline-none w-36 md:w-1/3"
+
             />
 
             <div className="flex items-center space-x-4">
-              <FontAwesomeIcon icon={faBell} className="text-xl" />
+            <Link to="/notifications" className="text-xl">
+  <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
+</Link>
               <FontAwesomeIcon icon={faEnvelope} className="text-xl" />
 
               <div className="flex items-center gap-2">

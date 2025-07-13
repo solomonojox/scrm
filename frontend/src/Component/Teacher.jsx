@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Sidebar from "../Sidebar";
-import AddStudentModal from "./AddStudentModal";  
-import EditStudentModal from "./EditStudentModal";
-import ViewStudentModal from "./ViewStudentModal"; 
+import AddTeacherModal from "./AddTeacherModal";
+import EditTeacherModal from "./EditTeacherModal";
+import ViewTeacherModal from "./ViewTeacherModal";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
@@ -12,61 +12,54 @@ import {
   FaEye,
   FaEdit,
   FaTrashAlt,
-  FaBell,
   FaEnvelope,
 } from "react-icons/fa";
 
-/**
- * ⚙️ TEMP DATA – swap with real API call when ready.
- */
-const initialStudents = [
+const initialTeachers = [
   {
     id: 10001,
     firstName: "Jimmy",
     lastName: "Oslen",
-    class: "Jss1",
-    dob: "12-12-2024",
+    phone: "081222",
     address: "1, broad way lagos",
-    guardianId: 10002,
-    teacherId: 10002,
-    gender: "Male",
+    nationality: "Nigerian",
+    origin: "Ondo",
+    religion: "Christianity",
     avatar:
       "https://storage.googleapis.com/a1aa/image/c279911e-bfe8-4389-77de-5da03571d189.jpg",
   },
 ];
 
-
-function StudentsTable({ students, setStudents }) {
+function TeachersTable({ teachers, setTeachers }) {
   const [isAddOpen, setAddOpen] = useState(false);
   const [isFilterOpen, setFilterOpen] = useState(false);
-  const [selectedClass, setSelectedClass] = useState("");
-const [editing, setEditing] = useState(null);
-const [viewing, setViewing] = useState(null);
+  const [selectedGender, setSelectedGender] = useState("");
+  const [editing, setEditing] = useState(null);
+  const [viewing, setViewing] = useState(null);
+
   const toggleSelectAll = (e) => {
     const { checked } = e.target;
-    setStudents((prev) => prev.map((s) => ({ ...s, _checked: checked })));
+    setTeachers((prev) => prev.map((t) => ({ ...t, _checked: checked })));
   };
 
   const toggleRow = (id) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, _checked: !s._checked } : s))
+    setTeachers((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, _checked: !t._checked } : t))
     );
   };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 font-sans text-[13px] text-[#333]">
-      {/* Breadcrumb & Action buttons */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="flex items-center gap-1 text-sm text-gray-600 select-none">
           <span>Home</span>
           <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <polyline points="9 18 15 12 9 6" />
           </svg>
-          <span className="font-semibold text-[#d87f0a]">All Students</span>
+          <span className="font-semibold text-[#d87f0a]">All Teachers</span>
         </div>
 
         <div className="relative flex items-center gap-2">
-          {/* Filter Button */}
           <button
             aria-label="Filter"
             onClick={() => setFilterOpen((prev) => !prev)}
@@ -76,21 +69,19 @@ const [viewing, setViewing] = useState(null);
             Filter
           </button>
 
-          {/* Filter Dropdown Panel */}
           {isFilterOpen && (
             <div className="absolute right-0 top-10 w-60 bg-white border rounded shadow-lg z-20">
               <div className="p-4 space-y-3">
                 <div>
                   <label className="block text-xs text-gray-600 mb-1">Gender</label>
                   <select
-                    value={selectedClass}
-                    onChange={(e) => setSelectedClass(e.target.value)}
+                    value={selectedGender}
+                    onChange={(e) => setSelectedGender(e.target.value)}
                     className="w-full border rounded px-2 py-1 text-sm outline-none"
                   >
                     <option value="">All</option>
-                    <option value="Jss1">Male</option>
-                    <option value="Jss2">Female</option>
-                 
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
                   </select>
                 </div>
 
@@ -98,7 +89,7 @@ const [viewing, setViewing] = useState(null);
                   <button
                     className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200"
                     onClick={() => {
-                      setSelectedClass("");
+                      setSelectedGender("");
                       setFilterOpen(false);
                     }}
                   >
@@ -115,43 +106,39 @@ const [viewing, setViewing] = useState(null);
             </div>
           )}
 
-          {/* Add Student Button */}
           <button
             className="flex items-center gap-1 bg-[#d87f0a] hover:bg-[#c06e08] text-white text-sm font-semibold rounded px-3 py-1.5"
             onClick={() => setAddOpen(true)}
           >
-            Add Student
+            Add Teacher
           </button>
         </div>
       </div>
 
-   {/* Real Modal */}
-<AddStudentModal
-  isOpen={isAddOpen}
-  onClose={() => setAddOpen(false)}
-  onSave={(newStudent) => {
-    setStudents((prev) => [...prev, newStudent]);
-    setAddOpen(false);
-  }}
-/>
-<EditStudentModal
-  isOpen={!!editing}
-  student={editing}
-  onClose={() => setEditing(null)}
-  onSave={(updated) =>
-    setStudents((prev) =>
-      prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s))
-    )
-  }
-/>
-<ViewStudentModal
-  isOpen={!!viewing}
-  student={viewing}
-  onClose={() => setViewing(null)}
-/>
+      <AddTeacherModal
+        isOpen={isAddOpen}
+        onClose={() => setAddOpen(false)}
+        onSave={(newTeacher) => {
+          setTeachers((prev) => [...prev, newTeacher]);
+          setAddOpen(false);
+        }}
+      />
+      <EditTeacherModal
+        isOpen={!!editing}
+        teacher={editing}
+        onClose={() => setEditing(null)}
+        onSave={(updated) =>
+          setTeachers((prev) =>
+            prev.map((t) => (t.id === updated.id ? { ...t, ...updated } : t))
+          )
+        }
+      />
+      <ViewTeacherModal
+        isOpen={!!viewing}
+        teacher={viewing}
+        onClose={() => setViewing(null)}
+      />
 
-
-      {/* Table */}
       <div className="overflow-x-auto border rounded shadow-sm bg-white">
         <table className="min-w-full text-sm text-left border-separate border-spacing-y-1">
           <thead className="sticky top-0 bg-white z-10">
@@ -160,22 +147,10 @@ const [viewing, setViewing] = useState(null);
                 <input
                   type="checkbox"
                   onChange={toggleSelectAll}
-                  checked={students.length > 0 && students.every((s) => s._checked)}
+                  checked={teachers.length > 0 && teachers.every((t) => t._checked)}
                 />
               </th>
-              {[
-                "School ID",
-                "Photo",
-                "First Name",
-                "Last Name",
-                "Class",
-                "Date of Birth",
-                "Address",
-                "Guardian ID",
-                "Teacher ID",
-                "Gender",
-                "Actions",
-              ].map((header) => (
+              {["School ID", "Photo", "First Name", "Last Name", "Phone Number", "Address", "Nationality", "State of Origin", "Religion", "Actions"].map((header) => (
                 <th
                   key={header}
                   className={`py-2 px-2 whitespace-nowrap ${header === "Actions" ? "pr-4" : ""}`}
@@ -189,54 +164,42 @@ const [viewing, setViewing] = useState(null);
             </tr>
           </thead>
           <tbody>
-            {students
-              .filter((s) => (selectedClass ? s.class === selectedClass : true))
-              .map((stu) => (
-                <tr key={stu.id} className="bg-white hover:bg-gray-50 border border-transparent">
+            {teachers
+              .filter((t) => (selectedGender ? t.gender === selectedGender : true))
+              .map((teacher) => (
+                <tr key={teacher.id} className="bg-white hover:bg-gray-50 border border-transparent">
                   <td className="pl-4 pr-2 py-3">
                     <input
                       type="checkbox"
-                      checked={!!stu._checked}
-                      onChange={() => toggleRow(stu.id)}
+                      checked={!!teacher._checked}
+                      onChange={() => toggleRow(teacher.id)}
                     />
                   </td>
-                  <td className="px-2 py-3">{stu.id}</td>
+                  <td className="px-2 py-3">{teacher.id}</td>
                   <td className="px-2 py-3">
                     <img
-                      src={stu.avatar}
-                      alt={`${stu.firstName} ${stu.lastName}`}
+                      src={teacher.avatar}
+                      alt={`${teacher.firstName} ${teacher.lastName}`}
                       className="rounded-full w-8 h-8 object-cover"
                     />
                   </td>
-                  <td className="px-2 py-3">{stu.firstName}</td>
-                  <td className="px-2 py-3">{stu.lastName}</td>
-                  <td className="px-2 py-3">{stu.class}</td>
-                  <td className="px-2 py-3">{stu.dob}</td>
-                  <td className="px-2 py-3 truncate max-w-[120px]" title={stu.address}>
-                    {stu.address}
+                  <td className="px-2 py-3">{teacher.firstName}</td>
+                  <td className="px-2 py-3">{teacher.lastName}</td>
+                  <td className="px-2 py-3">{teacher.phone}</td>
+                  <td className="px-2 py-3 truncate max-w-[120px]" title={teacher.address}>
+                    {teacher.address}
                   </td>
-                  <td className="px-2 py-3">{stu.guardianId}</td>
-                  <td className="px-2 py-3">{stu.teacherId}</td>
-                  <td className="px-2 py-3">{stu.gender}</td>
+                  <td className="px-2 py-3">{teacher.nationality}</td>
+                  <td className="px-2 py-3">{teacher.origin}</td>
+                  <td className="px-2 py-3">{teacher.religion}</td>
                   <td className="pr-4 pl-2 py-3 flex gap-2">
-                   <button
-  className="text-[#4a4a8a] hover:text-[#d87f0a]"
-  onClick={() => setViewing(stu)}   // stu is the student object
->
-  <FaEye />
-</button>
-
-                   <button
-  className="text-[#3a9d3a] hover:text-[#d87f0a]"
-  onClick={() => setEditing(stu)}   // stu is the current row
->
-  <FaEdit />
-</button>
-
-                    <button
-                      className="text-[#d9534f] hover:text-[#d87f0a]"
-                      onClick={() => setStudents((prev) => prev.filter((s) => s.id !== stu.id))}
-                    >
+                    <button className="text-[#4a4a8a] hover:text-[#d87f0a]" onClick={() => setViewing(teacher)}>
+                      <FaEye />
+                    </button>
+                    <button className="text-[#3a9d3a] hover:text-[#d87f0a]" onClick={() => setEditing(teacher)}>
+                      <FaEdit />
+                    </button>
+                    <button className="text-[#d9534f] hover:text-[#d87f0a]" onClick={() => setTeachers((prev) => prev.filter((t) => t.id !== teacher.id))}>
                       <FaTrashAlt />
                     </button>
                   </td>
@@ -251,9 +214,9 @@ const [viewing, setViewing] = useState(null);
   );
 }
 
-export default function AllStudentsPage() {
+export default function AllTeachersPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [students, setStudents] = useState(initialStudents);
+  const [teachers, setTeachers] = useState(initialTeachers);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -265,13 +228,12 @@ export default function AllStudentsPage() {
           </button>
           <input
             placeholder="Search..."
-          className="px-3 py-1 border rounded-full outline-none w-36 md:w-1/3"
-
+            className="px-3 py-1 border rounded-full outline-none w-36 md:w-1/3"
           />
           <div className="flex items-center space-x-4">
-                 <Link to="/notifications" className="text-xl">
-        <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
-      </Link>
+            <Link to="/notifications" className="text-xl">
+              <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
+            </Link>
             <FaEnvelope className="text-xl" />
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-gray-300" />
@@ -282,8 +244,7 @@ export default function AllStudentsPage() {
             </div>
           </div>
         </div>
-
-        <StudentsTable students={students} setStudents={setStudents} />
+        <TeachersTable teachers={teachers} setTeachers={setTeachers} />
       </div>
     </div>
   );
