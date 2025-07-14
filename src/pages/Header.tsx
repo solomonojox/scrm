@@ -15,7 +15,7 @@ const Header = () => {
                         className="block"
                       />
                     </div>
-                    <ul className="hidden md:flex space-x-8 font-semibold text-black text-sm">
+                    <ul className="hidden md:flex ml-[400px] space-x-8 font-semibold text-black text-sm">
                       {['Home', 'About Us', 'Features', 'Statistics', 'Contact'].map((item) => (
                         <li key={item}>
                           <a href="#" className="hover:underline">
