@@ -5,6 +5,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './Store/store.js'
 import App from './App.jsx'
+// JavaScript (e.g., main.js)
+import '@fortawesome/fontawesome-free/css/all.min.css';
+ 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
