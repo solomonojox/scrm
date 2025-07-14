@@ -21,7 +21,7 @@ export default function Mainlanding() {
       </header>
 
       {/* Hero Section */}
-      <section className="mt-20 bg-gray-50 flex flex-col md:flex-row items-center justify-between px-10 py-16">
+      <section className="mt-20 bg-gray-5cd fron0 flex flex-col md:flex-row items-center justify-between px-10 py-16">
         <div className="md:w-1/2 space-y-4">
           <h2 className="text-3xl md:text-5xl font-bold">Revolutionize Education With EduCat (SCRM)</h2>
           <p className="text-gray-700">Centralized SCRM for managing students, enhancing communication, and improving learning process.</p>
