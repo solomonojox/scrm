@@ -1,6 +1,11 @@
 import React from 'react';
 import logo from '../assets/looogo.png';
 import boy from '../assets/boyImage.png';
+import a from '../assets/a.png';
+import b from '../assets/b.png';
+import c from '../assets/c.png';
+import d from '../assets/d.png';
+import e from '../assets/e.png';
 const Landing = () => {
   return (
     <>
@@ -100,19 +105,19 @@ const Landing = () => {
             <h2 className="font-extrabold text-lg sm:text-xl md:text-2xl text-black mb-1">
               What You Get From Us
             </h2>
-            <p className="text-xs sm:text-sm md:text-base text-black max-w-md mx-auto">
+            <p className="text-xs sm:text-sm  mb-2 md:text-base text-black max-w-md mx-auto">
               Comprehensive solution designed to transform your educational institution.
             </p>
           </div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 -mt-10 overflow-x-auto">
-          <div className="flex space-x-4 min-w-[1200px]">
+          <div className="flex space-x-4 min-w-[1200px] h-[200px]">
             {[
-              { src: 'https://storage.googleapis.com/a1aa/image/c4c7ecfe-5a26-4aa7-51d4-065c0e8729f5.jpg', label: 'Unified Online Payment System' },
-              { src: 'https://storage.googleapis.com/a1aa/image/7bef6070-1655-4a01-5ca4-b6184116a214.jpg', label: 'CBT Examination' },
-              { src: 'https://storage.googleapis.com/a1aa/image/18aa74f2-c37a-43dd-e260-2d75b4b6abeb.jpg', label: 'Real-Time Result Processing' },
-              { src: 'https://storage.googleapis.com/a1aa/image/200f16ca-6039-494e-53fc-161365799232.jpg', label: 'Assignment Allocation By Teachers' },
-              { src: 'https://storage.googleapis.com/a1aa/image/b1760fd3-7b9b-498b-c45a-ff470fc44ed2.jpg', label: 'Easy Access' },
+              { src: a, label: 'Unified Online Payment System' },
+              { src: b, label: 'CBT Examination' },
+              { src: c, label: 'Real-Time Result Processing' },
+              { src: d, label: 'Assignment Allocation By Teachers' },
+              { src: e, label: 'Easy Access' },
             ].map((item) => (
               <div key={item.label} className="relative w-48 sm:w-56 md:w-64 flex-shrink-0">
                 <img src={item.src} alt={item.label} className="w-full h-auto object-cover" />
@@ -156,52 +161,24 @@ const Landing = () => {
         </div>
       </section>
 
-       {/* Why Choose Us */}
-      <section className="bg-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Why Choose Us */}
+      <section className="border-t-4   bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <h2 className="text-center font-bold text-lg mb-8">Why Choose Us?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[ 
-              {
-                icon: 'fas fa-check-circle',
-                title: 'User friendly interface',
-                desc: 'Intuitive design ensures quick adoption by staff and students.',
-              },
-              {
-                icon: 'fas fa-shield-alt',
-                title: 'Secure & Reliable',
-                desc: 'State-of-the-art security measures to protect sensitive data.',
-              },
-              {
-                icon: 'fas fa-th-large',
-                title: 'Customizable Modules',
-                desc: 'Tailored features to meet your organizational needs.',
-              },
-              {
-                icon: 'fas fa-headset',
-                title: '24/7 Support',
-                desc: 'Dedicated Support team ready to assist whenever needed.',
-              },
-              {
-                icon: 'fas fa-mobile-alt',
-                title: 'Mobile Access',
-                desc: 'Access on the go with responsive design and mobile app.',
-              },
-              {
-                icon: 'fas fa-trophy',
-                title: 'Proven Results',
-                desc: 'Trusted by 150+ schools with 98% satisfaction rate.',
-              },
-            ].map((item, index) => (
-              <div key={index} className="flex space-x-4 p-4 bg-white rounded-md shadow-md">
-                <div className="text-orange-600 text-xl mt-1">
-                  <i className={item.icon}></i>
-                </div>
+            {[
+              { icon: 'check-circle', title: 'User friendly interface', text: 'Intuitive design ensures quick adoption by staff and students.' },
+              { icon: 'shield-alt', title: 'Secure & Reliable', text: 'State-of-the-art security measures to protect sensitive data.' },
+              { icon: 'th-large', title: 'Customizable Modules', text: 'Tailored features to meet your organizational needs.' },
+              { icon: 'headset', title: '24/7 Support', text: 'Dedicated Support team ready to assist whenever needed.' },
+              { icon: 'mobile-alt', title: 'Mobile Access', text: 'Access on the go with responsive design and mobile app.' },
+              { icon: 'trophy', title: 'Proven Results', text: 'Trusted by 150+ schools with 98% satisfaction rate.' },
+            ].map((item) => (
+              <div key={item.title} className="flex space-x-4 p-4 bg-white rounded-md shadow-md">
+                <div className="text-orange-600 text-xl mt-1"><i className={`fas fa-${item.icon}`} /></div>
                 <div>
-                  <h3 className="font-bold text-sm flex items-center">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs leading-tight">{item.desc}</p>
+                  <h3 className="font-bold text-sm">{item.title}</h3>
+                  <p className="text-xs leading-tight">{item.text}</p>
                 </div>
               </div>
             ))}
@@ -212,7 +189,7 @@ const Landing = () => {
       {/* Statistics & Impact */}
       <section className="bg-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="max-w-[720px] mx-auto border-4 rounded-md bg-white text-center p-4 mb-8">
+          <div className="max-w-[720px] mx-auto border-4  rounded-md  text-center p-4 mb-8">
             <h2 className="font-extrabold text-2xl">Statistics & Impact</h2>
             <p className="text-sm mt-1">Real numbers from real schools using EduCat(SCRM)</p>
           </div>
@@ -259,7 +236,7 @@ const Landing = () => {
       <footer className="bg-black text-white px-6 md:px-12 py-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
           <div className="flex flex-col md:flex-row md:gap-6 w-full md:w-1/2">
-            <img src={logo} alt="Logo" width={100} height={60} className="rounded-md" />
+            <img src="https://storage.googleapis.com/a1aa/image/92ee7cf0-a130-47b3-3012-e98c5843580c.jpg" alt="Logo" width={100} height={60} className="rounded-md" />
             <p className="mt-4 md:mt-0 text-xs leading-tight max-w-xs">
               Empowering educational institutions with innovative technology solutions for better learning outcomes.
             </p>
