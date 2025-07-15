@@ -29,6 +29,7 @@
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
+    "swiper": "^11.2.10",
     "tailwindcss": "^4.1.1"
   },
   "devDependencies": {
