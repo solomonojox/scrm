@@ -17,7 +17,7 @@ const LoginPage = () => {
       <div
   className="flex w-full lg:w-1/2 items-center justify-center bg-cover bg-center"
   style={{
-    backgroundImage: `url(${})`,
+    backgroundImage: `url(${i})`,
   }}
 >
 
