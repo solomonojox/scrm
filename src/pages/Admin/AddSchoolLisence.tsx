@@ -7,7 +7,8 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../../Styles/loader.css';
+import '../../Styles/loader.css'; 
+import Header from '../Header';
 
 const RegistrationForm = () => {
   const fileInputRef = useRef(null);
@@ -53,14 +54,7 @@ const RegistrationForm = () => {
         </div>
       )}
 
-      {/* Header */}
-      <header className="bg-white shadow-md px-6 py-5 flex justify-between items-center sticky top-0 z-10">
-        <h1 className="text-2xl font-extrabold text-orange-700 tracking-wide">EduCat</h1>
-        <nav className="space-x-6 text-sm font-semibold text-gray-700">
-          <a href="#home" className="hover:text-orange-700 transition">Home</a>
-          <a href="#contact" className="hover:text-orange-700 transition">Contact</a>
-        </nav>
-      </header>
+      <Header />
 
       {/* Main */}
       <main className="flex-1 flex items-center justify-center px-4 py-10">
