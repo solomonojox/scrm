@@ -62,12 +62,7 @@ const GetStarted = () => {
         ))}
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black text-white px-4 sm:px-6 pt-10 pb-6 mt-auto">
-        {/* …unchanged footer markup… */}
-        {/* I left the footer as‑is because it renders fine; 
-            just remember to include Font Awesome and tailor links later. */}
-      </footer>
+      
 
       {/* Custom CSS (kept inline to respect original structure) */}
       <style>{`
