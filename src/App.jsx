@@ -1,7 +1,13 @@
 import { Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing';
+
 import RegisSch from './pages/Admin/RegisSch';
+import AddSchool from './pages/Admin/AddSchoolLisence';
 import Login from './pages/Login'
+
+
+import Addschoolform from './pages/Admin/Addschoolform'
+import Terms from './pages/Admin/Terms'
 
 function App() {
 
@@ -9,10 +15,14 @@ function App() {
     <Routes>
       {/* All Auth/Onboarding routes here */}
       <Route path="/" element={<Landing />} />
+
       <Route path="GetStarted" element={<RegisSch />} />
+          <Route path="AddSchool" element={<AddSchool/>} />
       <Route path="Login" element={<Login />} />
 
       {/* All admin routes here */}
+  <Route path="addschoolform" element={<Addschoolform />} />
+        <Route path="Terms" element={<Terms/>} />
 
       {/* All teachers routes here */}
 
@@ -20,6 +30,7 @@ function App() {
 
       {/* All students routes here */}
       
+
     </Routes>
   );
 }
