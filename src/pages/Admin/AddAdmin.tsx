@@ -36,7 +36,7 @@ const RegistrationForm = () => {
             <Link to="/AddSchool" className="hover:underline">
               Upload School License
             </Link>
-            <Link to="/account-details" className="hover:underline">
+            <Link to="/Accountregistration" className="hover:underline">
               Add Account Details
             </Link>
             <Link to="/AddAdmin" className="underline">

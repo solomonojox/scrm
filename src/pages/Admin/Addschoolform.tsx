@@ -61,12 +61,12 @@ const Addschoolform = () => (
               </Link>
           
              <Link
-                to="/" className="hover:underline"
+                to="/Accountregistration" className="hover:underline"
             >
               Add Account details
               </Link>
               <Link
-                to="AddAdmin" className="hover:underline"
+                to="/AddAdmin" className="hover:underline"
             >
               Add School Admin
               </Link>
