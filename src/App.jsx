@@ -7,9 +7,19 @@ function App() {
 
   return (
     <Routes>
+      {/* All Auth/Onboarding routes here */}
       <Route path="/" element={<Landing />} />
-      <Route path="GetStarted" element={<RegisSch/>} />
-            <Route path="Login" element={<Login/>} />
+      <Route path="GetStarted" element={<RegisSch />} />
+      <Route path="Login" element={<Login />} />
+
+      {/* All admin routes here */}
+
+      {/* All teachers routes here */}
+
+      {/* All Guardians routes here */}
+
+      {/* All students routes here */}
+      
     </Routes>
   );
 }
