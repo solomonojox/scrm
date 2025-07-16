@@ -5,6 +5,7 @@ import RegisSch from './pages/Admin/RegisSch';
 import AddSchool from './pages/Admin/AddSchoolLisence';
 import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login'
+import Accountregistration from '../src/pages/Admin/Accountregristration'
 
 
 import Addschoolform from './pages/Admin/Addschoolform'
@@ -21,6 +22,7 @@ function App() {
           <Route path="AddSchool" element={<AddSchool/>} />
                <Route path="AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
+      <Route path="Accountregistration" element={<Accountregistration/>} />
 
       {/* All admin routes here */}
   <Route path="addschoolform" element={<Addschoolform />} />
