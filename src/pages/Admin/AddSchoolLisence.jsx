@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../../Styles/loader.css'; 
 import Header from '../Header';
+import { Link } from "react-router-dom";
 
 import Footer from '../Footer';
 const RegistrationForm = () => {
@@ -90,9 +91,27 @@ const RegistrationForm = () => {
 
           {/* Tabs */}
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-            <button type="button" className="hover:underline">Add School</button>
-            <button type="button" className="underline">Upload School License</button>
-            <button type="button" className="hover:underline">Add Admin</button>
+           <Link
+                           to="/addschoolform" className="hover:underline"
+                       >
+                        Add School
+                         </Link>
+                        <Link
+                           to="/AddSchool" className="underline"
+                       >
+                          Upload School License
+                         </Link>
+                     
+                        <Link
+                           to="/" className="hover:underline"
+                       >
+                         Add Account details
+                         </Link>
+                         <Link
+                           to="/" className="hover:underline"
+                       >
+                         Add School Admin
+                         </Link>
           </nav>
 
           {/* Upload */}
