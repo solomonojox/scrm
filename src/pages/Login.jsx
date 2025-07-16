@@ -1,33 +1,33 @@
 import React from "react";
-import  h from '../assets/Ha.png';
+import h from '../assets/Ha.png';
 
 
 const LoginPage = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-    
-     <div
-  className="hidden lg:block lg:w-1/2 bg-cover bg-center"
-  style={{
-    backgroundImage: `url(${h})`,
-  }}
-  aria-label="School corridor with students"
-/>
 
       <div
-  className="flex w-full lg:w-1/2 items-center justify-center bg-cover bg-center"
-  style={{
-    backgroundImage: `url(${})`,
-  }}
->
+        className="hidden lg:block lg:w-1/2 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${h})`,
+        }}
+        aria-label="School corridor with students"
+      />
 
-     {/*  */}
+      <div
+        className="flex w-full lg:w-1/2 items-center justify-center bg-cover bg-center"
+      // style={{
+      //   backgroundImage: `url(${})`,
+      // }}
+      >
+
+        {/*  */}
         <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-full max-w-md">
           <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
           <p className="text-center text-gray-600 mb-6">Please Login</p>
 
           <form onSubmit={(e) => e.preventDefault()}>
-       
+
             <div className="mb-4">
               <label htmlFor="regNumber" className="block text-sm font-medium text-gray-700 mb-1">
                 School Registration Number
@@ -40,7 +40,7 @@ const LoginPage = () => {
               />
             </div>
 
-          
+
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -53,7 +53,7 @@ const LoginPage = () => {
               />
             </div>
 
-         d 
+            d
             <div className="mb-6">
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
