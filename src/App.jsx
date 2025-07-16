@@ -3,6 +3,7 @@ import Landing from './pages/Landing';
 
 import RegisSch from './pages/Admin/RegisSch';
 import AddSchool from './pages/Admin/AddSchoolLisence';
+import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login'
 
 
@@ -18,6 +19,7 @@ function App() {
 
       <Route path="GetStarted" element={<RegisSch />} />
           <Route path="AddSchool" element={<AddSchool/>} />
+               <Route path="AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
 
       {/* All admin routes here */}

@@ -108,7 +108,7 @@ const RegistrationForm = () => {
                          Add Account details
                          </Link>
                          <Link
-                           to="/" className="hover:underline"
+                           to="AddAdmin" className="hover:underline"
                        >
                          Add School Admin
                          </Link>
