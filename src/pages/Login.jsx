@@ -1,5 +1,5 @@
 import React from "react";
-import  h from '../assets/';
+import  h from '../assets/image.jpg';
 
 
 const LoginPage = () => {
