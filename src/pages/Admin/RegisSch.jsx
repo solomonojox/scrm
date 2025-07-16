@@ -1,25 +1,11 @@
 import React from "react";
-
+import Header from '../Header';
+import Footer from "../Footer";
+import { Link } from "react-router-dom";
 const GetStarted = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col font-inter">
-      {/* Header */}
-      <header className="bg-white shadow-md py-4 px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center">
-        <h1 className="text-xl font-bold text-orange-600 mb-2 sm:mb-0">
-          EduCat School
-        </h1>
-        <nav className="space-x-4 text-sm">
-          <a href="#" className="text-gray-700 hover:text-orange-600">
-            Home
-          </a>
-          <a href="#" className="text-gray-700 hover:text-orange-600">
-            Features
-          </a>
-          <a href="#" className="text-gray-700 hover:text-orange-600">
-            Contact
-          </a>
-        </nav>
-      </header>
+        <Header />
 
       {/* Hero Section */}
       <div className="relative w-full">
@@ -35,9 +21,12 @@ const GetStarted = () => {
           <p className="text-white text-md font-bold sm:text-base mt-2 max-w-md">
             Modern tools for smart school management, tailored for today’s education.
           </p>
-          <button className="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm sm:text-base py-2 px-5 rounded">
-            Register School
-          </button>
+         
+               <Link
+                           to="/addschoolform"  className="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm sm:text-base py-2 px-5 rounded"
+                       >
+                      Register School
+                         </Link>
         </div>
       </div>
 
@@ -73,7 +62,7 @@ const GetStarted = () => {
         ))}
       </div>
 
-    
+       <Footer />
 
       {/* Custom CSS */}
       <style>{`
