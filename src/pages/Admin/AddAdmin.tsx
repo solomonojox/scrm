@@ -3,15 +3,7 @@ import { Link } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
 
-/**
- * RegistrationForm
- * -----------------
- * A multi‑step registration form for onboarding schools to EduCat.
- * 
- * ✅  Uses Header and Footer components.
- * ✅  Imports `Link` from react‑router‑dom to prevent "Link is not defined" errors.
- * ✅  Removes stray text after the default export.
- */
+
 const RegistrationForm = () => {
   return (
     <>
@@ -41,13 +33,13 @@ const RegistrationForm = () => {
             <Link to="/addschoolform" className="hover:underline">
               Add School
             </Link>
-            <Link to="/AddSchool" className="underline">
+            <Link to="/AddSchool" className="hover:underline">
               Upload School License
             </Link>
             <Link to="/account-details" className="hover:underline">
               Add Account Details
             </Link>
-            <Link to="/AddAdmin" className="hover:underline">
+            <Link to="/AddAdmin" className="underline">
               Add School Admin
             </Link>
           </nav>
