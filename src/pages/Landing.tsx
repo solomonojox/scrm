@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { Link } from "react-router-dom";
+
 import { FaRegCheckCircle, FaClipboardCheck, FaComments, FaChartLine, FaShieldAlt, FaThLarge, FaHeadset, FaMobileAlt, FaTrophy, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaCommentDots, FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube } from 'react-icons/fa';
 import logo from '../assets/looogo.png';
 import boy from '../assets/boyImage.png';
@@ -57,29 +59,42 @@ const Landing = () => {
                 </div>
             </header>
 
-            {/* Hero */}
-            <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between bg-gray-200">
-                <section className="max-w-xl">
-                    <h1 className="text-4xl font-extrabold text-black leading-tight">
-                        Revolutionize Education With EduCat(SCRM)
-                    </h1>
-                    <p className="mt-4 text-base text-gray-800 max-w-md">
-                        A powerful digital hub for managing schools, enhancing learning, and simplifying every process.
-                    </p>
-                    <button className="mt-8 bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-orange-700 transition">
-                        Get Started
-                    </button>
-                </section>
-                <section className="relative mt-10 md:mt-0 w-72 h-72 md:w-96 md:h-96">
-                    <div className="absolute inset-0 rounded-full border-8 border-white" />
-                    <div className="absolute inset-4 rounded-full bg-orange-600" />
-                    <img src={boy} alt="Boy with books" className="relative rounded-full object-cover w-full h-full" />
-                </section>
-            </main>
+        {/* ─── Hero ─── */}
+<div className="w-full bg-gray-200">
+  <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between">
+    {/* Left column */}
+    <section className="max-w-xl">
+      <h1 className="text-4xl font-extrabold text-black leading-tight">
+        Revolutionize Education With EduCat(SCRM)
+      </h1>
+      <p className="mt-4 text-base text-gray-800 max-w-md">
+        A powerful digital hub for managing schools, enhancing learning, and simplifying every process.
+      </p>
+   <Link
+  to="/GetStarted"
+  className="mt-8 inline-block bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-orange-700 transition"
+>
+  Get Started
+</Link>
+    </section>
+
+    {/* Right column (image) */}
+    <section className="relative mt-10 md:mt-0 w-72 h-72 md:w-96 md:h-96">
+      <div className="absolute inset-0 rounded-full border-8 border-white" />
+      <div className="absolute inset-4 rounded-full bg-orange-600" />
+      <img
+        src={boy}
+        alt="Boy with books"
+        className="relative rounded-full object-cover w-full h-full"
+      />
+    </section>
+  </main>
+</div>
+
 
             {/* What You Get From Us */}
             <section className="relative bg-gradient-to-b  bg-gray-200">
-                <div className="pt-20 pb-8 text-center px-4">
+                <div className="pt-10 pb-8 text-center px-4">
                     <h2 className="font-extrabold text-4xl mb-4 text-gray-900">
                         What You Get From Us
                     </h2>
