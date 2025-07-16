@@ -1,5 +1,7 @@
 import React from 'react'
 import logo from '../assets/looogo.png';
+import { Link } from "react-router-dom";
+import h from '../'
 const Header = () => {
   return (
     <div>
@@ -15,20 +17,25 @@ const Header = () => {
                         className="block"
                       />
                     </div>
-                    <ul className="hidden md:flex space-x-8 font-semibold text-black text-sm">
-                      {['Home', 'About Us', 'Features', 'Statistics', 'Contact'].map((item) => (
-                        <li key={item}>
-                          <a href="#" className="hover:underline">
-                            {item}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                    <div>
-                      <button className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition">
-                        Login
-                      </button>
-                    </div>
+                <ul className="hidden md:flex ml-auto space-x-8 font-semibold text-black text-sm">
+  {['Home', 'About Us', 'Features', 'Statistics', 'Contact'].map((item) => (
+    <li key={item}>
+      <a href="#" className="hover:underline">
+        {item}
+      </a>
+    </li>
+  ))}
+</ul>
+
+                 <div className="flex items-center">
+  <Link
+    to="/login"
+    className="ml-8 bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition"
+  >
+    Login
+  </Link>
+</div>
+
                   </nav>
                 </div>
               </header>

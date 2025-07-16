@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../../Styles/loader.css'; 
 import Header from '../Header';
 
+import Footer from '../Footer';
 const RegistrationForm = () => {
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -225,10 +226,7 @@ const RegistrationForm = () => {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="bg-white text-center text-xs text-gray-500 py-4 border-t mt-10">
-        © {new Date().getFullYear()} <span className="font-semibold">EduCat</span>. All rights reserved.
-      </footer>
+         <Footer />
     </div>
   );
 };
