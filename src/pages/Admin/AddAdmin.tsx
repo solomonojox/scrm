@@ -56,10 +56,10 @@ const RegistrationForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">Username</label>
               <input
-                type="email"
-                placeholder="Enter Email"
+                type="Username"
+                placeholder="Enter Username"
                 className="w-full mt-1 border border-orange-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
