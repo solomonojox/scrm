@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import axios from 'axios';
 import {
   faArrowLeft,
   faFileAlt,
@@ -7,25 +8,27 @@ import {
   faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { Link, useNavigate } from 'react-router-dom';
 import '../../Styles/loader.css';
 import Header from '../Header';
 import Footer from '../Footer';
-import { Link, useParams, useNavigate } from 'react-router-dom';
 
-const RegistrationForm = () => {
-  let { schoolId } = useParams();
-  const navigate = useNavigate();
-
-  if (!schoolId) {
-    console.warn("⚠️ schoolId not provided via route params. Using fallback test ID.");
-    schoolId = "12345678-1234-1234-1234-1234567890ab";
-  }
+const AddSchoolLicense = () => {
 
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState(null);
+   const navigate = useNavigate();
 
+  // Retrieve schoolId from localStorage
+  const schoolId = localStorage.getItem('schoolId');
+  if (!schoolId) {
+    console.error('No schoolId found in localStorage');
+  }
+
+  // Open hidden file input
   const triggerFileDialog = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
@@ -39,73 +42,70 @@ const RegistrationForm = () => {
     e.target.value = '';
   };
 
+  // Remove a file
   const handleDelete = (id) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
+  // Upload files to API
   const handleSave = async () => {
-    setErrorMessage('');
-
-    if (!schoolId) {
-      setErrorMessage('School ID not found. Please register a school first.');
+    if (!files.length) {
+      setError('Please select at least one file');
       return;
     }
-
-    if (files.length === 0) {
-      setErrorMessage('Please upload at least one file.');
+    if (!schoolId) {
+      setError('Missing school ID');
       return;
     }
 
     setSaving(true);
-
-    const formData = new FormData();
-    files.forEach(({ file }) => {
-      formData.append('files', file);
-    });
+    setError(null);
 
     try {
-      const response = await fetch(`https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Accept: 'application/json',
-        },
+      const formData = new FormData();
+      // Append each file under the 'file' key to match API spec
+      files.forEach(({ file }) => {
+        formData.append('file', file);
       });
 
-      const result = await response.json();
+      const response = await axios.post(
+        `https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`,
+        formData,
+        {
+      
+        }
+      );
 
-      if (!response.ok) {
-        setErrorMessage(result?.message || 'Upload failed. Please try again.');
-        return;
-      }
-
-      console.log('✅ Upload success:', result);
-      navigate('/AddAccount');
-    } catch (error) {
-      console.error('❌ Upload exception caught:', error);
-      setErrorMessage(error.message || 'File upload failed. Check console.');
+      console.log('Upload success:', response.data);
+      setShowModal(true);
+      setFiles([]);
+      navigate('/accountregristration');
+    } catch (err) {
+      console.error('Upload failed:', err.response?.data || err.message);
+      const msg = err.response?.data?.message || err.message;
+      setError(msg);
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-['Inter'] bg-gray-100 relative">
-      <Header />
-
+    <div className="flex flex-col min-h-screen font-[Inter] bg-gray-100 relative">
       {saving && (
         <div className="loaderwrapper z-50">
           <div className="loader scale-125" />
         </div>
       )}
 
+      <Header />
+
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="bg-white w-full max-w-5xl rounded-xl p-10 relative shadow-lg">
           <button
             type="button"
             onClick={() => window.history.back()}
-            aria-label="Go back"
             className="absolute top-6 left-6 text-gray-600 hover:text-gray-900 text-lg"
+            aria-label="Go back"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>
@@ -123,34 +123,35 @@ const RegistrationForm = () => {
           </div>
 
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-            <Link to="/addschoolform" className="hover:underline">Add School</Link>
-            <Link to="/AddSchool" className="underline">Upload School License</Link>
-            <Link to="/AddAccount" className="hover:underline">Add Account details</Link>
-            <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
+            <Link to="/addschoolform" className="hover:underline">
+              Add School
+            </Link>
+            <Link to="/AddSchool" className="underline">
+              Upload School License
+            </Link>
+            <Link to="/Accountregistration" className="hover:underline">
+              Add Account details
+            </Link>
+            <Link to="/AddAdmin" className="hover:underline">
+              Add School Admin
+            </Link>
           </nav>
-
-          {errorMessage && (
-            <div className="mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center gap-3">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="text-red-500" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
 
           <div className="mt-8 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
             <div
-              className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
-              onClick={triggerFileDialog}
               role="button"
               tabIndex={0}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && triggerFileDialog()}
+              onClick={triggerFileDialog}
+              onKeyDown={(e) => (['Enter', ' '].includes(e.key) && triggerFileDialog())}
+              className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
             >
               <img
-                alt="Upload"
                 src="https://storage.googleapis.com/a1aa/image/fe76c44b-fb63-4c81-72a8-e7a2ef9efb17.jpg"
+                alt="Upload"
                 width={48}
                 height={48}
-                className="mb-3"
                 draggable="false"
+                className="mb-3 pointer-events-none"
               />
               <p className="text-sm text-gray-600 mb-2 font-medium">Drag or browse files</p>
               <button
@@ -162,6 +163,7 @@ const RegistrationForm = () => {
               <input
                 ref={fileInputRef}
                 type="file"
+                name="file"
                 multiple
                 className="hidden"
                 onChange={handleFileChange}
@@ -186,14 +188,22 @@ const RegistrationForm = () => {
                           className="w-10 h-10 object-cover rounded"
                         />
                       ) : file.type === 'application/pdf' ? (
-                        <FontAwesomeIcon icon={faFilePdf} className="text-red-600 text-lg" />
+                        <FontAwesomeIcon
+                          icon={faFilePdf}
+                          aria-label="PDF file"
+                          className="text-red-600 text-lg"
+                        />
                       ) : (
-                        <FontAwesomeIcon icon={faFileAlt} className="text-gray-800 text-lg" />
+                        <FontAwesomeIcon
+                          icon={faFileAlt}
+                          aria-label="File"
+                          className="text-gray-800 text-lg"
+                        />
                       )}
                       <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">{file.name}</span>
                     </div>
                     <div className="flex items-center space-x-3 text-sm text-gray-500">
-                      <span>{(file.size / (1024 * 1024)).toFixed(1)} MB</span>
+                      <span>{(file.size / (1024 * 1024)).toFixed(1)}MB</span>
                       <button
                         type="button"
                         onClick={() => handleDelete(id)}
@@ -207,6 +217,8 @@ const RegistrationForm = () => {
               )}
             </div>
           </div>
+
+          {error && <p className="text-red-600 mt-4">Error: {error}</p>}
 
           <div className="mt-10 flex justify-end">
             <button
@@ -223,9 +235,29 @@ const RegistrationForm = () => {
         </div>
       </main>
 
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
+          <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center">
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="text-green-600 text-4xl mb-4"
+              aria-hidden="true"
+            />
+            <h3 className="text-lg font-bold mb-2">Files saved successfully!</h3>
+            <button
+              type="button"
+              onClick={() => setShowModal(false)}
+              className="mt-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold px-4 py-2 rounded"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
 };
 
-export default RegistrationForm;
+export default AddSchoolLicense;

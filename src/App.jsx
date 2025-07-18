@@ -6,7 +6,7 @@ import AddSchool from './pages/Admin/AddSchoolLisence';
 import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login'
 import Accountregistration from '../src/pages/Admin/Accountregristration'
-
+import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
@@ -22,11 +22,19 @@ function App() {
           <Route path="AddSchool" element={<AddSchool/>} />
                <Route path="AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
+
       <Route path="AddAccount" element={<Accountregistration/>} />
+
+      <Route path="accountregistration" element={<Accountregistration/>} />
+
 
       {/* All admin routes here */}
   <Route path="addschoolform" element={<Addschoolform />} />
         <Route path="Terms" element={<Terms/>} />
+        <Route path="upload-license" element={<AddSchoolLisence/>} />
+        
+
+
 
       {/* All teachers routes here */}
 
