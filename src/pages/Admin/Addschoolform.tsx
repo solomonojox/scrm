@@ -41,6 +41,7 @@ const AddSchoolForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [schoolId, setSchoolId] = useState(null);
 
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
@@ -60,12 +61,16 @@ const AddSchoolForm = () => {
       const res = await axios.post(
         "https://scrmapi.tranquility.org.ng/api/School/RegisterSchool",
         formData,
-       
+        
       );
+      const id = res.data.schoolId || res.data.data?.schoolId;
+      if (id) {
+        setSchoolId(id);
+        localStorage.setItem("schoolId", id);
+      }
       setSuccess("School registered successfully!");
-      // Optionally navigate or reset
-      // navigate('/AddSchool');
-      console.log(res.data)
+      
+       navigate('/upload-license');
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
       setError(msg);
