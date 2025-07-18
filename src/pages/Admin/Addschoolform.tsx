@@ -61,7 +61,7 @@ const Addschoolform = () => (
               </Link>
           
              <Link
-                to="/Accountregistration" className="hover:underline"
+                to="/AddAccount" className="hover:underline"
             >
               Add Account details
               </Link>
