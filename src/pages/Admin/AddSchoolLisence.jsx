@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import axios from 'axios';
 import {
   faArrowLeft,
   faFileAlt,
@@ -7,18 +8,26 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '../../Styles/loader.css'; 
+import { Link, useNavigate } from 'react-router-dom';
+import '../../Styles/loader.css';
 import Header from '../Header';
-import { Link } from "react-router-dom";
-
 import Footer from '../Footer';
-const RegistrationForm = () => {
+
+const AddSchoolLicense = () => {
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+   const navigate = useNavigate();
 
-  // Open the hidden file input
+  // Retrieve schoolId from localStorage
+  const schoolId = localStorage.getItem('schoolId');
+  if (!schoolId) {
+    console.error('No schoolId found in localStorage');
+  }
+
+  // Open hidden file input
   const triggerFileDialog = () => fileInputRef.current?.click();
 
   // Handle file selection
@@ -30,26 +39,58 @@ const RegistrationForm = () => {
       preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
     }));
     setFiles((prev) => [...prev, ...mapped]);
-    e.target.value = ''; // reset input so the same file can be selected again
+    e.target.value = '';
   };
 
-  // Remove file from the list
+  // Remove a file
   const handleDelete = (id) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  // Simulate save action
-  const handleSave = () => {
+  // Upload files to API
+  const handleSave = async () => {
+    if (!files.length) {
+      setError('Please select at least one file');
+      return;
+    }
+    if (!schoolId) {
+      setError('Missing school ID');
+      return;
+    }
+
     setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      // Append each file under the 'file' key to match API spec
+      files.forEach(({ file }) => {
+        formData.append('file', file);
+      });
+
+      const response = await axios.post(
+        `https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`,
+        formData,
+        {
+      
+        }
+      );
+
+      console.log('Upload success:', response.data);
       setShowModal(true);
-    }, 2000);
+      setFiles([]);
+      navigate('/accountregristration');
+    } catch (err) {
+      console.error('Upload failed:', err.response?.data || err.message);
+      const msg = err.response?.data?.message || err.message;
+      setError(msg);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="flex flex-col min-h-screen font-['Inter'] bg-gray-100 relative">
-      {/* Loader */}
+    <div className="flex flex-col min-h-screen font-[Inter] bg-gray-100 relative">
       {saving && (
         <div className="loaderwrapper">
           <div className="loader" />
@@ -58,20 +99,17 @@ const RegistrationForm = () => {
 
       <Header />
 
-      {/* Main */}
       <main className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="bg-white w-full max-w-5xl rounded-xl p-10 relative shadow-lg">
-          {/* Back */}
           <button
             type="button"
             onClick={() => window.history.back()}
-            aria-label="Go back"
             className="absolute top-6 left-6 text-gray-600 hover:text-gray-900 text-lg"
+            aria-label="Go back"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
           </button>
 
-          {/* Title */}
           <h2 className="text-center font-black text-2xl md:text-3xl text-gray-800">
             Registration Form
           </h2>
@@ -84,53 +122,40 @@ const RegistrationForm = () => {
             Note: Complete each section before moving to the next.
           </p>
 
-          {/* Progress */}
           <div className="mt-6 w-full bg-gray-300 h-2 rounded-full overflow-hidden">
             <div className="h-2 bg-green-700 w-1/2 transition-all" />
           </div>
 
-          {/* Tabs */}
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-           <Link
-                           to="/addschoolform" className="hover:underline"
-                       >
-                        Add School
-                         </Link>
-                        <Link
-                           to="/AddSchool" className="underline"
-                       >
-                          Upload School License
-                         </Link>
-                     
-                        <Link
-                           to="/Accountregistration" className="hover:underline"
-                       >
-                         Add Account details
-                         </Link>
-                         <Link
-                           to="/AddAdmin" className="hover:underline"
-                       >
-                         Add School Admin
-                         </Link>
+            <Link to="/addschoolform" className="hover:underline">
+              Add School
+            </Link>
+            <Link to="/AddSchool" className="underline">
+              Upload School License
+            </Link>
+            <Link to="/Accountregistration" className="hover:underline">
+              Add Account details
+            </Link>
+            <Link to="/AddAdmin" className="hover:underline">
+              Add School Admin
+            </Link>
           </nav>
 
-          {/* Upload */}
           <div className="mt-8 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
-            {/* Dropzone */}
             <div
-              className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
               role="button"
               tabIndex={0}
               onClick={triggerFileDialog}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && triggerFileDialog()}
+              onKeyDown={(e) => (['Enter', ' '].includes(e.key) && triggerFileDialog())}
+              className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
             >
               <img
-                alt="Upload"
-                className="mb-3 pointer-events-none"
-                draggable="false"
                 src="https://storage.googleapis.com/a1aa/image/fe76c44b-fb63-4c81-72a8-e7a2ef9efb17.jpg"
+                alt="Upload"
                 width={48}
                 height={48}
+                draggable="false"
+                className="mb-3 pointer-events-none"
               />
               <p className="text-center text-sm text-gray-600 mb-2 font-medium">Drag files here</p>
               <button
@@ -143,13 +168,13 @@ const RegistrationForm = () => {
               <input
                 ref={fileInputRef}
                 type="file"
+                name="file"
                 multiple
                 className="hidden"
                 onChange={handleFileChange}
               />
             </div>
 
-            {/* Files */}
             <div className="bg-gray-50 border border-gray-300 rounded-lg w-full md:w-2/3 p-4">
               <p className="text-sm font-bold text-gray-800 mb-4">Uploaded Files</p>
 
@@ -171,14 +196,14 @@ const RegistrationForm = () => {
                       ) : file.type === 'application/pdf' ? (
                         <FontAwesomeIcon
                           icon={faFilePdf}
-                          className="text-red-600 text-lg"
                           aria-label="PDF file"
+                          className="text-red-600 text-lg"
                         />
                       ) : (
                         <FontAwesomeIcon
                           icon={faFileAlt}
-                          className="text-gray-800 text-lg"
                           aria-label="File"
+                          className="text-gray-800 text-lg"
                         />
                       )}
 
@@ -192,7 +217,7 @@ const RegistrationForm = () => {
                     </div>
 
                     <div className="flex items-center space-x-3 text-sm text-gray-500">
-                      <span>{(file.size / (1024 * 1024)).toFixed(1)} MB</span>
+                      <span>{(file.size / (1024 * 1024)).toFixed(1)}MB</span>
                       <button
                         type="button"
                         aria-label={`Remove ${file.name}`}
@@ -208,7 +233,8 @@ const RegistrationForm = () => {
             </div>
           </div>
 
-          {/* Actions */}
+          {error && <p className="text-red-600 mt-4">Error: {error}</p>}
+
           <div className="mt-10 flex justify-end">
             <button
               type="button"
@@ -224,7 +250,6 @@ const RegistrationForm = () => {
         </div>
       </main>
 
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center">
@@ -245,9 +270,9 @@ const RegistrationForm = () => {
         </div>
       )}
 
-         <Footer />
+      <Footer />
     </div>
   );
 };
 
-export default RegistrationForm;
+export default AddSchoolLicense;
