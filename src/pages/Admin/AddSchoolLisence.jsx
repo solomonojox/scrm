@@ -5,30 +5,27 @@ import {
   faFileAlt,
   faFilePdf,
   faTrash,
-  faExclamationTriangle,
+  faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { Link, useNavigate } from 'react-router-dom';
 import '../../Styles/loader.css';
 import Header from '../Header';
 import Footer from '../Footer';
 
 const AddSchoolLicense = () => {
-
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-  // Retrieve schoolId from localStorage
   const schoolId = localStorage.getItem('schoolId');
   if (!schoolId) {
     console.error('No schoolId found in localStorage');
   }
 
-  // Open hidden file input
   const triggerFileDialog = () => fileInputRef.current?.click();
 
   const handleFileChange = (e) => {
@@ -42,19 +39,17 @@ const AddSchoolLicense = () => {
     e.target.value = '';
   };
 
-  // Remove a file
   const handleDelete = (id) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  // Upload files to API
   const handleSave = async () => {
     if (!files.length) {
-      setError('Please select at least one file');
+      setError('Please select at least one file.');
       return;
     }
     if (!schoolId) {
-      setError('Missing school ID');
+      setError('Missing school ID. Please complete the previous step.');
       return;
     }
 
@@ -63,23 +58,19 @@ const AddSchoolLicense = () => {
 
     try {
       const formData = new FormData();
-      // Append each file under the 'file' key to match API spec
       files.forEach(({ file }) => {
         formData.append('file', file);
       });
 
       const response = await axios.post(
         `https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`,
-        formData,
-        {
-      
-        }
+        formData
       );
 
       console.log('Upload success:', response.data);
       setShowModal(true);
       setFiles([]);
-      navigate('/accountregristration');
+      navigate('/accountregistration');
     } catch (err) {
       console.error('Upload failed:', err.response?.data || err.message);
       const msg = err.response?.data?.message || err.message;
@@ -123,18 +114,10 @@ const AddSchoolLicense = () => {
           </div>
 
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-            <Link to="/addschoolform" className="hover:underline">
-              Add School
-            </Link>
-            <Link to="/AddSchool" className="underline">
-              Upload School License
-            </Link>
-            <Link to="/Accountregistration" className="hover:underline">
-              Add Account details
-            </Link>
-            <Link to="/AddAdmin" className="hover:underline">
-              Add School Admin
-            </Link>
+            <Link to="/addschoolform" className="hover:underline">Add School</Link>
+            <Link to="/AddSchool" className="underline">Upload School License</Link>
+            <Link to="/Accountregistration" className="hover:underline">Add Account Details</Link>
+            <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
           </nav>
 
           <div className="mt-8 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
@@ -142,7 +125,7 @@ const AddSchoolLicense = () => {
               role="button"
               tabIndex={0}
               onClick={triggerFileDialog}
-              onKeyDown={(e) => (['Enter', ' '].includes(e.key) && triggerFileDialog())}
+              onKeyDown={(e) => ['Enter', ' '].includes(e.key) && triggerFileDialog()}
               className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
             >
               <img
@@ -182,23 +165,11 @@ const AddSchoolLicense = () => {
                   >
                     <div className="flex items-center space-x-3 overflow-hidden">
                       {preview ? (
-                        <img
-                          src={preview}
-                          alt={file.name}
-                          className="w-10 h-10 object-cover rounded"
-                        />
+                        <img src={preview} alt={file.name} className="w-10 h-10 object-cover rounded" />
                       ) : file.type === 'application/pdf' ? (
-                        <FontAwesomeIcon
-                          icon={faFilePdf}
-                          aria-label="PDF file"
-                          className="text-red-600 text-lg"
-                        />
+                        <FontAwesomeIcon icon={faFilePdf} className="text-red-600 text-lg" />
                       ) : (
-                        <FontAwesomeIcon
-                          icon={faFileAlt}
-                          aria-label="File"
-                          className="text-gray-800 text-lg"
-                        />
+                        <FontAwesomeIcon icon={faFileAlt} className="text-gray-800 text-lg" />
                       )}
                       <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">{file.name}</span>
                     </div>
@@ -218,7 +189,7 @@ const AddSchoolLicense = () => {
             </div>
           </div>
 
-          {error && <p className="text-red-600 mt-4">Error: {error}</p>}
+          {error && <p className="text-red-600 mt-4 text-sm font-medium">⚠️ {error}</p>}
 
           <div className="mt-10 flex justify-end">
             <button
@@ -238,11 +209,7 @@ const AddSchoolLicense = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center">
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              className="text-green-600 text-4xl mb-4"
-              aria-hidden="true"
-            />
+            <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 text-4xl mb-4" />
             <h3 className="text-lg font-bold mb-2">Files saved successfully!</h3>
             <button
               type="button"

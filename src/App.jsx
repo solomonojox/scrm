@@ -23,7 +23,7 @@ function App() {
                <Route path="AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
 
-      <Route path="AddAccount" element={<Accountregistration/>} />
+     
 
       <Route path="accountregistration" element={<Accountregistration/>} />
 
