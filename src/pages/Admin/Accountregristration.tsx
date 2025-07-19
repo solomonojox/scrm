@@ -66,7 +66,7 @@ export default function RegistrationForm() {
         {/* Progress Bar */}
         <div className="mt-4 h-1 w-full bg-gray-300 rounded-full relative">
           {/* Adjust width to reflect correct progress (100%) */}
-          <div className="h-1 bg-green-600 rounded-full w-full"></div>
+          <div className="h-1 bg-green-600 rounded-full w-85"></div>
           <span className="absolute right-0 -top-4 text-[10px] text-gray-400 font-semibold">
             100%
           </span>
@@ -80,7 +80,7 @@ export default function RegistrationForm() {
           <Link to="/AddSchool" className="hover:underline">
             Upload School License
           </Link>
-          <Link to="/Accountregistration" className="underline">
+          <Link to="/AddAccount" className="underline">
             Add Account Details
           </Link>
           <Link to="/AddAdmin" className="hover:underline">

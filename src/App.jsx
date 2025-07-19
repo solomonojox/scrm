@@ -22,7 +22,11 @@ function App() {
           <Route path="AddSchool" element={<AddSchool/>} />
                <Route path="AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
+
+     
+
       <Route path="accountregistration" element={<Accountregistration/>} />
+
 
       {/* All admin routes here */}
   <Route path="addschoolform" element={<Addschoolform />} />

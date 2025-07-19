@@ -13,9 +13,11 @@ const RegistrationForm = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     setSuccessMsg("");
     setErrorMsg("");
 
@@ -23,9 +25,11 @@ const RegistrationForm = () => {
 
     if (!schoolId) {
       setErrorMsg("School ID not found. Please complete previous steps.");
+
       setLoading(false);
       return;
     }
+
 
     const payload = {
       schoolId,
@@ -47,6 +51,7 @@ const RegistrationForm = () => {
     } catch (error) {
       const err = error.response?.data?.title || "Registration failed. Please try again.";
       setErrorMsg(`❌ ${err}`);
+
     } finally {
       setLoading(false);
     }
@@ -57,10 +62,13 @@ const RegistrationForm = () => {
       <Header />
 
       <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
+
         <div className="bg-white rounded-md shadow-md w-full max-w-2xl p-8">
+
           <h2 className="text-2xl font-bold text-center text-black">Registration Form</h2>
           <p className="text-center text-orange-500 mt-1">
-            Fill out the form below to get your school started with <span className="font-semibold">EduCat</span>.
+            Fill out the form below to get your school started with{" "}
+            <span className="font-semibold">EduCat</span>.
           </p>
           <p className="text-center text-xs text-gray-500 mt-1">
             Note: Complete each section before moving to the next.
@@ -73,6 +81,8 @@ const RegistrationForm = () => {
           <nav className="flex justify-between text-sm text-orange-600 font-medium mb-6">
             <Link to="/addschoolform" className="hover:underline">Add School</Link>
             <Link to="/AddSchool" className="hover:underline">Upload School License</Link>
+
+
             <Link to="/Accountregistration" className="hover:underline">Add Account Details</Link>
             <Link to="/AddAdmin" className="underline">Add School Admin</Link>
           </nav>
@@ -88,6 +98,7 @@ const RegistrationForm = () => {
           {errorMsg && (
             <div className="mb-4 p-3 rounded bg-red-100 text-red-700 text-sm">
               {errorMsg}
+
             </div>
           )}
 
@@ -96,21 +107,27 @@ const RegistrationForm = () => {
               <label className="block text-sm font-medium text-gray-700">Full Name</label>
               <input
                 type="text"
+
+
+
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter Name"
+
                 className="w-full mt-1 border border-orange-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">Username</label>
               <input
+
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
+
                 className="w-full mt-1 border border-orange-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
                 required
               />
@@ -122,6 +139,7 @@ const RegistrationForm = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+
                 placeholder="Enter Password"
                 className="w-full mt-1 border border-orange-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
                 required
@@ -140,6 +158,7 @@ const RegistrationForm = () => {
                 </svg>
               )}
               {loading ? "Submitting..." : "Submit"}
+
             </button>
           </form>
         </div>
