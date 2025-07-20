@@ -46,7 +46,7 @@ const RegistrationForm = () => {
 
       setSuccessMsg("✅ School admin registered successfully!");
       setTimeout(() => {
-        navigate("/Accountregistration");
+        navigate("/login");
       }, 1500);
     } catch (error) {
       const err = error.response?.data?.title || "Registration failed. Please try again.";
