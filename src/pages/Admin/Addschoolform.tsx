@@ -60,8 +60,7 @@ const AddSchoolForm = () => {
     try {
       const res = await axios.post(
         "https://scrmapi.tranquility.org.ng/api/School/RegisterSchool",
-        formData,
-        
+        formData
       );
       const id = res.data.schoolId || res.data.data?.schoolId;
       if (id) {
@@ -69,8 +68,7 @@ const AddSchoolForm = () => {
         localStorage.setItem("schoolId", id);
       }
       setSuccess("School registered successfully!");
-      
-       navigate('/upload-license');
+      navigate('/upload-license');
     } catch (err) {
       const msg = err.response?.data?.message || err.message;
       setError(msg);
@@ -151,10 +149,9 @@ const AddSchoolForm = () => {
                 checked={formData.hasAgreedToTerms}
                 onChange={handleChange}
                 className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                required
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-                I agree to the <Link to="/terms" className="text-orange-600 hover:underline">Terms &amp; Conditions</Link>
+                I agree to the <Link to="/terms" className="text-orange-600 hover:underline">Terms & Conditions</Link>
               </label>
             </div>
 
@@ -163,8 +160,11 @@ const AddSchoolForm = () => {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-md text-sm transition"
+              disabled={loading || !formData.hasAgreedToTerms}
+              className={`w-full font-semibold py-2 px-4 rounded-md text-sm transition 
+                ${loading || !formData.hasAgreedToTerms 
+                  ? "bg-gray-300 cursor-not-allowed" 
+                  : "bg-orange-500 hover:bg-orange-600 text-white"}`}
             >
               {loading ? "Saving..." : "Save"}
             </button>
