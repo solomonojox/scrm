@@ -15,6 +15,7 @@ import {
   FaTrashAlt,
   FaBell,
   FaEnvelope,
+  FaSort,
 } from "react-icons/fa";
 
 /**
@@ -184,7 +185,7 @@ const [viewing, setViewing] = useState(null);
                 >
                   {header}
                   {header !== "Photo" && header !== "Actions" && (
-                    <FaFilter className="inline-block ml-1 text-[10px]" />
+                    <FaSort className="inline-block ml-1 text-[10px]" />
                   )}
                 </th>
               ))}
