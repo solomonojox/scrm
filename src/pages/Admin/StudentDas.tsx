@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../Sidebar";
+import Sidebar from "./AdminSidebar";
+import Header from "./Adminheader";
 import AddStudentModal from "../../components/Admin/Student/AddStudentModal";  
 import EditStudentModal from "../../components/Admin/Student/EditStudentModal";
 import ViewStudentModal from "../../components/Admin/Student/ViewStudentModal"; 
@@ -55,6 +56,7 @@ const [viewing, setViewing] = useState(null);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 font-sans text-[13px] text-[#333]">
+      <Header/>
       {/* Breadcrumb & Action buttons */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="flex items-center gap-1 text-sm text-gray-600 select-none">
