@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import Adminheader from './Adminheader';
+import AdminSidebar from './AdminSidebar';
 import {
-  FaThLarge, FaUserGraduate, FaChalkboardTeacher, FaUserFriends, FaBook,
-  FaNewspaper, FaCalendarAlt, FaChalkboard, FaFileInvoiceDollar, FaBell,
+  FaUserGraduate, FaChalkboardTeacher, FaUserFriends,FaBell,
   FaComment, FaSearch, FaChevronDown, FaClock, FaBookReader, FaCertificate,
   FaPencilAlt, FaCheckSquare, FaPencilRuler
 } from 'react-icons/fa';
+
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 
+// DATA
 const analyticsData = [
   { month: 'Jan', ux: 15, ui: 10, dev: 20 },
   { month: 'Feb', ux: 25, ui: 5, dev: 15 },
@@ -41,95 +43,91 @@ const timeData = [
   { month: 'Dec', Active: 90, Inactive: 85 }
 ];
 
-export default function EduCatDashboard() {
+export default function AdminDashboard() {
   useEffect(() => {
     document.title = 'EduCat Dashboard';
   }, []);
 
   return (
-    <div className="bg-gray-200 min-h-screen font-inter">
-      <div>
-        <Adminheader/>
-        <div>
-            <div className="flex-1 flex items-center justify-center">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-64">
-              <FaSearch className="text-gray-400 text-lg" />
-              <input type="search" placeholder="Search" className="ml-2 bg-transparent outline-none text-sm w-full" />
-            </div>
+    <div className="bg-gray-100 min-h-screen font-inter">
+      <Adminheader />
+
+      {/* Topbar */}
+      <div className="flex flex-col sm:flex-row justify-between items-center px-6 ml-[400px] py-4 bg-white shadow-sm">
+        <div className="w-full max-w-sm">
+          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+            <FaSearch className="text-gray-400" />
+            <input type="text" placeholder="Search" className="ml-2 bg-transparent outline-none w-full text-sm" />
           </div>
-          <div className="flex items-center space-x-4 text-gray-600">
-            <FaBell className="text-lg hover:text-gray-900 cursor-pointer" />
-            <FaComment className="text-lg hover:text-gray-900 cursor-pointer" />
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-full px-3 py-1">
-              <img src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg" alt="Admin" className="w-8 h-8 rounded-full" />
-              <div className="text-xs">
-                <div className="font-semibold text-gray-700">Gold Academy</div>
-                <div className="text-gray-400">Admin</div>
-              </div>
+        </div>
+
+        <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+          <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+          <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+          <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+            <img src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg" className="w-8 h-8 rounded-full" alt="Admin" />
+            <div className="text-xs">
+              <div className="font-semibold text-gray-700">Gold Academy</div>
+              <div className="text-gray-400">Admin</div>
             </div>
           </div>
         </div>
-        <div className="flex">
+      </div>
 
-          <nav className="w-48 bg-white border-r border-gray-200 flex flex-col px-4 py-6 space-y-4">
-            <SidebarButton icon={<FaThLarge />} active label="Dashboard" />
-            <SidebarButton icon={<FaUserGraduate />} label="Students" />
-            <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" />
-            <SidebarButton icon={<FaUserFriends />} label="Guardian" />
-            <SidebarButton icon={<FaBook />} label="Classroom" />
-            <SidebarButton icon={<FaNewspaper />} label="News" />
-            <SidebarButton icon={<FaCalendarAlt />} label="Events" />
-            <SidebarButton icon={<FaChalkboard />} label="Session" />
-            <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" />
-            <button className="mt-auto bg-red-100 text-red-600 text-xs font-semibold py-2 rounded hover:bg-red-200 transition">Log Out</button>
-          </nav>
+      <div className="flex">
+        {/* Sidebar */}
+        <AdminSidebar/>
 
-          <main className="flex-1 p-6 space-y-6">
-            <h2 className="text-base font-medium text-gray-800 mb-6">Welcome To EduCat(SCRM)</h2>
-            <div className="flex space-x-4 w-[900px]">
-              <StatCard label="Students" value="120k" icon={<FaUserGraduate />} bgColor="bg-[#E6C9B0]" iconColor="text-orange-600" />
-              <StatCard label="Pending Courses" value="03" icon={<FaBookReader />} bgColor="bg-[#BFC6D0]" iconColor="text-blue-700" />
-              <StatCard label="Total Teachers" value="37" icon={<FaChalkboardTeacher />} bgColor="bg-[#E9B6B6]" iconColor="text-red-600" />
-              <StatCard label="Certificates" value="08" icon={<FaCertificate />} bgColor="bg-[#C9E3C3]" iconColor="text-green-600" />
-            </div>
+        {/* Main Content */}
+        <main className="flex-1 p-6 space-y-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6">Welcome to EduCat (SCRM)</h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <AnalyticsChart />
-              <ProgressCircle />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard label="Students" value="120k" icon={<FaUserGraduate />} bgColor="bg-[#E6C9B0]" iconColor="text-orange-600" />
+            <StatCard label="Pending Courses" value="03" icon={<FaBookReader />} bgColor="bg-[#BFC6D0]" iconColor="text-blue-700" />
+            <StatCard label="Total Teachers" value="37" icon={<FaChalkboardTeacher />} bgColor="bg-[#E9B6B6]" iconColor="text-red-600" />
+            <StatCard label="Certificates" value="08" icon={<FaCertificate />} bgColor="bg-[#C9E3C3]" iconColor="text-green-600" />
+          </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <TimeSpendingChart />
-              <UpcomingClasses />
-            </div>
-          </main>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <AnalyticsChart />
+            <ProgressCircle />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <TimeSpendingChart />
+            <UpcomingClasses />
+          </div>
+        </main>
       </div>
     </div>
   );
 }
 
+// Sidebar button component
 function SidebarButton({ icon, label, active }) {
   return (
-    <button className={`flex items-center space-x-3 text-sm ${active ? 'text-orange-600 font-semibold' : 'text-gray-800'} hover:text-orange-600 transition`}>
+    <button className={`flex items-center space-x-3 text-sm transition ${active ? 'text-orange-600 font-semibold' : 'text-gray-800 hover:text-orange-600'}`}>
       <span className="text-lg">{icon}</span>
       <span>{label}</span>
     </button>
   );
 }
 
+// Stat card
 function StatCard({ label, value, icon, bgColor, iconColor }) {
   return (
-    <div className={`${bgColor} shadow-sm rounded-lg px-5 py-4 w-56 flex justify-between items-center`}>
+    <div className={`${bgColor} rounded-lg p-4 flex items-center justify-between shadow-sm`}>
       <div>
-        <div className="text-xs uppercase text-gray-700 mb-1">{label}</div>
-        <div className="text-xl font-bold text-gray-900">{value}</div>
+        <p className="text-xs text-gray-600 uppercase">{label}</p>
+        <h3 className="text-xl font-bold text-gray-800">{value}</h3>
       </div>
-      <div className={`text-4xl ${iconColor}`}>{icon}</div>
+      <div className={`text-3xl ${iconColor}`}>{icon}</div>
     </div>
   );
 }
 
+// CHARTS + CLASSES (unchanged)
 function AnalyticsChart() {
   return (
     <div className="bg-white rounded-md p-4 shadow-sm col-span-2 relative">
@@ -173,8 +171,8 @@ function ProgressCircle() {
   const RING_COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
   return (
-    <div className="bg-white rounded-md  shadow-sm relative" style={{ minHeight: '280px' }}>
-      <div className="flex justify-between items-center mb-3">
+    <div className="bg-white rounded-md shadow-sm relative" style={{ minHeight: '280px' }}>
+      <div className="flex justify-between items-center mb-3 px-4 pt-4">
         <h3 className="text-xs font-semibold text-gray-800">My Progress</h3>
         <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
           Weekly <FaChevronDown className="ml-1 text-[8px]" />
