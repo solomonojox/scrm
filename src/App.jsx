@@ -10,6 +10,7 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
+import SchDas from './pages/Admin/StudentDas'
 
 function App() {
 
@@ -41,7 +42,7 @@ function App() {
       {/* All Guardians routes here */}
 
       {/* All students routes here */}
-      
+       <Route path="Schdas" element={<SchDas/>} />
 
     </Routes>
   );
