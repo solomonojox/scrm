@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Adminheader from './Adminheader';
 import {
   FaThLarge, FaUserGraduate, FaChalkboardTeacher, FaUserFriends, FaBook,
   FaNewspaper, FaCalendarAlt, FaChalkboard, FaFileInvoiceDollar, FaBell,
@@ -47,16 +48,10 @@ export default function EduCatDashboard() {
 
   return (
     <div className="bg-gray-200 min-h-screen font-inter">
-      <div className="max-w-[1440px] mx-auto bg-white">
-        <header className="flex items-center justify-between px-6 py-3 h-[70px] border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <img src="https://storage.googleapis.com/a1aa/image/80f112a1-1431-4da3-d1bb-23307ef8baae.jpg" alt="EduCat logo" className="w-8 h-8" />
-            <div>
-              <div className="text-black font-semibold text-base">EduCat</div>
-              <div className="text-gray-400 text-xs">Education Platform</div>
-            </div>
-          </div>
-          <div className="flex-1 flex items-center justify-center">
+      <div>
+        <Adminheader/>
+        <div>
+            <div className="flex-1 flex items-center justify-center">
             <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-64">
               <FaSearch className="text-gray-400 text-lg" />
               <input type="search" placeholder="Search" className="ml-2 bg-transparent outline-none text-sm w-full" />
@@ -73,9 +68,9 @@ export default function EduCatDashboard() {
               </div>
             </div>
           </div>
-        </header>
-
+        </div>
         <div className="flex">
+
           <nav className="w-48 bg-white border-r border-gray-200 flex flex-col px-4 py-6 space-y-4">
             <SidebarButton icon={<FaThLarge />} active label="Dashboard" />
             <SidebarButton icon={<FaUserGraduate />} label="Students" />
@@ -178,7 +173,7 @@ function ProgressCircle() {
   const RING_COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
   return (
-    <div className="bg-white rounded-md p-4 shadow-sm relative" style={{ minHeight: '280px' }}>
+    <div className="bg-white rounded-md  shadow-sm relative" style={{ minHeight: '280px' }}>
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-xs font-semibold text-gray-800">My Progress</h3>
         <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
