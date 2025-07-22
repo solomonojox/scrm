@@ -1,9 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "./AdminSidebar";
-import Header from "./Adminheader";
-import AddStudentModal from "../../components/Admin/Student/AddStudentModal";
-import EditStudentModal from "../../components/Admin/Student/EditStudentModal";
-import ViewStudentModal from "../../components/Admin/Student/ViewStudentModal";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +11,13 @@ import {
   FaSort,
 } from "react-icons/fa";
 
-const API_BASE = "https://your-api.com/api/students"; // Replace with actual API
+import Sidebar from "./AdminSidebar";
+import Header from "./Adminheader";
+import AddStudentModal from "../../components/Admin/Student/AddStudentModal";
+import EditStudentModal from "../../components/Admin/Student/EditStudentModal";
+import ViewStudentModal from "../../components/Admin/Student/ViewStudentModal";
+
+const API_BASE = "https://your-api.com/api/students"; // Replace with actual endpoint
 
 export default function AllStudentsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,7 +27,6 @@ export default function AllStudentsPage() {
   const [viewing, setViewing] = useState(null);
   const [filterGender, setFilterGender] = useState("");
 
-  // 🔄 Fetch students on mount
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -34,50 +34,55 @@ export default function AllStudentsPage() {
   const fetchStudents = async () => {
     try {
       const res = await fetch(API_BASE);
+      if (!res.ok) throw new Error("Failed to fetch students");
       const data = await res.json();
       setStudents(data);
     } catch (error) {
-      console.error("Failed to fetch students:", error);
+      console.error("Error fetching students:", error.message);
     }
   };
 
   const addStudent = async (studentData) => {
     try {
       const formData = new FormData();
-      for (let key in studentData) {
-        formData.append(key, studentData[key]);
-      }
+      Object.entries(studentData).forEach(([key, val]) => {
+        formData.append(key, val);
+      });
 
       const res = await fetch(API_BASE, {
         method: "POST",
         body: formData,
       });
 
+      if (!res.ok) throw new Error("Failed to add student");
+
       const newStudent = await res.json();
       setStudents((prev) => [...prev, newStudent]);
-    } catch (err) {
-      console.error("Add failed:", err);
+    } catch (error) {
+      console.error("Add student error:", error.message);
     }
   };
 
   const updateStudent = async (updatedData) => {
     try {
       const formData = new FormData();
-      for (let key in updatedData) {
-        formData.append(key, updatedData[key]);
-      }
+      Object.entries(updatedData).forEach(([key, val]) => {
+        formData.append(key, val);
+      });
 
       const res = await fetch(`${API_BASE}/${updatedData.id}`, {
         method: "PUT",
         body: formData,
       });
 
+      if (!res.ok) throw new Error("Failed to update student");
+
       const updated = await res.json();
       setStudents((prev) =>
         prev.map((s) => (s.id === updated.id ? updated : s))
       );
-    } catch (err) {
-      console.error("Update failed:", err);
+    } catch (error) {
+      console.error("Update student error:", error.message);
     }
   };
 
@@ -86,30 +91,32 @@ export default function AllStudentsPage() {
     if (!confirmed) return;
 
     try {
-      await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete student");
+
       setStudents((prev) => prev.filter((s) => s.id !== id));
-    } catch (err) {
-      console.error("Delete failed:", err);
+    } catch (error) {
+      console.error("Delete student error:", error.message);
     }
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar isOpen={sidebarOpen} close={() => setSidebarOpen(false)} />
-
       <div className="flex-1 flex flex-col">
         <Header />
 
-        {/* Top bar */}
-    <div className="flex items-center justify-between gap-4 px-4 py-2 bg-white border-b shadow-sm mx-auto max-w-screen-xl w-full">
-
+        {/* Top Navigation Bar */}
+        <div className="fixed top-[70px] left-1/2 transform -translate-x-1/2 px-4 py-2 bg-white border shadow-sm flex items-center justify-between gap-4 w-full max-w-5xl rounded-lg  z-10">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden p-2">
             <FaBars className="text-xl" />
           </button>
+
           <input
             placeholder="Search..."
             className="px-3 py-1 border rounded-full outline-none w-36 md:w-1/3"
           />
+
           <div className="flex items-center space-x-4">
             <Link to="/notifications" className="text-xl">
               <FontAwesomeIcon icon={faBell} className="cursor-pointer" />
@@ -126,40 +133,32 @@ export default function AllStudentsPage() {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 sm:px-6 lg:px-8 py-6 font-sans text-[13px] text-[#333] w-full">
+        <div className="ml-64 max-w-[calc(100%-16rem)] px-4 sm:px-6 lg:px-8 py-6 font-sans mt-20 text-sm text-gray-800 mt-24">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-            <div className="text-sm text-gray-600">Home:<span className="text-orange-500 font-semibold">All student</span></div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setAddOpen(true)}
-                className="bg-[#d87f0a] text-white font-semibold px-3 py-1.5 rounded hover:bg-[#c06e08]"
-              >
-                Add Student
-              </button>
+            <div className="text-sm text-gray-600">
+              Home: <span className="text-orange-500 font-semibold">All students</span>
             </div>
+            <button
+              onClick={() => setAddOpen(true)}
+              className="bg-[#d87f0a] text-white font-semibold px-3 py-1.5 rounded hover:bg-[#c06e08]"
+            >
+              Add Student
+            </button>
           </div>
 
+          {/* Student Table */}
           <div className="overflow-auto bg-white border rounded shadow-sm">
-            <table className="min-w-[1000px] w-full border-separate border-spacing-y-1 text-sm text-left">
+            <table className="min-w-[1000px] w-full border-separate border-spacing-y-1 text-left text-sm">
               <thead className="sticky top-0 bg-white z-10">
                 <tr>
                   {[
-                    "ID",
-                    "Photo",
-                    "First Name",
-                    "Last Name",
-                    "Class",
-                    "DOB",
-                    "Address",
-                    "Guardian ID",
-                    "Teacher ID",
-                    "Gender",
-                    "Actions",
+                    "ID", "Photo", "First Name", "Last Name", "Class", "DOB", "Address",
+                    "Guardian ID", "Teacher ID", "Gender", "Actions"
                   ].map((header) => (
-                    <th key={header} className="py-2 px-3 whitespace-nowrap">
+                    <th key={header} className="py-2 px-3 whitespace-nowrap font-medium">
                       {header}
                       {header !== "Photo" && header !== "Actions" && (
-                        <FaSort className="inline-block ml-1 text-[10px]" />
+                        <FaSort className="inline-block ml-1 text-xs" />
                       )}
                     </th>
                   ))}
@@ -173,7 +172,7 @@ export default function AllStudentsPage() {
                       <td className="px-3 py-2">{stu.id}</td>
                       <td className="px-3 py-2">
                         <img
-                          src={stu.avatar}
+                          src={stu.avatar || "/default-avatar.png"}
                           alt={`${stu.firstName}`}
                           className="w-8 h-8 rounded-full object-cover"
                         />
@@ -187,22 +186,13 @@ export default function AllStudentsPage() {
                       <td className="px-3 py-2">{stu.teacherId}</td>
                       <td className="px-3 py-2">{stu.gender}</td>
                       <td className="px-3 py-2 flex gap-2">
-                        <button
-                          onClick={() => setViewing(stu)}
-                          className="text-[#4a4a8a] hover:text-[#d87f0a]"
-                        >
+                        <button onClick={() => setViewing(stu)} className="text-blue-700 hover:text-orange-500">
                           <FaEye />
                         </button>
-                        <button
-                          onClick={() => setEditing(stu)}
-                          className="text-[#3a9d3a] hover:text-[#d87f0a]"
-                        >
+                        <button onClick={() => setEditing(stu)} className="text-green-600 hover:text-orange-500">
                           <FaEdit />
                         </button>
-                        <button
-                          onClick={() => deleteStudent(stu.id)}
-                          className="text-[#d9534f] hover:text-[#d87f0a]"
-                        >
+                        <button onClick={() => deleteStudent(stu.id)} className="text-red-600 hover:text-orange-500">
                           <FaTrashAlt />
                         </button>
                       </td>
@@ -222,8 +212,8 @@ export default function AllStudentsPage() {
           isOpen={isAddOpen}
           onClose={() => setAddOpen(false)}
           onSave={(newStudent) => {
-            setStudents((prev) => [...prev, newStudent]);
-            setAddOpen(false); // Close after saving
+            addStudent(newStudent);
+            setAddOpen(false);
           }}
         />
 
@@ -233,7 +223,7 @@ export default function AllStudentsPage() {
           onClose={() => setEditing(null)}
           onSave={(updated) => {
             updateStudent(updated);
-            setEditing(null); // Close modal after saving
+            setEditing(null);
           }}
         />
 
