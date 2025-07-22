@@ -70,18 +70,18 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen font-inter">
+    <div className="bg-gray-100 min-h-screen font-inter pt-[70px]">
       {/* 1) HEADER */}
-      <Adminheader className="shadow-md" />
+      <Adminheader />
 
       <div className="flex">
         {/* 2) SIDEBAR */}
-        <AdminSidebar className="mt-10 relative top-11" />
+        <AdminSidebar />
 
         {/* 3) MAIN CONTENT */}
         <div className="flex-1 ml-64">
           {/* 3a) TOPBAR */}
-          <div className="flex flex-col sm:flex-row  rounded-md  justify-between items-center px-6 py-3 mt-4 bg-white shadow-md">
+          <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
             <div className="w-full max-w-sm">
               <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
                 <FaSearch className="text-gray-400" />
