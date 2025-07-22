@@ -2,17 +2,37 @@ import React, { useEffect } from 'react';
 import Adminheader from './Adminheader';
 import AdminSidebar from './AdminSidebar';
 import {
-  FaUserGraduate, FaChalkboardTeacher, FaUserFriends,FaBell,
-  FaComment, FaSearch, FaChevronDown, FaClock, FaBookReader, FaCertificate,
-  FaPencilAlt, FaCheckSquare, FaPencilRuler
+  FaUserGraduate,
+  FaChalkboardTeacher,
+  FaUserFriends,
+  FaBell,
+  FaComment,
+  FaSearch,
+  FaChevronDown,
+  FaClock,
+  FaBookReader,
+  FaCertificate,
+  FaPencilAlt,
+  FaCheckSquare,
+  FaPencilRuler
 } from 'react-icons/fa';
-
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar
 } from 'recharts';
 
-// DATA
+// ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
   { month: 'Jan', ux: 15, ui: 10, dev: 20 },
   { month: 'Feb', ux: 25, ui: 5, dev: 15 },
@@ -43,6 +63,7 @@ const timeData = [
   { month: 'Dec', Active: 90, Inactive: 85 }
 ];
 
+// ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
 export default function AdminDashboard() {
   useEffect(() => {
     document.title = 'EduCat Dashboard';
@@ -50,71 +71,99 @@ export default function AdminDashboard() {
 
   return (
     <div className="bg-gray-100 min-h-screen font-inter">
-      <Adminheader />
-
-      {/* Topbar */}
-      <div className="flex flex-col sm:flex-row justify-between items-center px-6 ml-[400px] py-4 bg-white shadow-sm">
-        <div className="w-full max-w-sm">
-          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-            <FaSearch className="text-gray-400" />
-            <input type="text" placeholder="Search" className="ml-2 bg-transparent outline-none w-full text-sm" />
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-          <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-          <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-          <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
-            <img src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg" className="w-8 h-8 rounded-full" alt="Admin" />
-            <div className="text-xs">
-              <div className="font-semibold text-gray-700">Gold Academy</div>
-              <div className="text-gray-400">Admin</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* 1) HEADER */}
+      <Adminheader className="shadow-md" />
 
       <div className="flex">
-        {/* Sidebar */}
-        <AdminSidebar/>
+        {/* 2) SIDEBAR */}
+        <AdminSidebar className="mt-10 relative top-11" />
 
-        {/* Main Content */}
-        <main className="flex-1 p-6 space-y-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Welcome to EduCat (SCRM)</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="Students" value="120k" icon={<FaUserGraduate />} bgColor="bg-[#E6C9B0]" iconColor="text-orange-600" />
-            <StatCard label="Pending Courses" value="03" icon={<FaBookReader />} bgColor="bg-[#BFC6D0]" iconColor="text-blue-700" />
-            <StatCard label="Total Teachers" value="37" icon={<FaChalkboardTeacher />} bgColor="bg-[#E9B6B6]" iconColor="text-red-600" />
-            <StatCard label="Certificates" value="08" icon={<FaCertificate />} bgColor="bg-[#C9E3C3]" iconColor="text-green-600" />
+        {/* 3) MAIN CONTENT */}
+        <div className="flex-1 ml-64">
+          {/* 3a) TOPBAR */}
+          <div className="flex flex-col sm:flex-row  rounded-md  justify-between items-center px-6 py-3 mt-4 bg-white shadow-md">
+            <div className="w-full max-w-sm">
+              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                <FaSearch className="text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="ml-2 bg-transparent outline-none w-full text-sm"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+              <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+                <img
+                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                  className="w-8 h-8 rounded-full"
+                  alt="Admin"
+                />
+                <div className="text-xs">
+                  <div className="font-semibold text-gray-700">Gold Academy</div>
+                  <div className="text-gray-400">Admin</div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <AnalyticsChart />
-            <ProgressCircle />
-          </div>
+          {/* 3b) DASHBOARD CONTENT */}
+          <main className="p-6 space-y-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Welcome To EduCat (SCRM)
+            </h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <TimeSpendingChart />
-            <UpcomingClasses />
-          </div>
-        </main>
+            {/* STAT CARDS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                label="Students"
+                value="120k"
+                icon={<FaUserGraduate />}
+                bgColor="bg-[#E6C9B0]"
+                iconColor="text-orange-600"
+              />
+              <StatCard
+                label="Pending Courses"
+                value="03"
+                icon={<FaBookReader />}
+                bgColor="bg-[#BFC6D0]"
+                iconColor="text-blue-700"
+              />
+              <StatCard
+                label="Total Teachers"
+                value="37"
+                icon={<FaChalkboardTeacher />}
+                bgColor="bg-[#E9B6B6]"
+                iconColor="text-red-600"
+              />
+              <StatCard
+                label="Certificates"
+                value="08"
+                icon={<FaCertificate />}
+                bgColor="bg-[#C9E3C3]"
+                iconColor="text-green-600"
+              />
+            </div>
+
+            {/* CHARTS */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <AnalyticsChart />
+              <ProgressCircle />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <TimeSpendingChart />
+              <UpcomingClasses />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
 }
 
-// Sidebar button component
-function SidebarButton({ icon, label, active }) {
-  return (
-    <button className={`flex items-center space-x-3 text-sm transition ${active ? 'text-orange-600 font-semibold' : 'text-gray-800 hover:text-orange-600'}`}>
-      <span className="text-lg">{icon}</span>
-      <span>{label}</span>
-    </button>
-  );
-}
-
-// Stat card
+// ─── StatCard ──────────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon, bgColor, iconColor }) {
   return (
     <div className={`${bgColor} rounded-lg p-4 flex items-center justify-between shadow-sm`}>
@@ -127,7 +176,7 @@ function StatCard({ label, value, icon, bgColor, iconColor }) {
   );
 }
 
-// CHARTS + CLASSES (unchanged)
+// ─── AnalyticsChart ───────────────────────────────────────────────────────────
 function AnalyticsChart() {
   return (
     <div className="bg-white rounded-md p-4 shadow-sm col-span-2 relative">
@@ -162,13 +211,14 @@ function AnalyticsChart() {
   );
 }
 
+// ─── ProgressCircle ───────────────────────────────────────────────────────────
 function ProgressCircle() {
   const ringData = [
     { name: 'Completed Lessons', value: 70 },
     { name: 'Visited Lessons', value: 30 },
     { name: 'Empty', value: 100 }
   ];
-  const RING_COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
+  const COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
   return (
     <div className="bg-white rounded-md shadow-sm relative" style={{ minHeight: '280px' }}>
@@ -180,14 +230,41 @@ function ProgressCircle() {
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>
-          <Pie data={[ringData[2]]} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90} startAngle={90} endAngle={-270}>
-            <Cell fill={RING_COLORS[2]} />
+          <Pie
+            data={[ringData[2]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={90}
+            startAngle={90}
+            endAngle={-270}
+          >
+            <Cell fill={COLORS[2]} />
           </Pie>
-          <Pie data={[ringData[1]]} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90} startAngle={90} endAngle={90 - (ringData[1].value / 100) * 360}>
-            <Cell fill={RING_COLORS[1]} />
+          <Pie
+            data={[ringData[1]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={90}
+            startAngle={90}
+            endAngle={90 - (ringData[1].value / 100) * 360}
+          >
+            <Cell fill={COLORS[1]} />
           </Pie>
-          <Pie data={[ringData[0]]} dataKey="value" cx="50%" cy="50%" innerRadius={90} outerRadius={110} startAngle={90} endAngle={90 - (ringData[0].value / 100) * 360}>
-            <Cell fill={RING_COLORS[0]} />
+          <Pie
+            data={[ringData[0]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={90}
+            outerRadius={110}
+            startAngle={90}
+            endAngle={90 - (ringData[0].value / 100) * 360}
+          >
+            <Cell fill={COLORS[0]} />
           </Pie>
         </PieChart>
       </ResponsiveContainer>
@@ -199,6 +276,7 @@ function ProgressCircle() {
   );
 }
 
+// ─── TimeSpendingChart ────────────────────────────────────────────────────────
 function TimeSpendingChart() {
   return (
     <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
@@ -217,6 +295,7 @@ function TimeSpendingChart() {
   );
 }
 
+// ─── UpcomingClasses ──────────────────────────────────────────────────────────
 function UpcomingClasses() {
   const classes = [
     { title: 'UX Writing for Beginners', instructor: 'Manny Lawson', time: '12:30pm', icon: <FaPencilAlt />, color: 'bg-blue-100 text-blue-600' },
@@ -228,7 +307,9 @@ function UpcomingClasses() {
     <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-xs font-semibold text-gray-800">Upcoming Classes</h3>
-        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1">See All</button>
+        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1">
+          See All
+        </button>
       </div>
       <ul className="space-y-3">
         {classes.map((cls, i) => (
