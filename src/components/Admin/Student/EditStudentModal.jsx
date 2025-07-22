@@ -36,7 +36,7 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
         email: student.email ?? "",
         username: student.username ?? "",
         class: student.class ?? "",
-        dob: student.dob ?? "",
+        dob: student.dob?.split("T")[0] ?? "", // format date
       });
       setAvatarPreview(student.avatar ?? null);
       setAvatarFile(null);
@@ -52,16 +52,62 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
     setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e) => {
+  const handleDrop = (e) => {
     e.preventDefault();
-    const updatedStudent = {
-      ...student,
-      ...form,
-      avatar: avatarPreview,
-      avatarFile,
-    };
-    onSave?.(updatedStudent);
-    onClose?.();
+    handleImageChange(e.dataTransfer.files[0]);
+  };
+
+  const resetForm = () => {
+    setForm({
+      schoolId: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      address: "",
+      nationality: "",
+      stateOfOrigin: "",
+      gender: "",
+      religion: "",
+      email: "",
+      username: "",
+      class: "",
+      dob: "",
+    });
+    setAvatarPreview(null);
+    setAvatarFile(null);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
+      if (avatarFile) formData.append("avatar", avatarFile);
+
+      const response = await fetch(
+        `https://scrmapi.tranquility.org.ng/api/Student/UpdateStudent/${student.id}`,
+        {
+          method: "PUT",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Failed to update student.");
+      }
+
+      const updated = await response.json();
+      onSave?.(updated);
+      resetForm();
+      onClose?.();
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Error updating student.");
+    }
   };
 
   if (!isOpen) return null;
@@ -75,13 +121,16 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
           <button
             aria-label="Close"
             className="text-2xl font-bold"
-            onClick={onClose}
+            onClick={() => {
+              resetForm();
+              onClose?.();
+            }}
           >
             &times;
           </button>
         </header>
 
-        {/* Form Body */}
+        {/* Body */}
         <form
           onSubmit={handleSubmit}
           className="p-6 max-h-[80vh] overflow-y-auto space-y-6"
@@ -90,10 +139,7 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
           <div
             className="flex justify-center"
             onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              handleImageChange(e.dataTransfer.files[0]);
-            }}
+            onDrop={handleDrop}
           >
             <div
               className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden shadow-inner relative"
@@ -102,7 +148,7 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
               {avatarPreview ? (
                 <img
                   src={avatarPreview}
-                  alt="avatar"
+                  alt="avatar preview"
                   className="object-cover w-full h-full"
                 />
               ) : (
@@ -123,9 +169,9 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
             />
           </div>
 
-          {/* Form Fields */}
+          {/* Grid Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
+            {[ 
               { label: "School ID", name: "schoolId" },
               { label: "First Name", name: "firstName" },
               { label: "Last Name", name: "lastName" },
@@ -193,7 +239,7 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-orange-600 text-white font-semibold py-2 rounded-md shadow hover:bg-orange-700"

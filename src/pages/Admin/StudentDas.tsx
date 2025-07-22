@@ -17,7 +17,7 @@ import AddStudentModal from "../../components/Admin/Student/AddStudentModal";
 import EditStudentModal from "../../components/Admin/Student/EditStudentModal";
 import ViewStudentModal from "../../components/Admin/Student/ViewStudentModal";
 
-const API_BASE = "https://your-api.com/api/students"; // Replace with actual endpoint
+const API_BASE = "https://scrmapi.tranquility.org.ng/api/Student/GetAllStudent"; // Replace with actual endpoint
 
 export default function AllStudentsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
