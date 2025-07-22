@@ -2,6 +2,7 @@ import React from "react";
 import Header from '../Header';
 import Footer from "../Footer";
 import { Link } from "react-router-dom";
+
 const GetStarted = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col font-inter">
@@ -30,37 +31,42 @@ const GetStarted = () => {
         </div>
       </div>
 
-      {/* Feature Cards */}
-      <div className="max-w-6xl mx-auto px-4 -mt-16 pb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12 z-10 relative">
-        {[
-          {
-            icon: "fa-school",
-            title: "Add School",
-            description: "Provide the details of the school",
-          },
-          {
-            icon: "fa-file-alt",
-            title: "Add School License",
-            description: "License of school eg. CAC",
-          },
-          {
-            icon: "fa-user-circle",
-            title: "Add School Admin",
-            description: "Admin of the school to monitor the application",
-          },
-        ].map((card, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-2xl p-6 flex flex-col items-center text-center h-auto sm:h-[220px] custom-shadow transition-shadow hover:shadow-lg"
-          >
-            <div className="bg-orange-600 text-white rounded-full p-4 mb-4">
-              <i className={`fas ${card.icon} text-xl`}></i>
-            </div>
-            <h3 className="font-bold text-lg mb-1">{card.title}</h3>
-            <p className="text-gray-600 text-sm">{card.description}</p>
-          </div>
-        ))}
+<div className="max-w-6xl mx-auto px-4 -mt-16 pb-10 flex gap-x-3 overflow-x-auto z-10 relative">
+  {[
+    {
+      icon: "fa-school",
+      title: "Add School",
+      description: "Provide the details of the school",
+    },
+    {
+      icon: "fa-file-alt",
+      title: "Add School License",
+      description: "License of school eg. CAC",
+    },
+    {
+      icon: "fa-university",
+      title: "Add School Bank Account",
+      description: "Bank account details of school",
+    },
+    {
+      icon: "fa-user-circle",
+      title: "Add School Admin",
+      description: "Admin of the school to monitor the application",
+    },
+  ].map((card, index) => (
+    <div
+      key={index}
+      className="bg-white rounded-2xl p-6 flex-shrink-0 w-[250px] flex flex-col items-center text-center custom-shadow transition-shadow hover:shadow-lg"
+    >
+      <div className="bg-orange-600 text-white rounded-full p-4 mb-4">
+        <i className={`fas ${card.icon} text-xl`}></i>
       </div>
+      <h3 className="font-bold text-lg mb-1">{card.title}</h3>
+      <p className="text-gray-600 text-sm">{card.description}</p>
+    </div>
+  ))}
+</div>
+
 
        <Footer />
 
