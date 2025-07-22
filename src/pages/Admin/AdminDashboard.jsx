@@ -1,16 +1,38 @@
 import React, { useEffect } from 'react';
 import Adminheader from './Adminheader';
+import AdminSidebar from './AdminSidebar';
 import {
-  FaThLarge, FaUserGraduate, FaChalkboardTeacher, FaUserFriends, FaBook,
-  FaNewspaper, FaCalendarAlt, FaChalkboard, FaFileInvoiceDollar, FaBell,
-  FaComment, FaSearch, FaChevronDown, FaClock, FaBookReader, FaCertificate,
-  FaPencilAlt, FaCheckSquare, FaPencilRuler
+  FaUserGraduate,
+  FaChalkboardTeacher,
+  FaUserFriends,
+  FaBell,
+  FaComment,
+  FaSearch,
+  FaChevronDown,
+  FaClock,
+  FaBookReader,
+  FaCertificate,
+  FaPencilAlt,
+  FaCheckSquare,
+  FaPencilRuler
 } from 'react-icons/fa';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-  ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar
 } from 'recharts';
 
+// ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
   { month: 'Jan', ux: 15, ui: 10, dev: 20 },
   { month: 'Feb', ux: 25, ui: 5, dev: 15 },
@@ -41,63 +63,95 @@ const timeData = [
   { month: 'Dec', Active: 90, Inactive: 85 }
 ];
 
-export default function EduCatDashboard() {
+// ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
+export default function AdminDashboard() {
   useEffect(() => {
     document.title = 'EduCat Dashboard';
   }, []);
 
   return (
-    <div className="bg-gray-200 min-h-screen font-inter">
-      <div>
-        <Adminheader/>
-        <div>
-            <div className="flex-1 flex items-center justify-center">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-64">
-              <FaSearch className="text-gray-400 text-lg" />
-              <input type="search" placeholder="Search" className="ml-2 bg-transparent outline-none text-sm w-full" />
+    <div className="bg-gray-100 min-h-screen font-inter pt-[70px]">
+      {/* 1) HEADER */}
+      <Adminheader />
+
+      <div className="flex">
+        {/* 2) SIDEBAR */}
+        <AdminSidebar />
+
+        {/* 3) MAIN CONTENT */}
+        <div className="flex-1 ml-64">
+          {/* 3a) TOPBAR */}
+          <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
+            <div className="w-full max-w-sm">
+              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                <FaSearch className="text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="ml-2 bg-transparent outline-none w-full text-sm"
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-4 text-gray-600">
-            <FaBell className="text-lg hover:text-gray-900 cursor-pointer" />
-            <FaComment className="text-lg hover:text-gray-900 cursor-pointer" />
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-full px-3 py-1">
-              <img src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg" alt="Admin" className="w-8 h-8 rounded-full" />
-              <div className="text-xs">
-                <div className="font-semibold text-gray-700">Gold Academy</div>
-                <div className="text-gray-400">Admin</div>
+            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+              <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+                <img
+                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                  className="w-8 h-8 rounded-full"
+                  alt="Admin"
+                />
+                <div className="text-xs">
+                  <div className="font-semibold text-gray-700">Gold Academy</div>
+                  <div className="text-gray-400">Admin</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex">
 
-          <nav className="w-48 bg-white border-r border-gray-200 flex flex-col px-4 py-6 space-y-4">
-            <SidebarButton icon={<FaThLarge />} active label="Dashboard" />
-            <SidebarButton icon={<FaUserGraduate />} label="Students" />
-            <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" />
-            <SidebarButton icon={<FaUserFriends />} label="Guardian" />
-            <SidebarButton icon={<FaBook />} label="Classroom" />
-            <SidebarButton icon={<FaNewspaper />} label="News" />
-            <SidebarButton icon={<FaCalendarAlt />} label="Events" />
-            <SidebarButton icon={<FaChalkboard />} label="Session" />
-            <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" />
-            <button className="mt-auto bg-red-100 text-red-600 text-xs font-semibold py-2 rounded hover:bg-red-200 transition">Log Out</button>
-          </nav>
+          {/* 3b) DASHBOARD CONTENT */}
+          <main className="p-6 space-y-6">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              Welcome To EduCat (SCRM)
+            </h2>
 
-          <main className="flex-1 p-6 space-y-6">
-            <h2 className="text-base font-medium text-gray-800 mb-6">Welcome To EduCat(SCRM)</h2>
-            <div className="flex space-x-4 w-[900px]">
-              <StatCard label="Students" value="120k" icon={<FaUserGraduate />} bgColor="bg-[#E6C9B0]" iconColor="text-orange-600" />
-              <StatCard label="Pending Courses" value="03" icon={<FaBookReader />} bgColor="bg-[#BFC6D0]" iconColor="text-blue-700" />
-              <StatCard label="Total Teachers" value="37" icon={<FaChalkboardTeacher />} bgColor="bg-[#E9B6B6]" iconColor="text-red-600" />
-              <StatCard label="Certificates" value="08" icon={<FaCertificate />} bgColor="bg-[#C9E3C3]" iconColor="text-green-600" />
+            {/* STAT CARDS */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                label="Students"
+                value="120k"
+                icon={<FaUserGraduate />}
+                bgColor="bg-[#E6C9B0]"
+                iconColor="text-orange-600"
+              />
+              <StatCard
+                label="Pending Courses"
+                value="03"
+                icon={<FaBookReader />}
+                bgColor="bg-[#BFC6D0]"
+                iconColor="text-blue-700"
+              />
+              <StatCard
+                label="Total Teachers"
+                value="37"
+                icon={<FaChalkboardTeacher />}
+                bgColor="bg-[#E9B6B6]"
+                iconColor="text-red-600"
+              />
+              <StatCard
+                label="Certificates"
+                value="08"
+                icon={<FaCertificate />}
+                bgColor="bg-[#C9E3C3]"
+                iconColor="text-green-600"
+              />
             </div>
 
+            {/* CHARTS */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AnalyticsChart />
               <ProgressCircle />
             </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <TimeSpendingChart />
               <UpcomingClasses />
@@ -109,27 +163,20 @@ export default function EduCatDashboard() {
   );
 }
 
-function SidebarButton({ icon, label, active }) {
-  return (
-    <button className={`flex items-center space-x-3 text-sm ${active ? 'text-orange-600 font-semibold' : 'text-gray-800'} hover:text-orange-600 transition`}>
-      <span className="text-lg">{icon}</span>
-      <span>{label}</span>
-    </button>
-  );
-}
-
+// ─── StatCard ──────────────────────────────────────────────────────────────────
 function StatCard({ label, value, icon, bgColor, iconColor }) {
   return (
-    <div className={`${bgColor} shadow-sm rounded-lg px-5 py-4 w-56 flex justify-between items-center`}>
+    <div className={`${bgColor} rounded-lg p-4 flex items-center justify-between shadow-sm`}>
       <div>
-        <div className="text-xs uppercase text-gray-700 mb-1">{label}</div>
-        <div className="text-xl font-bold text-gray-900">{value}</div>
+        <p className="text-xs text-gray-600 uppercase">{label}</p>
+        <h3 className="text-xl font-bold text-gray-800">{value}</h3>
       </div>
-      <div className={`text-4xl ${iconColor}`}>{icon}</div>
+      <div className={`text-3xl ${iconColor}`}>{icon}</div>
     </div>
   );
 }
 
+// ─── AnalyticsChart ───────────────────────────────────────────────────────────
 function AnalyticsChart() {
   return (
     <div className="bg-white rounded-md p-4 shadow-sm col-span-2 relative">
@@ -164,17 +211,18 @@ function AnalyticsChart() {
   );
 }
 
+// ─── ProgressCircle ───────────────────────────────────────────────────────────
 function ProgressCircle() {
   const ringData = [
     { name: 'Completed Lessons', value: 70 },
     { name: 'Visited Lessons', value: 30 },
     { name: 'Empty', value: 100 }
   ];
-  const RING_COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
+  const COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
   return (
-    <div className="bg-white rounded-md  shadow-sm relative" style={{ minHeight: '280px' }}>
-      <div className="flex justify-between items-center mb-3">
+    <div className="bg-white rounded-md shadow-sm relative" style={{ minHeight: '280px' }}>
+      <div className="flex justify-between items-center mb-3 px-4 pt-4">
         <h3 className="text-xs font-semibold text-gray-800">My Progress</h3>
         <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
           Weekly <FaChevronDown className="ml-1 text-[8px]" />
@@ -182,14 +230,41 @@ function ProgressCircle() {
       </div>
       <ResponsiveContainer width="100%" height={200}>
         <PieChart>
-          <Pie data={[ringData[2]]} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90} startAngle={90} endAngle={-270}>
-            <Cell fill={RING_COLORS[2]} />
+          <Pie
+            data={[ringData[2]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={90}
+            startAngle={90}
+            endAngle={-270}
+          >
+            <Cell fill={COLORS[2]} />
           </Pie>
-          <Pie data={[ringData[1]]} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90} startAngle={90} endAngle={90 - (ringData[1].value / 100) * 360}>
-            <Cell fill={RING_COLORS[1]} />
+          <Pie
+            data={[ringData[1]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={70}
+            outerRadius={90}
+            startAngle={90}
+            endAngle={90 - (ringData[1].value / 100) * 360}
+          >
+            <Cell fill={COLORS[1]} />
           </Pie>
-          <Pie data={[ringData[0]]} dataKey="value" cx="50%" cy="50%" innerRadius={90} outerRadius={110} startAngle={90} endAngle={90 - (ringData[0].value / 100) * 360}>
-            <Cell fill={RING_COLORS[0]} />
+          <Pie
+            data={[ringData[0]]}
+            dataKey="value"
+            cx="50%"
+            cy="50%"
+            innerRadius={90}
+            outerRadius={110}
+            startAngle={90}
+            endAngle={90 - (ringData[0].value / 100) * 360}
+          >
+            <Cell fill={COLORS[0]} />
           </Pie>
         </PieChart>
       </ResponsiveContainer>
@@ -201,6 +276,7 @@ function ProgressCircle() {
   );
 }
 
+// ─── TimeSpendingChart ────────────────────────────────────────────────────────
 function TimeSpendingChart() {
   return (
     <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
@@ -219,6 +295,7 @@ function TimeSpendingChart() {
   );
 }
 
+// ─── UpcomingClasses ──────────────────────────────────────────────────────────
 function UpcomingClasses() {
   const classes = [
     { title: 'UX Writing for Beginners', instructor: 'Manny Lawson', time: '12:30pm', icon: <FaPencilAlt />, color: 'bg-blue-100 text-blue-600' },
@@ -230,7 +307,9 @@ function UpcomingClasses() {
     <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-xs font-semibold text-gray-800">Upcoming Classes</h3>
-        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1">See All</button>
+        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1">
+          See All
+        </button>
       </div>
       <ul className="space-y-3">
         {classes.map((cls, i) => (
