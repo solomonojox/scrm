@@ -41,7 +41,7 @@ const AdminSidebar = () => (
     "
   >
     {/* Menu items */}
-    <div className="space-y-3">
+    <div className="space-y-2 text-sm">
       <SidebarButton icon={<FaThLarge />} active label="Dashboard" />
       <SidebarButton icon={<FaUserGraduate />} label="Students" />
       <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" />
