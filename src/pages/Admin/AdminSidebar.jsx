@@ -1,5 +1,16 @@
 import React from 'react'
-
+import {
+  FaThLarge,
+  FaUserGraduate,
+  FaChalkboardTeacher,
+  FaUserFriends,
+  FaBook,
+  FaNewspaper,
+  FaCalendarAlt,
+  FaChalkboard,
+  FaFileInvoiceDollar
+} from "react-icons/fa";
+import SidebarButton from './Button'
 const AdminSidebar = () => {
     return (
         <div>

@@ -1,8 +1,6 @@
-// src/components/EditStudentModal.jsx
 import React, { useState, useRef, useEffect } from "react";
 
 const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
-  /* ---------- local state pre‑filled with student data ---------- */
   const [form, setForm] = useState({
     schoolId: "",
     firstName: "",
@@ -15,12 +13,14 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
     religion: "",
     email: "",
     username: "",
+    class: "",
+    dob: "",
   });
+
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const fileRef = useRef(null);
 
-  /* ---------- populate state when modal opens ---------- */
   useEffect(() => {
     if (isOpen && student) {
       setForm({
@@ -35,13 +35,14 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
         religion: student.religion ?? "",
         email: student.email ?? "",
         username: student.username ?? "",
+        class: student.class ?? "",
+        dob: student.dob ?? "",
       });
       setAvatarPreview(student.avatar ?? null);
       setAvatarFile(null);
     }
   }, [isOpen, student]);
 
-  /* ---------- handlers ---------- */
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -53,8 +54,13 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updated = { ...student, ...form, avatarFile };
-    onSave?.(updated);   // ⬅️ send back to parent
+    const updatedStudent = {
+      ...student,
+      ...form,
+      avatar: avatarPreview,
+      avatarFile,
+    };
+    onSave?.(updatedStudent);
     onClose?.();
   };
 
@@ -62,20 +68,27 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-2xl shadow-lg animate-fadeIn overflow-hidden">
+      <div className="bg-white rounded-lg w-full max-w-4xl shadow-lg animate-fadeIn overflow-hidden">
         {/* Header */}
         <header className="bg-orange-600 text-white flex items-center justify-between px-4 py-3">
           <h2 className="flex-grow text-center font-semibold">Edit Student</h2>
-          <button aria-label="Close" className="text-2xl font-bold" onClick={onClose}>
+          <button
+            aria-label="Close"
+            className="text-2xl font-bold"
+            onClick={onClose}
+          >
             &times;
           </button>
         </header>
 
-        {/* Body */}
-        <form onSubmit={handleSubmit} className="p-4 max-h-[75vh] overflow-y-auto space-y-4">
-          {/* Avatar */}
+        {/* Form Body */}
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 max-h-[80vh] overflow-y-auto space-y-6"
+        >
+          {/* Avatar Upload */}
           <div
-            className="flex justify-center mb-6 relative"
+            className="flex justify-center"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
               e.preventDefault();
@@ -87,7 +100,11 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
               onClick={() => fileRef.current?.click()}
             >
               {avatarPreview ? (
-                <img src={avatarPreview} alt="avatar" className="object-cover w-full h-full" />
+                <img
+                  src={avatarPreview}
+                  alt="avatar"
+                  className="object-cover w-full h-full"
+                />
               ) : (
                 <>
                   <span className="text-3xl text-gray-500">+</span>
@@ -106,73 +123,77 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
             />
           </div>
 
-          {/* Text inputs */}
-          {[
-            { label: "School ID", name: "schoolId" },
-            { label: "First Name", name: "firstName" },
-            { label: "Last Name", name: "lastName" },
-            { label: "Phone Number", name: "phone", type: "tel" },
-            { label: "Email", name: "email", type: "email" },
-            { label: "Username", name: "username" },
-            { label: "Home Address", name: "address" },
-            { label: "Nationality", name: "nationality" },
-            { label: "State of Origin", name: "stateOfOrigin" },
-          ].map(({ label, name, type = "text" }) => (
-            <div key={name}>
+          {/* Form Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { label: "School ID", name: "schoolId" },
+              { label: "First Name", name: "firstName" },
+              { label: "Last Name", name: "lastName" },
+              { label: "Phone Number", name: "phone", type: "tel" },
+              { label: "Email", name: "email", type: "email" },
+              { label: "Username", name: "username" },
+              { label: "Home Address", name: "address" },
+              { label: "Nationality", name: "nationality" },
+              { label: "State of Origin", name: "stateOfOrigin" },
+              { label: "Class", name: "class" },
+              { label: "Date of Birth", name: "dob", type: "date" },
+            ].map(({ label, name, type = "text" }) => (
+              <div key={name}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label}
+                </label>
+                <input
+                  type={type}
+                  name={name}
+                  value={form[name]}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2 text-sm"
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Gender */}
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {label}
+                Gender
               </label>
-              <input
-                type={type}
-                name={name}
-                value={form[name]}
+              <select
+                name="gender"
+                value={form.gender}
                 onChange={handleChange}
                 className="w-full border rounded px-3 py-2 text-sm"
                 required
-              />
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
-          ))}
 
-          {/* Gender */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Gender
-            </label>
-            <select
-              name="gender"
-              value={form.gender}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
+            {/* Religion */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Religion
+              </label>
+              <select
+                name="religion"
+                value={form.religion}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2 text-sm"
+                required
+              >
+                <option value="">Select Religion</option>
+                <option value="Christianity">Christianity</option>
+                <option value="Islam">Islam</option>
+                <option value="Traditional">Traditional</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
           </div>
 
-          {/* Religion */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Religion
-            </label>
-            <select
-              name="religion"
-              value={form.religion}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2 text-sm"
-              required
-            >
-              <option value="">Select Religion</option>
-              <option value="Christianity">Christianity</option>
-              <option value="Islam">Islam</option>
-              <option value="Traditional">Traditional</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          {/* Submit */}
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-orange-600 text-white font-semibold py-2 rounded-md shadow hover:bg-orange-700"
