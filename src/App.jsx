@@ -10,6 +10,7 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
+import Guard from './pages/Guardian/guardian'
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
       {/* All teachers routes here */}
 
       {/* All Guardians routes here */}
+       <Route path="guardian" element={<Guard/>} />
 
       {/* All students routes here */}
       
