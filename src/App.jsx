@@ -11,6 +11,7 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
 import Guard from './pages/Guardian/guardian'
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 function App() {
 
@@ -29,8 +30,7 @@ function App() {
   <Route path="addschoolform" element={<Addschoolform />} />
         <Route path="Terms" element={<Terms/>} />
         <Route path="upload-license" element={<AddSchoolLisence/>} />
-        
-
+        <Route path="admindashboard" element={<AdminDashboard/>} />
 
 
       {/* All teachers routes here */}
