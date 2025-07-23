@@ -13,7 +13,7 @@ import Terms from './pages/Admin/Terms'
 import Guard from './pages/Guardian/guardian'
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
-import News from './pages/Auth/News';
+import News from './pages/Admin/News';
 
 function App() {
 
