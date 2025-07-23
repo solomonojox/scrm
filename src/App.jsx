@@ -23,30 +23,30 @@ function App() {
       <Route path="/" element={<Landing />} />
 
       <Route path="GetStarted" element={<RegisSch />} />
-          <Route path="AddSchool" element={<AddSchool/>} />
-               <Route path="AddAdmin" element={<AddAdmin/>} />
+      <Route path="AddSchool" element={<AddSchool />} />
+      <Route path="AddAdmin" element={<AddAdmin />} />
       <Route path="Login" element={<Login />} />
 
-     
 
-      <Route path="accountregistration" element={<Accountregistration/>} />
-      <Route path="new" element={<News/>} />
+
+      <Route path="accountregistration" element={<Accountregistration />} />
+      <Route path="new" element={<News />} />
 
 
       {/* All admin routes here */}
-  <Route path="addschoolform" element={<Addschoolform />} />
-        <Route path="Terms" element={<Terms/>} />
-        <Route path="upload-license" element={<AddSchoolLisence/>} />
-        <Route path="admindashboard" element={<AdminDashboard/>} />
+      <Route path="addschoolform" element={<Addschoolform />} />
+      <Route path="Terms" element={<Terms />} />
+      <Route path="upload-license" element={<AddSchoolLisence />} />
+      <Route path="admindashboard" element={<AdminDashboard />} />
 
 
       {/* All teachers routes here */}
-<Route path="class" element={<Classroom />} />
+      <Route path="class" element={<Classroom />} />
       {/* All Guardians routes here */}
-       <Route path="guardian" element={<Guard/>} />
+      <Route path="guardian" element={<Guard />} />
 
       {/* All students routes here */}
-      
+
 
     </Routes>
   );
