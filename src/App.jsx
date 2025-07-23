@@ -13,6 +13,7 @@ import Terms from './pages/Admin/Terms'
 import Guard from './pages/Guardian/guardian'
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
+import News from './pages/Auth/News';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
      
 
       <Route path="accountregistration" element={<Accountregistration/>} />
+      <Route path="new" element={<News/>} />
 
 
       {/* All admin routes here */}
