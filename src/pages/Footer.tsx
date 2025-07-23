@@ -9,8 +9,7 @@ import {
   FaLinkedinIn,
   FaYoutube,
 } from "react-icons/fa";
-
-import logo from '../assets/looogo.png';
+import imageAssets from "../assets/imageAssets";
 
 const Footer = () => (
   <footer className="bg-black text-white px-6 md:px-12 py-8">
@@ -18,7 +17,7 @@ const Footer = () => (
       {/* Logo & intro */}
       <div className="flex flex-col md:flex-row md:gap-6 w-full md:w-1/2">
         <div className="bg-white p-2 rounded-md w-fit">
-          <img src={logo} alt="Logo" width={100} height={60} className="rounded-md" />
+          <img src={imageAssets.logo} alt="Logo" width={100} height={60} className="rounded-md" />
         </div>
 
         <p className="mt-4 md:mt-0 text-xs leading-tight max-w-xs">

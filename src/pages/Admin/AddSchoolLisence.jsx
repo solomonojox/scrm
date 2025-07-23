@@ -114,10 +114,10 @@ const AddSchoolLicense = () => {
           </div>
 
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-            <Link to="/addschoolform" className="hover:underline">Add School</Link>
-            <Link to="/AddSchool" className="underline">Upload School License</Link>
-            <Link to="/Accountregistration" className="hover:underline">Add Account Details</Link>
-            <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
+            <Link to="/add-school-form" className="hover:underline">Add School</Link>
+            <Link to="/upload-license" className="underline">Upload School License</Link>
+            <Link to="/account-registration" className="hover:underline">Add Account details</Link>
+            <Link to="/add-admin" className="hover:underline">Add School Admin</Link>
           </nav>
 
           <div className="mt-8 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
@@ -196,9 +196,8 @@ const AddSchoolLicense = () => {
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className={`bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded shadow-md transition ${
-                saving ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className={`bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded shadow-md transition ${saving ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             >
               {saving ? 'Saving...' : 'Save'}
             </button>

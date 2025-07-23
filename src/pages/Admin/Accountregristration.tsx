@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
+import { onboardingService } from "../../Services/Auth/onboarding";
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
@@ -19,12 +20,12 @@ export default function RegistrationForm() {
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -45,28 +46,14 @@ export default function RegistrationForm() {
         isDefault: true,
       };
 
-      const response = await fetch(
-        "https://scrmapi.tranquility.org.ng/api/SchoolAccount/AddSchoolAccount",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await onboardingService.accountRegistration(payload);
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
-
-      // Save response to localStorage
-      localStorage.setItem("schoolBankAccount", JSON.stringify(data));
-
-      setSaved(true); // Mark as saved
-      setTimeout(() => navigate("/AddAdmin"), 1000); // Redirect after 1.5s
+      setSaved(true);
+      // setTimeout(() => navigate("/AddAdmin"), 1000);
     } catch (error) {
       console.error("Submission failed:", error);
     } finally {
@@ -108,10 +95,10 @@ export default function RegistrationForm() {
         </div>
 
         <nav className="flex justify-between mt-3 text-orange-600 font-semibold text-xs">
-          <Link to="/addschoolform" className="hover:underline">Add School</Link>
-          <Link to="/AddSchool" className="hover:underline">Upload School License</Link>
-          <Link to="/AddAccount" className="underline">Add Account Details</Link>
-          <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
+          <Link to="/add-school-form" className="hover:underline">Add School</Link>
+          <Link to="/upload-license" className="hover:underline">Upload School License</Link>
+          <Link to="/account-registration" className="underline">Add Account details</Link>
+          <Link to="/add-admin" className="hover:underline">Add School Admin</Link>
         </nav>
 
         <p className="mt-4 text-center italic text-xs font-semibold">
@@ -142,13 +129,12 @@ export default function RegistrationForm() {
           <button
             type="submit"
             disabled={loading || saved}
-            className={`w-full ${
-              saved
-                ? "bg-green-500"
-                : loading
+            className={`w-full ${saved
+              ? "bg-green-500"
+              : loading
                 ? "bg-orange-300"
                 : "bg-orange-500 hover:bg-orange-600"
-            } text-white font-semibold py-2 rounded text-sm`}
+              } text-white font-semibold py-2 rounded text-sm`}
           >
             {saved ? "Saved" : loading ? "Submitting..." : "Submit"}
           </button>
