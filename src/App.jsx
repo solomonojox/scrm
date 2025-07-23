@@ -11,6 +11,7 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import Classroom from './pages/Teachers/Classroom';
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
 
 
       {/* All teachers routes here */}
-
+<Route path="class" element={<Classroom />} />
       {/* All Guardians routes here */}
 
       {/* All students routes here */}
