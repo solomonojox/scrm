@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
-import h from "../assets/sc.jpg";
 import Header from "./Header";
+import imageAssets from "../assets/imageAssets";
+import { loginService } from "../Services/Auth/loginService";
 
 const LoginPage = () => {
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
@@ -18,14 +18,12 @@ const LoginPage = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post(
-        "https://scrmapi.tranquility.org.ng/api/Login/Login",
-        {
-          schoolRegistrationNumber,
-          email,
-          password,
-        }
-      );
+      const data = {
+        schoolRegistrationNumber,
+        email,
+        password,
+      }
+      const response = await loginService.staffLogin(data);
 
       console.log("Login successful:", response.data);
       setSuccessMessage("Login successful!");
@@ -43,32 +41,31 @@ const LoginPage = () => {
   };
 
   return (
-    <>
-      <Header />
+    <div className="relative">
+      <div className="sticky top-0 z-50">
+        <Header />
+      </div>
 
-      <div
-        className="min-h-screen w-full bg-cover bg-center flex items-center justify-center mt-[50px]"
-        style={{
-          backgroundImage: `url(${h})`,
-        }}
-      >
-        <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-[539px] max-w-md  mr-[378px]  mb-[90px]">
-          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">
-            Welcome Back!
-          </h2>
+      <img
+        src={imageAssets.loginImage}
+        alt="login image"
+        className="w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
+      />
+
+      <div className="h-screen w-full bg-cover bg-center flex items-center justify-center lg:justify-end lg:pr-[10%] ">
+        <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-[539px] max-w-md">
+          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
           <p className="text-center text-gray-600 mb-6">Please Login</p>
 
           <form onSubmit={handleLogin}>
             <div className="mb-4">
-              <label
-                htmlFor="regNumber"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="regNumber" className="block text-sm font-medium text-gray-700 mb-1">
                 School Registration Number
               </label>
               <input
                 id="regNumber"
                 type="text"
+                required
                 value={schoolRegistrationNumber}
                 onChange={(e) => setSchoolRegistrationNumber(e.target.value)}
                 placeholder="Enter Number"
@@ -77,15 +74,13 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
                 id="email"
                 type="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
@@ -94,15 +89,13 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
                 id="password"
                 type="password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
@@ -110,12 +103,8 @@ const LoginPage = () => {
               />
             </div>
 
-            {error && (
-              <p className="text-red-500 text-sm mb-4">{error}</p>
-            )}
-            {successMessage && (
-              <p className="text-green-600 text-sm mb-4">{successMessage}</p>
-            )}
+            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+            {successMessage && <p className="text-green-600 text-sm mb-4">{successMessage}</p>}
 
             <button
               type="submit"
@@ -138,7 +127,26 @@ const LoginPage = () => {
           </form>
         </div>
       </div>
-    </>
+
+      <div className="fixed top-0 left-0 w-full h-screen overflow-hidden -z-10">
+        <svg
+          viewBox="0 0 1438 953"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMidYMid slice"
+          className="w-full h-full"
+        >
+          <path
+            d="M954.001 0H1438V953H954.001C954.001 953 674 755 901.5 464.5C1129 174 954.001 0 954.001 0Z"
+            fill="#EE7306"
+          />
+          <path
+            d="M954 630V960H1L-33 807C-33 807 -39.5 840 132 731C303.5 622 458.5 813 539 731C619.5 649 694.5 593.5 773.5 590C852.5 586.5 954 630 954 630Z"
+            fill="#EE7306"
+          />
+        </svg>
+      </div>
+    </div>
   );
 };
 
