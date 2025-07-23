@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Header from "../Header";
 import Footer from "../Footer";
+import { onboardingService } from "../../Services/Auth/onboarding";
 
 const formFields = [
   { label: "School Name", name: "schoolName", type: "text", placeholder: "Enter Name" },
@@ -60,11 +61,8 @@ const AddSchoolForm = () => {
     setSuccess("");
 
     try {
-      const res = await axios.post(
-        "https://scrmapi.tranquility.org.ng/api/School/RegisterSchool",
-        formData
-      );
-      const id = res.data.schoolId || res.data.data?.schoolId;
+      const res = await onboardingService.addSchool(formData);
+      const id = res.schoolId || res?.schoolId;
       if (id) {
         setSchoolId(id);
         localStorage.setItem("schoolId", id);
@@ -72,7 +70,8 @@ const AddSchoolForm = () => {
       setSuccess("School registered successfully!");
       navigate('/upload-license');
     } catch (err) {
-      const msg = err.response?.data?.message || err.message;
+      console.log(err)
+      const msg = err.response?.data?.responseMessage || err.message;
       setError(msg);
     } finally {
       setLoading(false);
@@ -102,10 +101,10 @@ const AddSchoolForm = () => {
             </div>
             <div className="text-right text-[11px] text-gray-600 mt-1">30%</div>
             <div className="flex justify-between text-[11px] mt-2 font-semibold text-orange-600">
-              <Link to="/addschoolform" className="underline">Add School</Link>
-              <Link to="/AddSchool" className="hover:underline">Upload School License</Link>
-              <Link to="/Accountregistration" className="hover:underline">Add Account details</Link>
-              <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
+              <Link to="/add-school-form" className="underline">Add School</Link>
+              <Link to="/upload-license" className="hover:underline">Upload School License</Link>
+              <Link to="/account-registration" className="hover:underline">Add Account details</Link>
+              <Link to="/add-admin" className="hover:underline">Add School Admin</Link>
             </div>
           </section>
 
