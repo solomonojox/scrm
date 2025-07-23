@@ -8,8 +8,8 @@ import {
   FaFlask,
   FaAngleDown,
 } from "react-icons/fa";
-import Header from "../Admin/Adminheader";
-import Side from "../Admin/AdminSidebar";
+import Header from "./Adminheader";
+import Side from "./AdminSidebar";
 
 const newsItems = new Array(10).fill({
   title: "Breaking News",
