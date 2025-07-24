@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "./Header";
 import imageAssets from "../assets/imageAssets";
 import { loginService } from "../Services/Auth/loginService";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
@@ -28,6 +29,8 @@ const LoginPage = () => {
       console.log("Login successful:", response.data);
       setSuccessMessage("Login successful!");
 
+      const decoded = jwtDecode(response.token);
+      console.log("Decoded token:", decoded);
       // Optional: store token or navigate
       // localStorage.setItem("token", response.data.token);
       // navigate("/dashboard");

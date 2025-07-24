@@ -306,9 +306,9 @@ const MainLogin = () => {
             />
 
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center flex-col items-center">
             <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-1  font-semibold text-lg text-white w-full">Sign in</button>
-            <div className="p-2 bg-orange-500" onClick={() => navigate("/studentdata")}>Go to guardian</div>
+            <div className="p-2 bg-orange-600 cursor-pointer" onClick={() => navigate("/studentdata")}>Go to guardian</div>
           </div>
         </form>
 
