@@ -37,7 +37,7 @@ function App() {
       <Route path="/teacher/class" element={<Classroom />} />
 
       {/* All Guardians routes here */}
-      <Route path="/guardian/allguardian" element={<Guardian />} />
+      <Route path="/Guardian/allguardian" element={<Guardian />} />
 
       {/* All students routes here */}
 
