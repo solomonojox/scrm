@@ -7,10 +7,12 @@ import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 // import { PiEyeClosed } from "react-icons/pi";
 // import { IoEyeOutline } from "react-icons/io5";
 import assets from "../Assets/assets";
+import { useNavigate } from "react-router-dom";
 
 const MainLogin = () => {
   // Define the base URL for the API from react app env file
   const baseUrl = process.env.REACT_APP_BASEURL;
+  const navigate = useNavigate();
 
   const { notifySuccess, notifyError, showOverlay, hideOverlay } = useContext(AppContext);
   // const [email, setEmail] = useState("");
@@ -304,8 +306,9 @@ const MainLogin = () => {
             />
 
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center flex-col items-center">
             <button className="bg-orange-600 mt-5 hover:bg-orange-500 rounded-xl shadow-md px-10 py-1  font-semibold text-lg text-white w-full">Sign in</button>
+            <div className="p-2 mt-2 bg-orange-600 cursor-pointer" onClick={() => navigate("/studentdata")}>Go to guardian</div>
           </div>
         </form>
 

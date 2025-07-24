@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Header from "./Header";
 import imageAssets from "../assets/imageAssets";
 import { loginService } from "../Services/Auth/loginService";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../Context/AppContext";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { notifySuccess, notifyError } = useContext(AppContext);
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,14 +32,23 @@ const LoginPage = () => {
 
       console.log("Login successful:", response.data);
       setSuccessMessage("Login successful!");
+      notifySuccess("Login successful!");
+
+      const decoded = jwtDecode(response.data);
+      console.log("Decoded token:", decoded);
+      const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+      console.log(role);
 
       // Optional: store token or navigate
-      // localStorage.setItem("token", response.data.token);
-      // navigate("/dashboard");
+      localStorage.setItem("scrmToken", response.data);
+      if (role === "SchoolAdmin") {
+        navigate("/admin/admindashboard");
+      }
 
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
       setError("Login failed. Please check your credentials.");
+      notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
