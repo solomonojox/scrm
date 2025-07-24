@@ -66,7 +66,6 @@ const App = () => {
         <Route path='/admin/events' element={<Event />} />
 
         <Route path='/admin/classroom/:name' element={<AdminClassroom />} />
-        <Route path='/addschoolform' element={<Addschoolform />} />
 
 
 
