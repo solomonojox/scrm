@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
-import { useAnimation } from "framer-motion"; // Add useAnimation
+import { motion, useAnimation } from "framer-motion"; // Add useAnimation
 
 // import { PiEyeClosed } from "react-icons/pi";
 // import { IoEyeOutline } from "react-icons/io5";
