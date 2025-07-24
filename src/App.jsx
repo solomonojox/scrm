@@ -9,7 +9,7 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
 
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
-import Guard from './pages/Guardian/guardian';
+import Guardian from './pages/Guardian/guardian';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
@@ -37,7 +37,7 @@ function App() {
       <Route path="/teacher/class" element={<Classroom />} />
 
       {/* All Guardians routes here */}
-      <Route path="guardian" element={<Guard />} />
+      <Route path="/guardian/allguardian" element={<Guardian />} />
 
       {/* All students routes here */}
 
