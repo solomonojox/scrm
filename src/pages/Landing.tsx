@@ -52,7 +52,7 @@ const Landing = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-orange-700 transition">
+                        <button className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-xl hover:bg-orange-700 transition">
                             Login
                         </button>
                     </nav>
@@ -64,15 +64,15 @@ const Landing = () => {
   <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between">
     {/* Left column */}
     <section className="max-w-xl">
-      <h1 className="text-4xl font-extrabold text-black leading-tight">
+      <h1 className="text-[50px] w-[1000px] font-extrabold text-black leading-tight">
         Revolutionize Education With EduCat(SCRM)
       </h1>
       <p className="mt-4 text-base text-gray-800 max-w-md">
         A powerful digital hub for managing schools, enhancing learning, and simplifying every process.
       </p>
    <Link
-  to="/GetStarted"
-  className="mt-8 inline-block bg-orange-600 text-white font-semibold text-sm px-6 py-3 rounded-full hover:bg-orange-700 transition"
+  to="/get-started"
+  className="mt-8 inline-block bg-orange-600 text-white font-semibold  text-sm px-6 py-3 rounded-xl hover:bg-orange-700 transition"
 >
   Get Started
 </Link>
@@ -94,7 +94,7 @@ const Landing = () => {
 
             {/* What You Get From Us */}
             <section className="relative bg-gradient-to-b  bg-gray-200">
-                <div className="pt-10 pb-8 text-center px-4">
+                <div className="pt-1 mt-[-37.4px] pb-8 text-center px-4">
                     <h2 className="font-extrabold text-4xl mb-4 text-gray-900">
                         What You Get From Us
                     </h2>
