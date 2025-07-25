@@ -14,7 +14,7 @@ const RegistrationForm = () => {
   const navigate = useNavigate();
 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 

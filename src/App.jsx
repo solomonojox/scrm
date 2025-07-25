@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 
-import RegisSch from './pages/Admin/RegisSch';
+import GetStarted from './pages/Admin/GetStarted';
 import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login';
 import Accountregistration from '../src/pages/Admin/Accountregristration';
@@ -22,7 +22,7 @@ function App() {
       {/* All Auth/Onboarding routes here */}
       <Route path="/" element={<Landing />} />
 
-      <Route path="/get-started" element={<RegisSch />} />
+      <Route path="/get-started" element={<GetStarted />} />
       <Route path="/add-school-form" element={<Addschoolform />} />
       <Route path="/upload-license" element={<AddSchoolLisence />} />
       <Route path="/account-registration" element={<Accountregistration />} />

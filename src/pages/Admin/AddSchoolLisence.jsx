@@ -70,7 +70,7 @@ const AddSchoolLicense = () => {
       console.log('Upload success:', response.data);
       setShowModal(true);
       setFiles([]);
-      navigate('/accountregistration');
+      navigate('/account-registration');
     } catch (err) {
       console.error('Upload failed:', err.response?.data || err.message);
       const msg = err.response?.data?.message || err.message;

@@ -5,7 +5,7 @@ export const onboardingService = {
     addSchool: async (data) => {
         try {
             const res = await api.post(`/api/School/RegisterSchool`, data)
-            console.log(res.data);
+            // console.log(res.data);
             return res.data
         } catch (error) {
             console.log(error);
