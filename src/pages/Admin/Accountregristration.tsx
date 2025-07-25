@@ -47,6 +47,7 @@ export default function RegistrationForm() {
       };
 
       const response = await onboardingService.accountRegistration(payload);
+      navigate("/add-admin");
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);

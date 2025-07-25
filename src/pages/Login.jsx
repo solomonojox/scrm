@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import Header from "./Header";
 import imageAssets from "../assets/imageAssets";
 import { loginService } from "../Services/Auth/loginService";
-// import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 
@@ -37,7 +37,7 @@ const LoginPage = () => {
       const decoded = jwtDecode(response.data);
       console.log("Decoded token:", decoded);
       const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
-      console.log(role);
+      // console.log(role);
 
       // Optional: store token or navigate
       localStorage.setItem("scrmToken", response.data);
@@ -56,9 +56,9 @@ const LoginPage = () => {
 
   return (
     <div className="relative">
-      <div className="sticky top-0 z-50">
+      {/* <div className="sticky top-0 z-50">
         <Header />
-      </div>
+      </div> */}
 
       <img
         src={imageAssets.loginImage}
