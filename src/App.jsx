@@ -10,8 +10,12 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence'
 
 import Addschoolform from './pages/Admin/Addschoolform'
 import Terms from './pages/Admin/Terms'
+import Guard from './pages/Guardian/guardian'
 import AdminDashboard from './pages/Admin/AdminDashboard';
-import SchDas from './pages/Admin/StudentDas'
+import AddStudentDashboard from './pages/Admin/StudentDas'
+import Classroom from './pages/Teachers/Classroom';
+import News from './pages/Auth/News';
+
 function App() {
 
   return (
@@ -20,29 +24,30 @@ function App() {
       <Route path="/" element={<Landing />} />
 
       <Route path="GetStarted" element={<RegisSch />} />
-          <Route path="Admin/AddSchool" element={<AddSchool/>} />
-               <Route path="Admin/AddAdmin" element={<AddAdmin/>} />
+      <Route path="AddSchool" element={<AddSchool />} />
+      <Route path="AddAdmin" element={<AddAdmin />} />
       <Route path="Login" element={<Login />} />
 
-     
 
-      <Route path="Admin/accountregistration" element={<Accountregistration/>} />
+
+      <Route path="accountregistration" element={<Accountregistration />} />
+      <Route path="new" element={<News />} />
 
 
       {/* All admin routes here */}
-  <Route path="Admin/addschoolform" element={<Addschoolform />} />
-        <Route path="Terms" element={<Terms/>} />
-        <Route path="Admin/upload-license" element={<AddSchoolLisence/>} />
-        <Route path="admindashboard" element={<AdminDashboard/>} />
+      <Route path="addschoolform" element={<Addschoolform />} />
+      <Route path="Terms" element={<Terms />} />
+      <Route path="upload-license" element={<AddSchoolLisence />} />
+      <Route path="admindashboard" element={<AdminDashboard />} />
 
 
       {/* All teachers routes here */}
-
+      <Route path="class" element={<Classroom />} />
       {/* All Guardians routes here */}
+      <Route path="guardian" element={<Guard />} />
 
       {/* All students routes here */}
-       <Route path="Admin/studentdashboard" element={<SchDas/>} />
-
+  <Route path="addStudent" element={<AddStudentDashboard />} />
     </Routes>
   );
 }

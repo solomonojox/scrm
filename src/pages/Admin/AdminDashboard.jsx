@@ -47,7 +47,6 @@ const analyticsData = [
   { month: 'Nov', ux: 10, ui: 15, dev: 8 },
   { month: 'Dec', ux: 18, ui: 25, dev: 15 }
 ];
-
 const timeData = [
   { month: 'Jan', Active: 80, Inactive: 40 },
   { month: 'Feb', Active: 70, Inactive: 30 },
@@ -71,16 +70,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="bg-gray-100 min-h-screen font-inter pt-[70px]">
-      {/* 1) HEADER */}
+      {/* HEADER */}
       <Adminheader />
 
       <div className="flex">
-        {/* 2) SIDEBAR */}
+        {/* SIDEBAR */}
         <AdminSidebar />
 
-        {/* 3) MAIN CONTENT */}
-        <div className="flex-1 ml-64">
-          {/* 3a) TOPBAR */}
+        {/* MAIN CONTENT */}
+        <div className="flex-1 pl-64">
+          {/* TOPBAR */}
           <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
             <div className="w-full max-w-sm">
               <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
@@ -109,8 +108,9 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* 3b) DASHBOARD CONTENT */}
-          <main className="p-6 space-y-6">
+          {/* DASHBOARD CONTENT */}
+          <main className="p-6 space-y-4">
+
             <h2 className="text-2xl font-semibold text-gray-800">
               Welcome To EduCat (SCRM)
             </h2>
@@ -147,15 +147,23 @@ export default function AdminDashboard() {
               />
             </div>
 
-            {/* CHARTS */}
+            {/* FIRST ROW OF CHARTS */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <AnalyticsChart />
               <ProgressCircle />
             </div>
+
+            {/* SECOND ROW: TimeSpendingChart (3 cols) + UpcomingClasses (1 col) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <TimeSpendingChart />
-              <UpcomingClasses />
+              <div className="lg:col-span-2">
+                <TimeSpendingChart />
+              </div>
+              <div>
+                <UpcomingClasses />
+              </div>
             </div>
+
+
           </main>
         </div>
       </div>
@@ -179,10 +187,13 @@ function StatCard({ label, value, icon, bgColor, iconColor }) {
 // ─── AnalyticsChart ───────────────────────────────────────────────────────────
 function AnalyticsChart() {
   return (
-    <div className="bg-white rounded-md p-4 shadow-sm col-span-2 relative">
-      <h3 className="text-xs font-semibold text-gray-800 mb-2">Study Statistics</h3>
-      <ResponsiveContainer width="100%" height={240}>
-        <LineChart data={analyticsData}>
+    <div className="bg-white rounded-md p-6 shadow-sm col-span-2 relative h-full">
+      <h3 className="text-sm font-medium text-gray-800 mb-4">Study Statistics</h3>
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart
+          data={analyticsData}
+          margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+        >
           <defs>
             <linearGradient id="colorUx" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#9F88FF" stopOpacity={0.4} />
@@ -198,13 +209,46 @@ function AnalyticsChart() {
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
+          <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+          <YAxis tick={{ fontSize: 10 }} />
           <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="ux" stroke="#9F88FF" strokeWidth={2} dot={{ r: 3 }} fill="url(#colorUx)" />
-          <Line type="monotone" dataKey="ui" stroke="#FF9EA9" strokeWidth={2} dot={{ r: 3 }} fill="url(#colorUi)" />
-          <Line type="monotone" dataKey="dev" stroke="#72DBF4" strokeWidth={2} dot={{ r: 3 }} fill="url(#colorDev)" />
+          <Legend
+            iconType="circle"
+            verticalAlign="top"
+            align="right"
+            height={24}
+            formatter={text =>
+              text === 'ux'
+                ? 'UX Design'
+                : text === 'ui'
+                  ? 'UI Design'
+                  : 'Development'
+            }
+          />
+          <Line
+            type="monotone"
+            dataKey="ux"
+            stroke="#9F88FF"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            fill="url(#colorUx)"
+          />
+          <Line
+            type="monotone"
+            dataKey="ui"
+            stroke="#FF9EA9"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            fill="url(#colorUi)"
+          />
+          <Line
+            type="monotone"
+            dataKey="dev"
+            stroke="#72DBF4"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+            fill="url(#colorDev)"
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -221,14 +265,14 @@ function ProgressCircle() {
   const COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
   return (
-    <div className="bg-white rounded-md shadow-sm relative" style={{ minHeight: '280px' }}>
-      <div className="flex justify-between items-center mb-3 px-4 pt-4">
-        <h3 className="text-xs font-semibold text-gray-800">My Progress</h3>
+    <div className="bg-white rounded-md p-6 shadow-sm relative h-full">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-sm font-medium text-gray-800">My Progress</h3>
         <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
           Weekly <FaChevronDown className="ml-1 text-[8px]" />
         </button>
       </div>
-      <ResponsiveContainer width="100%" height={200}>
+      <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
             data={[ringData[2]]}
@@ -268,9 +312,19 @@ function ProgressCircle() {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-        <div className="text-xs text-gray-500">Total Hours</div>
-        <div className="text-sm font-bold text-gray-800">7h 20m</div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <span className="text-xs text-gray-500">Total Hours</span>
+        <span className="text-sm font-bold text-gray-800">7h20m</span>
+      </div>
+      <div className="flex justify-center items-center space-x-6 mt-4">
+        <div className="flex items-center space-x-1">
+          <span className="block w-2 h-2 rounded-full bg-orange-500" />
+          <span className="text-xs text-gray-600">Visited Lessons</span>
+        </div>
+        <div className="flex items-center space-x-1">
+          <span className="block w-2 h-2 rounded-full bg-green-500" />
+          <span className="text-xs text-gray-600">Completed Lessons</span>
+        </div>
       </div>
     </div>
   );
@@ -279,53 +333,103 @@ function ProgressCircle() {
 // ─── TimeSpendingChart ────────────────────────────────────────────────────────
 function TimeSpendingChart() {
   return (
-    <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
-      <h3 className="text-xs font-semibold text-gray-800 mb-2">Time Spending</h3>
-      <ResponsiveContainer width="100%" height={140}>
-        <BarChart data={timeData}>
-          <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Active" fill="#8884d8" barSize={12} />
-          <Bar dataKey="Inactive" fill="#FF8C00" barSize={12} />
+    <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
+
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">Time Spending</h3>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart
+          data={timeData}
+          margin={{ top: 20, right: 20, left: -10, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+          <XAxis
+            dataKey="month"
+            tick={{ fontSize: 12, fill: "#4A5568" }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fontSize: 12, fill: "#4A5568" }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            cursor={{ fill: "rgba(0,0,0,0.05)" }}
+            contentStyle={{
+              border: "none",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+            }}
+          />
+          <Legend verticalAlign="top" align="right" iconSize={14} />
+          <Bar dataKey="Active" fill="#9F88FF" barSize={20} />
+          <Bar dataKey="Inactive" fill="#FF9EA9" barSize={20} />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
 }
 
+
+
 // ─── UpcomingClasses ──────────────────────────────────────────────────────────
 function UpcomingClasses() {
   const classes = [
-    { title: 'UX Writing for Beginners', instructor: 'Manny Lawson', time: '12:30pm', icon: <FaPencilAlt />, color: 'bg-blue-100 text-blue-600' },
-    { title: 'How to Do Multitasking Easily', instructor: 'Toby McGuire', time: '12:30pm', icon: <FaCheckSquare />, color: 'bg-green-100 text-green-600' },
-    { title: 'UI Design Advance Course', instructor: 'Esther Olive', time: '12:30pm', icon: <FaPencilRuler />, color: 'bg-orange-100 text-orange-600' }
+    {
+      title: 'UX Writing for Beginners',
+      instructor: 'Manny Lawson',
+      time: '12:30pm',
+      icon: <FaPencilAlt className="text-lg" />,
+      color: 'bg-blue-50 text-blue-600'
+    },
+    {
+      title: 'How to Do Multitasking Easily',
+      instructor: 'Toby McGuire',
+      time: '12:30pm',
+      icon: <FaCheckSquare className="text-lg" />,
+      color: 'bg-green-50 text-green-600'
+    },
+    {
+      title: 'UI Design Advance Course',
+      instructor: 'Esther Olive',
+      time: '12:30pm',
+      icon: <FaPencilRuler className="text-lg" />,
+      color: 'bg-orange-50 text-orange-600'
+    }
   ];
 
   return (
-    <div className="bg-white rounded-md p-4 shadow-sm" style={{ minHeight: '160px' }}>
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-xs font-semibold text-gray-800">Upcoming Classes</h3>
-        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1">
+    <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
+
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-base font-semibold text-gray-800">Upcoming Classes</h3>
+        <button className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
           See All
         </button>
       </div>
-      <ul className="space-y-3">
+      <ul className="space-y-3 flex-1">
         {classes.map((cls, i) => (
-          <li key={i} className="flex items-center space-x-3 bg-gray-100 rounded-md p-3">
-            <div className={`w-8 h-8 flex items-center justify-center rounded-md ${cls.color}`}>
-              {cls.icon}
+          <li
+            key={i}
+            className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
+          >
+            <div className="flex items-center space-x-3">
+              <div className={`w-8 h-8 flex items-center justify-center rounded-md ${cls.color}`}>
+                {cls.icon}
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-800">{cls.title}</div>
+                <div className="text-[11px] text-gray-500">{cls.instructor}</div>
+              </div>
             </div>
-            <div className="flex-1">
-              <div className="text-xs font-semibold text-gray-800">{cls.title}</div>
-              <div className="text-[10px] text-gray-500">{cls.instructor}</div>
-            </div>
-            <div className="flex items-center space-x-2 text-gray-500 text-[10px]">
-              <FaClock /> <span>{cls.time}</span>
-            </div>
-            <div className="flex items-center space-x-1 text-gray-500 text-[10px]">
-              <FaUserFriends /> <span>12 Students</span>
+            <div className="flex items-center space-x-4 text-gray-500 text-[11px]">
+              <div className="flex items-center space-x-1">
+                <FaClock className="text-[14px]" />
+                <span>{cls.time}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <FaUserFriends className="text-[14px]" />
+                <span>12 Students</span>
+              </div>
             </div>
           </li>
         ))}

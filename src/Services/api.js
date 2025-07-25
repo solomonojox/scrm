@@ -1,7 +1,8 @@
 import axios from "axios";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
-    baseURL: "https://mev-tech-api.onrender.com",
+    baseURL: baseUrl,
     timeout: 50000,
     headers: {
         "Content-Type": "application/json",
