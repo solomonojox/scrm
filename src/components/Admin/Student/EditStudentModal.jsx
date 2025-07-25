@@ -1,97 +1,100 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Camera } from "lucide-react";
 
 const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
   const [form, setForm] = useState({
     schoolId: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    nationality: "",
-    stateOfOrigin: "",
-    gender: "",
-    religion: "",
-    email: "",
-    username: "",
-    class: "",
-    dob: "",
+    firstname: "",
+    lastname: "",
+    enteredClass: 0,
+    dateOfBirth: "",
+    homeAddress: "",
+    guardianId: "",
+    teacherId: "",
+    currentTerm: 0,
+    sessionId: "",
+    classroomId: "",
+    avatar: null,
   });
 
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [avatarFile, setAvatarFile] = useState(null);
-  const fileRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && student) {
       setForm({
         schoolId: student.schoolId ?? "",
-        firstName: student.firstName ?? "",
-        lastName: student.lastName ?? "",
-        phone: student.phone ?? "",
-        address: student.address ?? "",
-        nationality: student.nationality ?? "",
-        stateOfOrigin: student.stateOfOrigin ?? "",
-        gender: student.gender ?? "",
-        religion: student.religion ?? "",
-        email: student.email ?? "",
-        username: student.username ?? "",
-        class: student.class ?? "",
-        dob: student.dob?.split("T")[0] ?? "", // format date
+        firstname: student.firstname ?? "",
+        lastname: student.lastname ?? "",
+        enteredClass: student.enteredClass ?? 0,
+        dateOfBirth: student.dateOfBirth?.split("T")[0] ?? "",
+        homeAddress: student.homeAddress ?? "",
+        guardianId: student.guardianId ?? "",
+        teacherId: student.teacherId ?? "",
+        currentTerm: student.currentTerm ?? 0,
+        sessionId: student.sessionId ?? "",
+        classroomId: student.classroomId ?? "",
+        avatar: null,
       });
-      setAvatarPreview(student.avatar ?? null);
-      setAvatarFile(null);
+      setErrorMsg("");
     }
   }, [isOpen, student]);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleImageChange = (file) => {
-    if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    handleImageChange(e.dataTransfer.files[0]);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === "avatar") {
+      setForm({ ...form, avatar: files[0] });
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const resetForm = () => {
     setForm({
       schoolId: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
-      address: "",
-      nationality: "",
-      stateOfOrigin: "",
-      gender: "",
-      religion: "",
-      email: "",
-      username: "",
-      class: "",
-      dob: "",
+      firstname: "",
+      lastname: "",
+      enteredClass: 0,
+      dateOfBirth: "",
+      homeAddress: "",
+      guardianId: "",
+      teacherId: "",
+      currentTerm: 0,
+      sessionId: "",
+      classroomId: "",
+      avatar: null,
     });
-    setAvatarPreview(null);
-    setAvatarFile(null);
+    setErrorMsg("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!student?.id) {
+      setErrorMsg("Student ID is missing.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMsg("");
+
     try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) =>
-        formData.append(key, value)
-      );
-      if (avatarFile) formData.append("avatar", avatarFile);
+      const payload = {
+        ...form,
+        enteredClass: parseInt(form.enteredClass),
+        currentTerm: parseInt(form.currentTerm),
+        dateOfBirth: new Date(form.dateOfBirth).toISOString(),
+      };
 
       const response = await fetch(
         `https://scrmapi.tranquility.org.ng/api/Student/UpdateStudent/${student.id}`,
         {
           method: "PUT",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         }
       );
 
@@ -101,25 +104,38 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
       }
 
       const updated = await response.json();
+
+      if (form.avatar) {
+        const formData = new FormData();
+        formData.append("file", form.avatar);
+        await fetch(
+          `https://scrmapi.tranquility.org.ng/api/Student/UploadImage/${student.id}`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+      }
+
       onSave?.(updated);
       resetForm();
       onClose?.();
     } catch (error) {
       console.error("Update failed:", error);
-      alert("Error updating student.");
+      setErrorMsg(error.message || "Error updating student.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-4xl shadow-lg animate-fadeIn overflow-hidden">
-        {/* Header */}
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+      <div className="bg-white rounded-lg w-full max-w-4xl shadow-lg overflow-hidden">
         <header className="bg-orange-600 text-white flex items-center justify-between px-4 py-3">
           <h2 className="flex-grow text-center font-semibold">Edit Student</h2>
           <button
-            aria-label="Close"
             className="text-2xl font-bold"
             onClick={() => {
               resetForm();
@@ -130,60 +146,81 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
           </button>
         </header>
 
-        {/* Body */}
         <form
           onSubmit={handleSubmit}
           className="p-6 max-h-[80vh] overflow-y-auto space-y-6"
         >
-          {/* Avatar Upload */}
-          <div
-            className="flex justify-center"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-          >
+          {errorMsg && (
+            <div className="bg-red-100 text-red-700 p-2 rounded">
+              {errorMsg}
+            </div>
+          )}
+
+          <div className="flex justify-center">
             <div
-              className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden shadow-inner relative"
-              onClick={() => fileRef.current?.click()}
+              className="relative w-24 h-24 rounded-full overflow-hidden border border-gray-300 cursor-pointer"
+              onClick={() => fileInputRef.current.click()}
             >
-              {avatarPreview ? (
+              {form.avatar ? (
                 <img
-                  src={avatarPreview}
-                  alt="avatar preview"
+                  src={URL.createObjectURL(form.avatar)}
+                  alt="Preview"
                   className="object-cover w-full h-full"
                 />
               ) : (
-                <>
-                  <span className="text-3xl text-gray-500">+</span>
-                  <div className="absolute bottom-1 right-1 bg-orange-600 rounded-full p-1 shadow-md">
-                    <i className="fas fa-camera text-white text-xs" />
-                  </div>
-                </>
+                <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                  <Camera className="text-gray-500" />
+                </div>
               )}
+              <input
+                type="file"
+                name="avatar"
+                accept="image/*"
+                onChange={handleChange}
+                ref={fileInputRef}
+                className="hidden"
+              />
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileRef}
-              className="hidden"
-              onChange={(e) => handleImageChange(e.target.files[0])}
-            />
           </div>
 
-          {/* Grid Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[ 
-              { label: "School ID", name: "schoolId" },
-              { label: "First Name", name: "firstName" },
-              { label: "Last Name", name: "lastName" },
-              { label: "Phone Number", name: "phone", type: "tel" },
-              { label: "Email", name: "email", type: "email" },
-              { label: "Username", name: "username" },
-              { label: "Home Address", name: "address" },
-              { label: "Nationality", name: "nationality" },
-              { label: "State of Origin", name: "stateOfOrigin" },
-              { label: "Class", name: "class" },
-              { label: "Date of Birth", name: "dob", type: "date" },
-            ].map(({ label, name, type = "text" }) => (
+            {[{
+              label: "School ID",
+              name: "schoolId"
+            }, {
+              label: "First Name",
+              name: "firstname"
+            }, {
+              label: "Last Name",
+              name: "lastname"
+            }, {
+              label: "Entered Class",
+              name: "enteredClass",
+              type: "number"
+            }, {
+              label: "Date of Birth",
+              name: "dateOfBirth",
+              type: "date"
+            }, {
+              label: "Home Address",
+              name: "homeAddress"
+            }, {
+              label: "Guardian ID",
+              name: "guardianId"
+            }, {
+              label: "Teacher ID",
+              name: "teacherId"
+            }, {
+              label: "Current Term",
+              name: "currentTerm",
+              type: "number"
+            }, {
+              label: "Session ID",
+              name: "sessionId"
+            }, {
+              label: "Classroom ID",
+              name: "classroomId"
+            }].map(({ label, name, type = "text" }) => (
               <div key={name}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {label}
@@ -198,53 +235,14 @@ const EditStudentModal = ({ isOpen, onClose, student = {}, onSave }) => {
                 />
               </div>
             ))}
-
-            {/* Gender */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gender
-              </label>
-              <select
-                name="gender"
-                value={form.gender}
-                onChange={handleChange}
-                className="w-full border rounded px-3 py-2 text-sm"
-                required
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            {/* Religion */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Religion
-              </label>
-              <select
-                name="religion"
-                value={form.religion}
-                onChange={handleChange}
-                className="w-full border rounded px-3 py-2 text-sm"
-                required
-              >
-                <option value="">Select Religion</option>
-                <option value="Christianity">Christianity</option>
-                <option value="Islam">Islam</option>
-                <option value="Traditional">Traditional</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-orange-600 text-white font-semibold py-2 rounded-md shadow hover:bg-orange-700"
+            className="w-full bg-orange-600 text-white font-semibold py-2 rounded-md shadow hover:bg-orange-700 disabled:opacity-50"
+            disabled={isSubmitting}
           >
-            Update Student
+            {isSubmitting ? "Updating..." : "Update Student"}
           </button>
         </form>
       </div>

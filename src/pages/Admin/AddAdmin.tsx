@@ -70,12 +70,15 @@ const RegistrationForm = () => {
             Fill out the form below to get your school started with{" "}
             <span className="font-semibold">EduCat</span>.
           </p>
-          <p className="text-center text-xs text-gray-500 mt-1">
+          <p className="text-center text-xs text-gray-500 font-bold mt-1">
             Note: Complete each section before moving to the next.
           </p>
 
           <div className="w-full bg-gray-200 h-2 rounded-full mt-4 mb-6">
-            <div className="bg-green-500 h-2 rounded-full" style={{ width: "100%" }} />
+            <div className="bg-green-600 h-2 rounded-full" style={{ width: "100%" }} />
+            <span className="  ml-[20rem] text-[10px] text-gray-400 font-semibold">
+           75%
+          </span>
           </div>
 
           <nav className="flex justify-between text-sm text-orange-600 font-medium mb-6">

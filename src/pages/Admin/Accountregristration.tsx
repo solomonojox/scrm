@@ -103,7 +103,7 @@ export default function RegistrationForm() {
         <div className="mt-4 h-1 w-full bg-gray-300 rounded-full relative">
           <div className="h-1 bg-green-600 rounded-full w-85"></div>
           <span className="absolute right-0 -top-4 text-[10px] text-gray-400 font-semibold">
-            100%
+           75%
           </span>
         </div>
 
@@ -114,7 +114,7 @@ export default function RegistrationForm() {
           <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
         </nav>
 
-        <p className="mt-4 text-center italic text-xs font-semibold">
+        <p className="mt-4 text-center italic text-md font-semibold">
           Please enter your school’s bank details to enable secure transactions like fee
           payments, refunds etc.
         </p>
@@ -125,7 +125,7 @@ export default function RegistrationForm() {
         >
           {fields.map(({ id, label }) => (
             <div key={id}>
-              <label htmlFor={id} className="block mb-1 font-medium">
+              <label htmlFor={id} className="block mb-1 text-sm font-medium ">
                 {label}
               </label>
               <input
@@ -134,7 +134,7 @@ export default function RegistrationForm() {
                 value={formData[id]}
                 onChange={handleChange}
                 placeholder="Enter Here"
-                className="w-full border border-orange-300 rounded px-2 py-1 text-xs placeholder:text-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                className="w-full border border-orange-300 rounded px-3 py-2 outline-none  text-xs placeholder:text-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-400"
               />
             </div>
           ))}

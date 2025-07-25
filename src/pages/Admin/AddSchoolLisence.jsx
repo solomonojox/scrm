@@ -110,7 +110,7 @@ const AddSchoolLicense = () => {
           </p>
 
           <div className="mt-6 w-full bg-gray-300 h-2 rounded-full overflow-hidden">
-            <div className="h-2 bg-green-700 w-1/2 transition-all" />
+            <div className="h-2 bg-green-600 w-1/2 transition-all" />
           </div>
 
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
