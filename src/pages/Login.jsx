@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useNavigate} from "react";
 import axios from "axios";
 import h from "../assets/sc.jpg";
 import Header from "./Header";
@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
-
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -31,8 +31,8 @@ const LoginPage = () => {
       setSuccessMessage("Login successful!");
 
       // Optional: store token or navigate
-      // localStorage.setItem("token", response.data.token);
-      // navigate("/dashboard");
+       localStorage.setItem("token", response.data.token);
+      navigate("/admindashboard");
 
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);

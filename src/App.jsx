@@ -20,19 +20,19 @@ function App() {
       <Route path="/" element={<Landing />} />
 
       <Route path="GetStarted" element={<RegisSch />} />
-          <Route path="AddSchool" element={<AddSchool/>} />
-               <Route path="AddAdmin" element={<AddAdmin/>} />
+          <Route path="Admin/AddSchool" element={<AddSchool/>} />
+               <Route path="Admin/AddAdmin" element={<AddAdmin/>} />
       <Route path="Login" element={<Login />} />
 
      
 
-      <Route path="accountregistration" element={<Accountregistration/>} />
+      <Route path="Admin/accountregistration" element={<Accountregistration/>} />
 
 
       {/* All admin routes here */}
-  <Route path="addschoolform" element={<Addschoolform />} />
+  <Route path="Admin/addschoolform" element={<Addschoolform />} />
         <Route path="Terms" element={<Terms/>} />
-        <Route path="upload-license" element={<AddSchoolLisence/>} />
+        <Route path="Admin/upload-license" element={<AddSchoolLisence/>} />
         <Route path="admindashboard" element={<AdminDashboard/>} />
 
 
@@ -41,7 +41,7 @@ function App() {
       {/* All Guardians routes here */}
 
       {/* All students routes here */}
-       <Route path="Schdas" element={<SchDas/>} />
+       <Route path="Admin/studentdashboard" element={<SchDas/>} />
 
     </Routes>
   );

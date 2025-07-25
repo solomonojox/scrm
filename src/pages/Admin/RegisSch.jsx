@@ -24,7 +24,7 @@ const GetStarted = () => {
           </p>
          
                <Link
-                           to="/addschoolform"  className="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm sm:text-base py-2 px-5 rounded"
+                           to="/addschoolform"  className="mt-4 bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm sm:text-base py-2 px-5 rounded-md"
                        >
                       Register School
                          </Link>
