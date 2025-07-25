@@ -13,6 +13,7 @@ import Guardian from './pages/Guardian/guardian';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
+import Events from './pages/Admin/Events';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
       {/* All admin routes here */}
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
       <Route path="/admin/news" element={<News />} />
+      <Route path="/admin/events" element={<Events />} />
 
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
