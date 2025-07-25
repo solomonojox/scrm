@@ -20,7 +20,7 @@ const GetStarted = () => {
         {/* Text on Image */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-white font-extrabold text-2xl sm:text-3xl md:text-4xl leading-tight max-w-xl">
-            Bring EduCat to Your School
+            Bring EduCa to Your School
           </h1>
           <p className="text-white text-md font-bold sm:text-base mt-2 max-w-md">
             Modern tools for smart school management, tailored for today’s education.
