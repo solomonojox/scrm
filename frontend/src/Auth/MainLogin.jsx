@@ -3,6 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import axios from 'axios';
 import { AppContext } from "../context/AppContext";
 import { motion, useAnimation } from "framer-motion"; // Add useAnimation
+import { jwtDecode } from "jwt-decode";
 
 // import { PiEyeClosed } from "react-icons/pi";
 // import { IoEyeOutline } from "react-icons/io5";
@@ -26,7 +27,7 @@ const MainLogin = () => {
     email: '',
     password: '',
   })
-  console.log(formData.schoolRegistrationNumber)
+  // console.log(formData.schoolRegistrationNumber)
   // Animation controls for each image
   const controls1 = useAnimation();
   const controls2 = useAnimation();
@@ -86,13 +87,26 @@ const MainLogin = () => {
         return;
       }
 
-      console.log("Logging in with:", formData);
+      // console.log("Logging in with:", formData);
 
       const res = await axios.post(`${baseUrl}/api/Login/Login`, formData);
+      const decoded = jwtDecode(res.data.data);
+      console.log("Decoded token:", decoded);
+      const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+      const id = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
+      if (role === "SchoolAdmin") {
+        navigate("/admin/dashboard");
+        localStorage.setItem("adminId", id);
+      } else if (role === 'guardian') {
+        navigate("/studentdata");
+        localStorage.setItem("guardianId", id);
+      } else {
+        navigate("/teacher/dashboard");
+        localStorage.setItem("teacherId", id);
+      }
       console.log(res.data);
       notifySuccess(res.data.responseMessage);
-
-      //
     } catch (error) {
       console.error("Login error:", error);
       const message = error?.response?.data?.responseMessage || "Login failed";
