@@ -98,10 +98,10 @@ const MainLogin = () => {
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
         localStorage.setItem("adminId", id);
-      } else if (role === 'guardian') {
+      } else if (role === 'Guardian') {
         navigate("/studentdata");
         localStorage.setItem("guardianId", id);
-      } else {
+      } else if (role === 'Teacher') {
         navigate("/teacher/dashboard");
         localStorage.setItem("teacherId", id);
       }
