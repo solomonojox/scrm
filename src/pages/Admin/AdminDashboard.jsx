@@ -75,7 +75,7 @@ export default function AdminDashboard() {
 
       <div className="flex">
         {/* SIDEBAR */}
-         <Adminheader />
+        <AdminSidebar />
 
         {/* MAIN CONTENT */}
         <div className="flex-1 pl-64">
