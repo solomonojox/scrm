@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   FaThLarge,
   FaUserGraduate,
@@ -11,18 +12,19 @@ import {
   FaFileInvoiceDollar
 } from 'react-icons/fa';
 
-const SidebarButton = ({ icon, label, active }) => (
-  <button
-    className={`
+const SidebarButton = ({ icon, label, to }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) => `
       flex items-center space-x-2 text-sm py-2 px-3 rounded-md w-full text-left transition
-      ${active
+      ${isActive
         ? 'bg-orange-100 text-orange-700 font-semibold'
         : 'text-gray-600 hover:bg-gray-100'}
     `}
   >
     <span className="text-lg">{icon}</span>
     <span>{label}</span>
-  </button>
+  </NavLink>
 );
 
 const AdminSidebar = () => (
@@ -42,15 +44,15 @@ const AdminSidebar = () => (
   >
     {/* Menu items */}
     <div className="space-y-2 text-sm">
-      <SidebarButton icon={<FaThLarge />} active label="Dashboard" />
-      <SidebarButton icon={<FaUserGraduate />} label="Students" />
-      <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" />
-      <SidebarButton icon={<FaUserFriends />} label="Guardian" />
-      <SidebarButton icon={<FaBook />} label="Classroom" />
-      <SidebarButton icon={<FaNewspaper />} label="News" />
-      <SidebarButton icon={<FaCalendarAlt />} label="Events" />
-      <SidebarButton icon={<FaChalkboard />} label="Session" />
-      <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" />
+      <SidebarButton icon={<FaThLarge />} label="Dashboard" to="/dashboard" />
+      <SidebarButton icon={<FaUserGraduate />} label="Students" to="/students" />
+      <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/teachers" />
+      <SidebarButton icon={<FaUserFriends />} label="Guardian" to="/guardian/allguardian" />
+      <SidebarButton icon={<FaBook />} label="Classroom" to="/classroom" />
+      <SidebarButton icon={<FaNewspaper />} label="News" to="/news" />
+      <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/events" />
+      <SidebarButton icon={<FaChalkboard />} label="Session" to="/session" />
+      <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" to="/school-fee" />
     </div>
 
     {/* Logout */}
