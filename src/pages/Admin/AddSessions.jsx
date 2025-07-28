@@ -9,27 +9,55 @@ const AllSessions = () => {
   const [loading, setLoading] = useState(true);
   const [selectedSessions, setSelectedSessions] = useState([]);
 
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
+ useEffect(() => {
+  const fetchSessions = async () => {
+    try {
       const data = await sessionService.getAllRegisteredSessions();
-if (Array.isArray(data)) {
-  setSessions(data);
-} else {
-  console.warn("Expected an array but got:", data);
-  setSessions([]);
-}
-
-      } catch (error) {
-        console.error("Failed to load sessions:", error);
-        alert("Could not fetch sessions.");
-      } finally {
-        setLoading(false);
+      if (Array.isArray(data)) {
+        setSessions(data);
+      } else if (data && Array.isArray(data.sessions)) {
+        setSessions(data.sessions);
+      } else {
+        console.warn("Unexpected response format:", data);
+        setSessions([]);
       }
-    };
+    } catch (error) {
+      console.error("Failed to load sessions from API. Using mock data.", error);
 
-    fetchSessions();
-  }, []);
+      // Mock fallback sessions
+      const mockSessions = [
+        {
+          schoolId: "SCH001",
+          sessionId: "S001",
+          sessionName: "Term 1 - 2025",
+          startDate: "2025-01-10",
+          endDate: "2025-04-20"
+        },
+        {
+          schoolId: "SCH001",
+          sessionId: "S002",
+          sessionName: "Term 2 - 2025",
+          startDate: "2025-05-05",
+          endDate: "2025-08-15"
+        },
+        {
+          schoolId: "SCH002",
+          sessionId: "S003",
+          sessionName: "Term 3 - 2025",
+          startDate: "2025-09-01",
+          endDate: "2025-12-10"
+        }
+      ];
+
+      setSessions(mockSessions);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSessions();
+}, []);
+
 
   // Select All Handler
   const handleSelectAll = (e) => {
