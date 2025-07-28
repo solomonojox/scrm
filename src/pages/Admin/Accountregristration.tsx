@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
 
-/**
- * RegistrationForm
- * -----------------
- * Collects and validates a school's banking details so that
- * EduCat can handle transactions such as fee payments and refunds.
- */
 export default function RegistrationForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     accountName: "",
     bankName: "",
@@ -20,20 +16,64 @@ export default function RegistrationForm() {
     swiftCode: "",
   });
 
-  /** Handle generic input changes */
+  const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  /** Submit the form data (Replace with actual API call) */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    alert("Form submitted!");
+    setLoading(true);
+
+    try {
+      const schoolId = localStorage.getItem("schoolId");
+
+      if (!schoolId) {
+        console.error("School ID not found in local storage.");
+        return;
+      }
+
+      const payload = {
+        schoolId,
+        accountName: formData.accountName,
+        accountNumber: formData.accountNumber,
+        bankName: formData.bankName,
+        bankCode: "", // Optional
+        isDefault: true,
+      };
+
+      const response = await fetch(
+        "https://scrmapi.tranquility.org.ng/api/SchoolAccount/AddSchoolAccount",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Save response to localStorage
+      localStorage.setItem("schoolBankAccount", JSON.stringify(data));
+
+      setSaved(true); // Mark as saved
+      setTimeout(() => navigate("/AddAdmin"), 1000); // Redirect after 1.5s
+    } catch (error) {
+      console.error("Submission failed:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  /** Field definitions used to generate the inputs */
   const fields = [
     { id: "accountName", label: "Account Name" },
     { id: "bankName", label: "Bank Name" },
@@ -49,12 +89,9 @@ export default function RegistrationForm() {
 
   return (
     <>
-      {/* Site Header */}
       <Header />
 
-      {/* Main Content */}
       <main className="max-w-xl mx-auto p-6 font-sans">
-        {/* Title & Description */}
         <h1 className="font-extrabold text-lg text-center">Registration Form</h1>
         <p className="text-center italic text-orange-600 mt-1 text-sm font-semibold">
           Fill out the form below to get your school started with EduCat.
@@ -63,40 +100,25 @@ export default function RegistrationForm() {
           Note: Complete each section before moving to the next.
         </p>
 
-        {/* Progress Bar */}
         <div className="mt-4 h-1 w-full bg-gray-300 rounded-full relative">
-          {/* Adjust width to reflect correct progress (100%) */}
-          <div className="h-1 bg-green-600 rounded-full w-full"></div>
+          <div className="h-1 bg-green-600 rounded-full w-85"></div>
           <span className="absolute right-0 -top-4 text-[10px] text-gray-400 font-semibold">
             100%
           </span>
         </div>
 
-        {/* Step Navigation */}
         <nav className="flex justify-between mt-3 text-orange-600 font-semibold text-xs">
-          <Link to="/addschoolform" className="hover:underline">
-            Add School
-          </Link>
-          <Link to="/AddSchool" className="hover:underline">
-            Upload School License
-          </Link>
-          <Link to="/Accountregistration" className="underline">
-            Add Account Details
-          </Link>
-          <Link to="/AddAdmin" className="hover:underline">
-            Add School Admin
-          </Link>
+          <Link to="/addschoolform" className="hover:underline">Add School</Link>
+          <Link to="/AddSchool" className="hover:underline">Upload School License</Link>
+          <Link to="/AddAccount" className="underline">Add Account Details</Link>
+          <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
         </nav>
 
-        {/* Info Message */}
         <p className="mt-4 text-center italic text-xs font-semibold">
-          <span className="not-italic">
-            Please enter your school’s bank details to enable secure transactions like fee
-            payments, refunds etc.
-          </span>
+          Please enter your school’s bank details to enable secure transactions like fee
+          payments, refunds etc.
         </p>
 
-        {/* Registration Form */}
         <form
           onSubmit={handleSubmit}
           className="mt-4 space-y-4 text-xs text-gray-700 font-normal"
@@ -117,23 +139,27 @@ export default function RegistrationForm() {
             </div>
           ))}
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded text-sm"
+            disabled={loading || saved}
+            className={`w-full ${
+              saved
+                ? "bg-green-500"
+                : loading
+                ? "bg-orange-300"
+                : "bg-orange-500 hover:bg-orange-600"
+            } text-white font-semibold py-2 rounded text-sm`}
           >
-            Submit
+            {saved ? "Saved" : loading ? "Submitting..." : "Submit"}
           </button>
         </form>
 
-        {/* Security Notice */}
         <p className="mt-2 text-[10px] text-red-600 italic font-semibold">
           Security Notice: EduCat encrypts all sensitive banking information and complies
           with financial data protection standards to keep your information secure.
         </p>
       </main>
 
-      {/* Site Footer */}
       <Footer />
     </>
   );

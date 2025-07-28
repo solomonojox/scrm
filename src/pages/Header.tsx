@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../assets/looogo.png';
 import { Link } from "react-router-dom";
-import h from '../'
+
 const Header = () => {
   return (
     <div>

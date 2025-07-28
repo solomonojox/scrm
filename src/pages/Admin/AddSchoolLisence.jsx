@@ -16,21 +16,18 @@ import Footer from '../Footer';
 const AddSchoolLicense = () => {
   const fileInputRef = useRef(null);
   const [files, setFiles] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
-  // Retrieve schoolId from localStorage
   const schoolId = localStorage.getItem('schoolId');
   if (!schoolId) {
     console.error('No schoolId found in localStorage');
   }
 
-  // Open hidden file input
   const triggerFileDialog = () => fileInputRef.current?.click();
 
-  // Handle file selection
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
     const mapped = selectedFiles.map((file) => ({
@@ -42,19 +39,17 @@ const AddSchoolLicense = () => {
     e.target.value = '';
   };
 
-  // Remove a file
   const handleDelete = (id) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  // Upload files to API
   const handleSave = async () => {
     if (!files.length) {
-      setError('Please select at least one file');
+      setError('Please select at least one file.');
       return;
     }
     if (!schoolId) {
-      setError('Missing school ID');
+      setError('Missing school ID. Please complete the previous step.');
       return;
     }
 
@@ -63,23 +58,19 @@ const AddSchoolLicense = () => {
 
     try {
       const formData = new FormData();
-      // Append each file under the 'file' key to match API spec
       files.forEach(({ file }) => {
         formData.append('file', file);
       });
 
       const response = await axios.post(
         `https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`,
-        formData,
-        {
-      
-        }
+        formData
       );
 
       console.log('Upload success:', response.data);
       setShowModal(true);
       setFiles([]);
-      navigate('/accountregristration');
+      navigate('/accountregistration');
     } catch (err) {
       console.error('Upload failed:', err.response?.data || err.message);
       const msg = err.response?.data?.message || err.message;
@@ -92,8 +83,8 @@ const AddSchoolLicense = () => {
   return (
     <div className="flex flex-col min-h-screen font-[Inter] bg-gray-100 relative">
       {saving && (
-        <div className="loaderwrapper">
-          <div className="loader" />
+        <div className="loaderwrapper z-50">
+          <div className="loader scale-125" />
         </div>
       )}
 
@@ -111,15 +102,11 @@ const AddSchoolLicense = () => {
           </button>
 
           <h2 className="text-center font-black text-2xl md:text-3xl text-gray-800">
-            Registration Form
+            Upload School License
           </h2>
-          <p className="text-center mt-2 text-sm md:text-base italic text-orange-600 font-semibold">
-            Fill out the form below to get your school started{' '}
-            <span className="font-normal">with</span>{' '}
-            <span className="font-semibold">EduCat</span>.
-          </p>
-          <p className="text-center mt-1 text-[10px] text-gray-500 font-normal">
-            Note: Complete each section before moving to the next.
+
+          <p className="text-center mt-2 text-sm italic text-orange-600 font-semibold">
+            Upload documents to continue with <span className="font-bold">EduCat</span>
           </p>
 
           <div className="mt-6 w-full bg-gray-300 h-2 rounded-full overflow-hidden">
@@ -127,18 +114,10 @@ const AddSchoolLicense = () => {
           </div>
 
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
-            <Link to="/addschoolform" className="hover:underline">
-              Add School
-            </Link>
-            <Link to="/AddSchool" className="underline">
-              Upload School License
-            </Link>
-            <Link to="/Accountregistration" className="hover:underline">
-              Add Account details
-            </Link>
-            <Link to="/AddAdmin" className="hover:underline">
-              Add School Admin
-            </Link>
+            <Link to="/addschoolform" className="hover:underline">Add School</Link>
+            <Link to="/AddSchool" className="underline">Upload School License</Link>
+            <Link to="/Accountregistration" className="hover:underline">Add Account Details</Link>
+            <Link to="/AddAdmin" className="hover:underline">Add School Admin</Link>
           </nav>
 
           <div className="mt-8 flex flex-col md:flex-row md:space-x-8 space-y-6 md:space-y-0">
@@ -146,7 +125,7 @@ const AddSchoolLicense = () => {
               role="button"
               tabIndex={0}
               onClick={triggerFileDialog}
-              onKeyDown={(e) => (['Enter', ' '].includes(e.key) && triggerFileDialog())}
+              onKeyDown={(e) => ['Enter', ' '].includes(e.key) && triggerFileDialog()}
               className="flex flex-col items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg w-full md:w-1/3 h-44 cursor-pointer hover:border-orange-500 transition"
             >
               <img
@@ -157,11 +136,10 @@ const AddSchoolLicense = () => {
                 draggable="false"
                 className="mb-3 pointer-events-none"
               />
-              <p className="text-center text-sm text-gray-600 mb-2 font-medium">Drag files here</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">Drag or browse files</p>
               <button
                 type="button"
-                onClick={triggerFileDialog}
-                className="bg-blue-700 text-white text-sm font-bold rounded px-4 py-1 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="bg-blue-700 text-white text-sm font-bold rounded px-4 py-1 hover:bg-blue-800"
               >
                 Browse
               </button>
@@ -177,7 +155,6 @@ const AddSchoolLicense = () => {
 
             <div className="bg-gray-50 border border-gray-300 rounded-lg w-full md:w-2/3 p-4">
               <p className="text-sm font-bold text-gray-800 mb-4">Uploaded Files</p>
-
               {files.length === 0 ? (
                 <p className="text-sm text-gray-500 italic">No files uploaded yet.</p>
               ) : (
@@ -188,39 +165,18 @@ const AddSchoolLicense = () => {
                   >
                     <div className="flex items-center space-x-3 overflow-hidden">
                       {preview ? (
-                        <img
-                          src={preview}
-                          alt={file.name}
-                          className="w-10 h-10 object-cover rounded"
-                        />
+                        <img src={preview} alt={file.name} className="w-10 h-10 object-cover rounded" />
                       ) : file.type === 'application/pdf' ? (
-                        <FontAwesomeIcon
-                          icon={faFilePdf}
-                          aria-label="PDF file"
-                          className="text-red-600 text-lg"
-                        />
+                        <FontAwesomeIcon icon={faFilePdf} className="text-red-600 text-lg" />
                       ) : (
-                        <FontAwesomeIcon
-                          icon={faFileAlt}
-                          aria-label="File"
-                          className="text-gray-800 text-lg"
-                        />
+                        <FontAwesomeIcon icon={faFileAlt} className="text-gray-800 text-lg" />
                       )}
-
-                      <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">
-                        {file.name}
-                      </span>
-
-                      <div className="w-36 h-2 bg-gray-300 rounded-full">
-                        <div className="h-2 bg-blue-500 rounded-full w-full" />
-                      </div>
+                      <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">{file.name}</span>
                     </div>
-
                     <div className="flex items-center space-x-3 text-sm text-gray-500">
                       <span>{(file.size / (1024 * 1024)).toFixed(1)}MB</span>
                       <button
                         type="button"
-                        aria-label={`Remove ${file.name}`}
                         onClick={() => handleDelete(id)}
                         className="text-red-600 hover:text-red-800"
                       >
@@ -233,7 +189,7 @@ const AddSchoolLicense = () => {
             </div>
           </div>
 
-          {error && <p className="text-red-600 mt-4">Error: {error}</p>}
+          {error && <p className="text-red-600 mt-4 text-sm font-medium">⚠️ {error}</p>}
 
           <div className="mt-10 flex justify-end">
             <button
@@ -253,11 +209,7 @@ const AddSchoolLicense = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-20">
           <div className="bg-white rounded-xl p-6 w-full max-w-sm text-center">
-            <FontAwesomeIcon
-              icon={faCheckCircle}
-              className="text-green-600 text-4xl mb-4"
-              aria-hidden="true"
-            />
+            <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 text-4xl mb-4" />
             <h3 className="text-lg font-bold mb-2">Files saved successfully!</h3>
             <button
               type="button"

@@ -43,6 +43,7 @@ const AddSchoolForm = () => {
   const [success, setSuccess] = useState("");
   const [schoolId, setSchoolId] = useState(null);
 
+
   const handleChange = e => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -50,6 +51,7 @@ const AddSchoolForm = () => {
       [name]: type === "checkbox" ? checked : value
     }));
   };
+
 
   const handleSubmit = async e => {
     e.preventDefault();
