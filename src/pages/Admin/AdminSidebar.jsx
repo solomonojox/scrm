@@ -56,7 +56,7 @@ const AdminSidebar = () => {
         <SidebarButton icon={<FaBook />} to="/classroom" label="Classroom" active={currentPath === '/classroom'} />
         <SidebarButton icon={<FaNewspaper />} to="/news" label="News" active={currentPath === '/news'} />
         <SidebarButton icon={<FaCalendarAlt />} to="/events" label="Events" active={currentPath === '/events'} />
-        <SidebarButton icon={<FaChalkboard />} to="/session" label="Session" active={currentPath === '/session'} />
+        <SidebarButton icon={<FaChalkboard />} to="/admin/session" label="Session" active={currentPath === '/admin/session'} />
         <SidebarButton icon={<FaFileInvoiceDollar />} to="/school-fee" label="School Fee" active={currentPath === '/school-fee'} />
       </div>
 
