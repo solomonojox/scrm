@@ -227,10 +227,15 @@ const AllSessions = () => {
         </div>
       </div>
 
-      {/* Modal */}
-     {showModal && (
-  <div className="fixed inset-0  flex items-center justify-center z-50">
-    <div className="bg-white w-full max-w-2xl rounded-md overflow-hidden">
+{showModal && (
+  <div
+    className="fixed inset-0  z-50 flex items-center justify-center"
+    onClick={closeModal}
+  >
+    <div
+      className="bg-white w-full max-w-2xl rounded-md overflow-hidden"
+      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+    >
       {/* Header */}
       <header className="bg-[#ef6f0f] flex justify-between items-center px-6 py-3">
         <h1 className="text-white font-semibold text-lg">
@@ -252,7 +257,7 @@ const AllSessions = () => {
         onSubmit={modalMode === "edit" ? handleUpdateSession : handleAddSession}
         className="p-6 space-y-6"
       >
-        {[
+        {[ // Input fields
           { label: "School ID", name: "schoolId", type: "text" },
           { label: "Session ID", name: "sessionId", type: "text" },
           { label: "Session Name", name: "sessionName", type: "text" },
@@ -277,7 +282,7 @@ const AllSessions = () => {
                   isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
                 }`}
               />
-              {(type === "date") && (
+              {type === "date" && (
                 <i className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-700"></i>
               )}
             </div>
@@ -306,8 +311,7 @@ const AllSessions = () => {
     </div>
   </div>
 )}
-
-  
+ 
     </div>
   );
 };

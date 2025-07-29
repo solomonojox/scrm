@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  FaEye,
-  FaEdit,
-  FaTrash,
-  FaBell,
-  FaEnvelope,
-  FaSearch,
-  FaComment,
-} from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaBell, FaEnvelope } from "react-icons/fa";
 import Header from "../Admin/Adminheader";
 import Side from "../Admin/AdminSidebar";
 
@@ -25,6 +17,7 @@ const guardians = new Array(10).fill({
 
 const AllGuardians = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -81,39 +74,54 @@ const AllGuardians = () => {
   return (
     <>
       <Header />
-      <div className="mt-[70px] min-h-screen flex">
-        <Side />
-        <div className="flex-1 p-4 space-y-4">
-          {/* Topbar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center px-6 py-4 rounded-md bg-white shadow-md">
-            <div className="w-full max-w-sm">
-              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-                <FaSearch className="text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="ml-2 bg-transparent outline-none w-full text-sm"
-                />
-              </div>
+      <div className="mt-[70px] min-h-screen flex flex-col md:flex-row">
+        <div
+          className={`fixed md:static z-50 top-0 left-0 h-full bg-white shadow-md md:w-1/5 w-2/3 transition-transform duration-300 ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
+        >
+          <Side />
+        </div>
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        <div className="w-full md:w-4/5 bg-gray-100 p-4">
+          <div className="flex justify-between items-center bg-white px-4 py-3 shadow rounded mb-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="md:hidden text-2xl text-black"
+              >
+                ☰
+              </button>
+              <input
+                type="text"
+                placeholder="Search"
+                className="border px-4 py-2 rounded-2xl w-40 md:w-1/3 bg-gray-200"
+              />
             </div>
-            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-              <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+            <div className="flex items-center gap-6">
+              <FaEnvelope className="text-xl text-black cursor-pointer" />
+              <FaBell className="text-xl text-black cursor-pointer" />
+              <div className="flex items-center gap-2">
                 <img
-                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
-                  className="w-8 h-8 rounded-full"
-                  alt="Admin"
+                  src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin"
+                  className="w-10 h-10 rounded-full"
+                  alt="admin"
                 />
-                <div className="text-xs">
-                  <div className="font-semibold text-gray-700">Gold Academy</div>
-                  <div className="text-gray-400">Admin</div>
+                <div className="text-sm">
+                  <p className="font-bold">Gold Academy</p>
+                  <p className="text-gray-500">Admin</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-2">
             <p className="text-sm text-gray-600">
               Home <span className="text-orange-500 font-semibold">: All Guardians</span>
             </p>
@@ -180,9 +188,11 @@ const AllGuardians = () => {
             </div>
           </div>
 
+          {/* Removed Floating Add Guardian Button */}
+
           {/* Modal */}
           {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-40">
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
               <div className="bg-white rounded-lg w-[95%] max-w-2xl">
                 <div className="bg-orange-500 h-3 rounded-t-lg"></div>
                 <div className="p-6">
@@ -196,11 +206,7 @@ const AllGuardians = () => {
                         className="hidden"
                       />
                       {imagePreview ? (
-                        <img
-                          src={imagePreview}
-                          alt="preview"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
                       ) : (
                         <span className="flex items-center justify-center h-full text-orange-400 font-bold text-2xl">
                           +
@@ -209,109 +215,19 @@ const AllGuardians = () => {
                     </label>
                   </div>
 
-                  <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  >
-                    <input
-                      type="text"
-                      name="firstName"
-                      placeholder="First Name"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="lastName"
-                      placeholder="Last Name"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="phone"
-                      placeholder="Phone Number"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="address"
-                      placeholder="Home Address"
-                      className="border px-3 py-2 rounded"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="nationality"
-                      placeholder="Nationality"
-                      className="border px-3 py-2 rounded"
-                      value={formData.nationality}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="state"
-                      placeholder="State of Origin"
-                      className="border px-3 py-2 rounded"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="religion"
-                      placeholder="Religion"
-                      className="border px-3 py-2 rounded"
-                      value={formData.religion}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      className="border px-3 py-2 rounded"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="username"
-                      placeholder="Username"
-                      className="border px-3 py-2 rounded"
-                      value={formData.username}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="occupation"
-                      placeholder="Occupation"
-                      className="border px-3 py-2 rounded"
-                      value={formData.occupation}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="workAddress"
-                      placeholder="Work Address"
-                      className="border px-3 py-2 rounded"
-                      value={formData.workAddress}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="relationship"
-                      placeholder="Relationship"
-                      className="border px-3 py-2 rounded"
-                      value={formData.relationship}
-                      onChange={handleInputChange}
-                    />
+                  <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" name="firstName" placeholder="First Name" required className="border px-3 py-2 rounded" value={formData.firstName} onChange={handleInputChange} />
+                    <input type="text" name="lastName" placeholder="Last Name" required className="border px-3 py-2 rounded" value={formData.lastName} onChange={handleInputChange} />
+                    <input type="text" name="phone" placeholder="Phone Number" required className="border px-3 py-2 rounded" value={formData.phone} onChange={handleInputChange} />
+                    <input type="text" name="address" placeholder="Home Address" className="border px-3 py-2 rounded" value={formData.address} onChange={handleInputChange} />
+                    <input type="text" name="nationality" placeholder="Nationality" className="border px-3 py-2 rounded" value={formData.nationality} onChange={handleInputChange} />
+                    <input type="text" name="state" placeholder="State of Origin" className="border px-3 py-2 rounded" value={formData.state} onChange={handleInputChange} />
+                    <input type="text" name="religion" placeholder="Religion" className="border px-3 py-2 rounded" value={formData.religion} onChange={handleInputChange} />
+                    <input type="email" name="email" placeholder="Email" className="border px-3 py-2 rounded" value={formData.email} onChange={handleInputChange} />
+                    <input type="text" name="username" placeholder="Username" className="border px-3 py-2 rounded" value={formData.username} onChange={handleInputChange} />
+                    <input type="text" name="occupation" placeholder="Occupation" className="border px-3 py-2 rounded" value={formData.occupation} onChange={handleInputChange} />
+                    <input type="text" name="workAddress" placeholder="Work Address" className="border px-3 py-2 rounded" value={formData.workAddress} onChange={handleInputChange} />
+                    <input type="text" name="relationship" placeholder="Relationship" className="border px-3 py-2 rounded" value={formData.relationship} onChange={handleInputChange} />
 
                     <div className="col-span-2 flex justify-end gap-3 mt-2">
                       <button
