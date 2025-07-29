@@ -14,6 +14,9 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
+import AddClassroom from './pages/Teachers/Addclassroom';
+import EditClassroom from './pages/Teachers/Editclassroom';
+import ViewClassroom from './pages/Teachers/Viewclassroom';
 
 function App() {
 
@@ -37,6 +40,11 @@ function App() {
    <Route path="/admin/session" element={<AddSession />} />
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
+       <Route path="/addclassroom" element={<AddClassroom/>} />
+       <Route path="/editclassroom" element={<EditClassroom/>} />
+       <Route path="/viewclassroom" element={<ViewClassroom/>} />
+
+
 
       {/* All Guardians routes here */}
       <Route path="/Guardian/allguardian" element={<Guardian />} />
