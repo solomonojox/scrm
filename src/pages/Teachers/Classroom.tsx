@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import AdminSidebar from "../Admin/AdminSidebar";
 import Adminheader from "../Admin/Adminheader";
-import { classroomService } from "../../Services/Session";
+import { classroomService } from "../../Services/Classroom";
 
 import {
   FaPlus,
