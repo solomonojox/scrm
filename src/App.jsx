@@ -16,6 +16,7 @@ import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
 import Schoolfee from './pages/Admin/Schoolfee'
 
+
 function App() {
 
   return (
@@ -39,6 +40,8 @@ function App() {
    <Route path="/admin/session" element={<AddSession />} />
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
+      
+
 
       {/* All Guardians routes here */}
       <Route path="/Guardian/allguardian" element={<Guardian />} />

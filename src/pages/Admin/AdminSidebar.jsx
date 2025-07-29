@@ -53,7 +53,7 @@ const AdminSidebar = () => {
         <SidebarButton icon={<FaUserGraduate />} to="/students" label="Students" active={currentPath === '/students'} />
         <SidebarButton icon={<FaChalkboardTeacher />} to="/teachers" label="Teachers" active={currentPath === '/teachers'} />
         <SidebarButton icon={<FaUserFriends />} to="/Guardian/allguardian" label="Guardian" active={currentPath === '/Guardian/allguardian'} />
-        <SidebarButton icon={<FaBook />} to="/classroom" label="Classroom" active={currentPath === '/classroom'} />
+        <SidebarButton icon={<FaBook />} to="/teacher/class" label="Classroom" active={currentPath === '/teacher/class'} />
         <SidebarButton icon={<FaNewspaper />} to="/news" label="News" active={currentPath === '/news'} />
         <SidebarButton icon={<FaCalendarAlt />} to="/events" label="Events" active={currentPath === '/events'} />
         <SidebarButton icon={<FaChalkboard />} to="/admin/session" label="Session" active={currentPath === '/admin/session'} />

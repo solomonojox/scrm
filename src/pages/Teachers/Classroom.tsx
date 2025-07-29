@@ -1,276 +1,271 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import AdminSidebar from "../Admin/AdminSidebar";
+import Adminheader from "../Admin/Adminheader";
+import { classroomService } from "../../Services/Session";
+
 import {
+  FaPlus,
+  FaSort,
   FaEye,
   FaEdit,
-  FaTrash,
-  FaBell,
-  FaEnvelope,
-  FaFlask,
-   FaAngleDown,
+  FaTrashAlt,
+  FaAngleRight,
+  FaTimes,
 } from "react-icons/fa";
-import Header from "../Admin/Adminheader";
-import Side from "../Admin/AdminSidebar";
-
-const classrooms = new Array(10).fill({
-  schoolId: "10001",
-  name: "Classroom A",
-  teacherId: "T12345",
-  capacity: 30,
-});
 
 const AllClassrooms = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  const dropdownRef = useRef(null);
-
+  const [modalType, setModalType] = useState("add");
   const [formData, setFormData] = useState({
+    id: null,
     schoolId: "",
     name: "",
     teacherId: "",
     capacity: "",
   });
 
-  const handleInputChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const [classrooms, setClassrooms] = useState([]);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      try {
+        const data = await classroomService.getAllClassrooms();
+        setClassrooms(data);
+      } catch (err) {
+        console.error("Error fetching classrooms:", err.message);
+      }
+    };
+
+    fetchClassrooms();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted Classroom:", formData);
-    alert("Classroom added successfully!");
-    setIsModalOpen(false);
+  const handleAdd = () => {
+    setModalType("add");
     setFormData({
+      id: null,
       schoolId: "",
       name: "",
       teacherId: "",
       capacity: "",
     });
+    setIsModalOpen(true);
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
+  const handleView = (classroom) => {
+    setModalType("view");
+    setFormData(classroom);
+    setIsModalOpen(true);
+  };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleEdit = (classroom) => {
+    setModalType("edit");
+    setFormData(classroom);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      // Optional: Replace with classroomService.deleteClassroom(id)
+      const updated = classrooms.filter((c) => c.id !== id);
+      setClassrooms(updated);
+    } catch (err) {
+      console.error("Delete failed:", err.message);
+      alert(err.message);
+    }
+  };
+
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (modalType === "edit") {
+        // TODO: Add updateClassroom API call in classroomService
+        setClassrooms((prev) =>
+          prev.map((c) => (c.id === formData.id ? formData : c))
+        );
+      } else {
+        const newClassroom = await classroomService.addClassroom(formData);
+        setClassrooms((prev) => [...prev, newClassroom]);
+      }
+
+      setIsModalOpen(false);
+      setFormData({ id: null, schoolId: "", name: "", teacherId: "", capacity: "" });
+    } catch (err) {
+      console.error("Error saving classroom:", err.message);
+      alert(err.message);
+    }
+  };
+
+  const handleOutsideClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setIsModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isModalOpen]);
 
   return (
-    <>
-      <Header />
-      <div className="mt-[70px] min-h-screen flex flex-col md:flex-row">
-        {/* Sidebar */}
-        <div
-          className={`fixed md:static z-50 top-0 left-0 h-full bg-white shadow-md md:w-1/5 w-2/3 transition-transform duration-300 ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
-        >
-          <Side />
-        </div>
+    <div className="min-h-screen bg-gray-100 text-sm text-gray-700 flex relative font-[Inter]">
+      <aside className="w-64 fixed top-0 left-0 h-full bg-white shadow z-10">
+        <AdminSidebar />
+      </aside>
 
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
+      <div className="ml-64 flex-1 flex flex-col min-h-screen relative z-20">
+        <header className="fixed top-0 left-64 right-0 z-30 bg-white shadow">
+          <Adminheader />
+        </header>
 
-        {/* Main Content */}
-        <div className="w-full md:w-4/5 bg-gray-100 p-4">
-          {/* Top bar */}
-          <div className="flex justify-between items-center bg-white px-4 py-3 shadow rounded mb-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden text-2xl text-black"
-              >
-                ☰
-              </button>
-              <input
-                type="text"
-                placeholder="Search"
-                className="border px-4 py-2 rounded-2xl w-40 md:w-1/3 bg-gray-200"
-              />
-            </div>
-            <div className="flex items-center gap-6">
-              <FaEnvelope className="text-xl text-black cursor-pointer" />
-              <FaBell className="text-xl text-black cursor-pointer" />
-              <div className="flex items-center gap-2">
-                <img
-                  src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin"
-                  className="w-10 h-10 rounded-full"
-                  alt="admin"
-                />
-                <div className="text-sm">
-                  <p className="font-bold">Gold Academy</p>
-                  <p className="text-gray-500">Admin</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Page header */}
-          <div className="flex justify-between items-center mb-2 relative">
-            <p className="text-sm text-gray-600">
-              Home{" "}
-              <span className="text-orange-500 font-semibold">
-                : All Classrooms
+        <main className="flex-1 p-6 pt-24">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-gray-600">
+              Home /{" "}
+              <span className="text-orange-500 font-semibold ml-1">
+                All Classrooms
               </span>
-            </p>
-            <div className="flex gap-4 items-center">
-              <div
-                className="flex items-center gap-2 relative cursor-pointer"
-                onClick={() => setShowDropdown((prev) => !prev)}
-                ref={dropdownRef}
-              >
-                <span className="text-sm text-orange-500">
-                  Select Level
-                </span>
-                < FaAngleDown className="text-black text-xl transform rotate-360" />
-                             {showDropdown && (
-                  <ul className="absolute right-0 mt-8 bg-white border rounded shadow w-32 text-sm z-10">
-                    <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                      Nursery
-                    </li>
-                    <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                      Primary
-                    </li>
-                    <li className="hover:bg-gray-100 px-4 py-2 cursor-pointer">
-                      Secondary
-                    </li>
-                  </ul>
-                )}
-              </div>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="bg-orange-500 text-white px-4 py-2 rounded shadow hover:bg-orange-600"
-              >
-                Add Classroom
-              </button>
             </div>
+            <button
+              onClick={handleAdd}
+              className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 active:scale-95 transition-transform text-white px-5 py-2.5 rounded text-sm font-semibold shadow-lg"
+            >
+              <FaPlus className="text-base" />
+              Add Classroom
+            </button>
           </div>
 
-          {/* Table */}
-          <div className="bg-white shadow rounded overflow-x-auto">
-            <table className="min-w-full text-sm text-left">
-              <thead className="bg-gray-200 text-gray-700">
+          <div className="bg-white rounded-lg shadow overflow-x-auto">
+            <table className="min-w-full table-auto text-left border-collapse">
+              <thead className="bg-gray-100 border-b">
                 <tr>
-                  <th className="p-3">
-                    <input type="checkbox" />
+                  <th className="px-4 py-3 font-medium text-gray-600">
+                    <div className="flex items-center gap-1">
+                      School ID <FaSort className="text-gray-400 text-xs" />
+                    </div>
                   </th>
-                  <th className="p-3">School ID</th>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Teacher ID</th>
-                  <th className="p-3">Capacity</th>
-                  <th className="p-3">Actions</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Name</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">
+                    Teacher ID
+                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Capacity</th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {classrooms.map((classroom, idx) => (
-                  <tr key={idx} className="border-t hover:bg-gray-100">
-                    <td className="p-3">
-                      <input type="checkbox" />
-                    </td>
-                    <td className="p-3">{classroom.schoolId}</td>
-                    <td className="p-3">{classroom.name}</td>
-                    <td className="p-3">{classroom.teacherId}</td>
-                    <td className="p-3">{classroom.capacity}</td>
-                    <td className="p-3 flex gap-2 text-blue-600">
-                      <FaEye className="cursor-pointer" />
-                      <FaEdit className="cursor-pointer text-green-600" />
-                      <FaTrash className="cursor-pointer text-red-600" />
+              <tbody className="divide-y divide-gray-200">
+                {classrooms.map((classroom) => (
+                  <tr key={classroom.id} className="hover:bg-gray-50 transition">
+                    <td className="px-4 py-3">{classroom.schoolId}</td>
+                    <td className="px-4 py-3">{classroom.name}</td>
+                    <td className="px-4 py-3">{classroom.teacherId}</td>
+                    <td className="px-4 py-3">{classroom.capacity}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3 text-sm">
+                        <FaEye
+                          className="text-indigo-600 hover:text-indigo-800 cursor-pointer transition"
+                          onClick={() => handleView(classroom)}
+                        />
+                        <FaEdit
+                          className="text-green-600 hover:text-green-800 cursor-pointer transition"
+                          onClick={() => handleEdit(classroom)}
+                        />
+                        <FaTrashAlt
+                          className="text-red-600 hover:text-red-800 cursor-pointer transition"
+                          onClick={() => handleDelete(classroom.id)}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div className="p-3 text-center text-sm text-gray-600">
-              <span className="text-orange-500">&lt;</span> Page 1 of 1{" "}
-              <span className="text-orange-500">&gt;</span>
-            </div>
           </div>
 
-          {/* Modal Form */}
-          {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white rounded-lg w-[95%] max-w-md">
-                <div className="bg-orange-500 h-3 rounded-t-lg"></div>
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4 text-center">
-                    Add Classroom
-                  </h2>
-                  <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-1 gap-4"
-                  >
-                    <input
-                      type="text"
-                      name="schoolId"
-                      placeholder="School ID"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.schoolId}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="Classroom Name"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="text"
-                      name="teacherId"
-                      placeholder="Teacher ID"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.teacherId}
-                      onChange={handleInputChange}
-                    />
-                    <input
-                      type="number"
-                      name="capacity"
-                      placeholder="Capacity"
-                      required
-                      className="border px-3 py-2 rounded"
-                      value={formData.capacity}
-                      onChange={handleInputChange}
-                    />
-                    <div className="flex justify-end gap-3 mt-2">
-                      <button
-                        type="button"
-                        onClick={() => setIsModalOpen(false)}
-                        className="px-4 py-2 border rounded"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+          <div className="flex justify-between items-center mt-6 text-xs text-gray-500">
+            <span>
+              Showing 1 to {classrooms.length} of {classrooms.length} results
+            </span>
+            <div className="flex items-center gap-2">
+              <button className="px-2 py-1 border rounded hover:bg-gray-100">
+                1
+              </button>
+              <FaAngleRight className="text-orange-500" />
             </div>
-          )}
-        </div>
+          </div>
+        </main>
       </div>
-    </>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/10">
+          <div
+            ref={modalRef}
+            className="bg-white w-full max-w-md mx-auto rounded-lg shadow-lg overflow-hidden"
+          >
+            <div className="bg-[#f3700a] flex justify-between items-center px-6 py-3">
+              <h2 className="text-white font-semibold text-base">
+                {modalType === "view"
+                  ? "View Classroom"
+                  : modalType === "edit"
+                  ? "Edit Classroom"
+                  : "Add Classroom"}
+              </h2>
+              <button onClick={() => setIsModalOpen(false)} aria-label="Close">
+                <FaTimes className="text-white" />
+              </button>
+            </div>
+
+            <form onSubmit={handleModalSubmit} className="p-6 space-y-5">
+              {["schoolId", "name", "teacherId", "capacity"].map((field) => (
+                <div key={field}>
+                  <label
+                    htmlFor={field}
+                    className="block text-sm text-gray-700 mb-1 capitalize"
+                  >
+                    {field.replace("Id", " ID")}
+                  </label>
+                  <input
+                    id={field}
+                    name={field}
+                    type="text"
+                    value={modalType === "view" ? "" : formData[field]}
+                    onChange={handleChange}
+                    placeholder={
+                      modalType === "view"
+                        ? formData[field]
+                        : `Enter ${field.replace("Id", " ID")}`
+                    }
+                    readOnly={modalType === "view"}
+                    className="w-full border border-[#f3700a] rounded-md px-3 py-2 text-xs placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#f3700a]"
+                    required={modalType !== "view"}
+                  />
+                </div>
+              ))}
+
+              {modalType !== "view" && (
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    className="bg-[#f3700a] hover:bg-[#e95f00] text-white px-4 py-2 rounded text-sm font-medium"
+                  >
+                    {modalType === "edit" ? "Update" : "Submit"}
+                  </button>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
