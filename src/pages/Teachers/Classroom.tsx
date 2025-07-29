@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import AdminSidebar from "../Admin/AdminSidebar";
 import Adminheader from "../Admin/Adminheader";
+import { classroomService } from "../../Services/Session";
 
 import {
   FaPlus,
@@ -23,17 +24,21 @@ const AllClassrooms = () => {
     capacity: "",
   });
 
-  const [classrooms, setClassrooms] = useState(
-    Array.from({ length: 10 }, (_, index) => ({
-      id: index + 1,
-      schoolId: `1000${index + 1}`,
-      name: `Classroom ${index + 1}`,
-      teacherId: `TCHR-${1000 + index}`,
-      capacity: `${20 + index}`,
-    }))
-  );
-
+  const [classrooms, setClassrooms] = useState([]);
   const modalRef = useRef(null);
+
+  useEffect(() => {
+    const fetchClassrooms = async () => {
+      try {
+        const data = await classroomService.getAllClassrooms();
+        setClassrooms(data);
+      } catch (err) {
+        console.error("Error fetching classrooms:", err.message);
+      }
+    };
+
+    fetchClassrooms();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,26 +69,37 @@ const AllClassrooms = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    const updated = classrooms.filter((c) => c.id !== id);
-    setClassrooms(updated);
+  const handleDelete = async (id) => {
+    try {
+      // Optional: Replace with classroomService.deleteClassroom(id)
+      const updated = classrooms.filter((c) => c.id !== id);
+      setClassrooms(updated);
+    } catch (err) {
+      console.error("Delete failed:", err.message);
+      alert(err.message);
+    }
   };
 
-  const handleModalSubmit = (e) => {
+  const handleModalSubmit = async (e) => {
     e.preventDefault();
-    if (modalType === "edit") {
-      setClassrooms((prev) =>
-        prev.map((c) => (c.id === formData.id ? formData : c))
-      );
-    } else {
-      const newClassroom = {
-        ...formData,
-        id: classrooms.length ? classrooms[classrooms.length - 1].id + 1 : 1,
-      };
-      setClassrooms((prev) => [...prev, newClassroom]);
+
+    try {
+      if (modalType === "edit") {
+        // TODO: Add updateClassroom API call in classroomService
+        setClassrooms((prev) =>
+          prev.map((c) => (c.id === formData.id ? formData : c))
+        );
+      } else {
+        const newClassroom = await classroomService.addClassroom(formData);
+        setClassrooms((prev) => [...prev, newClassroom]);
+      }
+
+      setIsModalOpen(false);
+      setFormData({ id: null, schoolId: "", name: "", teacherId: "", capacity: "" });
+    } catch (err) {
+      console.error("Error saving classroom:", err.message);
+      alert(err.message);
     }
-    setIsModalOpen(false);
-    setFormData({ id: null, schoolId: "", name: "", teacherId: "", capacity: "" });
   };
 
   const handleOutsideClick = (e) => {
@@ -138,15 +154,11 @@ const AllClassrooms = () => {
                       School ID <FaSort className="text-gray-400 text-xs" />
                     </div>
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-600">
-                    Name
-                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Name</th>
                   <th className="px-4 py-3 font-medium text-gray-600">
                     Teacher ID
                   </th>
-                  <th className="px-4 py-3 font-medium text-gray-600">
-                    Capacity
-                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-600">Capacity</th>
                   <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
                 </tr>
               </thead>
@@ -191,8 +203,6 @@ const AllClassrooms = () => {
             </div>
           </div>
         </main>
-
-       
       </div>
 
       {isModalOpen && (
