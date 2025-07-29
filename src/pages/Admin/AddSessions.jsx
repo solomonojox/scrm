@@ -8,58 +8,58 @@ const AllSessions = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSessions, setSelectedSessions] = useState([]);
+  const [viewedSession, setViewedSession] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
- useEffect(() => {
-  const fetchSessions = async () => {
-    try {
-      const data = await sessionService.getAllRegisteredSessions();
-      if (Array.isArray(data)) {
-        setSessions(data);
-      } else if (data && Array.isArray(data.sessions)) {
-        setSessions(data.sessions);
-      } else {
-        console.warn("Unexpected response format:", data);
-        setSessions([]);
-      }
-    } catch (error) {
-      console.error("Failed to load sessions from API. Using mock data.", error);
-
-      // Mock fallback sessions
-      const mockSessions = [
-        {
-          schoolId: "SCH001",
-          sessionId: "S001",
-          sessionName: "Term 1 - 2025",
-          startDate: "2025-01-10",
-          endDate: "2025-04-20"
-        },
-        {
-          schoolId: "SCH001",
-          sessionId: "S002",
-          sessionName: "Term 2 - 2025",
-          startDate: "2025-05-05",
-          endDate: "2025-08-15"
-        },
-        {
-          schoolId: "SCH002",
-          sessionId: "S003",
-          sessionName: "Term 3 - 2025",
-          startDate: "2025-09-01",
-          endDate: "2025-12-10"
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const data = await sessionService.getAllRegisteredSessions();
+        if (Array.isArray(data)) {
+          setSessions(data);
+        } else if (data && Array.isArray(data.sessions)) {
+          setSessions(data.sessions);
+        } else {
+          console.warn("Unexpected response format:", data);
+          setSessions([]);
         }
-      ];
+      } catch (error) {
+        console.error("Failed to load sessions from API. Using mock data.", error);
 
-      setSessions(mockSessions);
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Mock fallback sessions
+        const mockSessions = [
+          {
+            schoolId: "SCH001",
+            sessionId: "S001",
+            sessionName: "Term 1 - 2025",
+            startDate: "2025-01-10",
+            endDate: "2025-04-20",
+          },
+          {
+            schoolId: "SCH001",
+            sessionId: "S002",
+            sessionName: "Term 2 - 2025",
+            startDate: "2025-05-05",
+            endDate: "2025-08-15",
+          },
+          {
+            schoolId: "SCH002",
+            sessionId: "S003",
+            sessionName: "Term 3 - 2025",
+            startDate: "2025-09-01",
+            endDate: "2025-12-10",
+          },
+        ];
 
-  fetchSessions();
-}, []);
+        setSessions(mockSessions);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchSessions();
+  }, []);
 
-  // Select All Handler
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       const allIds = sessions.map((s) => s.sessionId);
@@ -69,13 +69,17 @@ const AllSessions = () => {
     }
   };
 
-  // Single Row Selection
   const handleSelectOne = (sessionId) => {
     setSelectedSessions((prev) =>
       prev.includes(sessionId)
         ? prev.filter((id) => id !== sessionId)
         : [...prev, sessionId]
     );
+  };
+
+  const handleView = (session) => {
+    setViewedSession(session);
+    setIsModalOpen(true);
   };
 
   const allSelected =
@@ -217,7 +221,11 @@ const AllSessions = () => {
                           : "N/A"}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap align-middle text-center space-x-3">
-                        <button aria-label="View" className="text-[#3b3b98] hover:text-[#2a2a6e]">
+                        <button
+                          aria-label="View"
+                          className="text-[#3b3b98] hover:text-[#2a2a6e]"
+                          onClick={() => handleView(session)}
+                        >
                           <i className="fas fa-eye"></i>
                         </button>
                         <button aria-label="Edit" className="text-[#2f9e2f] hover:text-[#1f6e1f]">
@@ -242,6 +250,35 @@ const AllSessions = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for viewing session */}
+      {isModalOpen && viewedSession && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-800">Session Details</h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-800">
+                ✕
+              </button>
+            </div>
+            <div className="space-y-2 text-sm text-gray-700">
+              <p><strong>School ID:</strong> {viewedSession.schoolId}</p>
+              <p><strong>Session ID:</strong> {viewedSession.sessionId}</p>
+              <p><strong>Session Name:</strong> {viewedSession.sessionName}</p>
+              <p><strong>Start Date:</strong> {new Date(viewedSession.startDate).toLocaleDateString()}</p>
+              <p><strong>End Date:</strong> {new Date(viewedSession.endDate).toLocaleDateString()}</p>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-4 py-2 rounded text-sm"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
