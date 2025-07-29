@@ -30,7 +30,6 @@ export default function SchoolFeesPage() {
 
   const openModal = (mode, fee = null) => {
     setModalMode(mode);
-    setShowModal(true);
     setSelectedFee(fee);
     setFormData({
       schoolId: fee?.schoolId || '',
@@ -38,6 +37,7 @@ export default function SchoolFeesPage() {
       amount: fee?.amount || '',
       classroomId: fee?.classroomId || ''
     });
+    setShowModal(true);
   };
 
   const closeModal = () => {
@@ -102,7 +102,6 @@ export default function SchoolFeesPage() {
         </div>
 
         <div className="mt-20 px-4 sm:px-6 pb-6 space-y-6">
-          {/* Topbar */}
           <header className="flex flex-col sm:flex-row sm:justify-between items-center gap-4 bg-white rounded-lg shadow px-4 py-3">
             <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 w-full max-w-md">
               <i className="fas fa-search text-gray-400 text-sm" />
@@ -174,7 +173,6 @@ export default function SchoolFeesPage() {
                 className="bg-white w-full max-w-2xl rounded-md overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Header */}
                 <header className="bg-[#ef6f0f] flex justify-between items-center px-6 py-3">
                   <h1 className="text-white font-semibold text-lg">
                     {modalMode === "add" && "Add School Fee"}
@@ -184,24 +182,20 @@ export default function SchoolFeesPage() {
                   <button onClick={closeModal} className="text-white text-xl font-bold">&times;</button>
                 </header>
 
-                {/* Form */}
                 <form
                   onSubmit={modalMode === "edit" ? handleUpdateFee : handleAddFee}
                   className="p-6 space-y-6"
                 >
-                  {[
-                    { label: "School ID", name: "schoolId", type: "text" },
-                    { label: "Session ID", name: "sessionId", type: "text" },
-                    { label: "Amount", name: "amount", type: "number" },
-                    { label: "Classroom ID", name: "classroomId", type: "text" }
-                  ].map(({ label, name, type }) => (
-                    <div key={name}>
-                      <label className="block text-gray-700 text-base mb-1">{label}</label>
+                  {["schoolId", "sessionId", "amount", "classroomId"].map((field) => (
+                    <div key={field}>
+                      <label className="block text-gray-700 text-base mb-1">
+                        {field.charAt(0).toUpperCase() + field.slice(1).replace("Id", " ID")}
+                      </label>
                       <input
-                        name={name}
-                        type={type}
-                        placeholder={`Enter ${label}`}
-                        value={formData[name]}
+                        name={field}
+                        type={field === "amount" ? "number" : "text"}
+                        placeholder={`Enter ${field}`}
+                        value={formData[field]}
                         onChange={handleInputChange}
                         readOnly={isReadOnly}
                         required
@@ -212,7 +206,6 @@ export default function SchoolFeesPage() {
                     </div>
                   ))}
 
-                  {/* Footer Buttons */}
                   <div className="flex justify-end gap-2 pt-2">
                     <button type="button" onClick={closeModal} className="bg-gray-300 px-4 py-2 rounded text-sm">
                       Close
