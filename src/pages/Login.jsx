@@ -39,6 +39,7 @@ const LoginPage = () => {
       const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
       // console.log(role);
 
+
       // Optional: store token or navigate
       localStorage.setItem("scrmToken", response.data);
       if (role === "SchoolAdmin") {

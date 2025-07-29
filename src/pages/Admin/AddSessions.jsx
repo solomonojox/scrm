@@ -8,68 +8,53 @@ const AllSessions = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSessions, setSelectedSessions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    schoolId: "",
+    sessionId: "",
+    sessionName: "",
+    startDate: "",
+    endDate: ""
+  });
 
- useEffect(() => {
-  const fetchSessions = async () => {
-    try {
-      const data = await sessionService.getAllRegisteredSessions();
-      if (Array.isArray(data)) {
-        setSessions(data);
-      } else if (data && Array.isArray(data.sessions)) {
-        setSessions(data.sessions);
-      } else {
-        console.warn("Unexpected response format:", data);
-        setSessions([]);
-      }
-    } catch (error) {
-      console.error("Failed to load sessions from API. Using mock data.", error);
-
-      // Mock fallback sessions
-      const mockSessions = [
-        {
-          schoolId: "SCH001",
-          sessionId: "S001",
-          sessionName: "Term 1 - 2025",
-          startDate: "2025-01-10",
-          endDate: "2025-04-20"
-        },
-        {
-          schoolId: "SCH001",
-          sessionId: "S002",
-          sessionName: "Term 2 - 2025",
-          startDate: "2025-05-05",
-          endDate: "2025-08-15"
-        },
-        {
-          schoolId: "SCH002",
-          sessionId: "S003",
-          sessionName: "Term 3 - 2025",
-          startDate: "2025-09-01",
-          endDate: "2025-12-10"
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const data = await sessionService.getAllRegisteredSessions();
+        if (Array.isArray(data)) {
+          setSessions(data);
+        } else if (data && Array.isArray(data.sessions)) {
+          setSessions(data.sessions);
+        } else {
+          setSessions([]);
         }
-      ];
+      } catch (error) {
+        console.error("API failed. Using mock data.", error);
+        setSessions([
+          {
+            schoolId: "SCH001",
+            sessionId: "S001",
+            sessionName: "Term 1 - 2025",
+            startDate: "2025-01-10",
+            endDate: "2025-04-20"
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      setSessions(mockSessions);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchSessions();
+  }, []);
 
-  fetchSessions();
-}, []);
-
-
-  // Select All Handler
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      const allIds = sessions.map((s) => s.sessionId);
-      setSelectedSessions(allIds);
+      setSelectedSessions(sessions.map((s) => s.sessionId));
     } else {
       setSelectedSessions([]);
     }
   };
 
-  // Single Row Selection
   const handleSelectOne = (sessionId) => {
     setSelectedSessions((prev) =>
       prev.includes(sessionId)
@@ -81,14 +66,39 @@ const AllSessions = () => {
   const allSelected =
     sessions.length > 0 && selectedSessions.length === sessions.length;
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+ const handleAddSession = async (e) => {
+  e.preventDefault();
+  console.log("Submitting session form...", formData); // <-- Debug log
+  try {
+    const savedSession = await sessionService.addSession(formData);
+    console.log("Saved session response:", savedSession); // <-- Debug log
+    setSessions((prev) => [...prev, savedSession]);
+    setShowModal(false);
+    setFormData({
+      schoolId: "",
+      sessionId: "",
+      sessionName: "",
+      startDate: "",
+      endDate: ""
+    });
+  } catch (error) {
+    alert("Failed to add session.");
+    console.error("Add session error:", error); // <-- Debug log
+  }
+};
+
+
   return (
     <div className="bg-[#f8f8f8] font-sans text-[13px] text-[#333] min-h-screen">
       <Adminheader />
       <AdminSidebar />
-
-      {/* MAIN CONTENT */}
       <div className="flex-1 pl-64 mt-[80px]">
-        {/* TOPBAR */}
+        {/* Topbar */}
         <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 rounded-md bg-white shadow-md">
           <div className="w-full max-w-sm">
             <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
@@ -117,25 +127,19 @@ const AllSessions = () => {
           </div>
         </div>
 
-        {/* Breadcrumb and Add Button */}
+        {/* Breadcrumb & Add */}
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           <div className="flex items-center justify-between mb-3">
             <nav className="flex items-center space-x-1 text-[13px] text-[#666] font-normal select-none">
               <span>Home</span>
-              <svg
-                className="w-3 h-3 text-[#666]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
+              <svg className="w-3 h-3 text-[#666]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
               <span className="font-semibold text-[#d46b00]">All Sessions</span>
             </nav>
             <button
               type="button"
+              onClick={() => setShowModal(true)}
               className="flex items-center gap-1 bg-[#f07e00] hover:bg-[#d46b00] text-white text-[13px] font-semibold rounded px-3 py-1.5"
             >
               Add Session
@@ -150,82 +154,39 @@ const AllSessions = () => {
                   <th className="w-[40px] px-4 py-3 text-left">
                     <input
                       type="checkbox"
-                      className="cursor-pointer"
                       checked={allSelected}
                       onChange={handleSelectAll}
+                      className="cursor-pointer"
                     />
                   </th>
-                  {["School ID", "Session ID", "Session Name", "Start Date", "End Date", "Actions"].map(
-                    (heading, index) => (
-                      <th
-                        key={index}
-                        className={`px-4 py-3 whitespace-nowrap cursor-pointer ${
-                          heading === "Actions" ? "text-center" : ""
-                        }`}
-                      >
-                        <div
-                          className={`flex items-center gap-1 ${
-                            heading === "Actions" ? "justify-center" : ""
-                          }`}
-                        >
-                          {heading}
-                          <i className="fas fa-sort text-[#666] text-[10px]" />
-                        </div>
-                      </th>
-                    )
-                  )}
+                  {["School ID", "Session ID", "Session Name", "Start Date", "End Date", "Actions"].map((heading, index) => (
+                    <th key={index} className={`px-4 py-3 whitespace-nowrap ${heading === "Actions" ? "text-center" : ""}`}>
+                      <div className={`flex items-center gap-1 ${heading === "Actions" ? "justify-center" : ""}`}>
+                        {heading}
+                        <i className="fas fa-sort text-[#666] text-[10px]" />
+                      </div>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr>
-                    <td colSpan="7" className="text-center py-6">
-                      Loading sessions...
-                    </td>
-                  </tr>
+                  <tr><td colSpan="7" className="text-center py-6">Loading...</td></tr>
                 ) : sessions.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center py-6">
-                      No sessions found.
-                    </td>
-                  </tr>
+                  <tr><td colSpan="7" className="text-center py-6">No sessions found.</td></tr>
                 ) : (
-                  sessions.map((session, index) => (
-                    <tr
-                      key={session.sessionId || index}
-                      className="bg-white border-b border-[#eee]"
-                    >
-                      <td className="w-[40px] px-4 py-4 text-left align-middle">
-                        <input
-                          type="checkbox"
-                          className="cursor-pointer"
-                          checked={selectedSessions.includes(session.sessionId)}
-                          onChange={() => handleSelectOne(session.sessionId)}
-                        />
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle">{session.schoolId}</td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle">{session.sessionId}</td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle">{session.sessionName}</td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle">
-                        {session.startDate
-                          ? new Date(session.startDate).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle">
-                        {session.endDate
-                          ? new Date(session.endDate).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap align-middle text-center space-x-3">
-                        <button aria-label="View" className="text-[#3b3b98] hover:text-[#2a2a6e]">
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button aria-label="Edit" className="text-[#2f9e2f] hover:text-[#1f6e1f]">
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button aria-label="Delete" className="text-[#d9534f] hover:text-[#a73733]">
-                          <i className="fas fa-trash-alt"></i>
-                        </button>
+                  sessions.map((session) => (
+                    <tr key={session.sessionId} className="bg-white border-b border-[#eee]">
+                      <td className="px-4 py-4"><input type="checkbox" checked={selectedSessions.includes(session.sessionId)} onChange={() => handleSelectOne(session.sessionId)} /></td>
+                      <td className="px-4 py-4">{session.schoolId}</td>
+                      <td className="px-4 py-4">{session.sessionId}</td>
+                      <td className="px-4 py-4">{session.sessionName}</td>
+                      <td className="px-4 py-4">{new Date(session.startDate).toLocaleDateString()}</td>
+                      <td className="px-4 py-4">{new Date(session.endDate).toLocaleDateString()}</td>
+                      <td className="px-4 py-4 text-center space-x-2">
+                        <i className="fas fa-eye text-blue-600 cursor-pointer" />
+                        <i className="fas fa-edit text-green-600 cursor-pointer" />
+                        <i className="fas fa-trash-alt text-red-500 cursor-pointer" />
                       </td>
                     </tr>
                   ))
@@ -233,15 +194,36 @@ const AllSessions = () => {
               </tbody>
             </table>
           </div>
-
-          {/* Pagination placeholder */}
-          <div className="mt-3 bg-[#f0f0f0] text-[12px] text-[#666] font-semibold py-2 select-none flex justify-center items-center gap-2">
-            <span className="text-[#d46b00] cursor-default select-none">◄</span>
-            <span>Page 1 of 1</span>
-            <span className="text-[#d46b00] cursor-default select-none">►</span>
-          </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-md w-full max-w-md">
+            <h2 className="text-lg font-bold mb-4">Add New Session</h2>
+            <form onSubmit={handleAddSession} className="space-y-3">
+              {["schoolId", "sessionId", "sessionName", "startDate", "endDate"].map((field) => (
+                <div key={field}>
+                  <label className="block text-sm capitalize mb-1">{field.replace(/Id/, " ID")}</label>
+                  <input
+                    type={field.includes("Date") ? "date" : "text"}
+                    name={field}
+                    required
+                    value={formData[field]}
+                    onChange={handleInputChange}
+                    className="w-full border rounded px-3 py-2 text-sm"
+                  />
+                </div>
+              ))}
+              <div className="flex justify-end gap-2">
+                <button type="button" onClick={() => setShowModal(false)} className="bg-gray-300 px-3 py-1 rounded text-sm">Cancel</button>
+                <button type="submit" className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-3 py-1 rounded text-sm">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
