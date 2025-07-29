@@ -30,7 +30,7 @@ function App() {
       <Route path="/add-admin" element={<AddAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/terms" element={<Terms />} />
-      <Route path="/Schoolfee" element={<Schoolfee/>} />
+      <Route path="/admin/schoolfee" element={<Schoolfee/>} />
 
       {/* All admin routes here */}
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
