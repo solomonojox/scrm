@@ -14,6 +14,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
+import Schoolfees from './pages/Admin/Schoolfees'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
       <Route path="/add-admin" element={<AddAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/Schoolfees" element={<Schoolfees/>} />
 
       {/* All admin routes here */}
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
