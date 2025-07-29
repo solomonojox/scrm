@@ -6,7 +6,7 @@ import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login';
 import Accountregistration from '../src/pages/Admin/Accountregristration';
 import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
-
+import AddSession from '../src/pages/Admin/AddSessions'
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
 import Guardian from './pages/Guardian/guardian';
@@ -36,7 +36,7 @@ function App() {
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
       <Route path="/admin/news" element={<News />} />
       <Route path="/admin/events" element={<Events />} />
-
+   <Route path="/admin/session" element={<AddSession />} />
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
 
