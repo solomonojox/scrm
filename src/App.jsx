@@ -6,7 +6,7 @@ import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login';
 import Accountregistration from '../src/pages/Admin/Accountregristration';
 import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
-import AddSession from '../src/pages/Admin/AddSessions'
+import AddSessions from './pages/Admin/AddSessions';
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
 import Guardian from './pages/Admin/guardian';
@@ -18,9 +18,6 @@ import Schoolfee from './pages/Admin/Schoolfee'
 
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
 
-import Schoolfee from './pages/Admin/Schoolfee'
-
-import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
 
 
 function App() {
@@ -46,6 +43,7 @@ function App() {
       <Route path="/admin/events" element={<Events />} />
       <Route path="/admin/session" element={<AddSession />} />
       
+      <Route path="/admin/session" element={<AddSessions />} />
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
 

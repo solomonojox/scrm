@@ -12,31 +12,20 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "../Admin/Adminheader";
 import Side from "../Admin/AdminSidebar";
 import { onboardingService } from "../../Services/Auth/onboarding";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
+import { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } from "../../Store/Guardian/guardianSlice";
 
-interface Guardian {
-  guardianId: string;
-  schoolId: string;
-  firstname: string;
-  lastname: string;
-  relationship: string;
-  phone: string;
-  occupation: string;
-  homeAddress: string;
-  workAddress: string;
-  stateOfOrigin: string;
-  nationality: string;
-  religion: string;
-  email: string;
-  username: string;
-  nin: string;
-  bvn: string;
-  // add any other returned properties you need…
-}
+
+
 
 const AllGuardians: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const fetchedRecord = useSelector((state: RootState) => state.getGuardian.listRecords)
+  const fetchedLoading = useSelector((state: RootState)=> state.getGuardian.loading)
+  const error = useSelector((state: RootState)=> state.getGuardian.error)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -59,16 +48,29 @@ const AllGuardians: React.FC = () => {
 
   // 1) Fetch all guardians
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await onboardingService.getAllGuardians();
-        setGuardians(data);
-      } catch (err) {
-        console.error("Load error:", err);
-        toast.error("Could not load guardians");
-      }
-    })();
-  }, []);
+    if(!fetchedLoading){
+      fetchGuardian()
+    }else{
+      setLoading(false)
+    }
+    
+  }, [dispatch]);
+
+  // Refetch Guardion
+   const fetchGuardian = async () => {
+    dispatch(fetchGuardiansStart());
+    try {
+      const data = await onboardingService.getAllGuardians();
+      dispatch(fetchGuardiansSuccess(data));
+    } catch (err) {
+      dispatch(fetchGuardiansFailure((err as Error).message));
+    }
+  };
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
 
   // 2) Form handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -109,7 +111,7 @@ const AllGuardians: React.FC = () => {
 
       // Refresh list
       const updated = await onboardingService.getAllGuardians();
-      setGuardians(updated);
+      // setGuardians(updated);
 
       // Auto‑close modal after 2s
       setTimeout(() => {
@@ -143,13 +145,15 @@ const AllGuardians: React.FC = () => {
 
   // Example delete handler (you’ll need to implement this in your service)
   const handleDelete = async (id: string) => {
+    console.log(id)
     if (!window.confirm("Are you sure you want to delete this guardian?")) return;
     try {
-      // await onboardingService.deleteGuardian(id);
+      await onboardingService.deleteGuardian(id);
+      await fetchGuardian()
       toast.success("Deleted!");
-      setGuardians((prev) => prev.filter((g) => g.guardianId !== id));
-    } catch {
+    } catch(error) {
       toast.error("Delete failed");
+      // console.log(error)
     }
   };
 
@@ -243,7 +247,7 @@ const AllGuardians: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {guardians.map((g) => (
+                {fetchedRecord.map((g) => (
                   <tr key={g.guardianId} className="border-t hover:bg-gray-100">
                     <td className="p-3"><input type="checkbox" /></td>
                     <td className="p-3">
