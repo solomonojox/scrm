@@ -1,6 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
+
 import Adminheader from './Adminheader';
 import AdminSidebar from './AdminSidebar';
+import NotificationModal from './Notification';
 import {
   FaUserGraduate,
   FaChalkboardTeacher,
@@ -62,8 +65,11 @@ const timeData = [
   { month: 'Dec', Active: 90, Inactive: 85 }
 ];
 
+
 // ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
 export default function AdminDashboard() {
+
+  const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     document.title = 'EduCat Dashboard';
   }, []);
@@ -92,7 +98,11 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-              <FaBell className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+             <FaBell
+  className="text-gray-500 hover:text-orange-500 cursor-pointer"
+  onClick={() => setShowModal(true)}
+/>
+
               <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
               <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
                 <img
@@ -165,6 +175,7 @@ export default function AdminDashboard() {
 
 
           </main>
+              <NotificationModal show={showModal} onClose={() => setShowModal(false)} />
         </div>
       </div>
     </div>
@@ -434,6 +445,8 @@ function UpcomingClasses() {
           </li>
         ))}
       </ul>
+  
+
     </div>
   );
 }
