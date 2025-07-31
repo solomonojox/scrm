@@ -206,10 +206,10 @@ const AllClassrooms = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/10">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-sm ">
           <div
             ref={modalRef}
-            className="bg-white w-full max-w-md mx-auto rounded-lg shadow-lg overflow-hidden"
+            className="bg-white w-full max-w-lg h-[500px] mx-auto rounded-lg shadow-lg overflow-hidden"
           >
             <div className="bg-[#f3700a] flex justify-between items-center px-6 py-3">
               <h2 className="text-white font-semibold text-base">
@@ -245,7 +245,7 @@ const AllClassrooms = () => {
                         : `Enter ${field.replace("Id", " ID")}`
                     }
                     readOnly={modalType === "view"}
-                    className="w-full border border-[#f3700a] rounded-md px-3 py-2 text-xs placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#f3700a]"
+                    className="w-full border border-[#f3700a] rounded-md px-3 py-3 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#f3700a]"
                     required={modalType !== "view"}
                   />
                 </div>

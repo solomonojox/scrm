@@ -183,12 +183,11 @@ const AllSessions = () => {
                       onChange={handleSelectAll}
                     />
                   </th>
-                  {["School ID", "Session ID", "Session Name", "Start Date", "End Date", "Actions"].map((h, i) => (
+                  {[
+                    "School ID", "Session ID", "Session Name", "Start Date", "End Date", "Actions"
+                  ].map((h, i) => (
                     <th key={i} className={`px-4 py-3 ${h === "Actions" ? "text-center" : ""}`}>
-                      <div className={`flex items-center ${h === "Actions" ? "justify-center" : ""}`}>
-                        {h}
-                        <i className="fas fa-sort text-[#666] text-[10px] ml-1" />
-                      </div>
+                      <div className={`flex items-center ${h === "Actions" ? "justify-center" : ""}`}> {h} <i className="fas fa-sort text-[#666] text-[10px] ml-1"></i> </div>
                     </th>
                   ))}
                 </tr>
@@ -227,91 +226,88 @@ const AllSessions = () => {
         </div>
       </div>
 
-{showModal && (
-  <div
-    className="fixed inset-0  z-50 flex items-center justify-center"
-    onClick={closeModal}
-  >
-    <div
-      className="bg-white w-full max-w-2xl rounded-md overflow-hidden"
-      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
-    >
-      {/* Header */}
-      <header className="bg-[#ef6f0f] flex justify-between items-center px-6 py-3">
-        <h1 className="text-white font-semibold text-lg">
-          {modalMode === "add" && "Add New Session"}
-          {modalMode === "view" && "View Session"}
-          {modalMode === "edit" && "Edit Session"}
-        </h1>
-        <button
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
           onClick={closeModal}
-          aria-label="Close"
-          className="text-white text-xl font-bold leading-none"
         >
-          &times;
-        </button>
-      </header>
-
-      {/* Form */}
-      <form
-        onSubmit={modalMode === "edit" ? handleUpdateSession : handleAddSession}
-        className="p-6 space-y-6"
-      >
-        {[ // Input fields
-          { label: "School ID", name: "schoolId", type: "text" },
-          { label: "Session ID", name: "sessionId", type: "text" },
-          { label: "Session Name", name: "sessionName", type: "text" },
-          { label: "Start Date", name: "startDate", type: "date" },
-          { label: "End Date", name: "endDate", type: "date" }
-        ].map(({ label, name, type }) => (
-          <div key={name}>
-            <label htmlFor={name} className="block text-gray-700 text-base mb-1">
-              {label}
-            </label>
-            <div className="relative">
-              <input
-                id={name}
-                name={name}
-                type={type}
-                placeholder={`Enter ${label}`}
-                value={formData[name]}
-                onChange={handleInputChange}
-                readOnly={isReadOnly}
-                required
-                className={`w-full border border-[#d17a0a] rounded-md px-4 py-3 pr-10 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d17a0a] ${
-                  isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
-                }`}
-              />
-              {type === "date" && (
-                <i className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-700"></i>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {/* Footer Buttons */}
-        <div className="flex justify-end gap-2 pt-2">
-          <button
-            type="button"
-            onClick={closeModal}
-            className="bg-gray-300 px-4 py-2 rounded text-sm"
+          <div
+            className="bg-white w-full max-w-3xl mx-4 md:mx-0 rounded-md overflow-hidden max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
           >
-            Close
-          </button>
-          {modalMode !== "view" && (
-            <button
-              type="submit"
-              className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-4 py-2 rounded text-sm"
+            {/* Header */}
+            <header className="bg-[#ef6f0f] flex justify-between items-center px-4 py-2">
+              <h1 className="text-white font-semibold text-base">
+                {modalMode === "add" && "Add New Session"}
+                {modalMode === "view" && "View Session"}
+                {modalMode === "edit" && "Edit Session"}
+              </h1>
+              <button
+                onClick={closeModal}
+                aria-label="Close"
+                className="text-white text-xl font-bold leading-none"
+              >
+                &times;
+              </button>
+            </header>
+
+            {/* Form */}
+            <form
+              onSubmit={modalMode === "edit" ? handleUpdateSession : handleAddSession}
+              className="p-4 sm:p-6 space-y-4"
             >
-              {modalMode === "edit" ? "Update" : "Save"}
-            </button>
-          )}
+              {[ // Input fields
+                { label: "School ID", name: "schoolId", type: "text" },
+                { label: "Session ID", name: "sessionId", type: "text" },
+                { label: "Session Name", name: "sessionName", type: "text" },
+                { label: "Start Date", name: "startDate", type: "date" },
+                { label: "End Date", name: "endDate", type: "date" }
+              ].map(({ label, name, type }) => (
+                <div key={name}>
+                  <label htmlFor={name} className="block text-gray-700 text-sm mb-1">
+                    {label}
+                  </label>
+                  <div className="relative">
+                    <input
+                      id={name}
+                      name={name}
+                      type={type}
+                      placeholder={`Enter ${label}`}
+                      value={formData[name]}
+                      onChange={handleInputChange}
+                      readOnly={isReadOnly}
+                      required
+                      className={`w-full border border-[#d17a0a] rounded-md px-3 py-2 pr-10 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d17a0a] ${isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                    />
+                    {type === "date" && (
+                      <i className="fas fa-calendar-alt absolute right-3 top-1/2 -translate-y-1/2 text-gray-700"></i>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {/* Footer Buttons */}
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="bg-gray-300 px-3 py-1 rounded text-sm"
+                >
+                  Close
+                </button>
+                {modalMode !== "view" && (
+                  <button
+                    type="submit"
+                    className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-3 py-1 rounded text-sm"
+                  >
+                    {modalMode === "edit" ? "Update" : "Save"}
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
- 
+      )}
     </div>
   );
 };
