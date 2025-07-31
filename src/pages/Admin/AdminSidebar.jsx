@@ -50,12 +50,12 @@ const AdminSidebar = () => {
       {/* Menu items */}
       <div className="space-y-2 text-sm">
         <SidebarButton icon={<FaThLarge />} to="/admin/admindashboard" label="Dashboard" active={currentPath === '/admin/admindashboard'} />
-        <SidebarButton icon={<FaUserGraduate />} to="/students" label="Students" active={currentPath === '/students'} />
-        <SidebarButton icon={<FaChalkboardTeacher />} to="/teachers" label="Teachers" active={currentPath === '/teachers'} />
-        <SidebarButton icon={<FaUserFriends />} to="/Guardian/allguardian" label="Guardian" active={currentPath === '/Guardian/allguardian'} />
-        <SidebarButton icon={<FaBook />} to="/teacher/class" label="Classroom" active={currentPath === '/teacher/class'} />
-        <SidebarButton icon={<FaNewspaper />} to="/news" label="News" active={currentPath === '/news'} />
-        <SidebarButton icon={<FaCalendarAlt />} to="/events" label="Events" active={currentPath === '/events'} />
+        <SidebarButton icon={<FaUserGraduate />} to="/admin/students" label="Students" active={currentPath === '/admin/students'} />
+        <SidebarButton icon={<FaChalkboardTeacher />} to="/admin/teachers" label="Teachers" active={currentPath === '/admin/teachers'} />
+        <SidebarButton icon={<FaUserFriends />} to="/admin/guardians" label="Guardian" active={currentPath === '/admin/guardians'} />
+        <SidebarButton icon={<FaBook />} to="/admin/classroom" label="Classroom" active={currentPath === '/admin/classroom'} />
+        <SidebarButton icon={<FaNewspaper />} to="/admin/news" label="News" active={currentPath === '/admin/news'} />
+        <SidebarButton icon={<FaCalendarAlt />} to="/admin/events" label="Events" active={currentPath === '/admin/events'} />
         <SidebarButton icon={<FaChalkboard />} to="/admin/session" label="Session" active={currentPath === '/admin/session'} />
         <SidebarButton icon={<FaFileInvoiceDollar />} to="/admin/schoolfee" label="School Fee" active={currentPath === '/admin/schoolfee'} />
       </div>

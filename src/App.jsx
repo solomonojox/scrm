@@ -14,12 +14,9 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
-<<<<<<< Updated upstream
 import Schoolfee from './pages/Admin/Schoolfee'
 
-=======
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
->>>>>>> Stashed changes
 
 function App() {
 
@@ -35,16 +32,17 @@ function App() {
       <Route path="/add-admin" element={<AddAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/terms" element={<Terms />} />
-      <Route path="/admin/schoolfee" element={<Schoolfee/>} />
+      <Route path="/admin/schoolfee" element={<Schoolfee />} />
 
       {/* All admin routes here */}
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
       <Route path="/admin/news" element={<News />} />
       <Route path="/admin/events" element={<Events />} />
-   <Route path="/admin/session" element={<AddSession />} />
+      <Route path="/admin/session" element={<AddSession />} />
+      
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
-      
+
 
 
       {/* All Guardians routes here */}
