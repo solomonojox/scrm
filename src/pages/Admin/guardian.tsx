@@ -280,7 +280,7 @@ const AllGuardians: React.FC = () => {
           {/* Modal */}
           {isModalOpen && (
             <div
-              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50"
+              className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50"
               onClick={() => setIsModalOpen(false)}
             >
               <div

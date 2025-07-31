@@ -166,9 +166,10 @@ export default function SchoolFeesPage() {
           {/* Modal */}
           {showModal && (
             <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
               onClick={closeModal}
             >
+
               <div
                 className="bg-white w-full max-w-2xl rounded-md overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
@@ -199,9 +200,8 @@ export default function SchoolFeesPage() {
                         onChange={handleInputChange}
                         readOnly={isReadOnly}
                         required
-                        className={`w-full border border-[#d17a0a] rounded-md px-4 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d17a0a] ${
-                          isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
-                        }`}
+                        className={`w-full border border-[#d17a0a] rounded-md px-4 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d17a0a] ${isReadOnly ? "bg-gray-100 cursor-not-allowed" : ""
+                          }`}
                       />
                     </div>
                   ))}
