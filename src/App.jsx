@@ -9,17 +9,16 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
 import AddSession from '../src/pages/Admin/AddSessions'
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
-import Guardian from './pages/Guardian/guardian';
+import Guardian from './pages/Admin/guardian';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
-<<<<<<< Updated upstream
+
 import Schoolfee from './pages/Admin/Schoolfee'
 
-=======
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
->>>>>>> Stashed changes
+
 
 function App() {
 
@@ -38,6 +37,7 @@ function App() {
       <Route path="/admin/schoolfee" element={<Schoolfee/>} />
 
       {/* All admin routes here */}
+      <Route path="/admin/all-guardian" element={<Guardian />} />
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
       <Route path="/admin/news" element={<News />} />
       <Route path="/admin/events" element={<Events />} />
@@ -48,8 +48,11 @@ function App() {
 
 
       {/* All Guardians routes here */}
+
+
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
+
 
       {/* All students routes here */}
 
