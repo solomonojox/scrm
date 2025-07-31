@@ -12,9 +12,17 @@ import {
   FaAngleRight,
   FaTimes,
 } from "react-icons/fa";
+import { AppDispatch, RootState } from "../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../Store/Teachers/classroomSlice";
 
 const AllClassrooms = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const fetchedRecord = useSelector((state: RootState) => state.getClassrooms.listRecords)
+  const fetchedLoading = useSelector((state: RootState)=> state.getClassrooms.loading)
+  const error = useSelector((state: RootState)=> state.getClassrooms.error)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false)
   const [modalType, setModalType] = useState("add");
   const [formData, setFormData] = useState({
     id: null,
@@ -24,21 +32,34 @@ const AllClassrooms = () => {
     capacity: "",
   });
 
-  const [classrooms, setClassrooms] = useState([]);
-  const modalRef = useRef(null);
-
-  useEffect(() => {
-    const fetchClassrooms = async () => {
+   useEffect(() => {
+      if(!fetchedLoading){
+        fetchClassroms()
+      }else{
+        setLoading(false)
+      }
+      
+    }, [dispatch]);
+  
+    // Refetch Classroom
+     const fetchClassroms = async () => {
+      dispatch(fetchClassroomsStart());
       try {
-        const data = await classroomService.getAllClassrooms();
-        setClassrooms(data);
+       const data = await classroomService.getAllClassrooms();
+        dispatch(fetchClassroomsSuccess(data));
       } catch (err) {
-        console.error("Error fetching classrooms:", err.message);
+        dispatch(fetchClassroomsFailure((err as Error).message));
       }
     };
+  
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
+  
 
-    fetchClassrooms();
-  }, []);
+  const modalRef = useRef(null);
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,53 +90,33 @@ const AllClassrooms = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      // Optional: Replace with classroomService.deleteClassroom(id)
-      const updated = classrooms.filter((c) => c.id !== id);
-      setClassrooms(updated);
-    } catch (err) {
-      console.error("Delete failed:", err.message);
-      alert(err.message);
-    }
-  };
+  const handleDelete = async (id: string) => {
+  try {
+    await classroomService.deleteClassroom(id);
+    await fetchClassroms(); // Refresh from API
+  } catch (err) {
+    console.error("Delete failed:", err.message);
+    alert(err.message);
+  }
+};
 
   const handleModalSubmit = async (e) => {
     e.preventDefault();
 
     try {
       if (modalType === "edit") {
-        // TODO: Add updateClassroom API call in classroomService
-        setClassrooms((prev) =>
-          prev.map((c) => (c.id === formData.id ? formData : c))
-        );
+        await classroomService.updateClassroom(formData.id, formData);
       } else {
-        const newClassroom = await classroomService.addClassroom(formData);
-        setClassrooms((prev) => [...prev, newClassroom]);
+        await classroomService.addClassroom(formData);
       }
-
+      await fetchClassroms(); // Refresh data
       setIsModalOpen(false);
-      setFormData({ id: null, schoolId: "", name: "", teacherId: "", capacity: "" });
+      
     } catch (err) {
       console.error("Error saving classroom:", err.message);
       alert(err.message);
     }
   };
-
-  const handleOutsideClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setIsModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isModalOpen) {
-      document.addEventListener("mousedown", handleOutsideClick);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [isModalOpen]);
 
   return (
     <div className="min-h-screen bg-gray-100 text-sm text-gray-700 flex relative font-[Inter]">
@@ -163,7 +164,7 @@ const AllClassrooms = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {classrooms.map((classroom) => (
+                {fetchedRecord?.map((classroom) => (
                   <tr key={classroom.id} className="hover:bg-gray-50 transition">
                     <td className="px-4 py-3">{classroom.schoolId}</td>
                     <td className="px-4 py-3">{classroom.name}</td>
@@ -193,7 +194,7 @@ const AllClassrooms = () => {
 
           <div className="flex justify-between items-center mt-6 text-xs text-gray-500">
             <span>
-              Showing 1 to {classrooms.length} of {classrooms.length} results
+              Showing 1 to {fetchedRecord.length} of {fetchedRecord.length} results
             </span>
             <div className="flex items-center gap-2">
               <button className="px-2 py-1 border rounded hover:bg-gray-100">
@@ -257,7 +258,7 @@ const AllClassrooms = () => {
                     type="submit"
                     className="bg-[#f3700a] hover:bg-[#e95f00] text-white px-4 py-2 rounded text-sm font-medium"
                   >
-                    {modalType === "edit" ? "Update" : "Submit"}
+                    { loading? 'Processing': modalType === "edit" ? "Update" : "Submit"}
                   </button>
                 </div>
               )}

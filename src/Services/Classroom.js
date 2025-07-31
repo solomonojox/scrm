@@ -18,6 +18,18 @@ export const classroomService = {
     }
   },
 
+  updateClassroom: async (id, data) => {
+    try {
+      const response = await api.put(`/api/Classroom/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while Updating Classroom:", error);
+      throw new Error(
+        error?.response?.data?.responseMessage || "Failed to add classroom"
+      );
+    }
+  },
+
   /**
    * Retrieves all classrooms
    * @returns {Promise<Array>} - List of classrooms
@@ -25,7 +37,8 @@ export const classroomService = {
   getAllClassrooms: async () => {
     try {
       const response = await api.get(`/api/Classroom/GetAllClassroom`);
-      return response.data;
+      return response.data.data;
+      
     } catch (error) {
       console.error("GetAllClassroom error:", error);
       throw new Error(

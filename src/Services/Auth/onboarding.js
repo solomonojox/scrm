@@ -38,8 +38,8 @@ export const onboardingService = {
   getAllGuardians: async () => {
     try {
       const res = await api.get("/api/Guardian/GetAllGuardians");
-      console.log("GetAllGuardians success:", res.data);
-      return res.data.data;
+      // console.log("GetAllGuardians success:", res.data);
+      return res.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;

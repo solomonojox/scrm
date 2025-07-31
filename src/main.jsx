@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import ContextProvider from './Context/ContextProvider.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { store } from './Store/store.js'
+import { store } from './Store/store.ts'
 import App from './App.jsx'
 // JavaScript (e.g., main.js)
  import '@fortawesome/fontawesome-free/css/all.min.css';

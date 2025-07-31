@@ -2,39 +2,69 @@ import React, { useEffect, useState } from 'react';
 import Adminheader from './Adminheader';
 import AdminSidebar from './AdminSidebar';
 import { schoolFeeService } from '../../Services/Schfee';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../Store/store';
+import { fetchSchoolFeeFailure, fetchSchoolFeeStart, fetchSchoolFeeSuccess } from '../../Store/Admin/schoolFeeSlice';
+
+interface SchoolFee {
+  id?: string;
+  schoolId: string;
+  sessionId: string;
+  amount: number;
+  classroomId: string;
+}
+
+type ModalMode = 'add' | 'view' | 'edit';
 
 export default function SchoolFeesPage() {
-  const [schoolFees, setSchoolFees] = useState([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getSchoolFee.listRecords);
+  const schoolFees = fetchedRecord || [];
+  const fetchedLoading = useSelector((state: RootState) => state.getSchoolFee.loading);
+  const error = useSelector((state: RootState) => state.getSchoolFee.error);
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); // 'add' | 'view' | 'edit'
-  const [formData, setFormData] = useState({
+  const [modalMode, setModalMode] = useState<ModalMode>("add");
+  const [formData, setFormData] = useState<SchoolFee>({
     schoolId: '',
     sessionId: '',
-    amount: '',
+    amount: 0,
     classroomId: ''
   });
-  const [selectedFee, setSelectedFee] = useState(null);
+  const [selectedFee, setSelectedFee] = useState<SchoolFee | null>(null);
 
+  // Fetch all school fees on component mount
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!fetchedLoading) {
+      fetchSchoolFee();
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch]);
 
-  const fetchData = async () => {
+  // Fetch school fees function
+  const fetchSchoolFee = async () => {
+    dispatch(fetchSchoolFeeStart());
     try {
-      const response = await schoolFeeService.getAllSchoolFees();
-      setSchoolFees(response.data);
-    } catch (error) {
-      console.error('Failed to fetch school fees:', error);
+      const data = await schoolFeeService.getAllSchoolFees();
+      dispatch(fetchSchoolFeeSuccess(data));
+    } catch (err) {
+      dispatch(fetchSchoolFeeFailure((err as Error).message));
     }
   };
 
-  const openModal = (mode, fee = null) => {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Modal functions
+  const openModal = (mode: ModalMode, fee: SchoolFee | null = null) => {
     setModalMode(mode);
     setSelectedFee(fee);
     setFormData({
       schoolId: fee?.schoolId || '',
       sessionId: fee?.sessionId || '',
-      amount: fee?.amount || '',
+      amount: fee?.amount || 0,
       classroomId: fee?.classroomId || ''
     });
     setShowModal(true);
@@ -46,43 +76,48 @@ export default function SchoolFeesPage() {
     setFormData({
       schoolId: '',
       sessionId: '',
-      amount: '',
+      amount: 0,
       classroomId: ''
     });
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ 
+      ...prev, 
+      [name]: name === 'amount' ? Number(value) : value 
+    }));
   };
 
-  const handleAddFee = async (e) => {
+  const handleAddFee = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await schoolFeeService.addSchoolFee(formData);
-      await fetchData();
+      await fetchSchoolFee();
       closeModal();
     } catch (err) {
       console.error('Add failed:', err);
     }
   };
 
-  const handleUpdateFee = async (e) => {
+  const handleUpdateFee = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedFee?.id) return;
+    
     try {
-      await schoolFeeService.updateSchoolFee(selectedFee._id, formData);
-      await fetchData();
+      await schoolFeeService.updateSchoolFee(selectedFee.id, formData);
+      await fetchSchoolFee();
       closeModal();
     } catch (err) {
       console.error('Update failed:', err);
     }
   };
 
-  const handleDeleteFee = async (id) => {
+  const handleDeleteFee = async (id: string) => {
     if (!window.confirm('Delete this fee?')) return;
     try {
       await schoolFeeService.deleteSchoolFee(id);
-      await fetchData();
+      await fetchSchoolFee();
     } catch (err) {
       console.error('Delete failed:', err);
     }
@@ -134,25 +169,34 @@ export default function SchoolFeesPage() {
               <tbody>
                 {schoolFees.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="text-center text-gray-500 py-6">
+                    <td colSpan={5} className="text-center text-gray-500 py-6">
                       No school fees found.
                     </td>
                   </tr>
                 ) : (
-                  schoolFees.map((fee, i) => (
-                    <tr key={i} className="bg-white shadow rounded-lg">
+                  schoolFees.map((fee: SchoolFee, i: number) => (
+                    <tr key={fee.id || i} className="bg-white shadow rounded-lg">
                       <td className="pl-4 pr-6 py-4 text-xs text-gray-600">{fee.schoolId}</td>
                       <td className="px-6 py-4 text-xs text-gray-600">{fee.sessionId}</td>
                       <td className="px-6 py-4 text-xs text-gray-600">{fee.amount}</td>
                       <td className="px-6 py-4 text-xs text-gray-600">{fee.classroomId}</td>
                       <td className="pr-4 py-4 text-center space-x-3">
-                        <button onClick={() => openModal("view", fee)} className="text-indigo-600 hover:text-indigo-700 text-sm">
+                        <button 
+                          onClick={() => openModal("view", fee)} 
+                          className="text-indigo-600 hover:text-indigo-700 text-sm"
+                        >
                           <i className="fas fa-eye" />
                         </button>
-                        <button onClick={() => openModal("edit", fee)} className="text-green-600 hover:text-green-700 text-sm">
+                        <button 
+                          onClick={() => openModal("edit", fee)} 
+                          className="text-green-600 hover:text-green-700 text-sm"
+                        >
                           <i className="fas fa-edit" />
                         </button>
-                        <button onClick={() => handleDeleteFee(fee._id)} className="text-red-600 hover:text-red-700 text-sm">
+                        <button 
+                          onClick={() => fee.id && handleDeleteFee(fee.id)} 
+                          className="text-red-600 hover:text-red-700 text-sm"
+                        >
                           <i className="fas fa-trash-alt" />
                         </button>
                       </td>
@@ -166,7 +210,7 @@ export default function SchoolFeesPage() {
           {/* Modal */}
           {showModal && (
             <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 bg-opacity-50"
               onClick={closeModal}
             >
               <div
@@ -186,7 +230,7 @@ export default function SchoolFeesPage() {
                   onSubmit={modalMode === "edit" ? handleUpdateFee : handleAddFee}
                   className="p-6 space-y-6"
                 >
-                  {["schoolId", "sessionId", "amount", "classroomId"].map((field) => (
+                  {(["schoolId", "sessionId", "amount", "classroomId"] as const).map((field) => (
                     <div key={field}>
                       <label className="block text-gray-700 text-base mb-1">
                         {field.charAt(0).toUpperCase() + field.slice(1).replace("Id", " ID")}
@@ -207,11 +251,18 @@ export default function SchoolFeesPage() {
                   ))}
 
                   <div className="flex justify-end gap-2 pt-2">
-                    <button type="button" onClick={closeModal} className="bg-gray-300 px-4 py-2 rounded text-sm">
+                    <button 
+                      type="button" 
+                      onClick={closeModal} 
+                      className="bg-gray-300 px-4 py-2 rounded text-sm"
+                    >
                       Close
                     </button>
                     {modalMode !== "view" && (
-                      <button type="submit" className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-4 py-2 rounded text-sm">
+                      <button 
+                        type="submit" 
+                        className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-4 py-2 rounded text-sm"
+                      >
                         {modalMode === "edit" ? "Update" : "Save"}
                       </button>
                     )}
