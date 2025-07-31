@@ -6,7 +6,7 @@ import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login';
 import Accountregistration from '../src/pages/Admin/Accountregristration';
 import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
-
+import AddSession from '../src/pages/Admin/AddSessions'
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
 import Guardian from './pages/Admin/guardian';
@@ -14,6 +14,11 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
+
+import Schoolfee from './pages/Admin/Schoolfee'
+
+import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
+
 
 function App() {
 
@@ -29,17 +34,25 @@ function App() {
       <Route path="/add-admin" element={<AddAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/admin/schoolfee" element={<Schoolfee/>} />
 
       {/* All admin routes here */}
       <Route path="/admin/all-guardian" element={<Guardian />} />
       <Route path="/admin/admindashboard" element={<AdminDashboard />} />
       <Route path="/admin/news" element={<News />} />
       <Route path="/admin/events" element={<Events />} />
-
+   <Route path="/admin/session" element={<AddSession />} />
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
+      
+
 
       {/* All Guardians routes here */}
+
+
+      <Route path="/Guardian/allguardian" element={<Guardian />} />
+      <Route path="/payment" element={<StudentFeePaymentTable />} />
+
 
       {/* All students routes here */}
 
