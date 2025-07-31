@@ -191,7 +191,7 @@ const AllNews = () => {
 
           {/* Modal for Adding News */}
           {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
               <div className="bg-white rounded-lg w-[95%] max-w-md">
                 <div className="bg-orange-500 h-3 rounded-t-lg"></div>
                 <div className="p-6">

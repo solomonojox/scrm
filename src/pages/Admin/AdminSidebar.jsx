@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   FaThLarge,
   FaUserGraduate,
@@ -10,7 +11,6 @@ import {
   FaChalkboard,
   FaFileInvoiceDollar
 } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
 
 const SidebarButton = ({ icon, label, to, active }) => (
   <Link to={to} className="block">
