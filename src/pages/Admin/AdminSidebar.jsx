@@ -47,7 +47,7 @@ const AdminSidebar = () => (
       <SidebarButton icon={<FaThLarge />} label="Dashboard" to="/dashboard" />
       <SidebarButton icon={<FaUserGraduate />} label="Students" to="/students" />
       <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/teachers" />
-      <SidebarButton icon={<FaUserFriends />} label="Guardian" to="/guardian/allguardian" />
+      <SidebarButton icon={<FaUserFriends />} label="Guardian" to="/admin/all-guardian" />
       <SidebarButton icon={<FaBook />} label="Classroom" to="/classroom" />
       <SidebarButton icon={<FaNewspaper />} label="News" to="/news" />
       <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/events" />
