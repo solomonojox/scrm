@@ -75,108 +75,100 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen font-inter pt-[70px]">
-      {/* HEADER */}
-      <Adminheader />
-
-      <div className="flex">
-        {/* SIDEBAR */}
-        <AdminSidebar />
-
-        {/* MAIN CONTENT */}
-        <div className="flex-1 pl-64">
-          {/* TOPBAR */}
-          <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
-            <div className="w-full max-w-sm">
-              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-                <FaSearch className="text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="ml-2 bg-transparent outline-none w-full text-sm"
-                />
-              </div>
+    <div className="bg-gray-100 min-h-screen font-inter">
+      {/* MAIN CONTENT */}
+      <div >
+        {/* TOPBAR */}
+        <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
+          <div className="w-full max-w-sm">
+            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+              <FaSearch className="text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search"
+                className="ml-2 bg-transparent outline-none w-full text-sm"
+              />
             </div>
-            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-             <FaBell
-  className="text-gray-500 hover:text-orange-500 cursor-pointer"
-  onClick={() => setShowModal(true)}
-/>
+          </div>
+          <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+            <FaBell
+              className="text-gray-500 hover:text-orange-500 cursor-pointer"
+              onClick={() => setShowModal(true)}
+            />
 
-              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
-                <img
-                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
-                  className="w-8 h-8 rounded-full"
-                  alt="Admin"
-                />
-                <div className="text-xs">
-                  <div className="font-semibold text-gray-700">Gold Academy</div>
-                  <div className="text-gray-400">Admin</div>
-                </div>
+            <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+            <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+              <img
+                src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                className="w-8 h-8 rounded-full"
+                alt="Admin"
+              />
+              <div className="text-xs">
+                <div className="font-semibold text-gray-700">Gold Academy</div>
+                <div className="text-gray-400">Admin</div>
               </div>
             </div>
           </div>
-
-          {/* DASHBOARD CONTENT */}
-          <main className="p-6 space-y-4">
-
-            <h2 className="text-2xl font-semibold text-gray-800">
-              Welcome To EduCat (SCRM)
-            </h2>
-
-            {/* STAT CARDS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                label="Students"
-                value="120k"
-                icon={<FaUserGraduate />}
-                bgColor="bg-[#E6C9B0]"
-                iconColor="text-orange-600"
-              />
-              <StatCard
-                label="Pending Courses"
-                value="03"
-                icon={<FaBookReader />}
-                bgColor="bg-[#BFC6D0]"
-                iconColor="text-blue-700"
-              />
-              <StatCard
-                label="Total Teachers"
-                value="37"
-                icon={<FaChalkboardTeacher />}
-                bgColor="bg-[#E9B6B6]"
-                iconColor="text-red-600"
-              />
-              <StatCard
-                label="Certificates"
-                value="08"
-                icon={<FaCertificate />}
-                bgColor="bg-[#C9E3C3]"
-                iconColor="text-green-600"
-              />
-            </div>
-
-            {/* FIRST ROW OF CHARTS */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <AnalyticsChart />
-              <ProgressCircle />
-            </div>
-
-            {/* SECOND ROW: TimeSpendingChart (3 cols) + UpcomingClasses (1 col) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <TimeSpendingChart />
-              </div>
-              <div>
-                <UpcomingClasses />
-              </div>
-            </div>
-
-
-          </main>
-              <NotificationModal show={showModal} onClose={() => setShowModal(false)} />
         </div>
+
+        {/* DASHBOARD CONTENT */}
+        <main className="p-6 space-y-4">
+
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Welcome To EduCat (SCRM)
+          </h2>
+
+          {/* STAT CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              label="Students"
+              value="120k"
+              icon={<FaUserGraduate />}
+              bgColor="bg-[#E6C9B0]"
+              iconColor="text-orange-600"
+            />
+            <StatCard
+              label="Pending Courses"
+              value="03"
+              icon={<FaBookReader />}
+              bgColor="bg-[#BFC6D0]"
+              iconColor="text-blue-700"
+            />
+            <StatCard
+              label="Total Teachers"
+              value="37"
+              icon={<FaChalkboardTeacher />}
+              bgColor="bg-[#E9B6B6]"
+              iconColor="text-red-600"
+            />
+            <StatCard
+              label="Certificates"
+              value="08"
+              icon={<FaCertificate />}
+              bgColor="bg-[#C9E3C3]"
+              iconColor="text-green-600"
+            />
+          </div>
+
+          {/* FIRST ROW OF CHARTS */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <AnalyticsChart />
+            <ProgressCircle />
+          </div>
+
+          {/* SECOND ROW: TimeSpendingChart (3 cols) + UpcomingClasses (1 col) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <TimeSpendingChart />
+            </div>
+            <div>
+              <UpcomingClasses />
+            </div>
+          </div>
+
+
+        </main>
+        <NotificationModal show={showModal} onClose={() => setShowModal(false)} />
       </div>
     </div>
   );
@@ -445,7 +437,7 @@ function UpcomingClasses() {
           </li>
         ))}
       </ul>
-  
+
 
     </div>
   );

@@ -7,6 +7,8 @@ import {
   FaEnvelope,
   FaFlask,
   FaAngleDown,
+  FaComment,
+  FaSearch,
 } from "react-icons/fa";
 import Header from "./Adminheader";
 import Side from "./AdminSidebar";
@@ -68,55 +70,45 @@ const AllEvents = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const [showModal, setShowModal] = useState(false);
+  useEffect(() => {
+    document.title = 'EduCat Events';
+  }, []);
+
   return (
     <>
-      <Header />
-      <div className="mt-[70px] min-h-screen flex flex-col md:flex-row">
-        {/* Sidebar */}
-        <div
-          className={`fixed md:static z-50 top-0 left-0 h-full bg-white shadow-md md:w-1/5 w-2/3 transition-transform duration-300 ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
-        >
-          <Side />
-        </div>
-
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
+      <div>
 
         {/* Main Content */}
-        <div className="w-full md:w-4/5 bg-gray-100 p-4">
+        <div className="w-full bg-gray-100 p-4">
           {/* Top bar */}
-          <div className="flex justify-between items-center bg-white px-4 py-3 shadow rounded mb-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden text-2xl text-black"
-              >
-                ☰
-              </button>
-              <input
-                type="text"
-                placeholder="Search"
-                className="border px-4 py-2 rounded-2xl w-40 md:w-1/3 bg-gray-200"
-              />
-            </div>
-            <div className="flex items-center gap-6">
-              <FaEnvelope className="text-xl text-black cursor-pointer" />
-              <FaBell className="text-xl text-black cursor-pointer" />
-              <div className="flex items-center gap-2">
-                <img
-                  src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin"
-                  className="w-10 h-10 rounded-full"
-                  alt="admin"
+          <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
+            <div className="w-full max-w-sm">
+              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                <FaSearch className="text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="ml-2 bg-transparent outline-none w-full text-sm"
                 />
-                <div className="text-sm">
-                  <p className="font-bold">Gold Academy</p>
-                  <p className="text-gray-500">Admin</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+              <FaBell
+                className="text-gray-500 hover:text-orange-500 cursor-pointer"
+                onClick={() => setShowModal(true)}
+              />
+
+              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
+              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+                <img
+                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                  className="w-8 h-8 rounded-full"
+                  alt="Admin"
+                />
+                <div className="text-xs">
+                  <div className="font-semibold text-gray-700">Gold Academy</div>
+                  <div className="text-gray-400">Admin</div>
                 </div>
               </div>
             </div>
