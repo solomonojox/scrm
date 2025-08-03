@@ -4,7 +4,7 @@ import AdminSidebar from './AdminSidebar';
 import { schoolFeeService } from '../../Services/Schfee';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../Store/store';
-import { fetchSchoolFeeFailure, fetchSchoolFeeStart, fetchSchoolFeeSuccess } from '../../Store/Admin/schoolFeeSlice';
+import { fetchSchoolFeeFailure, fetchSchoolFeeStart, fetchSchoolFeeSuccess } from '../../Store/schoolFeeSlice';
 
 interface SchoolFee {
   id?: string;

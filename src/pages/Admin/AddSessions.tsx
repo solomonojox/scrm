@@ -5,7 +5,7 @@ import AdminSidebar from "./AdminSidebar";
 import { sessionService } from "../../Services/Session";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
-import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../Store/Admin/sessionSlice";
+import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../Store/sessionSlice";
 
 // Define types for better type safety
 interface Session {

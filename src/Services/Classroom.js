@@ -38,7 +38,7 @@ export const classroomService = {
     try {
       const response = await api.get(`/api/Classroom/GetAllClassroom`);
       return response.data.data;
-      
+
     } catch (error) {
       console.error("GetAllClassroom error:", error);
       throw new Error(

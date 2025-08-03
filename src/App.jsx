@@ -9,13 +9,15 @@ import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
 import AddSessions from './pages/Admin/AddSessions';
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
-import Guardian from './pages/Admin/guardian';
+import Guardian from './pages/Admin/guardian/guardian';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import News from './pages/Admin/News';
 import Events from './pages/Admin/Events';
 import Schoolfee from './pages/Admin/Schoolfee'
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
+import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
+import AdminStudents from './pages/Admin/student/AdminStudents';
 
 
 
@@ -37,7 +39,8 @@ function App() {
       {/* All admin routes here */}
       <Route element={<AdminLayout />}>
         <Route path="/admin/admindashboard" element={<AdminDashboard />} />
-        <Route path="/admin/all-guardian" element={<Guardian />} />
+        <Route path="/admin/all-guardian" element={<AdminGuardian />} />
+        <Route path="/admin/students" element={<AdminStudents />} />
         <Route path="/admin/news" element={<News />} />
         <Route path="/admin/events" element={<Events />} />
         <Route path="/admin/session" element={<AddSessions />} />

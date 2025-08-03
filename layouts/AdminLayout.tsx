@@ -6,11 +6,13 @@ import Adminheader from "../src/pages/Admin/Adminheader";
 export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex">
-      <AdminSidebar />
-      <div className="flex-1 ml-64 pt-20">
+      <div className="hidden lg:block">
+        <AdminSidebar />
+      </div>
+      <div className="flex-1 lg:ml-64 mt-14">
         <Adminheader />
         {/* 64 matches sidebar width */}
-        <Outlet/>
+        <Outlet />
       </div>
     </div>
   );

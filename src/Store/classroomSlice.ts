@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { classrooms } from "../../Types/Teacher/classroomTypes";
+import { classrooms } from "../Types/classroomTypes";
 
 interface ClassroomTypes {
   listRecords: classrooms[];

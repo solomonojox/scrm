@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { schoolFee } from "../../Types/Admin/schoolFeeType";
+import { schoolFee } from "../Types/Admin/schoolFeeType";
 
 interface SchoolFeeTypes {
   listRecords: schoolFee[];
