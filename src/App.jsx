@@ -18,6 +18,7 @@ import Schoolfee from './pages/Admin/Schoolfee'
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
 import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
+import AdminTeacher from './pages/Admin/teacher/AdminTeacher';
 
 
 
@@ -40,6 +41,7 @@ function App() {
       <Route element={<AdminLayout />}>
         <Route path="/admin/admindashboard" element={<AdminDashboard />} />
         <Route path="/admin/all-guardian" element={<AdminGuardian />} />
+        <Route path="/admin/teachers" element={<AdminTeacher/>} />
         <Route path="/admin/students" element={<AdminStudents />} />
         <Route path="/admin/news" element={<News />} />
         <Route path="/admin/events" element={<Events />} />
