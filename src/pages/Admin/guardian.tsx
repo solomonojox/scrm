@@ -1,31 +1,25 @@
 // src/pages/Admin/AllGuardians.tsx
-import React, { useState, useEffect } from "react";
-import {
-  FaEye,
-  FaEdit,
-  FaTrash,
-  FaBell,
-  FaEnvelope,
-  FaSearch,
-  FaComment,
-} from "react-icons/fa";
+import React, { useState, useEffect, useMemo } from "react";
+import { FaEye, FaEdit, FaTrash, FaBell, FaEnvelope, FaSearch, FaComment } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Header from "../Admin/Adminheader";
-import Side from "../Admin/AdminSidebar";
+import * as XLSX from 'xlsx'
 import { onboardingService } from "../../Services/Auth/onboarding";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
-import { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } from "../../Store/Guardian/guardianSlice";
-
-
-
+import {
+  fetchGuardiansFailure,
+  fetchGuardiansStart,
+  fetchGuardiansSuccess,
+} from "../../Store/Guardian/guardianSlice";
+import asset from "../../assets/imageAssets"; // Assuming you have an excel icon in your assets
+import { Guardian } from "../../Types/Guardian/guardianTypes";
 
 const AllGuardians: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>()
-  const fetchedRecord = useSelector((state: RootState) => state.getGuardian.listRecords)
-  const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading)
-  const error = useSelector((state: RootState) => state.getGuardian.error)
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getGuardian.listRecords);
+  const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading);
+  const error = useSelector((state: RootState) => state.getGuardian.error);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -48,14 +42,90 @@ const AllGuardians: React.FC = () => {
     bvn: "",
   });
 
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [headerSearchQuery, setHeaderSearchQuery] = useState("");
+
+  // Memoized filtered data
+  const filteredRecords = useMemo(() => {
+    if (!searchQuery.trim()) return fetchedRecord;
+    
+    const query = searchQuery.toLowerCase();
+    return fetchedRecord.filter((guardian: Guardian) =>
+      guardian.firstname?.toLowerCase().includes(query) ||
+      guardian.lastname?.toLowerCase().includes(query) ||
+      guardian.phone?.toLowerCase().includes(query) ||
+      guardian.email?.toLowerCase().includes(query) ||
+      guardian.nationality?.toLowerCase().includes(query) ||
+      guardian.stateOfOrigin?.toLowerCase().includes(query) ||
+      guardian.religion?.toLowerCase().includes(query) ||
+      guardian.homeAddress?.toLowerCase().includes(query)
+    );
+  }, [fetchedRecord, searchQuery]);
+
+  // Pagination calculations based on filtered data
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+  const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectAll(false);
+    setSelectedIds([]);
+  };
+
+  // Toggle select all checkboxes
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(currentRecords.map((g) => g.guardianId));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const toggleCheckbox = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((sid) => sid !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  // Handle search query change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to the first page whenever search changes
+    setSelectAll(false);
+    setSelectedIds([]);
+  };
+
+  // Handle header search query change
+  const handleHeaderSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHeaderSearchQuery(e.target.value);
+    setSearchQuery(e.target.value); // Sync with main search
+  };
+
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(filteredRecords); // Converts the list to a sheet
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Guardians Details'); // Add sheet to workbook
+    XLSX.writeFile(wb, "guardians.xlsx"); // Download the file
+  };
+
   // 1) Fetch all guardians
   useEffect(() => {
     if (!fetchedLoading) {
-      fetchGuardian()
+      fetchGuardian();
     } else {
-      setLoading(false)
+      setLoading(false);
     }
-
   }, [dispatch]);
 
   // Refetch Guardion
@@ -72,7 +142,6 @@ const AllGuardians: React.FC = () => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
 
   // 2) Form handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -145,13 +214,13 @@ const AllGuardians: React.FC = () => {
     }
   };
 
-  // Example delete handler (you’ll need to implement this in your service)
+  // Example delete handler (you'll need to implement this in your service)
   const handleDelete = async (id: string) => {
-    console.log(id)
+    console.log(id);
     if (!window.confirm("Are you sure you want to delete this guardian?")) return;
     try {
       await onboardingService.deleteGuardian(id);
-      await fetchGuardian()
+      await fetchGuardian();
       toast.success("Deleted!");
     } catch (error) {
       toast.error("Delete failed");
@@ -161,7 +230,7 @@ const AllGuardians: React.FC = () => {
 
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
-    document.title = 'EduCat Guardian';
+    document.title = "EduCat Guardian";
   }, []);
 
   return (
@@ -176,6 +245,8 @@ const AllGuardians: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Search"
+                  value={headerSearchQuery}
+                  onChange={handleHeaderSearchChange}
                   className="ml-2 bg-transparent outline-none w-full text-sm"
                 />
               </div>
@@ -204,10 +275,7 @@ const AllGuardians: React.FC = () => {
           {/* Breadcrumb & Add */}
           <div className="flex justify-between items-center mb-2">
             <p className="text-sm text-gray-600">
-              Home{" "}
-              <span className="text-orange-500 font-semibold">
-                : All Guardians
-              </span>
+              Home <span className="text-orange-500 font-semibold">: All Guardians</span>
             </p>
             <button
               onClick={() => setIsModalOpen(true)}
@@ -217,12 +285,48 @@ const AllGuardians: React.FC = () => {
             </button>
           </div>
 
+          {/* Search and Export */}
+          <div className="flex items-center justify-between gap-4 lg:w-[70%] w-full ">
+            <input
+              type="text"
+              placeholder="Search guardian here"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="px-4 py-2 border border-gray-300 rounded w-full"
+            />
+
+            <button
+              onClick={exportToExcel}
+              title="Export to CSV"
+              className="border"
+            >
+              <img className="h-6 w-6" src={asset.excelLogo} />
+            </button>
+          </div>
+
+          {/* Search Results Info */}
+          {searchQuery && (
+            <div className="mt-2 mb-4 text-sm text-gray-600">
+              Showing {filteredRecords.length} result{filteredRecords.length !== 1 ? 's' : ''} for "{searchQuery}"
+              {filteredRecords.length === 0 && (
+                <span className="text-red-500 ml-2">No guardians found</span>
+              )}
+            </div>
+          )}
+
           {/* Table */}
-          <div className="bg-white shadow rounded overflow-x-auto">
+          <div className="bg-white shadow rounded overflow-x-auto mt-8">
             <table className="min-w-full text-sm text-left">
               <thead className="bg-gray-200 text-gray-700">
                 <tr>
-                  <th className="p-3"><input type="checkbox" /></th>
+                  <th className="p-3">
+                    <input
+                      className="cursor-pointer w-[15px] h-[15px]"
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
                   <th className="p-3">Photo</th>
                   <th className="p-3">First Name</th>
                   <th className="p-3">Last Name</th>
@@ -235,39 +339,88 @@ const AllGuardians: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {fetchedRecord.map((g) => (
-                  <tr key={g.guardianId} className="border-t hover:bg-gray-100">
-                    <td className="p-3"><input type="checkbox" /></td>
-                    <td className="p-3">
-                      <img
-                        src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${g.firstname}`}
-                        alt="avatar"
-                        className="w-10 h-10 rounded-full"
-                      />
-                    </td>
-                    <td className="p-3">{g.firstname}</td>
-                    <td className="p-3">{g.lastname}</td>
-                    <td className="p-3">{g.phone}</td>
-                    <td className="p-3">{g.homeAddress}</td>
-                    <td className="p-3">{g.nationality}</td>
-                    <td className="p-3">{g.stateOfOrigin}</td>
-                    <td className="p-3">{g.religion}</td>
-                    <td className="p-3 flex gap-2 text-blue-600">
-                      <FaEye className="cursor-pointer" />
-                      <FaEdit className="cursor-pointer text-green-600" />
-                      <FaTrash
-                        className="cursor-pointer text-red-600"
-                        onClick={() => handleDelete(g.guardianId)}
-                      />
+                {currentRecords.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="p-8 text-center text-gray-500">
+                      {searchQuery ? "No guardians found matching your search" : "No guardians available"}
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  currentRecords.map((g, index) => (
+                    <tr
+                      key={g.guardianId}
+                      className={`${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                      } border-t hover:bg-gray-100`}
+                    >
+                      <td className="p-3">
+                        <input
+                          type="checkbox"
+                          className="cursor-pointer w-[15px] h-[15px]"
+                          checked={selectedIds.includes(g.guardianId)}
+                          onChange={() => toggleCheckbox(g.guardianId)}
+                        />
+                      </td>
+                      <td className="p-3">
+                        <img
+                          src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${g.firstname}`}
+                          alt="avatar"
+                          className="w-10 h-10 rounded-full"
+                        />
+                      </td>
+                      <td className="p-3">{g.firstname}</td>
+                      <td className="p-3">{g.lastname}</td>
+                      <td className="p-3">{g.phone}</td>
+                      <td className="p-3">{g.homeAddress}</td>
+                      <td className="p-3">{g.nationality}</td>
+                      <td className="p-3">{g.stateOfOrigin}</td>
+                      <td className="p-3">{g.religion}</td>
+                      <td className="p-3 flex gap-2 text-blue-600">
+                        <FaEye className="cursor-pointer" />
+                        <FaEdit className="cursor-pointer text-green-600" />
+                        <FaTrash
+                          className="cursor-pointer text-red-600"
+                          onClick={() => handleDelete(g.guardianId)}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
-            <div className="p-3 text-center text-sm text-gray-600">
-              Page 1 of 1
-            </div>
           </div>
+
+          {/* Pagination UI */}
+          {filteredRecords.length > 0 && (
+            <div className="p-3 my-8 text-center text-sm text-gray-600 flex justify-center items-center gap-4">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-10 py-2 border ${
+                  currentPage === 1
+                    ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                    : "bg-orange-500 hover:bg-orange-600 cursor-pointer text-white "
+                } rounded disabled:opacity-40`}
+              >
+                Prev
+              </button>
+              <span>
+                Page {currentPage} of {totalPages} 
+                {searchQuery && ` (${filteredRecords.length} results)`}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-10 py-2 border ${
+                  currentPage === totalPages
+                    ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                    : "bg-orange-500 text-white hover:bg-orange-600"
+                } rounded disabled:opacity-40`}
+              >
+                Next
+              </button>
+            </div>
+          )}
 
           {/* Modal */}
           {isModalOpen && (
@@ -281,20 +434,11 @@ const AllGuardians: React.FC = () => {
               >
                 <div className="bg-orange-500 h-2 rounded-t-lg" />
                 <div className="p-4">
-                  <h2 className="text-lg font-semibold mb-4 text-center">
-                    Add Guardian
-                  </h2>
+                  <h2 className="text-lg font-semibold mb-4 text-center">Add Guardian</h2>
 
-                  {formError && (
-                    <p className="text-red-600 mb-2 text-center">
-                      {formError}
-                    </p>
-                  )}
+                  {formError && <p className="text-red-600 mb-2 text-center">{formError}</p>}
 
-                  <form
-                    onSubmit={handleSubmit}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                  >
+                  <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <label className="relative col-span-2 w-20 h-20 mx-auto mb-2 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
                       <input
                         type="file"
@@ -336,9 +480,7 @@ const AllGuardians: React.FC = () => {
                         type={key === "email" ? "email" : "text"}
                         name={key}
                         placeholder={label}
-                        required={["firstName", "lastName", "phone"].includes(
-                          key
-                        )}
+                        required={["firstName", "lastName", "phone"].includes(key)}
                         className="border px-2 py-1 rounded text-sm"
                         value={formData[key]}
                         onChange={handleInputChange}
