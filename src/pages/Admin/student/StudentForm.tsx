@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 interface StudentFormProps {
     onClose: () => void;
     onSubmitSuccess: () => void;
+    editData: any
 }
 
 interface OptionType {
@@ -15,7 +16,8 @@ interface OptionType {
     label: string;
 }
 
-const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess }) => {
+const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, editData }) => {
+    console.log(editData);
     const [loading, setLoading] = useState(false);
     const [formError, setFormError] = useState("");
     const [imagePreview, setImagePreview] = useState<string | null>(null);
