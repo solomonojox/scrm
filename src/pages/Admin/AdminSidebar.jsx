@@ -77,7 +77,7 @@ const AdminSidebar = () => {
           User Management
         </h3>
         <SidebarButton icon={<FaUserGraduate />} label="Students" to="/admin/students" />
-        <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/teachers" />
+        <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" />
         <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/all-guardian" />
         
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
