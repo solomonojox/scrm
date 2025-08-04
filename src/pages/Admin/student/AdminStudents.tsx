@@ -34,6 +34,7 @@ const AdminStudents: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [classFilter, setClassFilter] = useState<'all' | number>('all');
+  const [editData, setEditData] = useState<any>(null);
   const recordsPerPage = 5;
 
   // Filter students based on search and class filter
@@ -158,6 +159,7 @@ const AdminStudents: React.FC = () => {
           classFilter={classFilter}
           onClassFilterChange={setClassFilter}
           onRefresh={fetchStudents}
+          setEditData={setEditData}
         />
 
         {/* Form Modal */}
@@ -165,6 +167,7 @@ const AdminStudents: React.FC = () => {
           <StudentForm
             onClose={() => setIsModalOpen(false)}
             onSubmitSuccess={handleFormSubmitSuccess}
+            editData={editData}
           />
         )}
       </div>

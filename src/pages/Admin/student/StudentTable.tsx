@@ -19,6 +19,7 @@ interface StudentTableProps {
     classFilter: 'all' | number;
     onClassFilterChange: (filter: 'all' | number) => void;
     onRefresh: () => void;
+    setEditData: (data: any) => void;
 }
 
 const StudentTable: React.FC<StudentTableProps> = ({
@@ -31,6 +32,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
     classFilter,
     onClassFilterChange,
     onRefresh,
+    setEditData
 }) => {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -244,7 +246,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                     <td className="p-3 truncate max-w-[120px]">{student.guardianId}</td>
                                     <td className="p-3 flex gap-3">
                                         <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
+                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" onClick={() => {setEditData(student); onAddStudent();}} />
                                         <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" />
                                     </td>
                                 </tr>
