@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { AdminLayout } from '../layouts/AdminLayout';
+import { AdminLayout } from './layouts/AdminLayout';
 import Landing from './pages/Landing';
 import GetStarted from './pages/Admin/GetStarted';
 import AddAdmin from './pages/Admin/AddAdmin';
@@ -40,9 +40,9 @@ function App() {
       {/* All admin routes here */}
       <Route element={<AdminLayout />}>
         <Route path="/admin/admindashboard" element={<AdminDashboard />} />
-        <Route path="/admin/all-guardian" element={<AdminGuardian />} />
-        <Route path="/admin/teachers" element={<AdminTeacher/>} />
         <Route path="/admin/students" element={<AdminStudents />} />
+        <Route path="/admin/teachers" element={<AdminTeacher/>} />
+        <Route path="/admin/all-guardian" element={<AdminGuardian />} />
         <Route path="/admin/news" element={<News />} />
         <Route path="/admin/events" element={<Events />} />
         <Route path="/admin/session" element={<AddSessions />} />
