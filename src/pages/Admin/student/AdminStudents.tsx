@@ -12,7 +12,7 @@ import {
 import { studentService } from "../../../Services/Student/StudentService";
 import StudentTable from "./StudentTable";
 import StudentForm from "./StudentForm";
-import { FaRegBell } from "react-icons/fa";
+import { FaRegBell, FaSearch } from "react-icons/fa";
 import { BiMessageAlt } from "react-icons/bi";
 import { classroomService } from "../../../Services/Classroom";
 import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/classroomSlice";
@@ -117,17 +117,18 @@ const AdminStudents: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <ToastContainer />
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-full mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-2xl p-2 mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
           <div className="w-full sm:w-auto mb-4 sm:mb-0">
             <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+              <FaSearch className="text-gray-400 text-lg" />
               <input
                 type="text"
                 placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="ml-2 bg-transparent outline-none w-full text-sm py-1.5"
+                className="ml-2 bg-transparent outline-none w-full text-sm"
               />
             </div>
           </div>

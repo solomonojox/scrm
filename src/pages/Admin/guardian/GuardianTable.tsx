@@ -93,7 +93,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     return (
         <>
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-2xl p-2 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
                 <div className="w-full sm:w-auto mb-4 sm:mb-0">
                     <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
                         <FaSearch className="text-gray-400 text-lg" />
@@ -102,7 +102,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             placeholder="Search"
                             value={headerSearchQuery}
                             onChange={onHeaderSearchChange}
-                            className="ml-2 bg-transparent outline-none w-full text-sm py-1.5"
+                            className="ml-2 bg-transparent outline-none w-full text-sm"
                         />
                     </div>
                 </div>

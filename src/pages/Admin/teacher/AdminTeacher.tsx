@@ -124,7 +124,7 @@ const AdminTeacher: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <ToastContainer />
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-full mx-auto">
         <TeacherTable
           records={currentRecords}
           totalRecords={filteredRecords.length}

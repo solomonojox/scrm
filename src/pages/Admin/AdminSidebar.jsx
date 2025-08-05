@@ -17,7 +17,7 @@ import { FiChevronRight } from 'react-icons/fi';
 const SidebarButton = ({ icon, label, to }) => {
   const location = useLocation();
   const isActive = location.pathname === to;
-  
+
   return (
     <Link
       to={to}
@@ -49,6 +49,11 @@ const SidebarButton = ({ icon, label, to }) => {
   );
 };
 
+const handleLogout = () => {
+  localStorage.removeItem("scrmToken");
+  window.location.href = '/login';
+}
+
 const AdminSidebar = () => {
   return (
     <div
@@ -70,22 +75,22 @@ const AdminSidebar = () => {
         <h3 className="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Navigation
         </h3>
-        
+
         <SidebarButton icon={<FaThLarge />} label="Dashboard" to="/admin/admindashboard" />
-        
+
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           User Management
         </h3>
         <SidebarButton icon={<FaUserGraduate />} label="Students" to="/admin/students" />
         <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" />
         <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/all-guardian" />
-        
+
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Academics
         </h3>
         <SidebarButton icon={<FaBook />} label="Classroom" to="/teacher/class" />
         <SidebarButton icon={<FaChalkboard />} label="Session" to="/admin/session" />
-        
+
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Operations
         </h3>
@@ -101,8 +106,9 @@ const AdminSidebar = () => {
           py-2.5 px-4 rounded-lg
           text-sm font-medium
           text-red-600 hover:bg-red-50
-          transition-colors duration-150
-        ">
+          transition-colors duration-150"
+          onClick={handleLogout}
+        >
           <FaSignOutAlt className="text-base" />
           <span>Log Out</span>
         </button>
