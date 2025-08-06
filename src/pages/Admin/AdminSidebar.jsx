@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   FaThLarge,
   FaUserGraduate,
@@ -13,6 +13,7 @@ import {
   FaSignOutAlt
 } from 'react-icons/fa';
 import { FiChevronRight } from 'react-icons/fi';
+import { useAuth } from "../../Context/Auth/useAuth";
 
 const SidebarButton = ({ icon, label, to }) => {
   const location = useLocation();
@@ -29,7 +30,7 @@ const SidebarButton = ({ icon, label, to }) => {
         ${isActive
           ? 'bg-orange-50 text-orange-600 font-medium shadow-sm'
           : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}
-      `}
+          `}
     >
       <div className="flex items-center space-x-3">
         <span className={`
@@ -44,17 +45,20 @@ const SidebarButton = ({ icon, label, to }) => {
         text-xs opacity-0 transform -translate-x-1
         ${isActive ? 'opacity-100 translate-x-0 text-orange-500' : 'group-hover:opacity-70 group-hover:translate-x-0'}
         transition-all duration-200
-      `} />
+        `} />
     </Link>
   );
 };
 
-const handleLogout = () => {
-  localStorage.removeItem("scrmToken");
-  window.location.href = '/login';
-}
-
 const AdminSidebar = () => {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
+  const handleLogout = () => {
+    localStorage.removeItem("scrmToken");
+    logout();
+    navigate('/login');
+  }
+
   return (
     <div
       className="
@@ -76,19 +80,19 @@ const AdminSidebar = () => {
           Navigation
         </h3>
 
-        <SidebarButton icon={<FaThLarge />} label="Dashboard" to="/admin/admindashboard" />
+        <SidebarButton icon={<FaThLarge />} label="Dashboard" to="/admin/dashboard" />
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           User Management
         </h3>
         <SidebarButton icon={<FaUserGraduate />} label="Students" to="/admin/students" />
         <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" />
-        <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/all-guardian" />
+        <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/guardians" />
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Academics
         </h3>
-        <SidebarButton icon={<FaBook />} label="Classroom" to="/teacher/class" />
+        <SidebarButton icon={<FaBook />} label="Classroom" to="/admin/classrooms" />
         <SidebarButton icon={<FaChalkboard />} label="Session" to="/admin/session" />
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">

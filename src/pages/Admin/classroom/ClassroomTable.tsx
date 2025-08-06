@@ -7,13 +7,13 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
-import { Guardian } from "../../../Types/Guardian/guardianTypes";
-import { useAuth } from "../../../Context/Auth/useAuth";
+import { classrooms } from "../../../Types/classroomTypes";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
 interface GuardianTableProps {
-    records: Guardian[];
+    allRecords: classrooms[]
+    records: classrooms[];
     totalRecords: number;
     currentPage: number;
     totalPages: number;
@@ -31,9 +31,11 @@ interface GuardianTableProps {
     onDelete: (id: string) => void;
     onAddGuardian: () => void;
     onRefresh: () => void
+    viewDetails: (classroom: classrooms) => void;
 }
 
-const GuardianTable: React.FC<GuardianTableProps> = ({
+const ClassroomTable: React.FC<GuardianTableProps> = ({
+    allRecords,
     records,
     totalRecords,
     currentPage,
@@ -51,33 +53,30 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     onToggleCheckbox,
     onDelete,
     onAddGuardian,
-    onRefresh
+    onRefresh,
+    viewDetails
 }) => {
-    const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
 
     const exportToExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(records);
+        const ws = XLSX.utils.json_to_sheet(allRecords);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Guardians Details');
-        XLSX.writeFile(wb, "guardians.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, 'Classroom Details');
+        XLSX.writeFile(wb, "classrooms.xlsx");
     };
 
     const exportToPDF = () => {
         const doc = new jsPDF();
-        const title = "Guardians List";
+        const title = "Classroom List";
         const headers = [
-            ["First Name", "Last Name", "Phone", "Address", "Nationality", "State", "Religion"]
+            ["SchoolId", "Name", "TeacherId", "Capacity"]
         ];
 
-        const data = records.map((guardian) => [
-            guardian.firstname || '',
-            guardian.lastname || '',
-            guardian.phone || '',
-            guardian.homeAddress || '',
-            guardian.nationality || '',
-            guardian.stateOfOrigin || '',
-            guardian.religion || ''
+        const data = allRecords.map((classroom) => [
+            classroom.name || '',
+            classroom.schoolId || '',
+            classroom.capacity || '',
+            classroom.teacherId || '',
         ]);
 
         doc.text(title, 14, 15);
@@ -89,7 +88,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
             headStyles: { fillColor: [255, 165, 0] }
         });
 
-        doc.save("guardians.pdf");
+        doc.save("classrooms.pdf");
     };
 
     return (
@@ -119,7 +118,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                         />
                         <div className="text-xs">
                             <div className="font-semibold text-gray-700">Gold Academy</div>
-                            <div className="text-gray-400">{user?.email}</div>
+                            <div className="text-gray-400">Admin</div>
                         </div>
                     </div>
                 </div>
@@ -128,7 +127,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
             {/* Breadcrumb & Add Button */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
                 <p className="text-sm text-gray-600 mb-4 sm:mb-0">
-                    Home <span className="text-orange-500 font-semibold">: All Guardians</span>
+                    Home <span className="text-orange-500 font-semibold">: All Classrooms</span>
                 </p>
                 <div className="gap-4 flex items-center sm:flex-wrap">
                     <div className="relative">
@@ -202,7 +201,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                         onClick={onAddGuardian}
                         className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 w-full sm:w-auto"
                     >
-                        Add Guardian
+                        Add Classroom
                     </button>
                 </div>
             </div>
@@ -215,7 +214,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                         {searchQuery && ` for "${searchQuery}"`}
                         {religionFilter !== 'all' && ` (Filtered by ${religionFilter})`}
                         {totalRecords === 0 && (
-                            <span className="text-red-500 ml-2">No guardians found</span>
+                            <span className="text-red-500 ml-2">No classroom found</span>
                         )}
                     </div>
                 )}
@@ -234,15 +233,12 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     className="cursor-pointer w-4 h-4"
                                 />
                             </th>
-                            <th className="p-3 min-w-[80px]">Photo</th>
-                            <th className="p-3 min-w-[120px]">First Name</th>
-                            <th className="p-3 min-w-[120px]">Last Name</th>
-                            <th className="p-3 min-w-[120px]">Phone</th>
-                            <th className="p-3 min-w-[200px]">Address</th>
-                            <th className="p-3 min-w-[120px]">Nationality</th>
-                            <th className="p-3 min-w-[120px]">State</th>
-                            <th className="p-3 min-w-[120px]">Religion</th>
-                            <th className="p-3 min-w-[120px]">Actions</th>
+                            {/* <th className="p-3 min-w-[80px]">Photo</th> */}
+                            <th className="p-3 min-w-[120px]">School Id</th>
+                            <th className="p-3 min-w-[120px]">Name</th>
+                            <th className="p-3 min-w-[120px]">Teacher Id</th>
+                            <th className="p-3 min-w-[100px]">Capacity</th>
+                            <th className="p-3 min-w-[100px]">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -250,45 +246,42 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             <tr>
                                 <td colSpan={10} className="p-8 text-center text-gray-500">
                                     {searchQuery
-                                        ? "No guardians found matching your search"
-                                        : "No guardians available"}
+                                        ? "No classrooms found matching your search"
+                                        : "No classrooms available"}
                                 </td>
                             </tr>
                         ) : (
-                            records.map((g, index) => (
+                            records.map((c, index) => (
                                 <tr
-                                    key={g.guardianId}
+                                    key={c.classroomId}
                                     className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                                 >
                                     <td className="p-3">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(g.guardianId)}
-                                            onChange={() => onToggleCheckbox(g.guardianId)}
+                                            checked={selectedIds.includes(c.classroomId)}
+                                            onChange={() => onToggleCheckbox(c.classroomId)}
                                             className="cursor-pointer w-4 h-4"
                                         />
                                     </td>
-                                    <td className="p-3">
+                                    {/* <td className="p-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${g.firstname}`}
+                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${c.name}`}
                                             alt="avatar"
                                             className="w-10 h-10 rounded-full"
                                         />
-                                    </td>
-                                    <td className="p-3">{g.firstname}</td>
-                                    <td className="p-3">{g.lastname}</td>
-                                    <td className="p-3">{g.phone}</td>
-                                    <td className="p-3">{g.homeAddress}</td>
-                                    <td className="p-3">{g.nationality}</td>
-                                    <td className="p-3">{g.stateOfOrigin}</td>
-                                    <td className="p-3">{g.religion}</td>
+                                    </td> */}
+                                    <td className="p-3">{c.schoolId}</td>
+                                    <td className="p-3">{c.name}</td>
+                                    <td className="p-3">{c.teacherId}</td>
+                                    <td className="p-3">{c.capacity}</td>
                                     <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
+                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800"  onClick={() => viewDetails(c)}/>
+                                        {/* <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
                                         <FaTrash
                                             className="cursor-pointer text-red-600 hover:text-red-800"
                                             onClick={() => onDelete(g.guardianId)}
-                                        />
+                                        /> */}
                                     </td>
                                 </tr>
                             ))
@@ -330,4 +323,4 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     );
 };
 
-export default GuardianTable;
+export default ClassroomTable;

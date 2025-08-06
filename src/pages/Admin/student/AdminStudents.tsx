@@ -22,9 +22,11 @@ import { teacherService } from "../../../Services/Teachers/TeacherService";
 import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../../../Store/Teachers/teacherSlice";
 import { sessionService } from "../../../Services/Session";
 import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../../Store/sessionSlice";
+import { useAuth } from "../../../Context/Auth/useAuth";
 // import { StudentType } from "../../../Types/Student/studentTypes";
 
 const AdminStudents: React.FC = () => {
+  const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
@@ -115,7 +117,7 @@ const AdminStudents: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-gray-100 p-4 sm:py-6 md:py-8">
       <ToastContainer />
       <div className="max-w-full mx-auto">
         {/* Header */}
@@ -143,7 +145,7 @@ const AdminStudents: React.FC = () => {
               />
               <div className="text-xs">
                 <div className="font-semibold text-gray-700">Gold Academy</div>
-                <div className="text-gray-400">Admin</div>
+                <div className="text-gray-400">{user?.email}</div>
               </div>
             </div>
           </div>

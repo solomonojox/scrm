@@ -17,7 +17,8 @@ import {
   FaCertificate,
   FaPencilAlt,
   FaCheckSquare,
-  FaPencilRuler
+  FaPencilRuler,
+  FaRegBell
 } from 'react-icons/fa';
 import {
   LineChart,
@@ -34,6 +35,8 @@ import {
   BarChart,
   Bar
 } from 'recharts';
+import { BiMessageAlt } from 'react-icons/bi';
+import { useAuth } from '../../Context/Auth/useAuth';
 
 // ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
@@ -68,6 +71,7 @@ const timeData = [
 
 // ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
 export default function AdminDashboard() {
+  const { user } = useAuth();
 
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
@@ -75,44 +79,42 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="bg-gray-100 min-h-screen font-inter">
+    <div className="bg-gray-100 min-h-screen font-inter p-4 sm:py-6 md:py-8">
       {/* MAIN CONTENT */}
       <div >
-        {/* TOPBAR */}
-        <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
-          <div className="w-full max-w-sm">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-              <FaSearch className="text-gray-400" />
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
+          <div className="w-full sm:w-auto mb-4 sm:mb-0">
+            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+              <FaSearch className="text-gray-400 text-lg" />
               <input
                 type="text"
                 placeholder="Search"
+                // value={searchQuery}
+                // onChange={(e) => setSearchQuery(e.target.value)}
                 className="ml-2 bg-transparent outline-none w-full text-sm"
               />
             </div>
           </div>
-          <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-            <FaBell
-              className="text-gray-500 hover:text-orange-500 cursor-pointer"
-              onClick={() => setShowModal(true)}
-            />
-
-            <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-            <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+          <div className="flex items-center space-x-4">
+            <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+            <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+            <div className="flex items-center rounded-full px-3 py-1 space-x-2">
               <img
                 src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
-                className="w-8 h-8 rounded-full"
+                className="w-14 h-14 rounded-full"
                 alt="Admin"
               />
               <div className="text-xs">
                 <div className="font-semibold text-gray-700">Gold Academy</div>
-                <div className="text-gray-400">Admin</div>
+                <div className="text-gray-400">{user?.email}</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* DASHBOARD CONTENT */}
-        <main className="p-6 space-y-4">
+        <main className="space-y-4">
 
           <h2 className="text-2xl font-semibold text-gray-800">
             Welcome To EduCat (SCRM)
