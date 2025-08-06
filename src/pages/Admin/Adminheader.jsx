@@ -10,7 +10,7 @@ const Adminheader = () => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text)
       .then(() => {
-        alert('Copied to clipboard'); // You can replace with a toast for better UX
+        alert('Copied to clipboard');
       })
       .catch((err) => {
         console.error('Failed to copy: ', err);
