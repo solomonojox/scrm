@@ -66,7 +66,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
         const doc = new jsPDF();
         const title = "Session List";
         const headers = [
-            ["First Name", "Last Name", "Phone", "Address", "Nationality", "State", "Religion"]
+            ["id", "sessionId", "sessionName", "schoolId", "startDate", "endDate"]
         ];
 
         const data = records.map((session) => [
@@ -234,14 +234,11 @@ const SessionTable: React.FC<SessionTableProps> = ({
                                 />
                             </th>
                             {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-                            <th className="p-3 min-w-[120px]">First Name</th>
-                            <th className="p-3 min-w-[120px]">Last Name</th>
-                            <th className="p-3 min-w-[120px]">Phone</th>
-                            <th className="p-3 min-w-[200px]">Address</th>
-                            <th className="p-3 min-w-[120px]">Nationality</th>
-                            <th className="p-3 min-w-[120px]">State</th>
-                            <th className="p-3 min-w-[120px]">Religion</th>
-                            <th className="p-3 min-w-[120px]">Actions</th>
+                            <th className="p-3 min-w-[120px]">Session Id</th>
+                            <th className="p-3 min-w-[120px]">Session name</th>
+                            <th className="p-3 min-w-[120px]">Start Date </th>
+                            <th className="p-3 min-w-[200px]">End date</th>
+                            <th className="p-3 min-w-[200px]">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -267,19 +264,12 @@ const SessionTable: React.FC<SessionTableProps> = ({
                                             className="cursor-pointer w-4 h-4"
                                         />
                                     </td>
-                                    <td className="p-3">
-                                        {/* <img
-                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${g.firstname}`}
-                                            alt="avatar"
-                                            className="w-10 h-10 rounded-full"
-                                        /> */}
-                                    </td>
+                                    {/* <td className="p-3">{s.sessionId}</td> */}
                                     <td className="p-3">{s.sessionId}</td>
                                     <td className="p-3">{s.sessionName}</td>
                                     <td className="p-3">{s.startDate}</td>
-                                    <td className="p-3">{s.classrooms}</td>
-                                    <td className="p-3">{s.schoolId}</td>
-                                    {/* <td className="p-3">{s.}</td> */}
+                                    {/* <td className="p-3">{s.classrooms}</td> */}
+                                    {/* <td className="p-3">{s.id}</td> */}
                                     <td className="p-3">{s.endDate}</td>
                                     <td className="p-3 flex gap-3">
                                         <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />

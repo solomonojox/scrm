@@ -3,13 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
-// import {
-//   fetchGuardiansFailure,
-//   fetchGuardiansStart,
-//   fetchGuardiansSuccess,
-// } from "../../../Store/Guardian/guardianSlice";
-// import { guardianService } from "../../../Services/Guardian/guardian";
-import SessionTable from "./sessionTable";
+import SessionTable from "./SessionTable";
 import SessionForm from "./SessionForm";
 import { Session } from "../../../Types/sessionType";
 import { sessionService } from "../../../Services/Session";
@@ -51,8 +45,6 @@ const AdminSession: React.FC = () => {
         session.sessionName?.toLowerCase().includes(query) ||
         session.startDate?.toLowerCase().includes(query) ||
         session.endDate?.toLowerCase().includes(query)
-        //  session.classrooms?.toLowerCase().includes(query) 
-        //  Session.homeAddress?.toLowerCase().includes(query)
       );
     }
 
