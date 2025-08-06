@@ -252,8 +252,8 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                             <tr>
                                 <td colSpan={10} className="p-8 text-center text-gray-500">
                                     {searchQuery
-                                        ? "No guardians found matching your search"
-                                        : "No guardians available"}
+                                        ? "No teachers found matching your search"
+                                        : "No teachers available"}
                                 </td>
                             </tr>
                         ) : (
