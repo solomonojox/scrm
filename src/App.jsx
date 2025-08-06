@@ -19,8 +19,10 @@ import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
 import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
 import AdminTeacher from './pages/Admin/teacher/AdminTeacher';
+import AdminClassroom from './pages/Admin/classroom/AdminClassroom';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('scrmToken');
@@ -56,7 +58,8 @@ function App() {
       <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/students" element={<AdminStudents />} />
-        <Route path="/admin/teachers" element={<AdminTeacher />} />
+        <Route path="/admin/teachers" element={<AdminTeacher/>} />
+        <Route path="/admin/classrooms" element={<AdminClassroom/>} />
         <Route path="/admin/all-guardian" element={<AdminGuardian />} />
         <Route path="/admin/news" element={<News />} />
         <Route path="/admin/events" element={<Events />} />
