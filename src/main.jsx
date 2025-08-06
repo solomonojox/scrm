@@ -6,17 +6,20 @@ import { Provider } from 'react-redux'
 import { store } from './Store/store.ts'
 import App from './App.jsx'
 // JavaScript (e.g., main.js)
- import '@fortawesome/fontawesome-free/css/all.min.css';
- 
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { AuthProvider } from './Context/Auth/AuthProvider.tsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <ContextProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ContextProvider>
+      <AuthProvider>
+        <ContextProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ContextProvider>
+      </AuthProvider>
     </Provider>
   </StrictMode>,
 )
