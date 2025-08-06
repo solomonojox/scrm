@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Session } from "../Types/Admin/sessionType";
+import { Session } from "../Types/sessionType";
 
 interface SessionTypes {
   listRecords: Session[];

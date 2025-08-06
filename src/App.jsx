@@ -6,7 +6,6 @@ import AddAdmin from './pages/Admin/AddAdmin';
 import Login from './pages/Login';
 import Accountregistration from '../src/pages/Admin/Accountregristration';
 import AddSchoolLisence from '../src/pages/Admin/AddSchoolLisence';
-import AddSessions from './pages/Admin/AddSessions';
 import Addschoolform from './pages/Admin/Addschoolform';
 import Terms from './pages/Admin/Terms';
 import Guardian from './pages/Admin/guardian/guardian';
@@ -20,6 +19,7 @@ import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
 import AdminTeacher from './pages/Admin/teacher/AdminTeacher';
 import AdminClassroom from './pages/Admin/classroom/AdminClassroom';
+import AdminSession from './pages/Admin/session/AdminSession' 
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
 
@@ -63,7 +63,7 @@ function App() {
         <Route path="/admin/classrooms" element={<AdminClassroom/>} />
         <Route path="/admin/news" element={<News />} />
         <Route path="/admin/events" element={<Events />} />
-        <Route path="/admin/session" element={<AddSessions />} />
+        <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<Schoolfee />} />
       </Route>
 
