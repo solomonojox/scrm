@@ -5,7 +5,7 @@ export const loginService = {
     staffLogin: async (data) => {
         try {
             const res = await api.post(`/api/Login/Login`, data)
-            console.log(res.data);
+            // console.log(res.data);
             return res.data
         } catch (error) {
             console.log(error);

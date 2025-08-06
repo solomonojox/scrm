@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from './layouts/AdminLayout';
 import Landing from './pages/Landing';
 import GetStarted from './pages/Admin/GetStarted';
@@ -20,10 +20,26 @@ import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
 import AdminTeacher from './pages/Admin/teacher/AdminTeacher';
 import AdminClassroom from './pages/Admin/classroom/AdminClassroom';
+import { jwtDecode } from 'jwt-decode';
+import { useEffect } from 'react';
 
 
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('scrmToken');
+  return token ? children : <Navigate to="/login" />;
+};
 
 function App() {
+  useEffect(() => {
+    const token = localStorage.getItem('scrmToken');
+    if (token) {
+      const decoded = jwtDecode(token);
+      if (decoded.exp * 1000 < Date.now()) {
+        <Navigate to="/login" />;
+        localStorage.removeItem("scrmToken");
+      }
+    }
+  }, []);
 
   return (
     <Routes>
@@ -39,8 +55,8 @@ function App() {
       <Route path="/terms" element={<Terms />} />
 
       {/* All admin routes here */}
-      <Route element={<AdminLayout />}>
-        <Route path="/admin/admindashboard" element={<AdminDashboard />} />
+      <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/students" element={<AdminStudents />} />
         <Route path="/admin/teachers" element={<AdminTeacher/>} />
         <Route path="/admin/classrooms" element={<AdminClassroom/>} />
