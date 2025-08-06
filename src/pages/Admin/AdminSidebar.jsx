@@ -88,7 +88,7 @@ const AdminSidebar = () => {
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Academics
         </h3>
-        <SidebarButton icon={<FaBook />} label="Classroom" to="/teacher/class" />
+        <SidebarButton icon={<FaBook />} label="Classroom" to="/admin/classrooms" />
         <SidebarButton icon={<FaChalkboard />} label="Session" to="/admin/session" />
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
