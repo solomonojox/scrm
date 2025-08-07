@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../Store/classroomSlice";
+import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../Store/Admin/classroomSlice";
 
 const AllClassrooms = () => {
   const dispatch = useDispatch<AppDispatch>()

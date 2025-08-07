@@ -1,11 +1,12 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
-import guardianSlice from './Guardian/guardianSlice'
-import studentSlice from './Student/studentSlice'
-import classroomSlice from './classroomSlice'
-import schoolFeeSlice from './schoolFeeSlice'
-import sessionSlice from './sessionSlice'
-import teacherSlice from './Teachers/teacherSlice'
+import guardianSlice from "./Guardian/guardianSlice";
+import studentSlice from "./Student/studentSlice";
+import classroomSlice from "./Admin/classroomSlice";
+import schoolFeeSlice from "./schoolFeeSlice";
+import sessionSlice from "./sessionSlice";
+import teacherSlice from "./Teachers/teacherSlice";
+import classroomStudentsSlice from './Admin/classroomStudentsSlice'
 
 export const rootReducer = combineReducers({
   getGuardian: guardianSlice,
@@ -14,4 +15,5 @@ export const rootReducer = combineReducers({
   getSession: sessionSlice,
   getStudent: studentSlice,
   getTeacher: teacherSlice,
+  getStudentsByClassId: classroomStudentsSlice
 });

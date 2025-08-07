@@ -15,7 +15,7 @@ import StudentForm from "./StudentForm";
 import { FaRegBell, FaSearch } from "react-icons/fa";
 import { BiMessageAlt } from "react-icons/bi";
 import { classroomService } from "../../../Services/Classroom";
-import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/classroomSlice";
+import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/Admin/classroomSlice";
 import { guardianService } from "../../../Services/Guardian/guardian";
 import { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } from "../../../Store/Guardian/guardianSlice";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
