@@ -14,7 +14,7 @@ const initialState: SessionTypes = {
 };
 
 export const sessionSlice = createSlice({
-    name: "schoolFee",
+    name: "sessions",
     initialState,
     reducers: {
         fetchSessionStart: (state) => {
