@@ -7,9 +7,9 @@ import { guardianService } from "../../../Services/Guardian/guardian";
 import ClassroomTable from "./ClassroomTable";
 import ClassroomForm from "./ClassroomForm";
 import { classrooms } from "../../../Types/classroomTypes";
-import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/classroomSlice";
 import { classroomService } from "../../../Services/Classroom";
 import ViewClassroomModal from "../../../components/Admin/classroom/ViewClassroomModal";
+import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/Admin/classroomSlice";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -27,6 +27,7 @@ const AdminClassroom: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
+  const [classroomDetails, setClassroomDetails]= useState<classrooms>()
   
   const recordsPerPage = 5;
 
@@ -122,6 +123,7 @@ const AdminClassroom: React.FC = () => {
 
   const handleViewDetails = (classroom: classrooms)=> {
     console.log(classroom)
+    setClassroomDetails(classroom)
     setOpenViewDetailModal(true)
   }
 
@@ -163,7 +165,7 @@ const AdminClassroom: React.FC = () => {
           openViewDetailModal && (
             <ViewClassroomModal 
               closeViewModal={()=> setOpenViewDetailModal(false)}
-              
+              classroomDetails={classroomDetails}
             />
           )
         }

@@ -12,9 +12,7 @@ export const classroomService = {
       return response.data;
     } catch (error) {
       console.error("AddClassroom error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add classroom"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to add classroom");
     }
   },
 
@@ -24,9 +22,7 @@ export const classroomService = {
       return response.data;
     } catch (error) {
       console.error("Error while Updating Classroom:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add classroom"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to add classroom");
     }
   },
 
@@ -38,12 +34,19 @@ export const classroomService = {
     try {
       const response = await api.get(`/api/Classroom/GetAllClassroom`);
       return response.data.data;
-
     } catch (error) {
       console.error("GetAllClassroom error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch classrooms"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+    }
+  },
+
+  getStudentsByClassroomId: async (classroomId) => {
+    try {
+      const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classroomId}`);
+      return response.data.data;
+    } catch (error) {
+      console.error("GetAllClassroom error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
     }
   },
 };
