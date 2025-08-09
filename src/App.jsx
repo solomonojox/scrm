@@ -12,7 +12,6 @@ import Guardian from './pages/Admin/guardian/guardian';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Classroom from './pages/Teachers/Classroom';
 import Events from './pages/Admin/Events';
-import Schoolfee from './pages/Admin/Schoolfee'
 import StudentFeePaymentTable from './pages/StudentFeePaymentTable';
 import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
@@ -22,6 +21,7 @@ import AdminSession from './pages/Admin/session/AdminSession'
 import AdminNews from './pages/Admin/news/AdminNews';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
+import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -64,7 +64,8 @@ function App() {
         <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<Events />} />
-        <Route path="/admin/schoolfee" element={<Schoolfee />} />
+        <Route path="/admin/session" element={<AdminSession />} />
+        <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
       </Route>
 
       {/* All teachers routes here */}
