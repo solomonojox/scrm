@@ -12,9 +12,7 @@ export const schoolFeeService = {
       return response.data;
     } catch (error) {
       console.error("AddSchoolFee error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add school fee"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
     }
   },
 
@@ -22,16 +20,24 @@ export const schoolFeeService = {
    * Retrieves all school fees
    * @returns {Promise<Array>} - List of school fees
    */
-getAllSchoolFees: async () => {
-  try {
-    const response = await api.get(`/api/SchoolFee/GetAllSchoolFees`);
-    return response.data.data; // ✅ get the array inside `data`
-  } catch (error) {
-    console.error("GetAllSchoolFees error:", error);
-    throw new Error(
-      error?.response?.data?.responseMessage || "Failed to fetch school fees"
-    );
-  }
-}
+  getAllSchoolFees: async () => {
+    try {
+      const response = await api.get(`/api/SchoolFee/GetAllSchoolFees`);
+      return response.data.data; // ✅ get the array inside `data`
+    } catch (error) {
+      console.error("GetAllSchoolFees error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
 
+  
+  getAllSchoolFeesBySchoolId: async () => {
+    try {
+      const response = await api.get(`/api/SchoolFee/GetSchoolFeesBySchoolId`);
+      return response.data.data; // ✅ get the array inside `data`
+    } catch (error) {
+      console.error("GetAllSchoolFeesBySchoolId error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
 };
