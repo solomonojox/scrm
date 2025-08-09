@@ -118,7 +118,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">Gold Academy</div>
+                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
                             <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>

@@ -8,7 +8,8 @@ import 'jspdf-autotable';
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 // import { Session } from "../../../Types/Guardian/guardianTypes";
-import {News} from "../../../Types/newsType";
+import { News } from "../../../Types/newsType";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -53,6 +54,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
     onAddNews,
     onRefresh
 }) => {
+    const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
 
     const exportToExcel = () => {
@@ -72,7 +74,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
         const data = records.map((news) => [
             news.content || '',
             news.newsId || '',
-           news.publishedDate|| '',
+            news.publishedDate || '',
             news.title || ''
         ]);
 
@@ -114,8 +116,8 @@ const NewsTable: React.FC<NewsTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">Gold Academy</div>
-                            <div className="text-gray-400">Admin</div>
+                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
+                            <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 
 interface StudentTableProps {
-    students: StudentType[];
+    students: any[];
     totalPages: number;
     currentPage: number;
     onPageChange: (page: number) => void;
@@ -243,11 +243,14 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                         {student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : '-'}
                                     </td>
                                     <td className="p-3">{student.homeAddress}</td>
-                                    <td className="p-3 truncate max-w-[120px]">{student.guardianId}</td>
-                                    <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" onClick={() => {setEditData(student); onAddStudent();}} />
-                                        <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" />
+                                    <td className="p-3 truncate max-w-[120px]">{student?.guardian?.firstname + ' ' + student?.guardian?.lastname}</td>
+                                    <td className="p-3 ">
+                                        {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(student); onAddStudent(); }}>
+                                            Edit
+                                            <FaEdit />
+                                        </span>
+                                        {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
                                     </td>
                                 </tr>
                             ))

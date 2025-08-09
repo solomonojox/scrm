@@ -81,7 +81,7 @@ export default function AdminDashboard() {
   return (
     <div className="bg-gray-100 min-h-screen font-inter p-4 sm:py-6 md:py-8">
       {/* MAIN CONTENT */}
-      <div >
+      <div>
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
           <div className="w-full sm:w-auto mb-4 sm:mb-0">
@@ -106,7 +106,7 @@ export default function AdminDashboard() {
                 alt="Admin"
               />
               <div className="text-xs">
-                <div className="font-semibold text-gray-700">Gold Academy</div>
+                <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
                 <div className="text-gray-400">{user?.email}</div>
               </div>
             </div>
@@ -115,10 +115,7 @@ export default function AdminDashboard() {
 
         {/* DASHBOARD CONTENT */}
         <main className="space-y-4">
-
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Welcome To EduCat (SCRM)
-          </h2>
+          <h2 className="text-2xl font-semibold text-gray-800">Welcome To EduCat (SCRM)</h2>
 
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -167,8 +164,6 @@ export default function AdminDashboard() {
               <UpcomingClasses />
             </div>
           </div>
-
-
         </main>
         <NotificationModal show={showModal} onClose={() => setShowModal(false)} />
       </div>

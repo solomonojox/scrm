@@ -18,6 +18,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
           email: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
           role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || '',
+          schoolReg: decoded.schoolReg || '',
+          schoolName: decoded.schoolName || '',
+          schoolId: decoded.schoolId || '',
         });
         setIsAuthenticated(true);
       } catch (error) {
@@ -34,6 +37,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
       email: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
       role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || '',
+      schoolReg: decoded.schoolReg || '',
+      schoolName: decoded.schoolName || '',
+      schoolId: decoded.schoolId || '',
     });
     setIsAuthenticated(true);
   };

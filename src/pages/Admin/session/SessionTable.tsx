@@ -8,7 +8,8 @@ import 'jspdf-autotable';
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 // import { Session } from "../../../Types/Guardian/guardianTypes";
-import {Session} from "../../../Types/sessionType";
+import { Session } from "../../../Types/sessionType";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -53,6 +54,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
     onAddSession,
     onRefresh
 }) => {
+    const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
 
     const exportToExcel = () => {
@@ -73,10 +75,10 @@ const SessionTable: React.FC<SessionTableProps> = ({
             session.classrooms || '',
             session.endDate || '',
             session.id || '',
-            session.schoolId|| '',
+            session.schoolId || '',
             session.sessionId || '',
             session.sessionName || '',
-            session.startDate|| ''
+            session.startDate || ''
         ]);
 
         doc.text(title, 14, 15);
@@ -117,8 +119,8 @@ const SessionTable: React.FC<SessionTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">Gold Academy</div>
-                            <div className="text-gray-400">Admin</div>
+                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
+                            <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>
                 </div>

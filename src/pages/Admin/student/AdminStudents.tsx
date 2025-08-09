@@ -31,6 +31,7 @@ const AdminStudents: React.FC = () => {
   const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
   const error = useSelector((state: RootState) => state.getStudent.error);
+  // console.log(fetchedRecord)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -144,7 +145,7 @@ const AdminStudents: React.FC = () => {
                 alt="Admin"
               />
               <div className="text-xs">
-                <div className="font-semibold text-gray-700">Gold Academy</div>
+                <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
                 <div className="text-gray-400">{user?.email}</div>
               </div>
             </div>
@@ -168,7 +169,7 @@ const AdminStudents: React.FC = () => {
         {/* Form Modal */}
         {isModalOpen && (
           <StudentForm
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => { setIsModalOpen(false); setEditData(null); }}
             onSubmitSuccess={handleFormSubmitSuccess}
             editData={editData}
           />

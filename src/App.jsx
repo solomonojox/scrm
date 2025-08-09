@@ -61,9 +61,9 @@ function App() {
         <Route path="/admin/teachers" element={<AdminTeacher/>} />
         <Route path="/admin/guardians" element={<AdminGuardian />} />
         <Route path="/admin/classrooms" element={<AdminClassroom/>} />
+        <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<Events />} />
-        <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<Schoolfee />} />
       </Route>
 

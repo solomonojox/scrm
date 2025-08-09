@@ -8,6 +8,7 @@ import 'jspdf-autotable';
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 import { classrooms } from "../../../Types/classroomTypes";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -56,6 +57,7 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
     onRefresh,
     viewDetails
 }) => {
+    const {user} = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
 
     const exportToExcel = () => {
@@ -117,8 +119,8 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">Gold Academy</div>
-                            <div className="text-gray-400">Admin</div>
+                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
+                            <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ const AdminTeacher: React.FC = () => {
   const fetchedRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -25,7 +25,8 @@ const AdminTeacher: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  
+  const [editData, setEditData] = useState<any>(null);
+
   const recordsPerPage = 5;
 
   const filteredRecords = useMemo(() => {
@@ -144,12 +145,15 @@ const AdminTeacher: React.FC = () => {
           onDelete={handleDelete}
           onAddGuardian={() => setIsModalOpen(true)}
           onRefresh={fetchTeacher}
+          setEditData={setEditData}
+          onAddStudent={() => { setIsModalOpen(true); }}
         />
 
         {isModalOpen && (
           <TeacherForm
-            onClose={() => setIsModalOpen(false)}
-            onGuardianAdded={fetchTeacher}
+            onClose={() => { setIsModalOpen(false); setEditData(null); }}
+            onSubmitSuccess={() => { fetchTeacher(); setIsModalOpen(false); setEditData(null); }}
+            editData={editData}
           />
         )}
       </div>

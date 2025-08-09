@@ -30,7 +30,7 @@ const Adminheader = () => {
             <p>School Reg. No - </p>
             <div
               className="rounded-lg py-1 px-2 border shadow-md border-gray-400 flex flex-col items-center justify-center hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleCopy(user?.reg)}
+              onClick={() => handleCopy(user?.schoolReg)}
             >
               <IoIosCopy className="w-4 h-4 text-gray-400" />
               <p className="text-[10px]">copy</p>

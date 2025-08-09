@@ -32,6 +32,8 @@ interface GuardianTableProps {
     onDelete: (id: string) => void;
     onAddGuardian: () => void;
     onRefresh: () => void
+    setEditData: (data: any) => void
+    onAddStudent: () => void
 }
 
 const TeacherTable: React.FC<GuardianTableProps> = ({
@@ -52,7 +54,9 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
     onToggleCheckbox,
     onDelete,
     onAddGuardian,
-    onRefresh
+    onRefresh,
+    setEditData,
+    onAddStudent
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
@@ -119,7 +123,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">Gold Academy</div>
+                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
                             <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>
@@ -235,7 +239,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     className="cursor-pointer w-4 h-4"
                                 />
                             </th>
-                            <th className="p-3 min-w-[120px]">School Id</th>
+                            {/* <th className="p-3 min-w-[120px]">School Id</th> */}
                             <th className="p-3 min-w-[80px]">Photo</th>
                             <th className="p-3 min-w-[120px]">First Name</th>
                             <th className="p-3 min-w-[120px]">Last Name</th>
@@ -270,7 +274,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                             className="cursor-pointer w-4 h-4"
                                         />
                                     </td>
-                                    <td className="p-3">{t.schoolId}</td>
+                                    {/* <td className="p-3">{t.schoolId}</td> */}
                                     <td className="p-3">
                                         <img
                                             src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${t.firstname}`}
@@ -286,12 +290,12 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{t.stateOfOrigin}</td>
                                     <td className="p-3">{t.religion}</td>
                                     <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
-                                        <FaTrash
-                                            className="cursor-pointer text-red-600 hover:text-red-800"
-                                            onClick={() => onDelete(t.teacherId)}
-                                        />
+                                        <span
+                                            className="flex items-center cursor-pointer hover:text-orange-500 gap-1"
+                                            onClick={() => { setEditData(t); onAddStudent(); }}>
+                                            Edit
+                                            <FaEdit />
+                                        </span>
                                     </td>
                                 </tr>
                             ))

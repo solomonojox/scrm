@@ -37,6 +37,7 @@ const LoginPage = () => {
       notifySuccess("Login successful!");
 
       const decoded = jwtDecode(response.data);
+      // console.log(decoded)
       const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
