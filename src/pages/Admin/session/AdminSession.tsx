@@ -65,7 +65,7 @@ const AdminSession: React.FC = () => {
   const fetchSession = async () => {
     dispatch(fetchSessionStart());
     try {
-      const data = await sessionService.getAllRegisteredSessions();
+      const data = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
       dispatch(fetchSessionSuccess(data));
     } catch (err) {
       dispatch(fetchSessionFailure((err as Error).message));

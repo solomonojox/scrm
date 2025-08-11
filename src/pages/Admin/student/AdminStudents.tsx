@@ -31,7 +31,7 @@ const AdminStudents: React.FC = () => {
   const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
   const error = useSelector((state: RootState) => state.getStudent.error);
-  // console.log(fetchedRecord)
+  console.log(fetchedRecord)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,11 +89,11 @@ const AdminStudents: React.FC = () => {
     dispatch(fetchTeacherStart());
     dispatch(fetchSessionStart());
     try {
-      const data = await studentService.getAll();
+      const data = await studentService.getAll(localStorage.getItem('schoolId'));
       const classRoom = await classroomService.getAllClassrooms();
-      const guardian = await guardianService.getAll();
-      const teachers = await teacherService.getAll();
-      const session = await sessionService.getAllRegisteredSessions();
+      const guardian = await guardianService.getAll(localStorage.getItem('schoolId'));
+      const teachers = await teacherService.getAll(localStorage.getItem('schoolId'));
+      const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
       dispatch(fetchStudentsSuccess(data));
       dispatch(fetchClassroomsSuccess(classRoom));
       dispatch(fetchGuardiansSuccess(guardian));

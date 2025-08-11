@@ -71,7 +71,7 @@ const AdminGuardian: React.FC = () => {
   const fetchGuardian = async () => {
     dispatch(fetchGuardiansStart());
     try {
-      const data = await guardianService.getAll();
+      const data = await guardianService.getAll(localStorage.getItem('schoolId'));
       dispatch(fetchGuardiansSuccess(data));
     } catch (err) {
       dispatch(fetchGuardiansFailure((err as Error).message));

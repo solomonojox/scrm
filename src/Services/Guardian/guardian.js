@@ -2,11 +2,11 @@
 import api from "../api";
 
 export const guardianService = {
-  getAll: async () => {
+  getAll: async (id) => {
     try {
-      const res = await api.get("/api/Guardian/GetAllGuardians");
+      const res = await api.get(`/api/Guardian/GetGuardiansBySchool?schoolId=${id}`);
       // console.log("GetAllGuardians success:", res.data);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;

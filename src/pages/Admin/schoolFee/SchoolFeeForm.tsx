@@ -153,6 +153,7 @@ import { studentService } from "../../../Services/Student/StudentService";
 import Select from 'react-select';
 import { RootState } from "../../../Store/store";
 import { useSelector } from "react-redux";
+import { schoolFeeService } from "../../../Services/Schfee";
 
 interface StudentFormProps {
     onClose: () => void;
@@ -171,25 +172,27 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         amount: 0,
-        currentTerm: 0,
+        // currentTerm: 0,
         sessionId: "",
-        classroomId: ""
+        classroomId: "",
+        className: ""
     });
 
     // Get data from Redux store
     const sessions = useSelector((state: RootState) => state.getSession.listRecords);
     const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords);
+    // console.log(classrooms);
 
     // Set initial form data when editData changes
     useEffect(() => {
         if (editData) {
-            // setFormData({
-            //     amount: editData.amount || "",
-            //     teacherId: editData.teacherId || "",
-            //     currentTerm: editData.currentTerm || 0,
-            //     sessionId: editData.currentSession || "",
-            //     classroomId: editData.classroomId || ""
-            // });
+            setFormData({
+                amount: editData.amount || "",
+                // currentTerm: editData.currentTerm || 0,
+                sessionId: editData.sessionId || "",
+                classroomId: editData.classroomId || "",
+                className: editData.className || ""
+            });
         }
     }, [editData]);
 
@@ -205,6 +208,11 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
         label: `${classroom.name} (Capacity: ${classroom.capacity})`
     }));
 
+    const classroomNameOptions: OptionType[] = classrooms.map(classroom => ({
+        value: classroom.name,
+        label: `${classroom.name} (Capacity: ${classroom.capacity})`
+    }));
+
     const termOptions: OptionType[] = [
         { value: "0", label: "First Term" },
         { value: "1", label: "Second Term" },
@@ -213,15 +221,15 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
 
     // Get the current selected options for the select fields
     const getSelectedOption = (value: string, options: OptionType[]) => {
-      return options.find(option => option.value === value) || null;
+        return options.find(option => option.value === value) || null;
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({
-          ...prev,
-          [name]: name === 'enteredClass' ? parseInt(value) : value
-      }));
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === 'enteredClass' ? parseInt(value) : value
+        }));
     };
 
     const handleSelectChange = (name: string, selectedOption: OptionType | null) => {
@@ -242,32 +250,35 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
         setFormError("");
 
         const payload = {
-          amount: formData.amount,
-          sessionId: formData.sessionId,
-          classroomId: formData.classroomId
+            schoolId: localStorage.getItem('schoolId'),
+            classroomId: formData.classroomId,
+            sessionId: formData.sessionId,
+            amount: formData.amount,
+            className: formData.className
         };
 
         try {
             if (editData) {
-                await studentService.update(editData.studentId, payload);
+                await schoolFeeService.update(editData.studentId, payload);
                 toast.success("Student updated successfully!");
             } else {
-                const res = await studentService.create(payload);
+                const res = await schoolFeeService.addSchoolFee(payload);
                 toast.success(res.responseMessage || "Student added successfully!");
             }
-            
+
             onSubmitSuccess();
             if (!editData) {
                 setFormData({
                     amount: 0,
-                    currentTerm: 0,
+                    // currentTerm: 0,
                     sessionId: "",
-                    classroomId: ""
+                    classroomId: "",
+                    className: ""
                 });
             }
             setImagePreview(null);
         } catch (err: any) {
-            const msg = err.response?.data?.responseMessage || 
+            const msg = err.response?.data?.responseMessage ||
                 (editData ? "Update failed" : "Submission failed");
             setFormError(msg);
             toast.error(msg);
@@ -285,7 +296,7 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
                 <div className="bg-orange-500 h-2 rounded-t-lg" />
                 <div className="p-4 sm:p-6">
                     <h2 className="text-lg font-semibold mb-4 text-center">
-                        {editData ? "Edit Student" : "Add Student"}
+                        {editData ? "Edit School Fee" : "Add School Fee"}
                     </h2>
                     {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
                     <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -315,8 +326,8 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
                             <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                             <input
                                 type="text"
-                                name="homeAddress"
-                                placeholder="Home Address"
+                                name="amount"
+                                placeholder="Enter amount"
                                 className="border px-3 py-2 rounded text-sm w-full"
                                 value={formData.amount}
                                 onChange={handleInputChange}
@@ -342,6 +353,17 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
                                 value={getSelectedOption(formData.classroomId, classroomOptions)}
                                 onChange={(selected) => handleSelectChange("classroomId", selected)}
                                 placeholder="Select Classroom"
+                                className="text-sm"
+                            />
+                        </div>
+
+                        <div className="col-span-1">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Classroom name</label>
+                            <Select
+                                options={classroomNameOptions}
+                                value={getSelectedOption(formData.className, classroomNameOptions)}
+                                onChange={(selected) => handleSelectChange("className", selected)}
+                                placeholder="Select Classroom name"
                                 className="text-sm"
                             />
                         </div>

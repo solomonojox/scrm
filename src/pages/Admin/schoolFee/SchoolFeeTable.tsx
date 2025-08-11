@@ -66,7 +66,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
         const doc = new jsPDF();
         const title = "School Fee List";
         const headers = [
-            ["School Dd","session", "Amount", "Class Name",]
+            ["School Dd", "session", "Amount", "Class Name",]
         ];
 
         const data = schoolFee.map((s) => [
@@ -234,8 +234,10 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                                     <td className="p-3">{student.sessionId}</td>
                                     <td className="p-3">{student.amount}</td>
                                     <td className="p-3">{student.className}</td>
-                                    <td className="p-3 flex gap-3 cursor-pointer hover:text-green-800" onClick={() => {setEditData(student); onAddStudent();}} >
-                                       Edit <FaEdit className=" text-green-600 "/>
+                                    <td className="p-3 cursor-pointer hover:text-orange-500" onClick={() => { setEditData(student); onAddStudent(); }} >
+                                        <span className="flex items-center gap-2">
+                                            Edit <FaEdit />
+                                        </span>
                                     </td>
                                 </tr>
                             ))

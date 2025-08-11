@@ -31,9 +31,9 @@ export const schoolFeeService = {
   },
 
   
-  getAllSchoolFeesBySchoolId: async () => {
+  getAllSchoolFeesBySchoolId: async (id) => {
     try {
-      const response = await api.get(`/api/SchoolFee/GetSchoolFeesBySchoolId`);
+      const response = await api.get(`/api/SchoolFee/GetSchoolFeesBySchoolId?schoolId=${id}`);
       return response.data.data; // ✅ get the array inside `data`
     } catch (error) {
       console.error("GetAllSchoolFeesBySchoolId error:", error);

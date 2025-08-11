@@ -2,11 +2,11 @@
 import api from "../api";
 
 export const studentService = {
-  getAll: async () => {
+  getAll: async (id) => {
     try {
-      const res = await api.get("/api/Student/GetAllStudent");
+      const res = await api.get(`/api/Student/GetStudentsBySchool?schoolId=${id}`);
       // console.log("GetAllStudents success:", res.data);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error("GetAllStudents error:", error?.response?.data?.message || error.message);
       throw error;

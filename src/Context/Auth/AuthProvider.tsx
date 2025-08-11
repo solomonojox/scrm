@@ -33,6 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (token: string) => {
     localStorage.setItem('scrmToken', token);
     const decoded = jwtDecode<Partial<any>>(token);
+    localStorage.setItem('schoolId', decoded.schoolId);
     setUser({
       id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
       email: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',

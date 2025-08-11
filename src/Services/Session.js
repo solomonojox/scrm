@@ -22,10 +22,11 @@ export const sessionService = {
    * Retrieves all registered sessions
    * @returns {Promise<Array>} - List of sessions
    */
-  getAllRegisteredSessions: async () => {
+  getAllRegisteredSessions: async (id) => {
     try {
-      const response = await api.get(`/api/Session/GetAllRegisteredSession`);
-      return response.data;
+      const response = await api.get(`/api/Session/GetSessionsBySchoolId?schoolId=${id}`);
+      // console.log("session:", response.data);
+      return response.data.data;
     } catch (error) {
       console.error("GetAllRegisteredSession error:", error);
       throw new Error(

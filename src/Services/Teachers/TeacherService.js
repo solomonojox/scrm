@@ -2,11 +2,11 @@
 import api from "../api";
 
 export const teacherService = {
-  getAll: async () => {
+  getAll: async (id) => {
     try {
-      const res = await api.get("/api/Teacher/GetAllTeachers");
-      // console.log("GetAllTeachers success:", res.data);
-      return res.data;
+      const res = await api.get(`/api/Teacher/GetTeachersBySchool/${id}`);
+      // console.log("GetAllTeachers success:", res.data.data);
+      return res.data.data;
     } catch (error) {
       console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
       throw error;

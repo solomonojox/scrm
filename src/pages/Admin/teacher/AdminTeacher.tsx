@@ -69,7 +69,7 @@ const AdminTeacher: React.FC = () => {
   const fetchTeacher = async () => {
     dispatch(fetchTeacherStart());
     try {
-      const data = await teacherService.getAll();
+      const data = await teacherService.getAll(localStorage.getItem('schoolId'));
       dispatch(fetchTeacherSuccess(data));
     } catch (err) {
       dispatch(fetchTeacherFailure((err as Error).message));

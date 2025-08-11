@@ -289,7 +289,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{t.nationality}</td>
                                     <td className="p-3">{t.stateOfOrigin}</td>
                                     <td className="p-3">{t.religion}</td>
-                                    <td className="p-3 flex gap-3">
+                                    <td className="p-3 gap-3">
                                         <span
                                             className="flex items-center cursor-pointer hover:text-orange-500 gap-1"
                                             onClick={() => { setEditData(t); onAddStudent(); }}>

@@ -43,7 +43,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded })
     setFormError("");
 
     const payload = {
-      schoolId: "d5bca6af-0658-4f9d-a6a4-08ddcc154429",
+      schoolId: localStorage.getItem('schoolId'),
       firstname: formData.firstName,
       lastname: formData.lastName,
       relationship: formData.relationship,
