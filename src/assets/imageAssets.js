@@ -1,13 +1,15 @@
 import loginImage from './loginIm.png';
 import logo from './looogo.png'
 import excelLogo from './excel.svg';
-import book from './books.png'
+import book from './books.png';
+import  color  from './color.png';
 
 const imageAssets = {
     loginImage,
     logo,
     excelLogo,
-    book
+    book,
+    color
 }
 
 export default imageAssets;
