@@ -218,32 +218,32 @@ const StudentTable: React.FC<StudentTableProps> = ({
                         ) : (
                             students.map((student, index) => (
                                 <tr
-                                    key={student.studentId}
+                                    key={student?.studentId}
                                     className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                                 >
                                     <td className="p-3">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(student.studentId)}
-                                            onChange={() => toggleCheckbox(student.studentId)}
+                                            checked={selectedIds.includes(student?.studentId)}
+                                            onChange={() => toggleCheckbox(student?.studentId)}
                                             className="cursor-pointer w-4 h-4"
                                         />
                                     </td>
                                     <td className="p-3">
                                         <img
-                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${student.firstname}`}
+                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${student?.firstname}`}
                                             alt="avatar"
                                             className="w-10 h-10 rounded-full"
                                         />
                                     </td>
-                                    <td className="p-3">{student.firstname}</td>
-                                    <td className="p-3">{student.lastname}</td>
-                                    <td className="p-3">{student.classroom}</td>
+                                    <td className="p-3">{student?.firstname}</td>
+                                    <td className="p-3">{student?.lastname}</td>
+                                    <td className="p-3">{student?.classroom}</td>
                                     <td className="p-3">
-                                        {student.dateOfBirth ? new Date(student.dateOfBirth).toLocaleDateString() : '-'}
+                                        {student?.dateOfBirth ? new Date(student?.dateOfBirth).toLocaleDateString() : '-'}
                                     </td>
-                                    <td className="p-3">{student.homeAddress}</td>
-                                    <td className="p-3 truncate max-w-[120px]">{student?.guardian?.firstname + ' ' + student?.guardian?.lastname}</td>
+                                    <td className="p-3">{student?.address}</td>
+                                    <td className="p-3">{student?.guardianName}</td>
                                     <td className="p-3 ">
                                         {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
                                         <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(student); onAddStudent(); }}>
