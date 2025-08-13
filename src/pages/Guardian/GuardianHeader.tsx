@@ -1,0 +1,122 @@
+import React from "react";
+import { useAuth } from "../../Context/Auth/useAuth";
+import { BiBell, BiMessage } from "react-icons/bi";
+import { FiSearch } from "react-icons/fi";
+import imageAssets from "../../assets/imageAssets";
+import { icon } from "@fortawesome/fontawesome-svg-core";
+
+const GuardianHeader: React.FC = () => {
+  const { user } = useAuth();
+
+  const icons = {
+    message: (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M3 1H12.9994" stroke="#575757" strokeLinecap="round" />
+        <path
+          d="M15 3C15 2.46957 14.7893 1.96086 14.4142 1.58579C14.0391 1.21072 13.5304 1 13 1"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M1 3C1 2.46957 1.21072 1.96086 1.58579 1.58579C1.96086 1.21072 2.46957 1 3 1"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M1 10C1 10.2626 1.05174 10.5227 1.15224 10.7654C1.25275 11.008 1.40007 11.2285 1.58579 11.4142C1.77151 11.5999 1.99198 11.7472 2.23463 11.8478C2.47729 11.9483 2.73736 12 3 12"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M15 10C15 10.5304 14.7893 11.0391 14.4142 11.4142C14.0391 11.7893 13.5304 12 13 12"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M1 3V9.99999" stroke="#575757" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M15 3V9.99999" stroke="#575757" strokeLinecap="round" strokeLinejoin="round" />
+        <path
+          d="M3 12H5L7.99999 15L11 12H13"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
+    notificationBell: (
+      <svg
+        width="18"
+        height="22"
+        viewBox="0 0 18 22"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3 18V9C3 7.4087 3.63214 5.88258 4.75736 4.75736C5.88258 3.63214 7.4087 3 9 3C10.5913 3 12.1174 3.63214 13.2426 4.75736C14.3679 5.88258 15 7.4087 15 9V18M3 18H15M3 18H1M15 18H17M8 21H10"
+          stroke="#575757"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 3C9.55228 3 10 2.55228 10 2C10 1.44772 9.55228 1 9 1C8.44772 1 8 1.44772 8 2C8 2.55228 8.44772 3 9 3Z"
+          stroke="#575757"
+        />
+      </svg>
+    ),
+  };
+
+  // Function to handle copy
+  const handleCopy = (text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("Copied to clipboard");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
+  return (
+    <div className="fixed top-0 lg:pl-64 w-[100%] h-[70px]">
+      <header className=" bg-white lg:rounded-t-[20px] lg:rounded-[15px] z-20 shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
+        {/* Search */}
+        <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300">
+          <FiSearch className="text-gray-400" />
+          <input type="search" className="outline-none" placeholder="search..." name="" />
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <p className="cursor-pointer">{icons.notificationBell}</p>
+            <p className="cursor-pointer">{icons.message}</p>
+          </div>
+
+          <div className="flex items-center gap-2 cursor-pointer">
+            <img
+              className="w-8 h-8 rounded-full border-2 border-gray-300"
+              src={imageAssets.profile}
+              alt="profile-image"
+            />
+
+            <div className="text-center">
+              <b className="text-[13px]">David Ethan</b>
+              <p className="text-[12px]">Guardian</p>
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
+  );
+};
+
+export default GuardianHeader;
