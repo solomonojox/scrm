@@ -19,9 +19,9 @@ const Sidebar = () => {
   const [active, setActive] = useState<string>("dashboard");
 
   return (
-    <aside className="relative min-h-screen w-20 sm:w-72 rounded-r-3xl overflow-hidden">
+    <aside className="relative min-h-screen w-16 sm:w-72 rounded-r-3xl overflow-hidden">
       <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFB347] rounded-r-3xl z-20">
-        <div className="flex flex-col items-center mt-[88px] space-y-5.5  ">
+        <div className="flex flex-col items-center mt-[89px] space-y-5.5  ">
           {items.map((it) => (
             <button
               key={it.id}
@@ -35,29 +35,29 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
-      <div className="absolute inset-0 bg-[#F07A00] w-[250px] rounded-xl z-10">
+      <div className="absolute inset-0 bg-[#F07A00] w-[250px] rounded-2xl z-10">
         <div
-          className="absolute top-0 right-0 -translate-y-1/6 h-36  w-40 sm:w-60 rounded-br-[56px]"
+          className="absolute top-0 right-0 -translate-y-1/6 h-28  w-40 sm:w-60 rounded-t-full rounded-br-full"
           style={{ background: "#F07A00", zIndex: 11 }}
         />
-        <div className="relative z-20 flex flex-col ml-5 justify-between h-full py-6">
+        <div className="relative z-20 flex flex-col ml-5  rounded-full justify-between h-full py-6">
           <div>
             <div className="px-2 sm:px-4 mb-6">
               <div className="w-[86px] sm:w-[100px] ml-0 sm:ml-4">
                 <img src={imageAssets.logo} alt="logo" className="w-full" />
               </div>
             </div>
-            <nav className="flex flex-col gap-2 sm:gap-3 px-1 sm:px-2">
+            <nav className="flex flex-col space-y-3 sm:gap-3 px-1 sm:px-2">
               {items.map((it) => {
                 const isActive = active === it.id;
                 return (
-                  <div key={it.id} className="flex items-center">
+                  <div key={it.id} className="flex items-center ml-[4px] w-[218px] ">
                     <button
                       onClick={() => setActive(it.id)}
-                      className={`w-full text-left rounded-r-2xl transition-colors focus:outline-none  ${
-                        isActive ? "bg-[#EDEDED] text-[#F07A00]" : "bg-transparent text-white"
+                      className={`  w-full text-left px-4 py-[3px]    transition-colors focus:outline-none  ${
+                        isActive ? "bg-[#EDEDED]  text-[#F07A00]" : "bg-transparent text-white "
                       }`}
-                      style={{ padding: "0.5rem 1rem", marginLeft: "0.5rem" }}
+                      style={{ marginLeft: "0.5rem" }}
                     >
                       <span className="text-sm sm:text-base font-medium">{it.label}</span>
                     </button>
