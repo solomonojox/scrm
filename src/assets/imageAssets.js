@@ -5,6 +5,10 @@ import book from './books.png';
 import  color  from './color.png';
 import man from './man.jpg';
 import girl from './girl.png';
+import fif from './fifteen.png';
+import meet from './meeti.png';
+import student from './student.png';
+import claap from './claap.png';
 const imageAssets = {
     loginImage,
     logo,
@@ -12,7 +16,11 @@ const imageAssets = {
     book,
     color,
     man,
-    girl
+    girl,
+    fif,
+      meet,
+    student,
+    claap,
 }
 
 export default imageAssets;
