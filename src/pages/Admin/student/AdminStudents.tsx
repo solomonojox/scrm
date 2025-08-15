@@ -31,7 +31,6 @@ const AdminStudents: React.FC = () => {
   const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
   const error = useSelector((state: RootState) => state.getStudent.error);
-  console.log(fetchedRecord)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -140,7 +139,7 @@ const AdminStudents: React.FC = () => {
             <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
             <div className="flex items-center rounded-full px-3 py-1 space-x-2">
               <img
-                src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
                 className="w-14 h-14 rounded-full"
                 alt="Admin"
               />

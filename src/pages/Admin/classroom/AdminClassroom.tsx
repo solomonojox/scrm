@@ -68,6 +68,7 @@ const AdminClassroom: React.FC = () => {
   const fetchClassroom = async () => {
     dispatch(fetchClassroomsStart());
     try {
+
       const data = await classroomService.getClassroomBySchoolId(localStorage.getItem('schoolId'));
       dispatch(fetchClassroomsSuccess(data));
     } catch (err) {

@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Header from "./Header";
 import imageAssets from "../assets/imageAssets";
 import { loginService } from "../Services/Auth/loginService";
 import { jwtDecode } from "jwt-decode";
@@ -29,7 +28,7 @@ const LoginPage = () => {
         schoolRegistrationNumber,
         email,
         password,
-      }
+      };
       const response = await loginService.staffLogin(data);
       login(response.data);
 
@@ -37,16 +36,20 @@ const LoginPage = () => {
       notifySuccess("Login successful!");
 
       const decoded = jwtDecode(response.data);
-      // console.log(decoded)
-      const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
+      const role =
+        decoded[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ];
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
       }
-
     } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
-      setError("Login failed. Please check your credentials.");
-      notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
+      // console.error("Login failed:", err.response?.data || err.message);
+      setError(err.response?.data.responseMessage || err?.message || "Login failed. Please check your credentials.");
+      notifyError(
+        err.response?.data.responseMessage ||
+          "Login failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -54,24 +57,25 @@ const LoginPage = () => {
 
   return (
     <div className="relative">
-      {/* <div className="sticky top-0 z-50">
-        <Header />
-      </div> */}
-
       <img
         src={imageAssets.loginImage}
         alt="login image"
         className="w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
       />
 
-      <div className="h-screen w-full bg-cover bg-center flex items-center justify-center lg:justify-end lg:pr-[10%] ">
+      <div className="h-screen w-full flex items-center justify-center lg:justify-end lg:pr-[10%]">
         <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-[539px] max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
+          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">
+            Welcome Back!
+          </h2>
           <p className="text-center text-gray-600 mb-6">Please Login</p>
 
           <form onSubmit={handleLogin}>
             <div className="mb-4">
-              <label htmlFor="regNumber" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="regNumber"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 School Registration Number
               </label>
               <input
@@ -86,7 +90,10 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Email
               </label>
               <input
@@ -101,7 +108,10 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Password
               </label>
               <input
@@ -116,23 +126,53 @@ const LoginPage = () => {
             </div>
 
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            {successMessage && <p className="text-green-600 text-sm mb-4">{successMessage}</p>}
+            {successMessage && (
+              <p className="text-green-600 text-sm mb-4">{successMessage}</p>
+            )}
 
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition-colors"
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
               disabled={loading}
             >
+              {loading && (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-20"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
               {loading ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-xs text-center text-gray-600 mt-4">
               By signing in, you confirm our{" "}
-              <a href="#" className="text-orange-500 font-semibold underline">
+              <a
+                href="#"
+                className="text-orange-500 font-semibold underline"
+              >
                 Terms of Use
               </a>{" "}
               and{" "}
-              <a href="#" className="text-orange-500 font-semibold underline">
+              <a
+                href="#"
+                className="text-orange-500 font-semibold underline"
+              >
                 Privacy Policy
               </a>
             </p>

@@ -115,7 +115,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                     <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
                     <div className="flex items-center rounded-full px-3 py-1 space-x-2">
                         <img
-                            src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
                             className="w-14 h-14 rounded-full"
                             alt="Admin"
                         />

@@ -30,9 +30,9 @@ export const classroomService = {
    * Retrieves all classrooms
    * @returns {Promise<Array>} - List of classrooms
    */
-  getAllClassrooms: async () => {
+  getAllClassrooms: async (id) => {
     try {
-      const response = await api.get(`/api/Classroom/GetAllClassroom`);
+      const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${id}`);
       return response.data.data;
     } catch (error) {
       console.error("GetAllClassroom error:", error);

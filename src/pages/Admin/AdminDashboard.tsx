@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
-
-import Adminheader from './Adminheader';
-import AdminSidebar from './AdminSidebar';
-import NotificationModal from './Notification';
+import React, { useEffect, useState, useCallback } from "react";
+import NotificationModal from "./Notification";
 import {
   FaUserGraduate,
   FaChalkboardTeacher,
@@ -18,8 +14,8 @@ import {
   FaPencilAlt,
   FaCheckSquare,
   FaPencilRuler,
-  FaRegBell
-} from 'react-icons/fa';
+  FaRegBell,
+} from "react-icons/fa";
 import {
   LineChart,
   Line,
@@ -33,50 +29,116 @@ import {
   Pie,
   Cell,
   BarChart,
-  Bar
-} from 'recharts';
-import { BiMessageAlt } from 'react-icons/bi';
-import { useAuth } from '../../Context/Auth/useAuth';
+  Bar,
+} from "recharts";
+import { BiMessageAlt } from "react-icons/bi";
+import { useAuth } from "../../Context/Auth/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
+import {
+  fetchStudentsFailure,
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+} from "../../Store/Student/studentSlice";
+import { studentService } from "../../Services/Student/StudentService";
+import { teacherService } from "../../Services/Teachers/TeacherService";
+import {
+  fetchTeacherFailure,
+  fetchTeacherStart,
+  fetchTeacherSuccess,
+} from "../../Store/Teachers/teacherSlice";
+import {
+  fetchGuardiansFailure,
+  fetchGuardiansStart,
+  fetchGuardiansSuccess,
+} from "../../Store/Guardian/guardianSlice";
+import { guardianService } from "../../Services/Guardian/guardian";
+import {
+  fetchClassroomsFailure,
+  fetchClassroomsStart,
+  fetchClassroomsSuccess,
+} from "../../Store/Admin/classroomSlice";
+import { classroomService } from "../../Services/Classroom";
 
 // ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
-  { month: 'Jan', ux: 15, ui: 10, dev: 20 },
-  { month: 'Feb', ux: 25, ui: 5, dev: 15 },
-  { month: 'Mar', ux: 10, ui: 20, dev: 25 },
-  { month: 'Apr', ux: 20, ui: 15, dev: 5 },
-  { month: 'May', ux: 22, ui: 18, dev: 10 },
-  { month: 'Jun', ux: 8, ui: 12, dev: 5 },
-  { month: 'Jul', ux: 12, ui: 8, dev: 15 },
-  { month: 'Aug', ux: 5, ui: 10, dev: 8 },
-  { month: 'Sep', ux: 15, ui: 5, dev: 12 },
-  { month: 'Oct', ux: 25, ui: 22, dev: 20 },
-  { month: 'Nov', ux: 10, ui: 15, dev: 8 },
-  { month: 'Dec', ux: 18, ui: 25, dev: 15 }
+  { month: "Jan", ux: 15, ui: 10, dev: 20 },
+  { month: "Feb", ux: 25, ui: 5, dev: 15 },
+  { month: "Mar", ux: 10, ui: 20, dev: 25 },
+  { month: "Apr", ux: 20, ui: 15, dev: 5 },
+  { month: "May", ux: 22, ui: 18, dev: 10 },
+  { month: "Jun", ux: 8, ui: 12, dev: 5 },
+  { month: "Jul", ux: 12, ui: 8, dev: 15 },
+  { month: "Aug", ux: 5, ui: 10, dev: 8 },
+  { month: "Sep", ux: 15, ui: 5, dev: 12 },
+  { month: "Oct", ux: 25, ui: 22, dev: 20 },
+  { month: "Nov", ux: 10, ui: 15, dev: 8 },
+  { month: "Dec", ux: 18, ui: 25, dev: 15 },
 ];
 const timeData = [
-  { month: 'Jan', Active: 80, Inactive: 40 },
-  { month: 'Feb', Active: 70, Inactive: 30 },
-  { month: 'Mar', Active: 75, Inactive: 35 },
-  { month: 'Apr', Active: 80, Inactive: 40 },
-  { month: 'May', Active: 60, Inactive: 20 },
-  { month: 'Jun', Active: 30, Inactive: 90 },
-  { month: 'Jul', Active: 20, Inactive: 100 },
-  { month: 'Aug', Active: 10, Inactive: 75 },
-  { month: 'Sep', Active: 55, Inactive: 65 },
-  { month: 'Oct', Active: 85, Inactive: 80 },
-  { month: 'Nov', Active: 65, Inactive: 60 },
-  { month: 'Dec', Active: 90, Inactive: 85 }
+  { month: "Jan", Active: 80, Inactive: 40 },
+  { month: "Feb", Active: 70, Inactive: 30 },
+  { month: "Mar", Active: 75, Inactive: 35 },
+  { month: "Apr", Active: 80, Inactive: 40 },
+  { month: "May", Active: 60, Inactive: 20 },
+  { month: "Jun", Active: 30, Inactive: 90 },
+  { month: "Jul", Active: 20, Inactive: 100 },
+  { month: "Aug", Active: 10, Inactive: 75 },
+  { month: "Sep", Active: 55, Inactive: 65 },
+  { month: "Oct", Active: 85, Inactive: 80 },
+  { month: "Nov", Active: 65, Inactive: 60 },
+  { month: "Dec", Active: 90, Inactive: 85 },
 ];
-
 
 // ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedGuardianRecord = useSelector((state: RootState) => state.getGuardian.listRecords);
+  const fetchedClassroomsRecord = useSelector(
+    (state: RootState) => state.getClassrooms.listRecords
+  );
+  const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
+  const error = useSelector((state: RootState) => state.getStudent.error);
 
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
-    document.title = 'EduCat Dashboard';
+    document.title = "EduCat Dashboard";
   }, []);
+
+  // Fetch students
+  useEffect(() => {
+    if (!fetchedLoading) {
+      fetchdashboardCardDetails();
+    }
+  }, [dispatch]);
+
+  const fetchdashboardCardDetails = async () => {
+    dispatch(fetchStudentsStart());
+    dispatch(fetchTeacherStart());
+    dispatch(fetchGuardiansStart());
+    dispatch(fetchClassroomsStart());
+    try {
+      const data = await studentService.getAll(localStorage.getItem("schoolId"));
+      const teacherData = await teacherService.getAll(localStorage.getItem("schoolId"));
+      const guardianData = await guardianService.getAll(localStorage.getItem("schoolId"));
+      const classroomData = await classroomService.getAllClassrooms(
+        localStorage.getItem("schoolId")
+      );
+
+      dispatch(fetchClassroomsSuccess(classroomData));
+      dispatch(fetchGuardiansSuccess(guardianData));
+      dispatch(fetchTeacherSuccess(teacherData));
+      dispatch(fetchStudentsSuccess(data));
+    } catch (err) {
+      dispatch(fetchClassroomsFailure(err));
+      dispatch(fetchGuardiansFailure(err));
+      dispatch(fetchStudentsFailure(err));
+      dispatch(fetchTeacherFailure(err));
+    }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen font-inter p-4 sm:py-6 md:py-8">
@@ -101,12 +163,14 @@ export default function AdminDashboard() {
             <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
             <div className="flex items-center rounded-full px-3 py-1 space-x-2">
               <img
-                src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
                 className="w-14 h-14 rounded-full"
                 alt="Admin"
               />
               <div className="text-xs">
-                <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
+                <div className="font-semibold text-gray-700">
+                  {user?.schoolName.toLocaleUpperCase()}
+                </div>
                 <div className="text-gray-400">{user?.email}</div>
               </div>
             </div>
@@ -120,29 +184,29 @@ export default function AdminDashboard() {
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label="Students"
-              value="120k"
+              label="Total Students"
+              value={fetchedRecord?.length}
               icon={<FaUserGraduate />}
               bgColor="bg-[#E6C9B0]"
               iconColor="text-orange-600"
             />
             <StatCard
-              label="Pending Courses"
-              value="03"
+              label="Total Guardians"
+              value={fetchedGuardianRecord?.length}
               icon={<FaBookReader />}
               bgColor="bg-[#BFC6D0]"
               iconColor="text-blue-700"
             />
             <StatCard
               label="Total Teachers"
-              value="37"
+              value={fetchedTeacherRecord?.length}
               icon={<FaChalkboardTeacher />}
               bgColor="bg-[#E9B6B6]"
               iconColor="text-red-600"
             />
             <StatCard
-              label="Certificates"
-              value="08"
+              label="Total Classrooms"
+              value={fetchedClassroomsRecord?.length}
               icon={<FaCertificate />}
               bgColor="bg-[#C9E3C3]"
               iconColor="text-green-600"
@@ -190,10 +254,7 @@ function AnalyticsChart() {
     <div className="bg-white rounded-md p-6 shadow-sm col-span-2 relative h-full">
       <h3 className="text-sm font-medium text-gray-800 mb-4">Study Statistics</h3>
       <ResponsiveContainer width="100%" height={250}>
-        <LineChart
-          data={analyticsData}
-          margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
-        >
+        <LineChart data={analyticsData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="colorUx" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#9F88FF" stopOpacity={0.4} />
@@ -217,12 +278,8 @@ function AnalyticsChart() {
             verticalAlign="top"
             align="right"
             height={24}
-            formatter={text =>
-              text === 'ux'
-                ? 'UX Design'
-                : text === 'ui'
-                  ? 'UI Design'
-                  : 'Development'
+            formatter={(text) =>
+              text === "ux" ? "UX Design" : text === "ui" ? "UI Design" : "Development"
             }
           />
           <Line
@@ -258,11 +315,11 @@ function AnalyticsChart() {
 // ─── ProgressCircle ───────────────────────────────────────────────────────────
 function ProgressCircle() {
   const ringData = [
-    { name: 'Completed Lessons', value: 70 },
-    { name: 'Visited Lessons', value: 30 },
-    { name: 'Empty', value: 100 }
+    { name: "Completed Lessons", value: 70 },
+    { name: "Visited Lessons", value: 30 },
+    { name: "Empty", value: 100 },
   ];
-  const COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
+  const COLORS = ["#3CCA7E", "#FF8C00", "#D6CCFF"];
 
   return (
     <div className="bg-white rounded-md p-6 shadow-sm relative h-full">
@@ -334,13 +391,9 @@ function ProgressCircle() {
 function TimeSpendingChart() {
   return (
     <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
-
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Time Spending</h3>
       <ResponsiveContainer width="100%" height={250}>
-        <BarChart
-          data={timeData}
-          margin={{ top: 20, right: 20, left: -10, bottom: 0 }}
-        >
+        <BarChart data={timeData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
           <XAxis
             dataKey="month"
@@ -348,16 +401,12 @@ function TimeSpendingChart() {
             axisLine={false}
             tickLine={false}
           />
-          <YAxis
-            tick={{ fontSize: 12, fill: "#4A5568" }}
-            axisLine={false}
-            tickLine={false}
-          />
+          <YAxis tick={{ fontSize: 12, fill: "#4A5568" }} axisLine={false} tickLine={false} />
           <Tooltip
             cursor={{ fill: "rgba(0,0,0,0.05)" }}
             contentStyle={{
               border: "none",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
             }}
           />
           <Legend verticalAlign="top" align="right" iconSize={14} />
@@ -369,37 +418,34 @@ function TimeSpendingChart() {
   );
 }
 
-
-
 // ─── UpcomingClasses ──────────────────────────────────────────────────────────
 function UpcomingClasses() {
   const classes = [
     {
-      title: 'UX Writing for Beginners',
-      instructor: 'Manny Lawson',
-      time: '12:30pm',
+      title: "UX Writing for Beginners",
+      instructor: "Manny Lawson",
+      time: "12:30pm",
       icon: <FaPencilAlt className="text-lg" />,
-      color: 'bg-blue-50 text-blue-600'
+      color: "bg-blue-50 text-blue-600",
     },
     {
-      title: 'How to Do Multitasking Easily',
-      instructor: 'Toby McGuire',
-      time: '12:30pm',
+      title: "How to Do Multitasking Easily",
+      instructor: "Toby McGuire",
+      time: "12:30pm",
       icon: <FaCheckSquare className="text-lg" />,
-      color: 'bg-green-50 text-green-600'
+      color: "bg-green-50 text-green-600",
     },
     {
-      title: 'UI Design Advance Course',
-      instructor: 'Esther Olive',
-      time: '12:30pm',
+      title: "UI Design Advance Course",
+      instructor: "Esther Olive",
+      time: "12:30pm",
       icon: <FaPencilRuler className="text-lg" />,
-      color: 'bg-orange-50 text-orange-600'
-    }
+      color: "bg-orange-50 text-orange-600",
+    },
   ];
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
-
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-base font-semibold text-gray-800">Upcoming Classes</h3>
         <button className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
@@ -434,8 +480,6 @@ function UpcomingClasses() {
           </li>
         ))}
       </ul>
-
-
     </div>
   );
 }
