@@ -22,9 +22,16 @@ import AdminNews from './pages/Admin/news/AdminNews';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
 import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
+
 import GuardianProfile from '../src/components/Guardian/Profile';
 import GuardianNews from './components/Guardian/GuardianNews';
 import GuardianNewsFeed from './components/Guardian/NewsFeed'
+
+import Dashboard from './pages/Admin/guardian/Dashboard';
+import { GuardianLayout } from './layouts/GuardianLayout';
+import Text from './pages/Guardian/text';
+
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('scrmToken');
@@ -76,7 +83,11 @@ function App() {
 
 
       {/* All Guardians routes here */}
+      <Route element={ <ProtectedRoute><GuardianLayout/></ProtectedRoute>}>
+        <Route path="/guardian/dashboard" element={<Text />} />
+      </Route>
 
+        <Route path="/guardian/dashboard" element={<Dashboard />} />
 
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />

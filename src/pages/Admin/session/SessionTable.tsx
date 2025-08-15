@@ -31,7 +31,8 @@ interface SessionTableProps {
     onToggleCheckbox: (id: string) => void;
     onDelete: (id: string) => void;
     onAddSession: () => void;
-    onRefresh: () => void
+    onRefresh: () => void;
+    setEditData: (data: any) => void;
 }
 
 const SessionTable: React.FC<SessionTableProps> = ({
@@ -52,7 +53,8 @@ const SessionTable: React.FC<SessionTableProps> = ({
     onToggleCheckbox,
     onDelete,
     onAddSession,
-    onRefresh
+    onRefresh,
+    setEditData,
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
@@ -269,17 +271,19 @@ const SessionTable: React.FC<SessionTableProps> = ({
                                     {/* <td className="p-3">{s.sessionId}</td> */}
                                     <td className="p-3">{s.sessionId}</td>
                                     <td className="p-3">{s.sessionName}</td>
-                                    <td className="p-3">{s.startDate}</td>
+                                    <td className="p-3">{s?.startDate?.split('T')[0]}</td>
                                     {/* <td className="p-3">{s.classrooms}</td> */}
                                     {/* <td className="p-3">{s.id}</td> */}
-                                    <td className="p-3">{s.endDate}</td>
+                                    <td className="p-3">{s?.endDate?.split('T')[0]}</td>
                                     <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
-                                        <FaTrash
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(s); onAddSession(); }}>
+                                            Edit
+                                            <FaEdit />
+                                        </span>
+                                        {/* <FaTrash
                                             className="cursor-pointer text-red-600 hover:text-red-800"
                                             onClick={() => onDelete(s.sessionId)}
-                                        />
+                                        /> */}
                                     </td>
                                 </tr>
                             ))

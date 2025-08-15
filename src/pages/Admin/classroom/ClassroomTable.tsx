@@ -14,7 +14,7 @@ type ReligionFilter = 'all' | 'christian' | 'muslim';
 
 interface GuardianTableProps {
     allRecords: classrooms[]
-    records: classrooms[];
+    records: any[];
     totalRecords: number;
     currentPage: number;
     totalPages: number;
@@ -57,7 +57,7 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
     onRefresh,
     viewDetails
 }) => {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
 
     const exportToExcel = () => {
@@ -236,7 +236,7 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
                                 />
                             </th>
                             {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-                            <th className="p-3 min-w-[120px]">School Id</th>
+                            {/* <th className="p-3 min-w-[120px]">School Id</th> */}
                             <th className="p-3 min-w-[120px]">Name</th>
                             <th className="p-3 min-w-[120px]">Teacher Id</th>
                             <th className="p-3 min-w-[100px]">Capacity</th>
@@ -273,17 +273,15 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
                                             className="w-10 h-10 rounded-full"
                                         />
                                     </td> */}
-                                    <td className="p-3">{c.schoolId}</td>
+                                    {/* <td className="p-3">{c.schoolId}</td> */}
                                     <td className="p-3">{c.name}</td>
-                                    <td className="p-3">{c.teacherId}</td>
+                                    <td className="p-3">{c?.teacher?.firstname + " " + c?.teacher?.lastname}</td>
                                     <td className="p-3">{c.capacity}</td>
-                                    <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800"  onClick={() => viewDetails(c)}/>
-                                        {/* <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
-                                        <FaTrash
-                                            className="cursor-pointer text-red-600 hover:text-red-800"
-                                            onClick={() => onDelete(g.guardianId)}
-                                        /> */}
+                                    <td className="p-3">
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border rounded-lg justify-center p-1.5" onClick={() => viewDetails(c)}>
+                                            <FaEye />
+                                            view
+                                        </span>
                                     </td>
                                 </tr>
                             ))
