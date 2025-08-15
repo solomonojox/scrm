@@ -238,7 +238,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                     </td>
                                     <td className="p-3">{student?.firstname}</td>
                                     <td className="p-3">{student?.lastname}</td>
-                                    <td className="p-3">{student?.classroom}</td>
+                                    <td className="p-3">{student?.classroomName}</td>
                                     <td className="p-3">
                                         {student?.dateOfBirth ? new Date(student?.dateOfBirth).toLocaleDateString() : '-'}
                                     </td>

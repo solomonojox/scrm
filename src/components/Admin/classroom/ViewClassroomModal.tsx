@@ -480,7 +480,7 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
                   ) : (
                     currentRecords.map((c, index) => (
                       <tr
-                        key={c.classroomId}
+                        key={index}
                         className={`border-t hover:bg-gray-100 ${
                           index % 2 === 0 ? "bg-white" : "bg-gray-50"
                         }`}

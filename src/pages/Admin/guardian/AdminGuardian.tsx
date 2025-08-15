@@ -28,6 +28,7 @@ const AdminGuardian: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
+  const [editData, setEditData] = useState<any>(null);
   
   const recordsPerPage = 5;
 
@@ -147,12 +148,14 @@ const AdminGuardian: React.FC = () => {
           onDelete={handleDelete}
           onAddGuardian={() => setIsModalOpen(true)}
           onRefresh={fetchGuardian}
+          setEditData={setEditData}
         />
 
         {isModalOpen && (
           <GuardianForm
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => {setIsModalOpen(false); setEditData(null)}}
             onGuardianAdded={fetchGuardian}
+            editData={editData}
           />
         )}
       </div>

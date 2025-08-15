@@ -30,7 +30,8 @@ interface GuardianTableProps {
     onToggleCheckbox: (id: string) => void;
     onDelete: (id: string) => void;
     onAddGuardian: () => void;
-    onRefresh: () => void
+    onRefresh: () => void;
+    setEditData: (data: any) => void;
 }
 
 const GuardianTable: React.FC<GuardianTableProps> = ({
@@ -51,7 +52,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     onToggleCheckbox,
     onDelete,
     onAddGuardian,
-    onRefresh
+    onRefresh,
+    setEditData,
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
@@ -59,7 +61,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     const exportToExcel = () => {
         const ws = XLSX.utils.json_to_sheet(records);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Guardians Details');
+        XLSX.utils.book_append_sheet(wb, ws, "Guardians Details");
         XLSX.writeFile(wb, "guardians.xlsx");
     };
 
@@ -67,17 +69,17 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
         const doc = new jsPDF();
         const title = "Guardians List";
         const headers = [
-            ["First Name", "Last Name", "Phone", "Address", "Nationality", "State", "Religion"]
+            ["First Name", "Last Name", "Phone", "Address", "Nationality", "State", "Religion"],
         ];
 
         const data = records.map((guardian) => [
-            guardian.firstname || '',
-            guardian.lastname || '',
-            guardian.phone || '',
-            guardian.homeAddress || '',
-            guardian.nationality || '',
-            guardian.stateOfOrigin || '',
-            guardian.religion || ''
+            guardian.firstname || "",
+            guardian.lastname || "",
+            guardian.phone || "",
+            guardian.homeAddress || "",
+            guardian.nationality || "",
+            guardian.stateOfOrigin || "",
+            guardian.religion || "",
         ]);
 
         doc.text(title, 14, 15);
@@ -86,7 +88,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
             body: data,
             startY: 20,
             styles: { fontSize: 8 },
-            headStyles: { fillColor: [255, 165, 0] }
+            headStyles: { fillColor: [255, 165, 0] },
         });
 
         doc.save("guardians.pdf");
@@ -118,7 +120,9 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             alt="Admin"
                         />
                         <div className="text-xs">
-                            <div className="font-semibold text-gray-700">{user?.schoolName.toLocaleUpperCase()}</div>
+                            <div className="font-semibold text-gray-700">
+                                {user?.schoolName.toLocaleUpperCase()}
+                            </div>
                             <div className="text-gray-400">{user?.email}</div>
                         </div>
                     </div>
@@ -144,28 +148,37 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                 <div className="py-1">
                                     <button
                                         onClick={() => {
-                                            onReligionFilterChange('all');
+                                            onReligionFilterChange("all");
                                             setShowReligionFilter(false);
                                         }}
-                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === 'all' ? 'bg-orange-100 text-orange-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === "all"
+                                                ? "bg-orange-100 text-orange-700"
+                                                : "text-gray-700 hover:bg-gray-100"
+                                            }`}
                                     >
                                         All Religions
                                     </button>
                                     <button
                                         onClick={() => {
-                                            onReligionFilterChange('christian');
+                                            onReligionFilterChange("christian");
                                             setShowReligionFilter(false);
                                         }}
-                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === 'christian' ? 'bg-orange-100 text-orange-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === "christian"
+                                                ? "bg-orange-100 text-orange-700"
+                                                : "text-gray-700 hover:bg-gray-100"
+                                            }`}
                                     >
                                         Christian
                                     </button>
                                     <button
                                         onClick={() => {
-                                            onReligionFilterChange('muslim');
+                                            onReligionFilterChange("muslim");
                                             setShowReligionFilter(false);
                                         }}
-                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === 'muslim' ? 'bg-orange-100 text-orange-700' : 'text-gray-700 hover:bg-gray-100'}`}
+                                        className={`block w-full text-left px-4 py-2 text-sm ${religionFilter === "muslim"
+                                                ? "bg-orange-100 text-orange-700"
+                                                : "text-gray-700 hover:bg-gray-100"
+                                            }`}
                                     >
                                         Muslim
                                     </button>
@@ -209,14 +222,12 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
 
             {/* Search and Filter Info */}
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                {(searchQuery || religionFilter !== 'all') && (
+                {(searchQuery || religionFilter !== "all") && (
                     <div className="text-sm text-gray-600">
                         Showing {totalRecords} result{totalRecords !== 1 ? "s" : ""}
                         {searchQuery && ` for "${searchQuery}"`}
-                        {religionFilter !== 'all' && ` (Filtered by ${religionFilter})`}
-                        {totalRecords === 0 && (
-                            <span className="text-red-500 ml-2">No guardians found</span>
-                        )}
+                        {religionFilter !== "all" && ` (Filtered by ${religionFilter})`}
+                        {totalRecords === 0 && <span className="text-red-500 ml-2">No guardians found</span>}
                     </div>
                 )}
             </div>
@@ -258,7 +269,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             records.map((g, index) => (
                                 <tr
                                     key={g.guardianId}
-                                    className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+                                    className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                        }`}
                                 >
                                     <td className="p-3">
                                         <input
@@ -282,13 +294,13 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{g.nationality}</td>
                                     <td className="p-3">{g.stateOfOrigin}</td>
                                     <td className="p-3">{g.religion}</td>
-                                    <td className="p-3 flex gap-3">
-                                        <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                                        <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
-                                        <FaTrash
-                                            className="cursor-pointer text-red-600 hover:text-red-800"
-                                            onClick={() => onDelete(g.guardianId)}
-                                        />
+                                    <td className="p-3 ">
+                                        {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
+                                            Edit
+                                            <FaEdit />
+                                        </span>
+                                        {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
                                     </td>
                                 </tr>
                             ))
@@ -304,8 +316,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                         onClick={() => onPageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className={`px-6 py-2 border rounded ${currentPage === 1
-                            ? "bg-white text-black border-gray-600 cursor-not-allowed"
-                            : "bg-orange-500 text-white hover:bg-orange-600"
+                                ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                                : "bg-orange-500 text-white hover:bg-orange-600"
                             }`}
                     >
                         Prev
@@ -318,8 +330,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                         onClick={() => onPageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className={`px-6 py-2 border rounded ${currentPage === totalPages
-                            ? "bg-white text-black border-gray-600 cursor-not-allowed"
-                            : "bg-orange-500 text-white hover:bg-orange-600"
+                                ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                                : "bg-orange-500 text-white hover:bg-orange-600"
                             }`}
                     >
                         Next

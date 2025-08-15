@@ -1,41 +1,52 @@
-import React, { useState } from "react";
-import { FaComment } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-// import { guardianService } from "../../../Services/Guardian/guardian";
+import Select from "react-select";
 import { sessionService } from "../../../Services/Session";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 interface SessionFormProps {
   onClose: () => void;
   onSessionAdded: () => void;
+  editData?: any;
 }
 
-const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded }) => {
+const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, editData }) => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    nationality: "",
-    state: "",
-    religion: "",
-    email: "",
-    username: "",
-    occupation: "",
-    workAddress: "",
-    relationship: "",
-    nin: "",
-    bvn: "",
+    sessionId: "",
+    sessionName: "",
+    startDate: "",
+    endDate: ""
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  // console.log(editData)
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setImagePreview(URL.createObjectURL(file));
+  const sessionNameOptions = [
+    { value: "First term", label: "First Term" },
+    { value: "Second term", label: "Second Term" },
+    { value: "Third term", label: "Third Term" }
+  ];
+
+  useEffect(() => {
+    if (editData) {
+      setFormData({
+        sessionId: editData.sessionId || "",
+        sessionName: editData.sessionName || "",
+        startDate: editData.startDate || "",
+        endDate: editData.endDate || ""
+      });
+    }
+  }, [editData]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (selectedOption: any) => {
+    setFormData(prev => ({ ...prev, sessionName: selectedOption.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,47 +55,31 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded }) =>
     setFormError("");
 
     const payload = {
-      schoolId: "d5bca6af-0658-4f9d-a6a4-08ddcc154429",
-      firstname: formData.firstName,
-      lastname: formData.lastName,
-      relationship: formData.relationship,
-      phone: formData.phone,
-      occupation: formData.occupation,
-      homeAddress: formData.address,
-      workAddress: formData.workAddress,
-      stateOfOrigin: formData.state,
-      nationality: formData.nationality,
-      religion: formData.religion,
-      email: formData.email,
-      username: formData.username,
-      nin: formData.nin,
-      bvn: formData.bvn,
+      schoolId: user?.schoolId,
+      sessionId: formData.sessionId,
+      sessionName: formData.sessionName,
+      startDate: new Date(formData.startDate).toISOString(),
+      endDate: new Date(formData.endDate).toISOString()
     };
 
     try {
-      const res = await sessionService.create(payload);
-      toast.success(res.responseMessage || "Session added!");
-      onSessionAdded();
-      setTimeout(() => {
-        onClose();
-        setFormData({
-          firstName: "",
-          lastName: "",
-          phone: "",
-          address: "",
-          nationality: "",
-          state: "",
-          religion: "",
-          email: "",
-          username: "",
-          occupation: "",
-          workAddress: "",
-          relationship: "",
-          nin: "",
-          bvn: "",
-        });
-        setImagePreview(null);
-      }, 2000);
+      if (editData) {
+        toast.info("Edit service unavailable. Please try again later.");
+      } else {
+
+        const res = await sessionService.addSession(payload);
+        toast.success(res.responseMessage || "Session added successfully!");
+        onSessionAdded();
+        setTimeout(() => {
+          onClose();
+          setFormData({
+            sessionId: "",
+            sessionName: "",
+            startDate: "",
+            endDate: ""
+          });
+        }, 2000);
+      }
     } catch (err: any) {
       const msg = err.response?.data?.responseMessage || "Submission failed";
       setFormError(msg);
@@ -105,52 +100,56 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded }) =>
           <h2 className="text-lg font-semibold mb-4 text-center">Add Session</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Session ID</label>
               <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
-                  +
-                </span>
-              )}
-            </label>
-            {[
-              ["firstName", "First Name"],
-              ["lastName", "Last Name"],
-              ["phone", "Phone Number"],
-              ["address", "Home Address"],
-              ["nationality", "Nationality"],
-              ["state", "State of Origin"],
-              ["religion", "Religion"],
-              ["email", "Email"],
-              ["username", "Username"],
-              ["occupation", "Occupation"],
-              ["workAddress", "Work Address"],
-              ["relationship", "Relationship"],
-              ["nin", "NIN"],
-              ["bvn", "BVN"],
-            ].map(([key, label]) => (
-              <input
-                key={key}
-                type={key === "email" ? "email" : "text"}
-                name={key}
-                placeholder={label}
-                required={["firstName", "lastName", "phone"].includes(key)}
+                type="text"
+                name="sessionId"
+                placeholder="Session ID eg. 2023/2024"
+                required
                 className="border px-3 py-2 rounded text-sm w-full"
-                value={formData[key]}
+                value={formData.sessionId}
                 onChange={handleInputChange}
               />
-            ))}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Term</label>
+              <Select
+                options={sessionNameOptions}
+                value={sessionNameOptions.find(opt => opt.value === formData.sessionName)}
+                name="sessionName"
+                onChange={handleSelectChange}
+                placeholder="Select Term"
+                className="text-sm"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+              <input
+                type="datetime-local"
+                name="startDate"
+                required
+                className="border px-3 py-2 rounded text-sm w-full"
+                value={formData.startDate}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+              <input
+                type="datetime-local"
+                name="endDate"
+                required
+                className="border px-3 py-2 rounded text-sm w-full"
+                value={formData.endDate}
+                onChange={handleInputChange}
+              />
+            </div>
+
             <div className="col-span-2 flex justify-end gap-3 mt-4">
               <button
                 type="button"

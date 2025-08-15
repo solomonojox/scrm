@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaComment } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { guardianService } from "../../../Services/Guardian/guardian";
@@ -6,17 +6,18 @@ import { guardianService } from "../../../Services/Guardian/guardian";
 interface GuardianFormProps {
   onClose: () => void;
   onGuardianAdded: () => void;
+  editData?: any;
 }
 
-const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }) => {
+const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, editData }) => {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     phone: "",
-    address: "",
+    homeAddress: "",
     nationality: "",
     state: "",
     religion: "",
@@ -28,6 +29,17 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded })
     nin: "",
     bvn: "",
   });
+
+  useEffect(() => {
+    if (editData) {
+      setFormData({
+        ...editData,
+        nin: editData.nin.toString(),
+        bvn: editData.bvn.toString(),
+      });
+    }
+  }, [editData]);
+  // console.log(editData)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -44,12 +56,12 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded })
 
     const payload = {
       schoolId: localStorage.getItem('schoolId'),
-      firstname: formData.firstName,
-      lastname: formData.lastName,
+      firstname: formData.firstname,
+      lastname: formData.lastname,
       relationship: formData.relationship,
       phone: formData.phone,
       occupation: formData.occupation,
-      homeAddress: formData.address,
+      homeAddress: formData.homeAddress,
       workAddress: formData.workAddress,
       stateOfOrigin: formData.state,
       nationality: formData.nationality,
@@ -61,29 +73,34 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded })
     };
 
     try {
-      const res = await guardianService.create(payload);
-      toast.success(res.responseMessage || "Guardian added!");
-      onGuardianAdded();
-      setTimeout(() => {
-        onClose();
-        setFormData({
-          firstName: "",
-          lastName: "",
-          phone: "",
-          address: "",
-          nationality: "",
-          state: "",
-          religion: "",
-          email: "",
-          username: "",
-          occupation: "",
-          workAddress: "",
-          relationship: "",
-          nin: "",
-          bvn: "",
-        });
-        setImagePreview(null);
-      }, 2000);
+
+      if (editData) {
+        toast.info("Service unavailable. Please try again later.");
+      } else {
+        const res = await guardianService.create(payload);
+        toast.success(res.responseMessage || "Guardian added!");
+        onGuardianAdded();
+        setTimeout(() => {
+          onClose();
+          setFormData({
+            firstname: "",
+            lastname: "",
+            phone: "",
+            homeAddress: "",
+            nationality: "",
+            state: "",
+            religion: "",
+            email: "",
+            username: "",
+            occupation: "",
+            workAddress: "",
+            relationship: "",
+            nin: "",
+            bvn: "",
+          });
+          setImagePreview(null);
+        }, 2000);
+      }
     } catch (err: any) {
       const msg = err.response?.data?.responseMessage || "Submission failed";
       setFormError(msg);
@@ -124,12 +141,12 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded })
               )}
             </label>
             {[
-              ["firstName", "First Name"],
-              ["lastName", "Last Name"],
+              ["firstname", "First Name"],
+              ["lastname", "Last Name"],
               ["phone", "Phone Number"],
-              ["address", "Home Address"],
+              ["homeAddress", "Home Address"],
               ["nationality", "Nationality"],
-              ["state", "State of Origin"],
+              ["stateOfOrigin", "State of Origin"],
               ["religion", "Religion"],
               ["email", "Email"],
               ["username", "Username"],

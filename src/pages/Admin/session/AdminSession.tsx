@@ -24,6 +24,7 @@ const AdminSession: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
+  const [editData, setEditData] = useState<any>(null);
 
   const recordsPerPage = 5;
 
@@ -141,12 +142,14 @@ const AdminSession: React.FC = () => {
           onDelete={handleDelete}
           onAddSession={() => setIsModalOpen(true)}
           onRefresh={fetchSession}
+          setEditData={setEditData}
         />
 
         {isModalOpen && (
           <SessionForm
             onClose={() => setIsModalOpen(false)}
             onSessionAdded={fetchSession}
+            editData={editData}
           />
         )}
       </div>
