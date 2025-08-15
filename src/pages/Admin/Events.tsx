@@ -9,9 +9,12 @@ import {
   FaAngleDown,
   FaComment,
   FaSearch,
+  FaRegBell,
 } from "react-icons/fa";
 import Header from "./Adminheader";
 import Side from "./AdminSidebar";
+import { BiMessageAlt } from "react-icons/bi";
+import { useAuth } from "../../Context/Auth/useAuth";
 
 const newsItems = new Array(10).fill({
   title: "PTA Meeting",
@@ -23,6 +26,7 @@ const newsItems = new Array(10).fill({
 });
 
 const AllEvents = () => {
+  const { user } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -72,43 +76,42 @@ const AllEvents = () => {
 
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
-    document.title = 'EduCat Events';
+    document.title = "EduCat Events";
   }, []);
 
   return (
     <>
       <div>
-
         {/* Main Content */}
-        <div className="w-full bg-gray-100 p-4">
-          {/* Top bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-center ml-1 px-6 py-4 mt-[8px] rounded-md bg-white shadow-md">
-            <div className="w-full max-w-sm">
-              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2">
-                <FaSearch className="text-gray-400" />
+        <div className="w-full bg-gray-100 p-8">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center  bg-white shadow-md rounded-xl p-1 mb-4">
+            <div className="w-full sm:w-auto mb-4 sm:mb-0">
+              <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+                <FaSearch className="text-gray-400 text-lg" />
                 <input
                   type="text"
                   placeholder="Search"
+                  // value={headerSearchQuery}
+                  // onChange={onHeaderSearchChange}
                   className="ml-2 bg-transparent outline-none w-full text-sm"
                 />
               </div>
             </div>
-            <div className="flex items-center space-x-4 mt-4 sm:mt-0">
-              <FaBell
-                className="text-gray-500 hover:text-orange-500 cursor-pointer"
-                onClick={() => setShowModal(true)}
-              />
-
-              <FaComment className="text-gray-500 hover:text-orange-500 cursor-pointer" />
-              <div className="flex items-center bg-gray-100 rounded-full px-3 py-1 space-x-2">
+            <div className="flex items-center space-x-4">
+              <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+              <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+              <div className="flex items-center rounded-full px-3 py-1 space-x-2">
                 <img
-                  src="https://storage.googleapis.com/a1aa/image/05c98d25-08e9-4bce-610b-3688b9c7b241.jpg"
-                  className="w-8 h-8 rounded-full"
+                  src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
+                  className="w-14 h-14 rounded-full"
                   alt="Admin"
                 />
                 <div className="text-xs">
-                  <div className="font-semibold text-gray-700">Gold Academy</div>
-                  <div className="text-gray-400">Admin</div>
+                  <div className="font-semibold text-gray-700">
+                    {user?.schoolName.toLocaleUpperCase()}
+                  </div>
+                  <div className="text-gray-400">{user?.email}</div>
                 </div>
               </div>
             </div>
@@ -183,7 +186,8 @@ const AllEvents = () => {
               </tbody>
             </table>
             <div className="p-3 text-center text-sm text-gray-600">
-              <span className="text-orange-500">&lt;</span> Page 1 of 1 <span className="text-orange-500">&gt;</span>
+              <span className="text-orange-500">&lt;</span> Page 1 of 1{" "}
+              <span className="text-orange-500">&gt;</span>
             </div>
           </div>
 
@@ -193,9 +197,7 @@ const AllEvents = () => {
               <div className="bg-white rounded-lg w-[95%] max-w-md">
                 <div className="bg-orange-500 h-3 rounded-t-lg"></div>
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold mb-4 text-center">
-                    Add Event
-                  </h2>
+                  <h2 className="text-xl font-semibold mb-4 text-center">Add Event</h2>
                   <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
                     <input
                       type="text"
@@ -210,8 +212,8 @@ const AllEvents = () => {
                       name="description"
                       placeholder="Event description"
                       required
-                      className="border px-3 py-2 rounded"
-                      rows="3"
+                      className="border px-3 py-2 rounded resize-none"
+                      // rows="3"
                       value={formData.description}
                       onChange={handleInputChange}
                     ></textarea>
