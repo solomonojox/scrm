@@ -23,6 +23,8 @@ import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
 import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
 import Dashboard from './pages/Admin/guardian/Dashboard';
+import { GuardianLayout } from './layouts/GuardianLayout';
+import Text from './pages/Guardian/text';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -75,6 +77,9 @@ function App() {
 
 
       {/* All Guardians routes here */}
+      <Route element={ <ProtectedRoute><GuardianLayout/></ProtectedRoute>}>
+        <Route path="/guardian/dashboard" element={<Text />} />
+      </Route>
 
         <Route path="/guardian/dashboard" element={<Dashboard />} />
 
