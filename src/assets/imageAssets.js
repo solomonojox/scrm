@@ -9,6 +9,7 @@ import fif from './fifteen.png';
 import meet from './meeti.png';
 import student from './student.png';
 import claap from './claap.png';
+import log from './log.jpg';
 const imageAssets = {
     loginImage,
     logo,
@@ -21,6 +22,7 @@ const imageAssets = {
       meet,
     student,
     claap,
+    log,
 }
 
 export default imageAssets;

@@ -1,9 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from 'react';
-
-
 import Adminheader from './Adminheader';
 import AdminSidebar from './AdminSidebar';
 import NotificationModal from './Notification';
+import log from '../../assets/imageAssets';
+import { paymentService } from "../../Services/Payment";
 import {
   FaUserGraduate,
   FaChalkboardTeacher,
@@ -37,6 +40,9 @@ import {
 } from 'recharts';
 import { BiMessageAlt } from 'react-icons/bi';
 import { useAuth } from '../../Context/Auth/useAuth';
+import imageAssets from '../../assets/imageAssets';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPaymentFailure, fetchPaymentStart, fetchPaymentSuccess } from '../../Store/paymentSlice';
 
 // ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
@@ -264,6 +270,7 @@ function ProgressCircle() {
   ];
   const COLORS = ['#3CCA7E', '#FF8C00', '#D6CCFF'];
 
+
   return (
     <div className="bg-white rounded-md p-6 shadow-sm relative h-full">
       <div className="flex justify-between items-center mb-4">
@@ -371,71 +378,74 @@ function TimeSpendingChart() {
 
 
 
-// ─── UpcomingClasses ──────────────────────────────────────────────────────────
+
+
 function UpcomingClasses() {
-  const classes = [
-    {
-      title: 'UX Writing for Beginners',
-      instructor: 'Manny Lawson',
-      time: '12:30pm',
-      icon: <FaPencilAlt className="text-lg" />,
-      color: 'bg-blue-50 text-blue-600'
-    },
-    {
-      title: 'How to Do Multitasking Easily',
-      instructor: 'Toby McGuire',
-      time: '12:30pm',
-      icon: <FaCheckSquare className="text-lg" />,
-      color: 'bg-green-50 text-green-600'
-    },
-    {
-      title: 'UI Design Advance Course',
-      instructor: 'Esther Olive',
-      time: '12:30pm',
-      icon: <FaPencilRuler className="text-lg" />,
-      color: 'bg-orange-50 text-orange-600'
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const fetchedRecord = useSelector((state) => state.getPayment.listRecords);
+  const fetchedLoading = useSelector((state) => state.getPayment.loading);
+  const error = useSelector((state) => state.getPayment.error);
+  console.log(fetchedRecord)
+
+  useEffect(() => {
+    if (!fetchedLoading) {
+      fetchPayments();
     }
-  ];
+  }, []);
+
+  const fetchPayments = async () => {
+    dispatch(fetchPaymentStart());
+    try {
+      const data = await paymentService.getPaymentsBySchoolId(localStorage.getItem('schoolId'));
+      dispatch(fetchPaymentSuccess(data));
+    } catch (err) {
+      dispatch(fetchPaymentFailure(err.message));
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
-
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-base font-semibold text-gray-800">Upcoming Classes</h3>
+        <h3 className="text-base font-semibold text-gray-800">
+         Fee Payment History
+        </h3>
         <button className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
           See All
         </button>
       </div>
+
       <ul className="space-y-3 flex-1">
         {classes.map((cls, i) => (
           <li
             key={i}
-            className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
+            className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
           >
-            <div className="flex items-center space-x-3">
-              <div className={`w-8 h-8 flex items-center justify-center rounded-md ${cls.color}`}>
-                {cls.icon}
-              </div>
-              <div>
-                <div className="text-sm font-semibold text-gray-800">{cls.title}</div>
-                <div className="text-[11px] text-gray-500">{cls.instructor}</div>
-              </div>
+            <div
+              className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg ${cls.color}`}
+            >
+              <img
+                src={cls.imgSrc}
+                alt={cls.name}
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
-            <div className="flex items-center space-x-4 text-gray-500 text-[11px]">
-              <div className="flex items-center space-x-1">
-                <FaClock className="text-[14px]" />
-                <span>{cls.time}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <FaUserFriends className="text-[14px]" />
-                <span>12 Students</span>
+
+            <div className="ml-3 w-full">
+              <div className="text-sm font-semibold text-gray-800">{cls.name}</div>
+              <div className="text-[11px] text-gray-500">{cls.amtpaid}</div>
+              <div className="flex justify-between items-center text-gray-500 text-[11px] mt-1">
+                <span>{cls.date}</span>
+                <div className="flex items-center space-x-1">
+                  <FaClock className="text-[12px]" />
+                  <span>{cls.time}</span>
+                </div>
               </div>
             </div>
           </li>
         ))}
       </ul>
-
-
     </div>
   );
 }
