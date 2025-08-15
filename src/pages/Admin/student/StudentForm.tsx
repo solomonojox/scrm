@@ -18,7 +18,7 @@ interface OptionType {
 }
 
 const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, editData }) => {
-    console.log(editData);
+    // console.log(editData);
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
     const [formError, setFormError] = useState("");
@@ -48,7 +48,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                 firstname: editData.firstname || "",
                 lastname: editData.lastname || "",
                 dateOfBirth: editData.dateOfBirth ? editData.dateOfBirth.split('T')[0] : "",
-                homeAddress: editData.homeAddress || "",
+                homeAddress: editData.address || "",
                 guardianId: editData.guardianId || "",
                 teacherId: editData.teacherId || "",
                 currentTerm: editData.currentTerm || 1,
