@@ -80,8 +80,8 @@ function App() {
 
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
-   <Route path="/profile" element={<GuardianProfile />} />
-      <Route path="/news" element={<GuardianNews/>} />
+   <Route path="/guardian/profile" element={<GuardianProfile />} />
+      <Route path="/guardian/news" element={<GuardianNews/>} />
        <Route path="/newsfeed/:id" element={<GuardianNewsFeed/>} />
 
       {/* All students routes here */}
