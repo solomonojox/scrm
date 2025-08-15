@@ -15,7 +15,6 @@ import {
   ChartData,
 } from "chart.js";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
-import Sidebar from "./Sidebar";
 
 /* Register chart.js elements + plugins */
 ChartJS.register(
@@ -97,7 +96,12 @@ const subjects = [
   "PE",
 ];
 
-function gradientForBar(ctx: CanvasRenderingContext2D, chartArea: any, colorStart: string, colorEnd: string) {
+function gradientForBar(
+  ctx: CanvasRenderingContext2D,
+  chartArea: any,
+  colorStart: string,
+  colorEnd: string
+) {
   const { top, bottom } = chartArea;
   const grad = ctx.createLinearGradient(0, top + (bottom - top) * 0.05, 0, bottom);
   grad.addColorStop(0, colorStart);
@@ -121,7 +125,7 @@ const barData: ChartData<"bar"> = {
       maxBarThickness: 28,
       borderSkipped: false,
       hoverBorderWidth: 0,
-      shadowBlur: 14,
+      //   shadowBlur: 14,
     },
     {
       label: "Joy",
@@ -136,7 +140,7 @@ const barData: ChartData<"bar"> = {
       maxBarThickness: 28,
       borderSkipped: false,
       hoverBorderWidth: 0,
-      shadowBlur: 12,
+      //   shadowBlur: 12,
     },
   ],
 };
@@ -153,7 +157,7 @@ const barOptions: ChartOptions<"bar"> = {
     tooltip: {
       enabled: true,
       backgroundColor: "#111827",
-      titleFont: { size: 12, weight: "600" },
+      titleFont: { size: 12 },
       bodyFont: { size: 11 },
       padding: 10,
       cornerRadius: 8,
@@ -204,7 +208,7 @@ const lineData: ChartData<"line"> = {
       },
       borderWidth: 2.6,
       pointRadius: 4,
-      shadowBlur: 14,
+      //   shadowBlur: 14,
     },
     {
       label: "Joy",
@@ -225,7 +229,7 @@ const lineData: ChartData<"line"> = {
       },
       borderWidth: 2.6,
       pointRadius: 4,
-      shadowBlur: 12,
+      //   shadowBlur: 12,
     },
   ],
 };
@@ -241,7 +245,7 @@ const lineOptions: ChartOptions<"line"> = {
     tooltip: {
       enabled: true,
       backgroundColor: "#0f172a",
-      titleFont: { size: 12, weight: "600" },
+      titleFont: { size: 12, weight: 600 },
       bodyFont: { size: 11 },
       padding: 10,
       cornerRadius: 8,
@@ -308,54 +312,19 @@ const doughnutOptions: ChartOptions<"doughnut"> = {
   },
 };
 
-export default function Dashboard(): React.JSX.Element {
+export default function GuardianDashboard(): React.JSX.Element {
   const barRef = useRef<any>(null);
   const lineRef = useRef<any>(null);
 
   return (
-    <div className="min-h-screen bg-gray-100 font-inter">
-      {/* Top-level flex to place Sidebar and Main content side-by-side */}
-      <div className="flex min-h-screen">
-        
-          <Sidebar />
-        
-
-        {/* Main content */}
-        <main className="mr-10  md:p-8">
-          {/* Top bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between bg-white border rounded-lg px-3 py-2 mb-6 shadow-sm">
-            <div className="flex items-center w-full sm:w-auto">
-              <div className="relative w-full sm:w-[320px]">
-                <input
-                  className="w-full pl-10 pr-3 py-2 rounded-full border border-gray-300 text-gray-400 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                  placeholder="Search"
-                  type="search"
-                />
-                <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none" />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-4 mt-3 sm:mt-0 sm:ml-4 text-gray-700 text-sm">
-              <button aria-label="Notifications" className="text-gray-600 hover:text-gray-900 text-lg">
-                <i className="far fa-bell" />
-              </button>
-              <button aria-label="Messages" className="text-gray-600 hover:text-gray-900 text-lg">
-                <i className="far fa-comment-alt" />
-              </button>
-              <div className="flex items-center space-x-2">
-                <img alt="Avatar" className="w-10 h-10 rounded-full object-cover" src="https://placehold.co/40x40/8aacc8/ffffff/png?text=Avatar" />
-                <div className="text-right leading-tight">
-                  <p className="font-semibold text-gray-900 text-xs">David Ethan</p>
-                  <p className="text-gray-500 text-[10px]">Guardian</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
+    <div className="">
+      <main className="mx-4 lg:mx-0">
           {/* Welcome & button */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h2 className="font-semibold text-gray-900 text-lg mb-3 sm:mb-0">Welcome To EduCat(SCRM)</h2>
-            <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-1 whitespace-nowrap hover:bg-orange-700 transition">
+            <h2 className="font-semibold text-gray-900 text-[20px] mb-3 sm:mb-0">
+              Welcome To EduCat(SCRM)
+            </h2>
+            <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-3 whitespace-nowrap hover:bg-orange-700 transition">
               View Bank Account Details
             </button>
           </div>
@@ -364,29 +333,29 @@ export default function Dashboard(): React.JSX.Element {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <div className="bg-[#e6c9b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[10px] text-gray-600 mb-1">Total Number of Pupils</p>
+                <p className="text-[13px] text-gray-600 mb-1">Total Number of Pupils</p>
                 <p className="font-semibold text-2xl text-gray-900 leading-none">2</p>
               </div>
               <i className="fas fa-user-graduate text-orange-500 text-3xl" />
             </div>
             <div className="bg-[#c3cbd4] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[10px] text-gray-600 mb-1">Savings Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">N200,000</p>
+                <p className="text-[13px] text-gray-600 mb-1">Savings Account Balance</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 200,000</p>
               </div>
               <i className="fas fa-wallet text-gray-700 text-3xl" />
             </div>
             <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[10px] text-gray-600 mb-1">Loan Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">N300,000</p>
+                <p className="text-[13px] text-gray-600 mb-1">Loan Account Balance</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 300,000</p>
               </div>
               <i className="fas fa-coins text-red-500 text-3xl" />
             </div>
             <div className="bg-[#c9e6b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[10px] text-gray-600 mb-1">First Term School Fees</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">N700,000</p>
+                <p className="text-[13px] text-gray-600 mb-1">First Term School Fees</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 700,000</p>
               </div>
               <i className="fas fa-hand-holding-usd text-green-600 text-3xl" />
             </div>
@@ -397,8 +366,18 @@ export default function Dashboard(): React.JSX.Element {
             <div className="relative inline-block text-left">
               <button className="inline-flex justify-center rounded-md border border-orange-600 bg-orange-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-orange-700">
                 Weekly
-                <svg className="-mr-1 ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+                <svg
+                  className="-mr-1 ml-2 h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 9l-7 7-7-7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
                 </svg>
               </button>
             </div>
@@ -409,16 +388,26 @@ export default function Dashboard(): React.JSX.Element {
             {/* Left column */}
             <div className="space-y-6 lg:col-span-2">
               {/* Academic performance (bar) */}
-              <div className="bg-white rounded-lg p-4 shadow-md overflow-x-auto" style={{ minWidth: 320 }}>
-                <h3 className="font-semibold text-xs text-gray-900 mb-3">Academic Performance</h3>
+              <div
+                className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
+                style={{ minWidth: 320 }}
+              >
+                <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
+                  Academic Performance
+                </h3>
                 <div style={{ height: 320 }}>
                   <Bar ref={barRef} data={barData} options={barOptions} />
                 </div>
               </div>
 
               {/* Assignment completion (line) */}
-              <div className="bg-white rounded-lg p-4 shadow-md overflow-x-auto" style={{ minWidth: 320 }}>
-                <h3 className="font-semibold text-xs text-gray-900 mb-3">Assignment Completion</h3>
+              <div
+                className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
+                style={{ minWidth: 320 }}
+              >
+                <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
+                  Assignment Completion
+                </h3>
                 <div style={{ height: 300 }}>
                   <Line ref={lineRef} data={lineData} options={lineOptions} />
                 </div>
@@ -428,9 +417,11 @@ export default function Dashboard(): React.JSX.Element {
             {/* Right column */}
             <div className="space-y-6">
               {/* Attendance summary */}
-              <div className="bg-white rounded-lg p-4 shadow-md flex flex-col sm:flex-row sm:space-x-4">
-                <div className="flex-1 min-w-[150px]">
-                  <h3 className="font-semibold text-xs text-gray-900 mb-3">Attendance Summary</h3>
+              <div className="bg-white z-0 rounded-lg p-4 shadow-md flex flex-col sm:flex-row sm:space-x-4">
+                <div className="flex-1 min-w-[150px] py-10">
+                  <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
+                    Attendance Summary
+                  </h3>
 
                   <div className="flex justify-center space-x-4">
                     <div className="text-center">
@@ -469,10 +460,12 @@ export default function Dashboard(): React.JSX.Element {
               </div>
 
               {/* Fee payment history */}
-              <div className="bg-white rounded-lg p-4 shadow-md" style={{ minWidth: 320 }}>
+              <div className="bg-white rounded-lg px-4 py-6 shadow-md" style={{ minWidth: 320 }}>
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-semibold text-xs text-gray-900">Fee Payment History</h3>
-                  <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-1 whitespace-nowrap hover:bg-orange-700 transition">See All</button>
+                  <h3 className="font-semibold text-[18px] text-gray-900">Fee Payment History</h3>
+                  <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-1 whitespace-nowrap hover:bg-orange-700 transition">
+                    See All
+                  </button>
                 </div>
 
                 <div className="space-y-3">
@@ -483,15 +476,24 @@ export default function Dashboard(): React.JSX.Element {
                     "School Fees Payment",
                     "Loan Settlement",
                   ].map((title, idx) => (
-                    <div key={idx} className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3 shadow-sm">
-                      <img alt="Avatar" className="w-10 h-10 rounded-full object-cover flex-shrink-0" src="https://placehold.co/40x40/8aacc8/ffffff/png?text=Avatar" />
+                    <div
+                      key={idx}
+                      className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3 shadow-sm"
+                    >
+                      <img
+                        alt="Avatar"
+                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                        src="https://placehold.co/40x40/8aacc8/ffffff/png?text=Avatar"
+                      />
                       <div className="flex-1 text-xs text-gray-700">
                         <p className="font-semibold text-gray-900 leading-tight">{title}</p>
                         <p className="leading-tight">Amount paid: N200,000</p>
                       </div>
                       <div className="text-[10px] text-gray-500 text-right flex flex-col items-end space-y-1">
                         <p>12th August, 2025</p>
-                        <p><i className="far fa-clock" /> 12:30pm</p>
+                        <p>
+                          <i className="far fa-clock" /> 12:30pm
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -500,7 +502,6 @@ export default function Dashboard(): React.JSX.Element {
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 }

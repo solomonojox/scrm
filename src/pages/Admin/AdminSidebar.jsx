@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fa';
 import { FiChevronRight } from 'react-icons/fi';
 import { useAuth } from "../../Context/Auth/useAuth";
+import "../../Styles/customScrollBar.css"
 
 const SidebarButton = ({ icon, label, to }) => {
   const location = useLocation();
@@ -62,6 +63,7 @@ const AdminSidebar = () => {
   return (
     <div
       className="
+        custom-scrollbar
         fixed
         top-[70px]
         left-0

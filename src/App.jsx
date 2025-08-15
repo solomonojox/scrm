@@ -25,6 +25,7 @@ import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
 import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from './layouts/GuardianLayout';
 import Text from './pages/Guardian/text';
+import GuardianDashboard from './pages/Guardian/GuardianDashboard';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -78,10 +79,9 @@ function App() {
 
       {/* All Guardians routes here */}
       <Route element={ <ProtectedRoute><GuardianLayout/></ProtectedRoute>}>
-        <Route path="/guardian/dashboard" element={<Text />} />
+        {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
+        <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
       </Route>
-
-        <Route path="/guardian/dashboard" element={<Dashboard />} />
 
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />

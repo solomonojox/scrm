@@ -4,6 +4,7 @@ import { BiBell, BiMessage } from "react-icons/bi";
 import { FiSearch } from "react-icons/fi";
 import imageAssets from "../../assets/imageAssets";
 import { icon } from "@fortawesome/fontawesome-svg-core";
+import { Menu } from "lucide-react";
 
 const GuardianHeader: React.FC = () => {
   const { user } = useAuth();
@@ -87,7 +88,7 @@ const GuardianHeader: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0 lg:pl-64 w-[100%] h-[70px]">
+    <div className="fixed top-0 lg:pl-60 w-[100%] h-[70px] z-20">
       <header className=" bg-white lg:rounded-t-[20px] lg:rounded-[15px] z-20 shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
         {/* Search */}
         <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300">
@@ -95,7 +96,7 @@ const GuardianHeader: React.FC = () => {
           <input type="search" className="outline-none" placeholder="search..." name="" />
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-6">
           <div className="flex items-center gap-3">
             <p className="cursor-pointer">{icons.notificationBell}</p>
             <p className="cursor-pointer">{icons.message}</p>
@@ -113,6 +114,10 @@ const GuardianHeader: React.FC = () => {
               <p className="text-[12px]">Guardian</p>
             </div>
           </div>
+        </div>
+
+        <div className="lg:hidden">
+          <Menu className="size-10 border p-1" />
         </div>
       </header>
     </div>

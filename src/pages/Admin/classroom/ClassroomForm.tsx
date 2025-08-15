@@ -14,10 +14,9 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    schoolId: '',
-    name: '',
-    teacherId: '',
-    capacity: ''
+    name: "",
+    teacherId: "",
+    capacity: "",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -34,7 +33,7 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
     setFormError("");
 
     const payload = {
-      schoolId: formData.schoolId,
+      schoolId: localStorage.getItem("schoolId"),
       name: formData.name,
       teacherId: formData.teacherId,
       capacity: formData.capacity,
@@ -47,10 +46,9 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
       setTimeout(() => {
         onClose();
         setFormData({
-          schoolId: '',
-          name: '',
-          teacherId: '',
-          capacity: ''
+          name: "",
+          teacherId: "",
+          capacity: "",
         });
         setImagePreview(null);
       }, 1500);
@@ -75,18 +73,9 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="preview"
-                  className="w-full h-full object-cover"
-                />
+                <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
               ) : (
                 <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
                   +
@@ -94,11 +83,9 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
               )}
             </label>
             {[
-              ["schoolId", "School Id"],
               ["name", "Name"],
               ["capacity", "Capacity"],
               ["teacherId", "Teacher Id"],
-
             ].map(([key, label]) => (
               <input
                 key={key}
