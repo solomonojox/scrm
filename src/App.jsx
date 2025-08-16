@@ -17,7 +17,7 @@ import AdminGuardian from './pages/Admin/guardian/AdminGuardian';
 import AdminStudents from './pages/Admin/student/AdminStudents';
 import AdminTeacher from './pages/Admin/teacher/AdminTeacher';
 import AdminClassroom from './pages/Admin/classroom/AdminClassroom';
-import AdminSession from './pages/Admin/session/AdminSession' 
+import AdminSession from './pages/Admin/session/AdminSession'
 import AdminNews from './pages/Admin/news/AdminNews';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
@@ -27,9 +27,8 @@ import GuardianProfile from '../src/components/Guardian/Profile';
 import GuardianNews from './components/Guardian/GuardianNews';
 import GuardianNewsFeed from './components/Guardian/NewsFeed'
 
-import Dashboard from './pages/Admin/guardian/Dashboard';
+// import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from './layouts/GuardianLayout';
-import Text from './pages/Guardian/text';
 import GuardianDashboard from './pages/Guardian/GuardianDashboard';
 
 
@@ -68,9 +67,9 @@ function App() {
       <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/students" element={<AdminStudents />} />
-        <Route path="/admin/teachers" element={<AdminTeacher/>} />
+        <Route path="/admin/teachers" element={<AdminTeacher />} />
         <Route path="/admin/guardians" element={<AdminGuardian />} />
-        <Route path="/admin/classrooms" element={<AdminClassroom/>} />
+        <Route path="/admin/classrooms" element={<AdminClassroom />} />
         <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<Events />} />
@@ -84,16 +83,16 @@ function App() {
 
 
       {/* All Guardians routes here */}
-      <Route element={ <ProtectedRoute><GuardianLayout/></ProtectedRoute>}>
+      <Route element={<ProtectedRoute><GuardianLayout /></ProtectedRoute>}>
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
       </Route>
 
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
-   <Route path="/guardian/profile" element={<GuardianProfile />} />
-      <Route path="/guardian/news" element={<GuardianNews/>} />
-       <Route path="/newsfeed/:id" element={<GuardianNewsFeed/>} />
+      <Route path="/guardian/profile" element={<GuardianProfile />} />
+      <Route path="/guardian/news" element={<GuardianNews />} />
+      <Route path="/newsfeed/:id" element={<GuardianNewsFeed />} />
 
       {/* All students routes here */}
 

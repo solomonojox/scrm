@@ -1,9 +1,9 @@
 import React from 'react'
 
-const text = () => {
+const Text = () => {
   return (
     <div>text</div>
   )
 }
 
-export default text
+export default Text
