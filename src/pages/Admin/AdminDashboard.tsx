@@ -43,6 +43,15 @@ import { useAuth } from '../../Context/Auth/useAuth';
 import imageAssets from '../../assets/imageAssets';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPaymentFailure, fetchPaymentStart, fetchPaymentSuccess } from '../../Store/paymentSlice';
+import { AppDispatch, RootState } from '../../Store/store';
+import { fetchStudentsFailure, fetchStudentsStart, fetchStudentsSuccess } from '../../Store/Student/studentSlice';
+import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from '../../Store/Teachers/teacherSlice';
+import { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } from '../../Store/Guardian/guardianSlice';
+import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from '../../Store/Admin/classroomSlice';
+import { studentService } from '../../Services/Student/StudentService';
+import { teacherService } from '../../Services/Teachers/TeacherService';
+import { guardianService } from '../../Services/Guardian/guardian';
+import { classroomService } from '../../Services/Classroom';
 
 // ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
@@ -117,10 +126,10 @@ export default function AdminDashboard() {
       dispatch(fetchTeacherSuccess(teacherData));
       dispatch(fetchStudentsSuccess(data));
     } catch (err) {
-      dispatch(fetchClassroomsFailure(err));
-      dispatch(fetchGuardiansFailure(err));
-      dispatch(fetchStudentsFailure(err));
-      dispatch(fetchTeacherFailure(err));
+      dispatch(fetchClassroomsFailure(err.message));
+      dispatch(fetchGuardiansFailure(err.message));
+      dispatch(fetchStudentsFailure(err.message));
+      dispatch(fetchTeacherFailure(err.message));
     }
   };
 
@@ -408,12 +417,12 @@ function TimeSpendingChart() {
 
 
 function UpcomingClasses() {
-  const [classes, setClasses] = useState([]);
+  const [classes, setClasses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const fetchedRecord = useSelector((state) => state.getPayment.listRecords);
-  const fetchedLoading = useSelector((state) => state.getPayment.loading);
-  const error = useSelector((state) => state.getPayment.error);
+  const fetchedRecord = useSelector((state: RootState) => state.getPayment.listRecords);
+  const fetchedLoading = useSelector((state: RootState) => state.getPayment.loading);
+  const error = useSelector((state: RootState) => state.getPayment.error);
   console.log(fetchedRecord)
 
   useEffect(() => {
@@ -436,7 +445,7 @@ function UpcomingClasses() {
     <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-base font-semibold text-gray-800">
-         Fee Payment History
+          Fee Payment History
         </h3>
         <button className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
           See All
@@ -444,7 +453,7 @@ function UpcomingClasses() {
       </div>
 
       <ul className="space-y-3 flex-1">
-        {classes.map((cls, i) => (
+        {fetchedRecord.length > 0 ? (fetchedRecord.map((cls, i) => (
           <li
             key={i}
             className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
@@ -471,7 +480,13 @@ function UpcomingClasses() {
               </div>
             </div>
           </li>
-        ))}
+        ))) : (
+          <li
+            className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
+          >
+            <div className="text-sm font-semibold text-gray-800">No Record found</div>
+          </li>
+        )}
       </ul>
     </div>
   );

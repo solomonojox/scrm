@@ -89,7 +89,7 @@ const AdminStudents: React.FC = () => {
     dispatch(fetchSessionStart());
     try {
       const data = await schoolFeeService.getAllSchoolFeesBySchoolId(localStorage.getItem('schoolId'));
-      const classRoom = await classroomService.getAllClassrooms();
+      const classRoom = await classroomService.getAllClassrooms(localStorage.getItem('schoolId'));
       const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
 
       dispatch(fetchSchoolFeeSuccess(data))

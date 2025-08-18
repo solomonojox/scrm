@@ -38,6 +38,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
     const [selectAll, setSelectAll] = useState(false);
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
+    console.log(schoolFee)
     const toggleSelectAll = () => {
         if (selectAll) {
             setSelectedIds([]);
@@ -73,7 +74,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
             s?.schoolId || '',
             s?.sessionId || '',
             s?.amount || '',
-            s?.className || ''
+            s?.classroomName || ''
         ]);
 
         doc.text(title, 14, 15);
@@ -233,7 +234,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                                     </td>
                                     <td className="p-3">{student.sessionId}</td>
                                     <td className="p-3">{student.amount}</td>
-                                    <td className="p-3">{student.className}</td>
+                                    <td className="p-3">{student.classroomName}</td>
                                     <td className="p-3 cursor-pointer hover:text-orange-500" onClick={() => { setEditData(student); onAddStudent(); }} >
                                         <span className="flex items-center gap-2">
                                             Edit <FaEdit />

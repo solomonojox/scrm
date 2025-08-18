@@ -4,7 +4,7 @@ export interface schoolFee {
   classroomId: string;
   sessionId: string;
   amount: number;
-  className: string;
+  classroomName: string;
   classroom: null | object;
   school: null | object;
 }
