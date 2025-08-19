@@ -19,7 +19,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
     phone: "",
     homeAddress: "",
     nationality: "",
-    state: "",
+    stateOfOrigin: "",
     religion: "",
     email: "",
     username: "",
@@ -63,7 +63,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
       occupation: formData.occupation,
       homeAddress: formData.homeAddress,
       workAddress: formData.workAddress,
-      stateOfOrigin: formData.state,
+      stateOfOrigin: formData.stateOfOrigin,
       nationality: formData.nationality,
       religion: formData.religion,
       email: formData.email,
@@ -88,7 +88,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
             phone: "",
             homeAddress: "",
             nationality: "",
-            state: "",
+            stateOfOrigin: "",
             religion: "",
             email: "",
             username: "",
@@ -161,7 +161,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
                 type={key === "email" ? "email" : "text"}
                 name={key}
                 placeholder={label}
-                required={["firstName", "lastName", "phone"].includes(key)}
+                required={["firstName", "lastName", "phone", "stateOfOrigin"].includes(key)}
                 className="border px-3 py-2 rounded text-sm w-full"
                 value={formData[key]}
                 onChange={handleInputChange}

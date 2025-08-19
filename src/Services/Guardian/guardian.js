@@ -13,10 +13,22 @@ export const guardianService = {
     }
   },
 
+  getGuardianById: async (id) => {
+    console.log(id);
+    try {
+      const res = await api.get(`/api/Guardian/GetGuardianById/${id}`);
+      // console.log("GetAllGuardians success:", res.data);
+      return res.data.data;
+    } catch (error) {
+      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
   create: async (data) => {
     try {
       const res = await api.post("/api/Guardian/AddStudentGuardian", data);
-      console.log("AddStudentGuardian success:", res.data);
+      // console.log("AddStudentGuardian success:", res.data);
       return res.data.data;
     } catch (error) {
       console.error("AddStudentGuardian error:", error?.response?.data?.message || error.message);

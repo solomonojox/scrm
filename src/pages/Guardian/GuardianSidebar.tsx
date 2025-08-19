@@ -56,6 +56,7 @@ const GuardianSidebar = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const handleLogout = () => {
+    window.alert("Did you want to Logout?")
     localStorage.removeItem("scrmToken");
     logout();
     navigate("/login");
@@ -112,7 +113,7 @@ const GuardianSidebar = () => {
 
               <div className="px-2 sm:px-4 py-6">
                 <button
-                  onClick={() => alert("Logging out...")}
+                  onClick={handleLogout}
                   className="w-full flex items-center gap-3 rounded-xl focus:outline-none"
                 >
                   <div

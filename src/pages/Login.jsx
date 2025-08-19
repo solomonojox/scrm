@@ -42,6 +42,8 @@ const LoginPage = () => {
         ];
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
+      }else if( role === "Guardian"){
+        navigate("/guardian/dashboard");
       }
     } catch (err) {
       // console.error("Login failed:", err.response?.data || err.message);
