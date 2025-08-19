@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import imageAssets from "../../assets/imageAssets";
+          import Sidebar from "../../pages/Admin/guardian/Sidebar";
 
 const NewsCard = ({
   imgSrc,
@@ -127,30 +128,7 @@ const NewsFeed = () => {
 
   return (
     <div className="bg-gray-100 font-sans min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-300 p-4 hidden md:block">
-        <h2 className="font-bold mb-4 text-gray-700">Menu</h2>
-        <nav className="space-y-2 text-sm text-gray-700">
-          <a href="#" className="block hover:text-orange-600">
-            Dashboard
-          </a>
-          <a href="#" className="block hover:text-orange-600">
-            News Feed
-          </a>
-          <a href="#" className="block hover:text-orange-600">
-            Events
-          </a>
-          <a href="#" className="block hover:text-orange-600">
-            Academics
-          </a>
-          <a href="#" className="block hover:text-orange-600">
-            Sports
-          </a>
-          <a href="#" className="block hover:text-orange-600">
-            Settings
-          </a>
-        </nav>
-      </aside>
+          <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 max-w-7xl mx-auto p-4">

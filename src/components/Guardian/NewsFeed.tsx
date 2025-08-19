@@ -12,7 +12,7 @@ import {
   FaFootballBall,
 } from "react-icons/fa";
 import React, { useState } from "react";
-
+   import Sidebar from "../../pages/Admin/guardian/Sidebar";
 export default function Highlights() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -33,24 +33,7 @@ export default function Highlights() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside
-        className={`bg-white border-r border-gray-300 p-4 w-64 fixed md:static inset-y-0 left-0 transform ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 z-50`}
-      >
-        <h2 className="font-bold text-lg mb-6">Menu</h2>
-        <nav className="flex flex-col gap-3">
-          {navItems.map((item) => (
-            <button
-              key={item.label}
-              className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
-        </nav>
-      </aside>
+       <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:ml-0">
