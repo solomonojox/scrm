@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../Context/Auth/useAuth";
 import { BiBell, BiMessage } from "react-icons/bi";
 import { FiSearch } from "react-icons/fi";
 import imageAssets from "../../assets/imageAssets";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { Menu } from "lucide-react";
+import {
+  fetchGuardiansFailure,
+  fetchGuardiansStart,
+  fetchGuardiansSuccess,
+} from "../../Store/Guardian/guardianSlice";
+import { guardianService } from "../../Services/Guardian/guardian";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
 
 const GuardianHeader: React.FC = () => {
   const { user } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord: any = useSelector((state: RootState) => state.getGuardian.listRecords);
+  const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading);
+  const error = useSelector((state: RootState) => state.getGuardian.error);
 
   const icons = {
     message: (
@@ -75,6 +87,23 @@ const GuardianHeader: React.FC = () => {
     ),
   };
 
+  useEffect(() => {
+    if (user?.id && !fetchedLoading) {
+      fetchGuardian();
+    }
+  }, [user, dispatch]);
+
+  const fetchGuardian = async () => {
+    dispatch(fetchGuardiansStart());
+    try {
+      const data = await guardianService.getGuardianById(user?.id);
+      console.log(data);
+      dispatch(fetchGuardiansSuccess(data));
+    } catch (err) {
+      dispatch(fetchGuardiansFailure((err as Error).message));
+    }
+  };
+
   // Function to handle copy
   const handleCopy = (text) => {
     navigator.clipboard
@@ -105,12 +134,14 @@ const GuardianHeader: React.FC = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <img
               className="w-8 h-8 rounded-full border-2 border-gray-300"
-              src={imageAssets.profile}
-              alt="profile-image"
+              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedRecord.firstname?.firstname}` || imageAssets.profile}
+              alt={"profile"}
             />
 
             <div className="text-center">
-              <b className="text-[13px]">David Ethan</b>
+              <b className="text-[13px]">
+                {fetchedRecord?.firstname} {fetchedRecord?.lastname}
+              </b>
               <p className="text-[12px]">Guardian</p>
             </div>
           </div>
