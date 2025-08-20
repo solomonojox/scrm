@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import imageAssets from "../../assets/imageAssets";
-          import Sidebar from "../../pages/Admin/guardian/Sidebar";
+import Sidebar from "../../pages/Admin/guardian/Sidebar";
 
 const NewsCard = ({
   imgSrc,
@@ -21,17 +21,15 @@ const NewsCard = ({
       <p className="text-xs text-[#45B20A] mb-1">Category: {category}</p>
       <p className="text-xs mb-3">{time}</p>
 
-   <Link
-  to={`/newsfeed/${id}`}
-  state={{
-    article: { imgSrc, title, category, time, datePosted, liked, id }
-  }}
-  className="bg-[#EE7306] text-white text-xs rounded px-4 py-1 w-max mb-3"
->
-  Read Now
-</Link>
-
-
+      <Link
+        to={`/newsfeed/${id}`}
+        state={{
+          article: { imgSrc, title, category, time, datePosted, liked, id },
+        }}
+        className="bg-[#EE7306] text-white text-xs rounded px-4 py-1 w-max mb-3"
+      >
+        Read Now
+      </Link>
 
       <div className="flex justify-between items-center text-xs text-gray-600">
         <span>Date Posted: {datePosted}</span>
@@ -50,6 +48,7 @@ const NewsCard = ({
 const NewsFeed = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showFilter, setShowFilter] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [newsItems, setNewsItems] = useState([
     {
@@ -127,13 +126,42 @@ const NewsFeed = () => {
       : newsItems.filter((item) => item.category === selectedCategory);
 
   return (
-    <div className="bg-gray-100 font-sans min-h-screen flex">
-          <Sidebar />
+    <div className="bg-gray-100 font-sans min-h-screen flex relative">
+      {/* Sidebar (hidden on mobile) */}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 flex">
+          <div className="w-64 bg-[#F07A00] h-full">
+            <Sidebar />
+          </div>
+          <div
+            className="flex-1 bg-black bg-opacity-50"
+            onClick={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
-      <div className="flex-1 max-w-7xl mx-auto p-4">
-        <div className="flex justify-between items-center mb-4 relative mt-20">
-          <h1 className="font-bold text-base">News Feed</h1>
+      <div className="flex-1 max-w-7xl mx-auto p-4 w-full">
+        {/* Top Bar */}
+        <div className="flex justify-between items-center mb-4 relative mt-4 md:mt-20">
+          {/* Mobile Hamburger */}
+          <button
+            className="md:hidden text-gray-700 text-2xl"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <i className="fas fa-bars"></i>
+          </button>
+
+          <h1 className="font-bold text-base flex-1 text-center md:text-left">
+            News Feed
+          </h1>
+
+          {/* Filter Button */}
           <button
             aria-label="Filter"
             onClick={() => setShowFilter((prev) => !prev)}
@@ -143,7 +171,7 @@ const NewsFeed = () => {
           </button>
 
           {showFilter && (
-            <div className="absolute right-0 top-8 bg-white border border-gray-300 rounded shadow-md text-sm z-10">
+            <div className="absolute right-0 top-10 bg-white border border-gray-300 rounded shadow-md text-sm z-10">
               {[
                 "All",
                 "Events",
@@ -167,24 +195,26 @@ const NewsFeed = () => {
           )}
         </div>
 
-        <div className="bg-white border border-gray-300 rounded-t-md px-4 py-2">
-          <nav className="text-xs text-gray-700 space-x-2">
-            <span>All</span>
-            <span>||</span>
-            <span>Events</span>
-            <span>||</span>
-            <span>Academics</span>
-            <span>||</span>
-            <span>General</span>
-            <span>||</span>
-            <span>Fees</span>
-            <span>||</span>
-            <span>Examination</span>
-            <span>||</span>
-            <span>Sports</span>
+        {/* Categories Nav */}
+        <div className="bg-white border border-gray-300 rounded-t-md px-4 py-2 overflow-x-auto">
+          <nav className="text-xs text-gray-700 flex space-x-4 whitespace-nowrap">
+            {["All","Events","Academics","General","Fees","Examination","Sports"].map((cat) => (
+              <span
+                key={cat}
+                onClick={() => handleCategorySelect(cat)}
+                className={`cursor-pointer ${
+                  selectedCategory === cat
+                    ? "font-semibold text-[#EE7306]"
+                    : "text-gray-700"
+                }`}
+              >
+                {cat}
+              </span>
+            ))}
           </nav>
         </div>
 
+        {/* News Cards */}
         <div className="bg-white border border-t-0 border-gray-300 rounded-b-md p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredNews.map((item, index) => (
             <NewsCard
