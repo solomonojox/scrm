@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { FaCamera, FaEdit } from "react-icons/fa";
 import imageAssets from "../../assets/imageAssets";
+import Sidebar from "../../pages/Admin/guardian/Sidebar";
 
 export default function PersonalInformation() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -13,52 +14,49 @@ export default function PersonalInformation() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       console.log("Selected file:", file);
-
     }
   };
 
   return (
-    <div className="flex bg-[#f7f7f7] font-sans text-black min-h-screen">
-     
-      <aside className="w-[220px] bg-gray-800 text-white p-4 flex flex-col">
-        <h2 className="text-lg font-bold mb-6">Sidebar</h2>
-        <nav className="flex flex-col space-y-3">
-          <a href="#" className="hover:text-[#e67e22]">Dashboard</a>
-          <a href="#" className="hover:text-[#e67e22]">Profile</a>
-          <a href="#" className="hover:text-[#e67e22]">Settings</a>
-        </nav>
-      </aside>
+    <div className="flex flex-col md:flex-row bg-[#f7f7f7] font-sans text-black min-h-screen">
+      {/* Sidebar (collapses on mobile) */}
+      <div className=" hidden md:block">
+        <Sidebar />
+      </div>
 
-      <div className="flex-1 p-6 mt-15">
-        <h2 className="font-bold text-[16px] ml-61 mb-3">Personal Information</h2>
+      {/* Main Content */}
+      <div className="flex-1 p-4 sm:p-6 mt-10 md:mt-0">
+        <h2 className="font-bold text-lg md:text-xl mb-4 md:ml-10 text-center md:text-left">
+          Personal Information
+        </h2>
 
-        <div className="max-w-[900px] mx-auto bg-white  shadow overflow-hidden">
-       
+        <div className="max-w-[900px] mx-auto bg-white shadow rounded-lg overflow-hidden">
+          {/* Banner */}
           <div className="relative w-full">
             <img
               src={imageAssets.color}
               alt="Orange gradient banner"
-              className="w-full h-[150px] object-cover bg-[#EE7306]"
+              className="w-full h-[120px] sm:h-[150px] object-cover bg-[#EE7306]"
             />
           </div>
 
           {/* Profile + Name + Actions */}
-          <div className="flex items-center justify-between px-6 mt-[-50px]">
+          <div className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 mt-[-50px]">
             {/* Left section: Picture + Info */}
-            <div className="flex items-center space-x-4">
-            
-              <div className="w-[100px] h-[100px] rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-4 text-center sm:text-left">
+              {/* Profile Picture */}
+              <div className="w-[90px] h-[90px] sm:w-[100px] sm:h-[100px] rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
                 <img
                   src={imageAssets.man}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
                 <div
-                  className="absolute bottom-0 right-0 bg-[#EE7306] rounded-full p-[8px] border-2 border-white cursor-pointer"
+                  className="absolute bottom-0 right-0 bg-[#EE7306] rounded-full p-[6px] sm:p-[8px] border-2 border-white cursor-pointer"
                   title="Change profile picture"
                   onClick={handleCameraClick}
                 >
-                  <FaCamera className="text-white text-sm" />
+                  <FaCamera className="text-white text-xs sm:text-sm" />
                 </div>
                 {/* Hidden File Input */}
                 <input
@@ -71,21 +69,23 @@ export default function PersonalInformation() {
               </div>
 
               {/* Name, Title, Buttons */}
-              <div className="mt-19">
-                <p className="font-bold text-[15px] leading-none">David Ethan</p>
-                <p className="text-[12px] text-gray-600 font-semibold mb-2">Medical Doctor</p>
-                <div className="flex space-x-3">
+              <div className="mt-3 sm:mt-0">
+                <p className="font-bold text-sm sm:text-base">David Ethan</p>
+                <p className="text-xs sm:text-sm text-gray-600 font-semibold mb-2">
+                  Medical Doctor
+                </p>
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                   <button
                     type="button"
                     onClick={handleCameraClick}
-                    className="bg-[#EE7306] text-white text-[12px] px-4 py-2 rounded-md font-bold"
+                    className="bg-[#EE7306] text-white text-xs sm:text-sm px-3 py-1.5 rounded-md font-bold"
                   >
                     Change Picture
                   </button>
                   <button
                     type="button"
                     disabled
-                    className="bg-gray-300 text-white text-[12px] px-4 py-2 rounded-md font-bold cursor-not-allowed"
+                    className="bg-gray-300 text-white text-xs sm:text-sm px-3 py-1.5 rounded-md font-bold cursor-not-allowed"
                   >
                     Delete Picture
                   </button>
@@ -94,15 +94,15 @@ export default function PersonalInformation() {
             </div>
 
             {/* Edit Profile */}
-            <div className="text-[12px] text-[#EE7306] flex items-center cursor-pointer select-none">
+            <div className="mt-3 md:mt-0 text-xs sm:text-sm text-[#EE7306] flex items-center cursor-pointer select-none">
               <FaEdit className="mr-1" />
               Edit Profile
             </div>
           </div>
 
           {/* Form */}
-          <div className="p-6">
-            <form className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 text-md gap-y-5">
+          <div className="p-4 sm:p-6">
+            <form className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 text-sm gap-y-4">
               {[
                 { label: "First Name", id: "firstName", type: "text", placeholder: "Enter Name" },
                 { label: "Last Name", id: "lastName", type: "text", placeholder: "Enter Name" },
@@ -120,7 +120,7 @@ export default function PersonalInformation() {
                 <div key={field.id}>
                   <label
                     htmlFor={field.id}
-                    className="block text-[12px] text-gray-700 mb-1 font-bold"
+                    className="block text-xs sm:text-sm text-gray-700 mb-1 font-bold"
                   >
                     {field.label}
                   </label>
@@ -128,7 +128,7 @@ export default function PersonalInformation() {
                     id={field.id}
                     type={field.type}
                     placeholder={field.placeholder}
-                    className="w-full rounded px-3 py-2 text-[12px] border placeholder:text-[12px] placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#e67e22]"
+                    className="w-full rounded px-3 py-2 text-xs sm:text-sm border placeholder:text-xs sm:placeholder:text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-[#e67e22]"
                     style={{ borderColor: "#EE7306" }}
                   />
                 </div>
@@ -136,16 +136,16 @@ export default function PersonalInformation() {
             </form>
 
             {/* Save Button */}
-            <div className="mt-6">
+            <div className="mt-6 text-center sm:text-left">
               <button
                 type="submit"
-                className="bg-[#EE7306] text-white text-[12px] px-5 py-2 rounded font-bold"
+                className="bg-[#EE7306] text-white text-xs sm:text-sm px-5 py-2 rounded font-bold"
               >
                 Save Changes
               </button>
             </div>
           </div>
-        </div>a
+        </div>
       </div>
     </div>
   );
