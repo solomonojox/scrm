@@ -22,7 +22,7 @@ const items: NavItem[] = [
   },
   { id: "news", iconClass: "fas fa-newspaper", path: "/guardian/news", label: "News" },
   { id: "events", iconClass: "fas fa-calendar-alt", path: "/guardian/events", label: "Events" },
-  { id: "loans", iconClass: "fas fa-coins", path: "/guardian/loan", label: "Loans" },
+  { id: "loans", iconClass: "fas fa-coins", path: "/guardian/loans", label: "Loans" },
   { id: "results", iconClass: "fas fa-chart-bar", path: "/guardian/result", label: "Results" },
 ];
 
@@ -45,7 +45,7 @@ const GuardianSidebar = () => {
   };
 
   return (
-    <aside className="w-60 h-[100vh] bg-[#EE7306] fixed z-30 rounded-r-[30px]">
+    <aside className="w-56 h-[100vh] bg-[#EE7306] fixed z-30 rounded-r-[30px]">
       <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
         <div className="flex flex-col items-center mt-[85px] space-y-5.5">
           {items.map((it) => {
