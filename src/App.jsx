@@ -22,14 +22,15 @@ import AdminNews from './pages/Admin/news/AdminNews';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
 import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
-
-import GuardianProfile from '../src/components/Guardian/Profile';
 import GuardianNews from './components/Guardian/GuardianNews';
 import GuardianNewsFeed from './components/Guardian/NewsFeed'
 
 // import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from './layouts/GuardianLayout';
 import GuardianDashboard from './pages/Guardian/GuardianDashboard';
+import GuardianResult from './pages/Guardian/results/GuardianResult';
+import ReportCard from './pages/Guardian/results/ReportCard';
+import GuardianProfile from './pages/Guardian/profile/GuardianProfile';
 
 
 
@@ -86,6 +87,9 @@ function App() {
       <Route element={<ProtectedRoute><GuardianLayout /></ProtectedRoute>}>
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
+        <Route path="/guardian/profile" element={<GuardianProfile />} />
+        <Route path="/guardian/result" element={<GuardianResult />} />
+        <Route path="/guardian/report-card" element={<ReportCard />} />
       </Route>
 
       <Route path="/Guardian/allguardian" element={<Guardian />} />
