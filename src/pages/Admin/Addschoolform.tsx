@@ -64,13 +64,13 @@ const AddSchoolForm = () => {
 
     try {
       const res = await onboardingService.addSchool(formData);
-      console.log(res.data.schoolId);
-      const id = res.data.schoolId
+      console.log(res.schoolId);
+      const id = res.schoolId
       // console.log(id);
       if (id) {
         setSchoolId(id);
         localStorage.setItem("schoolId", id);
-        setSchoolRegNumber(res.data.registrationNumber);
+        setSchoolRegNumber(res.registrationNumber);
         setSuccessModal(true);
       }
       setSuccess("School registered successfully!");
