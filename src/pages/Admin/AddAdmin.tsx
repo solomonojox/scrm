@@ -45,6 +45,7 @@ const RegistrationForm = () => {
       );
 
       setSuccessMsg("✅ School admin registered successfully!");
+      localStorage.removeItem("continueRegistration");
       setTimeout(() => {
         navigate("/login");
       }, 1500);
