@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -42,7 +42,6 @@ const AddSchoolForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [schoolId, setSchoolId] = useState(null);
   const [successModal, setSuccessModal] = useState(false);
   const [schoolRegNumber, setSchoolRegNumber] = useState("");
 
@@ -68,8 +67,8 @@ const AddSchoolForm = () => {
       const id = res.schoolId
       // console.log(id);
       if (id) {
-        setSchoolId(id);
-        localStorage.setItem("schoolId", id);
+        localStorage.setItem("schoolIdOnRegistration", id);
+        localStorage.setItem("continueRegistration", 'upload-license');
         setSchoolRegNumber(res.registrationNumber);
         setSuccessModal(true);
       }
@@ -83,6 +82,50 @@ const AddSchoolForm = () => {
       setLoading(false);
     }
   };
+
+  const [isContinueRegistration, setIsContinueRegistration] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem("continueRegistration")) {
+      setIsContinueRegistration(true);
+    }
+  }, []);
+
+  if (isContinueRegistration) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-white p-6 rounded-lg shadow-md text-center">
+          <h2 className="text-xl font-bold mb-4">Registration in Progress</h2>
+          <p className="text-gray-600 mb-4">
+            You have already started the registration process. Please continue from where you left
+            off.
+          </p>
+
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => navigate("/")}
+              className="bg-gray-400 hover:bg-orange-300 text-white font-semibold py-2 px-4 rounded"
+            >
+              Back Home
+            </button>
+
+            <button
+              onClick={() => { setIsContinueRegistration(false); localStorage.removeItem("continueRegistration") }}
+              className="bg-green-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              New Registration
+            </button>
+
+            <button
+              onClick={() => navigate(`/${localStorage.getItem("continueRegistration")}`)}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              Continue Registration
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
