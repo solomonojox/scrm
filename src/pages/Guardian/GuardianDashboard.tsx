@@ -417,7 +417,7 @@ export default function GuardianDashboard(): React.JSX.Element {
             {/* Right column */}
             <div className="space-y-6">
               {/* Attendance summary */}
-              <div className="bg-white z-0 rounded-lg p-4 shadow-md flex flex-col sm:flex-row sm:space-x-4">
+              <div className="bg-white z-0 rounded-lg px-4  shadow-md flex flex-col sm:flex-row sm:space-x-4">
                 <div className="flex-1 min-w-[150px] py-10">
                   <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
                     Attendance Summary
