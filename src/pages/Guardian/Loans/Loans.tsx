@@ -1,6 +1,8 @@
 import { HiOutlineChat } from "react-icons/hi";
 import GuardianSidebar from "../GuardianSidebar";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Footer from "../../Footer";
+
 type LoanRequest = {
   id: string;
   name: string;
@@ -39,8 +41,8 @@ function StatCard({ title, value, accent, count, z = 10 }: StatCardProps) {
   } as Record<string, string>;
   return (
     <div
-    className={`w-44 h-36 rounded-2xl text-white shadow-xl relative transition-all duration-500 hover:scale-105 hover:-translate-y-2`}
-    style={{ zIndex: z }}
+      className={`w-44 h-36 rounded-2xl text-white shadow-xl relative transition-all duration-500 hover:scale-105 hover:-translate-y-2`}
+      style={{ zIndex: z }}
     >
       <div
         className={`rounded-2xl w-full h-full bg-gradient-to-br ${
@@ -78,12 +80,15 @@ function StatCard({ title, value, accent, count, z = 10 }: StatCardProps) {
 export default function Loans() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-gray-100 font-inter">
+    <div className="flex min-h-screen bg-gray-100 font-inter">
+      {/* Sidebar */}
       <aside className="fixed left-0 top-0 h-screen z-50 w-56">
         <GuardianSidebar />
       </aside>
 
-      <div className="ml-56">
+      {/* Content + Footer wrapper with margin-left */}
+      <div className="flex-1 ml-60 flex flex-col">
+        {/* Header */}
         <header className="flex items-center justify-between rounded-xl px-6 py-3 ml-2 mr-3 bg-white shadow-md sticky top-0 z-40">
           <div className="flex items-center space-x-4">
             <div className="relative">
@@ -127,23 +132,52 @@ export default function Loans() {
           </div>
         </header>
 
-        <main className="px-6 py-6 max-w-7xl mx-auto mr-5">
+        {/* Main */}
+        <main className="flex-1 px-6 py-6 max-w-7xl mx-auto mr-5 w-full">
           <h2 className="font-semibold text-gray-900 text-base mb-3">
             Need Financial Support? Apply for a Loan Today!
           </h2>
 
           <div className="bg-white p-4 rounded-md shadow-sm">
+            {/* Cards section */}
             <section className="relative mb-6">
               <div className="flex items-start gap-4">
                 <div className="flex items-center group relative">
-                  <div className="transform transition-all duration-500 ease-in-out group-hover:translate-x-0 group-hover:mr-8 -mr-8" style={{ zIndex: 30 }}>
-                    <StatCard title="Active Loans" value={"********"} accent="red" count={2} z={30} />
+                  <div
+                    className="transform transition-all duration-500 ease-in-out group-hover:translate-x-0 group-hover:mr-8 -mr-8"
+                    style={{ zIndex: 30 }}
+                  >
+                    <StatCard
+                      title="Active Loans"
+                      value={"********"}
+                      accent="red"
+                      count={2}
+                      z={30}
+                    />
                   </div>
-                  <div className="transform -translate-x-6 transition-all duration-500 ease-in-out group-hover:translate-x-0 group-hover:mr-8" style={{ zIndex: 20 }}>
-                    <StatCard title="Current Loans pending" value={"***"} accent="indigo" count={2} z={20} />
+                  <div
+                    className="transform -translate-x-6 transition-all duration-500 ease-in-out group-hover:translate-x-0 group-hover:mr-8"
+                    style={{ zIndex: 20 }}
+                  >
+                    <StatCard
+                      title="Current Loans pending"
+                      value={"***"}
+                      accent="indigo"
+                      count={2}
+                      z={20}
+                    />
                   </div>
-                  <div className="transform -translate-x-12 transition-all duration-500 ease-in-out group-hover:translate-x-0" style={{ zIndex: 10 }}>
-                    <StatCard title="Total Loans Closed" value={"****"} accent="green" count={10} z={10} />
+                  <div
+                    className="transform -translate-x-12 transition-all duration-500 ease-in-out group-hover:translate-x-0"
+                    style={{ zIndex: 10 }}
+                  >
+                    <StatCard
+                      title="Total Loans Closed"
+                      value={"****"}
+                      accent="green"
+                      count={10}
+                      z={10}
+                    />
                   </div>
                 </div>
 
@@ -163,6 +197,7 @@ export default function Loans() {
               </div>
             </section>
 
+            {/* Loan requests section */}
             <section className="bg-white p-4 rounded-md">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-gray-900 text-base">
@@ -179,12 +214,14 @@ export default function Loans() {
                   <button
                     className="bg-orange-600 text-white text-xs px-3 py-1 rounded-md font-semibold hover:bg-orange-700"
                     type="button"
+                    onClick={() => navigate("/guardian/all-loan-request")}
                   >
                     All Loan Request
                   </button>
                 </div>
               </div>
 
+              {/* Table headers */}
               <div className="hidden md:grid grid-cols-9 gap-4 text-xs text-gray-600 border-b border-gray-300 px-3 py-2">
                 <div className="font-semibold">SN</div>
                 <div className="font-semibold">Name</div>
@@ -197,6 +234,7 @@ export default function Loans() {
                 <div className="font-semibold">Action</div>
               </div>
 
+              {/* Loan rows */}
               <div className="mt-4 space-y-4">
                 {sampleData.map((row) => (
                   <div
@@ -212,13 +250,22 @@ export default function Loans() {
                     <div className="text-center whitespace-nowrap">{row.date}</div>
                     <div className="font-semibold text-green-600">{row.status}</div>
                     <div className="flex items-center justify-end space-x-3 text-gray-600">
-                      <button aria-label="View details" className="hover:text-gray-900">
+                      <button
+                        aria-label="View details"
+                        className="hover:text-gray-900"
+                      >
                         <i className="far fa-eye" />
                       </button>
-                      <button aria-label="Chat" className="text-red-600 hover:text-red-800">
+                      <button
+                        aria-label="Chat"
+                        className="text-red-600 hover:text-red-800"
+                      >
                         <i className="far fa-comment-alt" />
                       </button>
-                      <button aria-label="Download PDF" className="text-indigo-400 hover:text-indigo-600">
+                      <button
+                        aria-label="Download PDF"
+                        className="text-indigo-400 hover:text-indigo-600"
+                      >
                         <i className="far fa-file-pdf" />
                       </button>
                     </div>
@@ -228,6 +275,9 @@ export default function Loans() {
             </section>
           </div>
         </main>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </div>
   );

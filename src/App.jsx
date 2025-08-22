@@ -33,6 +33,9 @@ import ReportCard from './pages/Guardian/results/ReportCard';
 import GuardianProfile from './pages/Guardian/profile/GuardianProfile';
 import Loans from './pages/Guardian/Loans/Loans';
 import LoanRequestForm from './pages/Guardian/Loans/LoanRequestForm';
+import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
+import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
+import LoanPayment from './pages/Guardian/Loans/LoanPayment';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -92,8 +95,11 @@ function App() {
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
       </Route>
-      <Route path='guardian/loans' element={<Loans/>}/>
-      <Route path='guardian/loan-request-form' element={<LoanRequestForm/>}/>
+      <Route path='/guardian/loans' element={<Loans/>}/>
+      <Route path='/guardian/loan-request-form' element={<LoanRequestForm/>}/>
+      <Route path='/guardian/all-loan-request' element={<AllLoanRequests/>}/>
+      <Route path='/guardian/loan-request-details' element={<LoanRequestDetails/>}/>
+      <Route path='/guardian/loan-payment' element={<LoanPayment/>}/>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />
