@@ -1,6 +1,8 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // ✅ add useLocation
-import imageAssets from "../../assets/imageAssets";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/Auth/useAuth.js";
+import imageAssets from "../../assets/imageAssets.js";
+
 
 type NavItem = { id: string; iconClass: string; label: string; path: string };
 
@@ -11,13 +13,20 @@ const items: NavItem[] = [
     label: "Dashboard",
     path: "/guardian/dashboard",
   },
-  { id: "profile", iconClass: "fas fa-user", label: "Profile", path: "/guardian/profile" },
-  { id: "mypupils", iconClass: "fas fa-users", label: "My Pupils", path: "/mypupils" },
-  { id: "assignments", iconClass: "fas fa-book", label: "Assignments", path: "/guardian/assignments" },
-  { id: "news", iconClass: "fas fa-newspaper", label: "News", path: "/guardian/news" },
-  { id: "events", iconClass: "fas fa-calendar-alt", label: "Events", path: "/events" },
-  { id: "loans", iconClass: "fas fa-coins", label: "Loans", path: "/loans" },
-  { id: "results", iconClass: "fas fa-chart-bar", label: "Results", path: "/guardian/result" },
+
+  { id: "profile", iconClass: "fas fa-user", path: "/guardian/profile", label: "Profile" },
+  { id: "mypupils", iconClass: "fas fa-users", path: "/guardian/pupils", label: "My Pupils" },
+  {
+    id: "assignments",
+    iconClass: "fas fa-book",
+    path: "/guardian/assignments",
+    label: "Assignments",
+  },
+  { id: "news", iconClass: "fas fa-newspaper", path: "/guardian/news", label: "News" },
+  { id: "events", iconClass: "fas fa-calendar-alt", path: "/guardian/events", label: "Events" },
+  { id: "loans", iconClass: "fas fa-coins", path: "/guardian/loans", label: "Loans" },
+  { id: "results", iconClass: "fas fa-chart-bar", path: "/guardian/result", label: "Results" },
+
 ];
 
 const GuardianSidebar = () => {
@@ -32,21 +41,25 @@ const GuardianSidebar = () => {
   };
 
   return (
-    <aside className="fixed min-h-screen w-16 sm:w-72 rounded-r-3xl overflow-hidden">
-      {/* Icons bar */}
-      <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFB347] rounded-r-3xl z-20">
-        <div className="flex flex-col items-center mt-[89px] space-y-5.5">
-          {items.map((it) => (
-            <button
-              key={it.id}
-              aria-label={it.label}
-              onClick={() => handleNavigate(it.path)}
-              className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none"
-              title={it.label}
-            >
-              <i className={`${it.iconClass} text-white text-[11px] sm:text-sm`} />
-            </button>
-          ))}
+    <aside className="w-56 h-[100vh] bg-[#EE7306] fixed z-30 rounded-r-[30px]">
+      <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
+        <div className="flex flex-col items-center mt-[110px] space-y-[16px]">
+          {items.map((it) => {
+            const isActive = isActivePath(it.path);
+            return (
+              <Link
+                key={it.id}
+                to={it.path}
+                aria-label={it.label}
+                className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none ${
+                  isActive ? "bg-white/20" : ""
+                }`}
+                title={it.label}
+              >
+                <i className={`${it.iconClass} text-white text-[11px] sm:text-sm`} />
+              </Link>
+            );
+          })}
         </div>
       </div>
 
@@ -65,16 +78,20 @@ const GuardianSidebar = () => {
               </div>
             </div>
 
-            {/* Nav Items */}
-            <nav className="flex flex-col space-y-3 sm:gap-3 px-1 sm:px-2">
+          <div className="h-[80vh] pt-4 overflow-y-scroll overflow-x-hidden z-0 [&::-webkit-scrollbar]:hidden">
+            <nav className="flex flex-col sm:gap-3 px-1 sm:px-2 space-y-1">
+
               {items.map((it) => {
                 const isActive = activeItem === it.id;
                 return (
                   <div key={it.id} className="flex items-center ml-[4px] w-[218px]">
-                    <button
-                      onClick={() => handleNavigate(it.path)}
-                      className={`w-full text-left px-4 py-[3px] transition-colors focus:outline-none ${
-                        isActive ? "bg-[#EDEDED] text-[#F07A00]" : "bg-transparent text-white"
+
+                    <Link
+                      to={it.path}
+                      className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${
+                        isActive
+                          ? "bg-[#EDEDED] text-[#F07A00]"
+                          : "bg-transparent text-white hover:bg-white/10"
                       }`}
                       style={{ marginLeft: "0.5rem" }}
                     >
@@ -86,14 +103,26 @@ const GuardianSidebar = () => {
             </nav>
           </div>
 
-          {/* Logout */}
-          <div className="px-2 sm:px-4 pb-6">
-            <button
-              onClick={() => alert("Logging out...")}
-              className="w-full flex items-center gap-3 rounded-xl focus:outline-none"
-            >
-              <div className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-md">
-                <i className="fas fa-sign-out-alt text-white text-[11px] sm:text-sm" />
+
+              <div className="px-2 sm:px-4">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 rounded-xl focus:outline-none hover:bg-white/10 transition-colors"
+                >
+                  <div
+                    className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-md"
+                    aria-hidden
+                  >
+                    <i className="fas fa-sign-out-alt text-white text-[11px] sm:text-sm" />
+                  </div>
+                  <div
+                    className="hidden sm:block w-full text-left rounded-r-2xl"
+                    style={{ padding: "0.5rem 1rem", background: "transparent", color: "white" }}
+                  >
+                    <span className="text-sm sm:text-base font-medium">Log Out</span>
+                  </div>
+                </button>
+
               </div>
               <div
                 className="hidden sm:block w-full text-left"

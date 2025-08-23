@@ -4,6 +4,7 @@ import GuardianSidebar from "../pages/Guardian/GuardianSidebar";
 import GuardianHeader from "../pages/Guardian/GuardianHeader";
 
 export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
+  
   return (
     <div className="w-full h-full bg-[#EDEDED] flex gap-4">
       <div className="hidden lg:block">
@@ -23,6 +24,7 @@ export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
             {/* Added table container */}
             <Outlet />
           </div>
+
         </div>
       </div>
     </div>

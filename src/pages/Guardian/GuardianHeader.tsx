@@ -117,7 +117,7 @@ const GuardianHeader: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0 lg:pl-60 w-[100%] h-[70px] z-20">
+    <div className="fixed top-0 lg:pl-[225px] w-[100%] h-[70px] z-50">
       <header className=" bg-white lg:rounded-t-[20px] lg:rounded-[15px] z-20 shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
         {/* Search */}
         <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300">

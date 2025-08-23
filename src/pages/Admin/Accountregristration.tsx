@@ -47,9 +47,10 @@ export default function RegistrationForm() {
       };
 
       const response = await onboardingService.accountRegistration(payload);
+      localStorage.setItem("continueRegistration", 'add-admin');
       navigate("/add-admin");
 
-      if (!response.ok) {
+      if (response.status === false) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 

@@ -21,7 +21,7 @@ const AddSchoolLicense = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const schoolId = localStorage.getItem('schoolId');
+  const schoolId = localStorage.getItem('schoolIdOnRegistration');
   if (!schoolId) {
     console.error('No schoolId found in localStorage');
   }
@@ -68,6 +68,7 @@ const AddSchoolLicense = () => {
       );
 
       console.log('Upload success:', response.data);
+      localStorage.setItem("continueRegistration", 'account-registration');
       setShowModal(true);
       setFiles([]);
       navigate('/account-registration');
@@ -146,6 +147,7 @@ const AddSchoolLicense = () => {
               <input
                 ref={fileInputRef}
                 type="file"
+                accept='application/pdf'
                 name="file"
                 multiple
                 className="hidden"

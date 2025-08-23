@@ -32,6 +32,12 @@ import GuardianProfile from './pages/Guardian/profile/GuardianProfile';
 import GuardianNews from './pages/Guardian/news/GuardianNews';
 import NewsFeed from './pages/Guardian/news/NewsFeed';
 import AssignmentDashboard from './pages/Guardian/assignment/AssignmentDashboard';
+import Loans from './pages/Guardian/Loans/Loans';
+import LoanRequestForm from './pages/Guardian/Loans/LoanRequestForm';
+import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
+import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
+import LoanPayment from './pages/Guardian/Loans/LoanPayment';
+import MyPupils from './pages/Guardian/Pupils/MyPupils';
 
 
 
@@ -94,9 +100,16 @@ function App() {
         <Route path="/newsfeed/:id" element={<NewsFeed />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
-        
-      </Route>
+        <Route path="/guardian/pupils" element={<MyPupils />} />
+        <Route path="/guardian/report-card" element={<ReportCard />} />
+        <Route path='/guardian/loans' element={<Loans />} />
+        <Route path='/guardian/loan-request-form' element={<LoanRequestForm />} />
+        <Route path='/guardian/all-loan-request' element={<AllLoanRequests />} />
+        <Route path='/guardian/loan-request-details' element={<LoanRequestDetails />} />
+        <Route path='/guardian/loan-payment' element={<LoanPayment />} />
+        <Route path="/guardian/result" element={<GuardianResult />} />
 
+      </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />
