@@ -3,15 +3,17 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/Auth/useAuth.js";
 import imageAssets from "../../assets/imageAssets.js";
 
+
 type NavItem = { id: string; iconClass: string; label: string; path: string };
 
 const items: NavItem[] = [
   {
     id: "dashboard",
     iconClass: "fas fa-th-large",
-    path: "/guardian/dashboard",
     label: "Dashboard",
+    path: "/guardian/dashboard",
   },
+
   { id: "profile", iconClass: "fas fa-user", path: "/guardian/profile", label: "Profile" },
   { id: "mypupils", iconClass: "fas fa-users", path: "/guardian/pupils", label: "My Pupils" },
   {
@@ -24,24 +26,18 @@ const items: NavItem[] = [
   { id: "events", iconClass: "fas fa-calendar-alt", path: "/guardian/events", label: "Events" },
   { id: "loans", iconClass: "fas fa-coins", path: "/guardian/loans", label: "Loans" },
   { id: "results", iconClass: "fas fa-chart-bar", path: "/guardian/result", label: "Results" },
+
 ];
 
 const GuardianSidebar = () => {
-  const location = useLocation();
-  const currentPath = location.pathname;
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const location = useLocation(); // ✅ get current path
 
-  const handleLogout = () => {
-    window.alert("Did you want to Logout?");
-    localStorage.removeItem("scrmToken");
-    logout();
-    navigate("/login");
-  };
+  // determine active item by matching current path
+  const activeItem = items.find((it) => location.pathname.startsWith(it.path))?.id ?? "";
 
-  // Helper function to check if path is active
-  const isActivePath = (itemPath: string) => {
-    return currentPath === itemPath;
+  const handleNavigate = (path: string) => {
+    navigate(path);
   };
 
   return (
@@ -67,22 +63,29 @@ const GuardianSidebar = () => {
         </div>
       </div>
 
-      <div className="z-10">
-        <div className="relative z-20 flex flex-col ml-5 rounded-full justify-between h-full py-6">
+      {/* GuardianSidebar body */}
+      <div className="absolute inset-0 bg-[#F07A00] w-[250px] rounded-3xl z-10">
+        <div
+          className="absolute top-0 right-0 -translate-y-1/6 h-28  w-40 sm:w-60 rounded-t-full rounded-br-full"
+          style={{ background: "#F07A00", zIndex: 11 }}
+        />
+        <div className="relative z-20 flex flex-col ml-5 h-full py-6 justify-between">
           <div>
+            {/* Logo */}
             <div className="px-2 sm:px-4 mb-6">
               <div className="w-[86px] sm:w-[100px] ml-0 sm:ml-4">
                 <img src={imageAssets.logo} alt="logo" className="w-full" />
               </div>
             </div>
-          </div>
 
           <div className="h-[80vh] pt-4 overflow-y-scroll overflow-x-hidden z-0 [&::-webkit-scrollbar]:hidden">
             <nav className="flex flex-col sm:gap-3 px-1 sm:px-2 space-y-1">
+
               {items.map((it) => {
-                const isActive = isActivePath(it.path);
+                const isActive = activeItem === it.id;
                 return (
                   <div key={it.id} className="flex items-center ml-[4px] w-[218px]">
+
                     <Link
                       to={it.path}
                       className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${
@@ -93,10 +96,13 @@ const GuardianSidebar = () => {
                       style={{ marginLeft: "0.5rem" }}
                     >
                       <span className="text-sm sm:text-base font-medium">{it.label}</span>
-                    </Link>
+                    </button>
                   </div>
                 );
               })}
+            </nav>
+          </div>
+
 
               <div className="px-2 sm:px-4">
                 <button
@@ -116,8 +122,15 @@ const GuardianSidebar = () => {
                     <span className="text-sm sm:text-base font-medium">Log Out</span>
                   </div>
                 </button>
+
               </div>
-            </nav>
+              <div
+                className="hidden sm:block w-full text-left"
+                style={{ padding: "0.5rem 1rem", background: "transparent", color: "white" }}
+              >
+                <span className="text-sm sm:text-base font-medium">Log Out</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>

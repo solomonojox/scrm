@@ -22,8 +22,6 @@ import AdminNews from './pages/Admin/news/AdminNews';
 import { jwtDecode } from 'jwt-decode';
 import { useEffect } from 'react';
 import AdminSchoolFee from './pages/Admin/schoolFee/AdminSchoolFee';
-import GuardianNews from './components/Guardian/GuardianNews';
-import GuardianNewsFeed from './components/Guardian/NewsFeed'
 
 // import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from './layouts/GuardianLayout';
@@ -31,12 +29,16 @@ import GuardianDashboard from './pages/Guardian/GuardianDashboard';
 import GuardianResult from './pages/Guardian/results/GuardianResult';
 import ReportCard from './pages/Guardian/results/ReportCard';
 import GuardianProfile from './pages/Guardian/profile/GuardianProfile';
+import GuardianNews from './pages/Guardian/news/GuardianNews';
+import NewsFeed from './pages/Guardian/news/NewsFeed';
+import AssignmentDashboard from './pages/Guardian/assignment/AssignmentDashboard';
 import Loans from './pages/Guardian/Loans/Loans';
 import LoanRequestForm from './pages/Guardian/Loans/LoanRequestForm';
 import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
 import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
 import LoanPayment from './pages/Guardian/Loans/LoanPayment';
 import MyPupils from './pages/Guardian/Pupils/MyPupils';
+
 
 
 const ProtectedRoute = ({ children }) => {
@@ -93,6 +95,11 @@ function App() {
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
         <Route path="/guardian/profile" element={<GuardianProfile />} />
+        <Route path="/guardian/news" element={<GuardianNews />} />
+        <Route path="/guardian/assignments" element={<AssignmentDashboard />} />
+        <Route path="/newsfeed/:id" element={<NewsFeed />} />
+        <Route path="/guardian/result" element={<GuardianResult />} />
+        <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path="/guardian/pupils" element={<MyPupils />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path='/guardian/loans' element={<Loans />} />
@@ -101,12 +108,13 @@ function App() {
         <Route path='/guardian/loan-request-details' element={<LoanRequestDetails />} />
         <Route path='/guardian/loan-payment' element={<LoanPayment />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
+
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />
       <Route path="/guardian/news" element={<GuardianNews />} />
-      <Route path="/newsfeed/:id" element={<GuardianNewsFeed />} />
+      
 
       {/* All students routes here */}
 

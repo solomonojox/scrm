@@ -10,13 +10,21 @@ export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="hidden lg:block">
         <GuardianSidebar />
       </div>
-      <div className="flex-1 ">
+      <div className="flex-1 min-w-0">
+        {" "}
+        {/* Added min-w-0 for flex shrinking */}
         <div>
           <GuardianHeader />
         </div>
+        <div className="lg:ml-60 my-24 px-4 lg:px-4">
+          {" "}
+          {/* Added px-4 for mobile */}
+          <div className="w-full overflow-x-auto">
+            {" "}
+            {/* Added table container */}
+            <Outlet />
+          </div>
 
-        <div className="lg:ml-[210px] my-24 lg:px-4">
-          <Outlet />
         </div>
       </div>
     </div>

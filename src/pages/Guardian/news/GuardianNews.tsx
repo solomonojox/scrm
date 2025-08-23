@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import imageAssets from "../../assets/imageAssets";
+import imageAssets from "../../../assets/imageAssets";
 
 const NewsCard = ({
   imgSrc,
@@ -14,7 +14,7 @@ const NewsCard = ({
   id,
 }) => {
   return (
-    <article className="bg-white rounded-lg border border-gray-300 p-3 flex flex-col">
+    <article className=" border border-gray-300 p-3 flex flex-col">
       <img alt={title} className="rounded-lg mb-3" src={imgSrc} />
       <h2 className="font-bold text-sm mb-1 leading-tight">{title}</h2>
       <p className="text-xs text-[#45B20A] mb-1">Category: {category}</p>
@@ -25,7 +25,7 @@ const NewsCard = ({
         state={{
           article: { imgSrc, title, category, time, datePosted, liked, id },
         }}
-        className="bg-[#EE7306] text-white text-xs rounded px-4 py-1 w-max mb-3"
+        className="bg-[#EE7306] text-white text-xs rounded px-4 py-2 w-max mb-3"
       >
         Read Now
       </Link>
@@ -44,10 +44,14 @@ const NewsCard = ({
   );
 };
 
-const NewsFeed = () => {
+const GuardianNews = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [showFilter, setShowFilter] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const [newsItems, setNewsItems] = useState([
     {
@@ -123,19 +127,11 @@ const NewsFeed = () => {
       : newsItems.filter((item) => item.category === selectedCategory);
 
   return (
-    <div className="bg-gray-100 font-sans min-h-screen flex relative">
-      {/* Main Content */}
-      <div className="flex-1 max-w-7xl mx-auto p-4 w-full">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-4 relative mt-4 md:mt-20">
-          {/* Mobile Hamburger */}
-          <button className="md:hidden text-gray-700 text-2xl" onClick={() => setSidebarOpen(true)}>
-            <i className="fas fa-bars"></i>
-          </button>
+    <div className="mx-4 md:mx-0">
+      <div className="flex justify-between items-center mb-4 relative mt-4 md:mt-20">
+        <h1 className="font-bold text-base flex-1 md:text-left">News Feed</h1>
 
-          <h1 className="font-bold text-base flex-1 text-center md:text-left">News Feed</h1>
-
-          {/* Filter Button */}
+        <div>
           <button
             aria-label="Filter"
             onClick={() => setShowFilter((prev) => !prev)}
@@ -162,35 +158,33 @@ const NewsFeed = () => {
             </div>
           )}
         </div>
+      </div>
 
-        {/* Categories Nav */}
-        <div className="bg-white border border-gray-300 rounded-t-md px-4 py-2 overflow-x-auto">
-          <nav className="text-xs text-gray-700 flex space-x-4 whitespace-nowrap">
-            {["All", "Events", "Academics", "General", "Fees", "Examination", "Sports"].map(
-              (cat) => (
-                <span
-                  key={cat}
-                  onClick={() => handleCategorySelect(cat)}
-                  className={`cursor-pointer ${
-                    selectedCategory === cat ? "font-semibold text-[#EE7306]" : "text-gray-700"
-                  }`}
-                >
-                  {cat}
-                </span>
-              )
-            )}
-          </nav>
-        </div>
-
-        {/* News Cards */}
-        <div className="bg-white border border-t-0 border-gray-300 rounded-b-md p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredNews.map((item, index) => (
-            <NewsCard key={item.id} index={index} {...item} onToggleLike={toggleLike} />
+      {/* Categories Nav */}
+      <div className="bg-white border border-gray-300 rounded-t-md px-4 py-2 overflow-x-auto">
+        <nav className="text-xs text-gray-700 flex space-x-2 md:space-x-4 whitespace-nowrap">
+          {["All", "Events", "Academics", "General", "Fees", "Examination", "Sports"].map((cat) => (
+            <span
+              key={cat}
+              onClick={() => handleCategorySelect(cat)}
+              className={`cursor-pointer ${
+                selectedCategory === cat ? "font-semibold text-[#EE7306]" : "text-gray-700"
+              }`}
+            >
+              {cat}
+            </span>
           ))}
-        </div>
+        </nav>
+      </div>
+
+      {/* News Cards */}
+      <div className="bg-white border border-t-0 border-gray-300 rounded-b-md p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredNews.map((item, index) => (
+          <NewsCard key={item.id} index={index} {...item} onToggleLike={toggleLike} />
+        ))}
       </div>
     </div>
   );
 };
 
-export default NewsFeed;
+export default GuardianNews;

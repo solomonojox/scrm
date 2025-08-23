@@ -29,7 +29,7 @@ interface StudentTableProps {
   searchQuery: string;
   classFilter: "all" | string;
   onClassFilterChange: (filter: "all" | string) => void;
-//   onRefresh: () => void;
+  //   onRefresh: () => void;
   setEditData: (data: any) => void;
 }
 
@@ -41,7 +41,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
   searchQuery,
   classFilter,
   onClassFilterChange,
-//   onRefresh,
+  //   onRefresh,
   setEditData,
 }) => {
   const navigate = useNavigate();
@@ -103,10 +103,10 @@ const ResultTable: React.FC<StudentTableProps> = ({
   // };
 
   return (
-    <>
+    <div className="">
       {/* Breadcrumb & Add Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center font-[inter] mb-4">
-        <p className="text-[17px] font-semibold text-gray-800 mb-4 sm:mb-0">
+        <p className="text-[17px] font-semibold text-gray-700 mb-4 sm:mb-0">
           Welcome back, Joy! View your children's results below
         </p>
         <div className="gap-4 flex items-center sm:flex-wrap">
@@ -116,10 +116,10 @@ const ResultTable: React.FC<StudentTableProps> = ({
               className="flex items-center gap-2 border border-gray-100 p-2 rounded bg-gray-100 hover:bg-gray-200"
             >
               <FaFilter className="text-orange-500" />
-              <span>Switch</span>
+              <span className="text-sm">Switch</span>
             </button>
             {showFilterDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+              <div className="absolute md:right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
                 <div className="py-1">
                   <div className="px-4 py-2 text-sm font-semibold text-gray-700 border-b">
                     Your Children's Result
@@ -167,14 +167,16 @@ const ResultTable: React.FC<StudentTableProps> = ({
             Showing {resultRecord.length} result{resultRecord.length !== 1 ? "s" : ""}
             {searchQuery && ` for "${searchQuery}"`}
             {classFilter !== "all" && ` ( ${classFilter} result is showing)`}
-            {resultRecord.length === 0 && <span className="text-red-500 ml-2">No result found</span>}
+            {resultRecord.length === 0 && (
+              <span className="text-red-500 ml-2">No result found</span>
+            )}
           </div>
         )}
       </div>
 
       {/* Table */}
-      <div className="bg-white shadow rounded-lg overflow-x-auto font-[inter]">
-        <h1 className="m-4 text-[20px] font-semibold text-gray-500">Result</h1>
+      <div className="bg-white shadow rounded-lg overflow-x-auto py-6 md:py-2 font-[inter]">
+        <h1 className="m-4 text-[18px] font-semibold text-gray-700">Result</h1>
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
             <tr>
@@ -183,7 +185,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
                   type="checkbox"
                   checked={selectAll}
                   onChange={toggleSelectAll}
-                  className="cursor-pointer w-4 h-4"
+                  className="cursor-pointer w-[14px] h-[14px]"
                 />
               </th>
               <th className="p-3 min-w-[80px]">SN</th>
@@ -207,7 +209,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
               resultRecord.map((result, index) => (
                 <tr
                   key={result.id}
-                  className={`border-t hover:bg-gray-100 ${
+                  className={`border-t hover:bg-gray-100 text-gray-600 text-sm ${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   }`}
                 >
@@ -216,16 +218,10 @@ const ResultTable: React.FC<StudentTableProps> = ({
                       type="checkbox"
                       checked={selectedIds.includes(result.id)}
                       onChange={() => toggleCheckbox(result.id)}
-                      className="cursor-pointer w-4 h-4"
+                      className="cursor-pointer w-[14px] h-[14px]"
                     />
                   </td>
-                  {/* <td className="p-3">
-                    <img
-                      src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${result.id}`}
-                      alt="avatar"
-                      className="w-10 h-10 rounded-full"
-                    />
-                  </td> */}
+
                   <td className="p-3">{result?.SN}</td>
                   <td className="p-3">{result?.StudentID}</td>
                   <td className="p-3">{result?.Class}</td>
@@ -235,10 +231,10 @@ const ResultTable: React.FC<StudentTableProps> = ({
                   <td className="p-3">{result?.TeachersName}</td>
                   <td
                     className="p-3 cursor-pointer hover:text-orange-500"
-                    onClick={()=> navigate(`/guardian/report-card`, {state: { result }}) }
+                    onClick={() => navigate(`/guardian/report-card`, { state: { result } })}
                   >
-                    <span className="flex items-center gap-2">
-                      View <Eye />
+                    <span className="flex items-center text-[13px] gap-2">
+                      View <Eye className="w-[15px] h-[15px]" />
                     </span>
                   </td>
                 </tr>
@@ -279,7 +275,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

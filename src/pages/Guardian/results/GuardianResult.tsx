@@ -200,9 +200,9 @@ const GuardianResult: React.FC = () => {
   // };
 
   return (
-    <div className="min-h-screen ">
+    <div className="">
       <ToastContainer />
-      <div className="max-w-full mx-auto">
+      <div className="">
         {/* Table Component */}
         <ResultTable
           resultRecord={currentRecords}

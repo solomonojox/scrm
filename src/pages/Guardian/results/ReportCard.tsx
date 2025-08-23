@@ -121,11 +121,11 @@ const ReportCard: React.FC = () => {
           <div className="flex flex-col items-start gap-2">
             <h1 className="text-lg sm:text-2xl font-semibold">Report Card</h1>
             <ArrowLeft
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/guardian/result")}
               className="w-4 h-4 sm:w-5 sm:h-5 hover:text-gray-500 cursor-pointer"
             />
           </div>
-          <div className="flex flex-col md:flex-row gap-2 w-full sm:w-auto">
+          <div className="flex flex-col md:flex-row gap-2 w-full my-4 md:my-0 sm:w-auto">
             <button className="bg-orange-500 hover:bg-orange-600 text-white px-3 sm:px-4 py-2 rounded flex items-center gap-2 text-sm flex-1 sm:flex-initial justify-center">
               <Printer className="w-4 h-4" />
               <span className="">Print</span>
@@ -145,15 +145,15 @@ const ReportCard: React.FC = () => {
 
             {/* School Logo and Info */}
             <div className="flex justify-center mb-2">
-              <div className="w-16 h-16 sm:w-[120px] sm:h-[120px] rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 sm:w-[90px] sm:h-[90px] rounded-full flex items-center justify-center">
                 <img src={imageAssets.reportLogo} className="object-cover" alt="" />
               </div>
             </div>
 
-            <h2 className="text-xl sm:text-2xl lg:text-[48px] font-bold text-[#124A71]">
+            <h2 className="text-xl sm:text-2xl lg:text-[32px] font-bold text-[#124A71]">
               REPORT CARD
             </h2>
-            <h3 className="text-lg sm:text-xl lg:text-[32px] font-semibold text-[#124A71] mb-1">
+            <h3 className="text-lg sm:text-xl lg:text-[28px] font-semibold text-[#124A71] mb-1">
               Gold International Academy
             </h3>
             <p className="text-sm sm:text-base text-[#124A71] italic">
@@ -170,7 +170,7 @@ const ReportCard: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 m-2 gap-2 sm:gap-4 text-xs sm:text-[16px]">
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 m-2 gap-2 sm:gap-4 text-xs sm:text-[14px]">
               <div className="space-y-1 font-light">
                 <p>
                   <span className="font-bold mr-2">Name:</span> {studentInfo.name}
