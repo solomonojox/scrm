@@ -36,6 +36,7 @@ import LoanRequestForm from './pages/Guardian/Loans/LoanRequestForm';
 import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
 import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
 import LoanPayment from './pages/Guardian/Loans/LoanPayment';
+import MyPupils from './pages/Guardian/Pupils/MyPupils';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -92,14 +93,15 @@ function App() {
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
         <Route path="/guardian/profile" element={<GuardianProfile />} />
-        <Route path="/guardian/result" element={<GuardianResult />} />
+        <Route path="/guardian/pupils" element={<MyPupils />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
+        <Route path='/guardian/loans' element={<Loans />} />
+        <Route path='/guardian/loan-request-form' element={<LoanRequestForm />} />
+        <Route path='/guardian/all-loan-request' element={<AllLoanRequests />} />
+        <Route path='/guardian/loan-request-details' element={<LoanRequestDetails />} />
+        <Route path='/guardian/loan-payment' element={<LoanPayment />} />
+        <Route path="/guardian/result" element={<GuardianResult />} />
       </Route>
-      <Route path='/guardian/loans' element={<Loans/>}/>
-      <Route path='/guardian/loan-request-form' element={<LoanRequestForm/>}/>
-      <Route path='/guardian/all-loan-request' element={<AllLoanRequests/>}/>
-      <Route path='/guardian/loan-request-details' element={<LoanRequestDetails/>}/>
-      <Route path='/guardian/loan-payment' element={<LoanPayment/>}/>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />

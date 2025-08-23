@@ -81,59 +81,12 @@ export default function Loans() {
   const navigate = useNavigate();
   return (
     <div className="flex min-h-screen bg-gray-100 font-inter">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen z-50 w-56">
-        <GuardianSidebar />
-      </aside>
 
       {/* Content + Footer wrapper with margin-left */}
-      <div className="flex-1 ml-60 flex flex-col">
-        {/* Header */}
-        <header className="flex items-center justify-between rounded-xl px-6 py-3 ml-2 mr-3 bg-white shadow-md sticky top-0 z-40">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <input
-                className="w-56 h-10 pl-10 pr-4 rounded-full bg-gray-200 text-gray-700 placeholder-gray-500 text-sm focus:outline-none"
-                placeholder="Search"
-                type="search"
-              />
-              <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" />
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-6">
-            <button
-              aria-label="Notifications"
-              className="text-gray-600 text-lg hover:text-gray-800"
-            >
-              <i className="far fa-bell" />
-            </button>
-            <button
-              aria-label="Messages"
-              className="text-gray-600 text-lg hover:text-gray-800"
-            >
-              <i className="far fa-comment-alt" />
-            </button>
-            <div className="flex items-center space-x-3">
-              <img
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
-                height={40}
-                src="https://storage.googleapis.com/a1aa/image/92f4a23b-035b-428d-7b32-e31781e477ee.jpg"
-                width={40}
-              />
-              <div className="text-right">
-                <p className="text-gray-900 text-sm font-semibold leading-tight">
-                  David Ethan
-                </p>
-                <p className="text-gray-500 text-xs leading-tight">Guardian</p>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="flex-1 flex flex-col">
 
         {/* Main */}
-        <main className="flex-1 px-6 py-6 max-w-7xl mx-auto mr-5 w-full">
+        <main className="flex-1 py-6  mr-5 w-full">
           <h2 className="font-semibold text-gray-900 text-base mb-3">
             Need Financial Support? Apply for a Loan Today!
           </h2>
@@ -275,9 +228,6 @@ export default function Loans() {
             </section>
           </div>
         </main>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );

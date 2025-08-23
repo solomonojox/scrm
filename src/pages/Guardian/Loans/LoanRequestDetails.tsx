@@ -44,48 +44,11 @@ const loanData = {
 export default function LoanRequestDetails({ data = loanData }) {
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <aside className="hidden md:block w-64 h-screen sticky top-0">
-        <GuardianSidebar />
-      </aside>
 
       {/* Main Content + Footer */}
       <div className="flex-1 flex flex-col">
         <main className="flex-1 p-4 w-full">
           <div className="max-w-6xl mx-auto">
-            {/* Header */}
-            <header className="flex items-center justify-between py-3 px-4 bg-white rounded-md shadow-sm">
-              <div className="flex items-center space-x-3">
-                <div className="relative text-gray-400">
-                  <input
-                    className="pl-10 pr-4 py-2 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Search"
-                    type="search"
-                  />
-                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-6">
-                <button
-                  aria-label="Notifications"
-                  className="text-gray-400 hover:text-gray-600 text-lg"
-                >
-                  <FaBell />
-                </button>
-                <div className="flex items-center space-x-3">
-                  <img
-                    alt="profile"
-                    src={data.profileImg}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">{data.name}</p>
-                    <p className="text-xs text-gray-500">Guardian</p>
-                  </div>
-                </div>
-              </div>
-            </header>
 
             {/* Greeting */}
             <section className="mt-6 px-2">
@@ -201,9 +164,6 @@ export default function LoanRequestDetails({ data = loanData }) {
             </main>
           </div>
         </main>
-
-        {/* ✅ Footer */}
-        <Footer />
       </div>
     </div>
   );

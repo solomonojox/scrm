@@ -6,48 +6,11 @@ import Footer from "../../Footer";
 export default function LoanPayment() {
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-900 font-inter">
-      {/* Sidebar */}
-      <aside className="w-64  hidden md:flex flex-col fixed inset-y-0">
-        <GuardianSidebar />
-      </aside>
-
       {/* Main + Footer wrapper */}
-      <div className="flex-1 flex flex-col ml-64">
+      <div className="flex-1 flex flex-col">
         {/* Main content */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-6">
-            {/* Topbar */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="relative w-72">
-                <input
-                  type="search"
-                  placeholder="Search"
-                  className="w-full pl-10 pr-4 py-2 rounded-full text-sm text-gray-600 placeholder-gray-400 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-              </div>
-              <div className="flex items-center space-x-6">
-                <button className="text-gray-500 hover:text-gray-700 text-lg">
-                  <FaBell />
-                </button>
-                <button className="text-gray-500 hover:text-gray-700 text-lg">
-                  <FaCommentAlt />
-                </button>
-                <div className="flex items-center space-x-3">
-                  <img
-                    src="https://storage.googleapis.com/a1aa/image/ee7348c3-ce7f-4eaa-9468-3c868d26e833.jpg"
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900 leading-none">
-                      David Ethan
-                    </p>
-                    <p className="text-xs text-gray-500 leading-none">Guardian</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <main className="flex-1 overflow-y-auto">
+          <div className="w-full bg-white rounded-2xl shadow-md p-6">
 
             {/* Title */}
             <div className="mb-6 flex items-center border-b pb-3">
@@ -91,9 +54,8 @@ export default function LoanPayment() {
                       name="payment"
                       value={method}
                       defaultChecked={idx === 0}
-                      className={`w-4 h-4 ${
-                        idx === 0 ? "text-orange-600 border-orange-600 focus:ring-orange-600" : "text-gray-400 border-gray-400 focus:ring-gray-400"
-                      }`}
+                      className={`w-4 h-4 ${idx === 0 ? "text-orange-600 border-orange-600 focus:ring-orange-600" : "text-gray-400 border-gray-400 focus:ring-gray-400"
+                        }`}
                     />
                     <div className="border border-gray-300 rounded-lg p-2 shadow-sm hover:shadow-md transition">
                       <img
@@ -101,8 +63,8 @@ export default function LoanPayment() {
                           idx === 0
                             ? "https://storage.googleapis.com/a1aa/image/74f764ac-a102-4b65-003c-e41b3ff54d55.jpg"
                             : idx === 1
-                            ? "https://storage.googleapis.com/a1aa/image/8c4ac3f2-7d78-45af-6fef-c01f15fc4c06.jpg"
-                            : "https://storage.googleapis.com/a1aa/image/df408d70-2a32-4931-61c9-a4ddd12450c0.jpg"
+                              ? "https://storage.googleapis.com/a1aa/image/8c4ac3f2-7d78-45af-6fef-c01f15fc4c06.jpg"
+                              : "https://storage.googleapis.com/a1aa/image/df408d70-2a32-4931-61c9-a4ddd12450c0.jpg"
                         }
                         alt={method}
                         className="w-20 h-auto"
@@ -212,9 +174,6 @@ export default function LoanPayment() {
             </form>
           </div>
         </main>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   );

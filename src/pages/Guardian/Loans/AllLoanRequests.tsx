@@ -48,60 +48,10 @@ export default function AllLoanRequests() {
 
   return (
     <div className="bg-gray-100 min-h-screen flex" style={{ fontFamily: "Inter, sans-serif" }}>
-      {/* Sidebar */}
-      <aside className="w-64 hidden md:block ">
-        <div className="sticky top-0">
-          <GuardianSidebar />
-        </div>
-      </aside>
-
       {/* Main content + footer */}
       <div className="flex-1 flex flex-col">
         <main className="flex-1">
-          <div className="max-w-[1100px] mx-auto px-6 py-6">
-            {/* Search + profile card */}
-            <div className="bg-white rounded-xl shadow-md mb-4 overflow-hidden">
-              <div className="px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
-                      <input
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        className="w-[200px] sm:w-[280px] md:w-[320px] lg:w-[360px] xl:w-[400px] h-9 pl-10 pr-3 rounded-full bg-[#F0F0F0] text-gray-500 text-sm placeholder-gray-400 focus:outline-none"
-                        placeholder="Search"
-                        type="text"
-                        aria-label="Search loan requests"
-                      />
-                      <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-6">
-                    <button aria-label="Notifications" className="text-gray-400 hover:text-gray-600 text-lg">
-                      <FaBell />
-                    </button>
-                    <button aria-label="Messages" className="text-gray-400 hover:text-gray-600 text-lg">
-                      <FaCommentAlt />
-                    </button>
-                    <div className="flex items-center space-x-3">
-                      <img
-                        alt="Profile"
-                        className="w-8 h-8 rounded-full object-cover"
-                        height={32}
-                        width={32}
-                        src="https://storage.googleapis.com/a1aa/image/657f5ec8-f567-499f-4260-acf290d5ef25.jpg"
-                      />
-                      <div className="text-right">
-                        <p className="text-xs font-semibold text-gray-700 leading-4">David Ethan</p>
-                        <p className="text-[9px] text-gray-400 leading-3">Guardian</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          <div className=" py-6">
             {/* Table */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
               <div className="flex items-center justify-between px-6 py-4 bg-gray-100 border-b border-gray-100">
@@ -169,9 +119,6 @@ export default function AllLoanRequests() {
             </div>
           </div>
         </main>
-
-        {/* ✅ Footer added here */}
-        <Footer />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import NewsSlice from './newsSlice'
 import classroomSlice from "./Admin/classroomSlice";
 import classroomStudentsSlice from './Admin/classroomStudentsSlice'
 import  paymentSlice  from "./paymentSlice";
+import guardianStudentSlice from "./Guardian/guardianStudentSlice";
 
 export const rootReducer = combineReducers({
   getGuardian: guardianSlice,
@@ -20,5 +21,6 @@ export const rootReducer = combineReducers({
   getTeacher: teacherSlice,
   getNews: NewsSlice,
   getStudentsByClassId: classroomStudentsSlice,
-  getPayment: paymentSlice
+  getPayment: paymentSlice,
+  getGuardianStudents: guardianStudentSlice,
 });

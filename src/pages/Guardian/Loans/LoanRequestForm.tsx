@@ -35,51 +35,11 @@ export default function LoanRequestDetails() {
 
   return (
     <div className="flex min-h-screen font-sans bg-gray-100 text-gray-700">
-      {/* Sidebar */}
-      <aside className="w-64 hidden md:block">
-        <GuardianSidebar />
-      </aside>
 
       {/* Main Content + Footer */}
       <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6">
-          <div className="max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6 bg-white px-4 py-2 rounded-xl">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <input
-                    className="pl-10 pr-4 py-2 rounded-full border border-gray-300 bg-gray-200 text-gray-600 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    placeholder="Search"
-                    type="search"
-                    aria-label="Search"
-                  />
-                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-6">
-                <button aria-label="Notifications" className="text-gray-400 hover:text-gray-600 text-lg">
-                  <FaBell />
-                </button>
-                <button aria-label="Messages" className="text-gray-400 hover:text-gray-600 text-lg">
-                  <FaComment />
-                </button>
-                <div className="flex items-center space-x-3">
-                  <img
-                    alt="Profile"
-                    className="rounded-full border border-gray-300"
-                    height="40"
-                    width="40"
-                    src="https://storage.googleapis.com/a1aa/image/6a0a8fef-eea8-49eb-e587-d5a301ad52af.jpg"
-                  />
-                  <div className="text-right">
-                    <p className="text-xs font-semibold text-gray-700 leading-none">David Ethan</p>
-                    <p className="text-[10px] text-gray-400 leading-none">Customer</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <main className="flex-1">
+          <div className=" mx-auto">
 
             {/* Title + Back Button */}
             <div className="mb-3">
@@ -107,7 +67,7 @@ export default function LoanRequestDetails() {
                 />
               </div>
 
-              <form className="space-y-4 max-w-md mx-auto" onSubmit={handleSubmit}>
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 {/* Inputs */}
                 {[
                   { id: "name", label: "Name", type: "text" },
@@ -138,7 +98,7 @@ export default function LoanRequestDetails() {
 
                 {/* File Upload */}
                 <div>
-                  <label className="block text-[10px] text-orange-600 font-semibold mb-1 flex items-center gap-2">
+                  <label className=" text-[10px] text-orange-600 font-semibold mb-1 flex items-center gap-2">
                     <FaUpload className="text-[12px]" />
                     Upload guarantor's form
                   </label>
@@ -162,9 +122,6 @@ export default function LoanRequestDetails() {
             </div>
           </div>
         </main>
-
-        {/* ✅ Footer */}
-        <Footer />
       </div>
 
       <style>

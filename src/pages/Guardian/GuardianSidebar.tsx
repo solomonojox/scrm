@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../Context/Auth/useAuth";
+import { useAuth } from "../../Context/Auth/useAuth.js";
 import imageAssets from "../../assets/imageAssets.js";
 
 type NavItem = { id: string; iconClass: string; label: string; path: string };
@@ -47,7 +47,7 @@ const GuardianSidebar = () => {
   return (
     <aside className="w-56 h-[100vh] bg-[#EE7306] fixed z-30 rounded-r-[30px]">
       <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
-        <div className="flex flex-col items-center mt-[85px] space-y-5.5">
+        <div className="flex flex-col items-center mt-[110px] space-y-[16px]">
           {items.map((it) => {
             const isActive = isActivePath(it.path);
             return (
@@ -78,14 +78,14 @@ const GuardianSidebar = () => {
           </div>
 
           <div className="h-[80vh] pt-4 overflow-y-scroll overflow-x-hidden z-0 [&::-webkit-scrollbar]:hidden">
-            <nav className="flex flex-col space-y-3 sm:gap-3 px-1 sm:px-2">
+            <nav className="flex flex-col sm:gap-3 px-1 sm:px-2 space-y-1">
               {items.map((it) => {
                 const isActive = isActivePath(it.path);
                 return (
                   <div key={it.id} className="flex items-center ml-[4px] w-[218px]">
                     <Link
                       to={it.path}
-                      className={`w-full text-left px-4 py-2 transition-colors focus:outline-none rounded-full ${
+                      className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${
                         isActive
                           ? "bg-[#EDEDED] text-[#F07A00]"
                           : "bg-transparent text-white hover:bg-white/10"
@@ -98,7 +98,7 @@ const GuardianSidebar = () => {
                 );
               })}
 
-              <div className="px-2 sm:px-4 py-6">
+              <div className="px-2 sm:px-4">
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 rounded-xl focus:outline-none hover:bg-white/10 transition-colors"
