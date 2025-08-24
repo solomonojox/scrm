@@ -34,7 +34,7 @@ export default function LoanRequestDetails() {
   }
 
   return (
-    <div className="flex min-h-screen font-sans bg-gray-100 text-gray-700">
+    <div className="flex min-h-screen font-sans bg-[#EDEDED]  text-gray-700">
 
       {/* Main Content + Footer */}
       <div className="flex-1 flex flex-col">
