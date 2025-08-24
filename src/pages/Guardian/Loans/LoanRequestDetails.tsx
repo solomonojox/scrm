@@ -43,7 +43,7 @@ const loanData = {
 
 export default function LoanRequestDetails({ data = loanData }) {
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-[#EDEDED]  flex">
 
       {/* Main Content + Footer */}
       <div className="flex-1 flex flex-col">

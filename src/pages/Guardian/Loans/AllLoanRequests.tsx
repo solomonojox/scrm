@@ -47,14 +47,14 @@ export default function AllLoanRequests() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-100 min-h-screen flex" style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className="bg-[#EDEDED]  min-h-screen flex" style={{ fontFamily: "Inter, sans-serif" }}>
       {/* Main content + footer */}
       <div className="flex-1 flex flex-col">
         <main className="flex-1">
           <div className=" py-6">
             {/* Table */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
-              <div className="flex items-center justify-between px-6 py-4 bg-gray-100 border-b border-gray-100">
+              <div className="flex items-center justify-between px-6 py-2 bg-[#EDEDED] ">
                 <h1 className="text-sm font-semibold text-gray-900">All Loan Requests</h1>
                 <button
                   aria-label="Export options"
@@ -65,7 +65,7 @@ export default function AllLoanRequests() {
                 </button>
               </div>
 
-              <div className="px-6 py-3 border-b bg-gray-100 border-gray-100">
+              <div className="px-6 py-1  bg-[#EDEDED]  ">
                 <button className="flex items-center text-gray-600 text-xs font-semibold space-x-1">
                   <FaArrowLeft className="text-[10px]" />
                 </button>

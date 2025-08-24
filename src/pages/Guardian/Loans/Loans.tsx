@@ -80,13 +80,13 @@ function StatCard({ title, value, accent, count, z = 10 }: StatCardProps) {
 export default function Loans() {
   const navigate = useNavigate();
   return (
-    <div className="flex min-h-screen bg-gray-100 font-inter">
+    <div className="flex min-h-screen bg-[#EDEDED] font-inter">
 
       {/* Content + Footer wrapper with margin-left */}
       <div className="flex-1 flex flex-col">
 
         {/* Main */}
-        <main className="flex-1 py-6  mr-5 w-full">
+        <main className="flex-1 py-6 bg-[#EDEDED]  mr-5 w-full">
           <h2 className="font-semibold text-gray-900 text-base mb-3">
             Need Financial Support? Apply for a Loan Today!
           </h2>

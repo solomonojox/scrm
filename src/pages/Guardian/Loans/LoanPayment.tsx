@@ -5,7 +5,7 @@ import Footer from "../../Footer";
 
 export default function LoanPayment() {
   return (
-    <div className="flex min-h-screen bg-gray-100 text-gray-900 font-inter">
+    <div className="flex min-h-screen bg-[#EDEDED]  text-gray-900 font-inter">
       {/* Main + Footer wrapper */}
       <div className="flex-1 flex flex-col">
         {/* Main content */}
