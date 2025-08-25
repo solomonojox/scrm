@@ -16,3 +16,29 @@
   scrollbar-width: thin;
   scrollbar-color: #f1c69f #ededed;
 }
+
+/* Chrome, Edge, Safari */
+.parent-scrollbar::-webkit-scrollbar {
+  width: 4px; /* 👈 make it thin (avoid 1px, usually invisible) */
+  height: 4px; /* for horizontal scrollbar */
+}
+
+.parent-scrollbar::-webkit-scrollbar-thumb {
+  background: #e7bb94;
+  border-radius: 10px;
+}
+
+.parent-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #e7bb94;
+}
+
+.parent-scrollbar::-webkit-scrollbar-track {
+  background: #fafafa;
+  border-radius: 10px;
+}
+
+/* Firefox */
+.parent-scrollbar {
+  scrollbar-width: thin; /* 👈 no quotes */
+  scrollbar-color: #e7bb94 #fafafa; /* thumb color | track color */
+}
