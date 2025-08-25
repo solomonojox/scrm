@@ -17,7 +17,7 @@ export default function GuardianProfile() {
   };
 
   return (
-    <div className="">
+    <div className="bg-white pt-2">
       <div className="">
         <h2 className="font-bold text-[16px] m-4">Personal Information</h2>
         <div className=" bg-white  shadow overflow-hidden">

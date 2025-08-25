@@ -4,7 +4,7 @@ import GuardianSidebar from "../pages/Guardian/GuardianSidebar";
 import GuardianHeader from "../pages/Guardian/GuardianHeader";
 
 export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
-  
+
   return (
     <div className="w-full h-full bg-[#EDEDED] flex gap-4">
       <div className="hidden lg:block">
@@ -13,10 +13,10 @@ export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex-1 min-w-0">
         {" "}
         {/* Added min-w-0 for flex shrinking */}
-        <div>
-          <GuardianHeader />
-        </div>
         <div className="lg:ml-60 my-24 px-4 lg:px-4">
+          <div>
+            <GuardianHeader />
+          </div>
           {" "}
           {/* Added px-4 for mobile */}
           <div className="w-full overflow-x-auto">
