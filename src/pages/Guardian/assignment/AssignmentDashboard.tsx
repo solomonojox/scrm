@@ -44,7 +44,9 @@ const AssignmentDashboard: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const recordsPerPage = 5;
 
   // Mock data for students and their assignments
   const students: Student[] = [
@@ -328,6 +330,34 @@ const AssignmentDashboard: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(assignments.map((g) => g.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const toggleCheckbox = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter((sid) => sid !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+  const currentRecords = assignments.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(assignments.length / recordsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    setSelectAll(false);
+    setSelectedIds([]);
+  };
+
   return (
     <div className="">
       {/* Header */}
@@ -335,7 +365,7 @@ const AssignmentDashboard: React.FC = () => {
         <div className=" ">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 py-4">
             <h1 className="text-sm md:text-xl font-semibold text-gray-900">
-              Welcome back, Parent! View your {selectedStudent}'s assignments below
+              Welcome back, Parent! View {selectedStudent}'s assignments below
             </h1>
             <div className="flex items-center space-x-4">
               {/* Student Filter Dropdown */}
@@ -368,10 +398,6 @@ const AssignmentDashboard: React.FC = () => {
                   </div>
                 )}
               </div>
-
-              {/* <button className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
-                Weekly
-              </button> */}
             </div>
           </div>
         </div>
@@ -421,7 +447,18 @@ const AssignmentDashboard: React.FC = () => {
         </div>
 
         {/* Assignment Table Component */}
-        <AssignmentTable assignments={assignments} onViewAssignment={handleViewAssignment} />
+        <AssignmentTable
+          selectAll={selectAll}
+          selectedStudent={selectedStudent}
+          selectedIds={selectedIds}
+          onToggleSelectAll={toggleSelectAll}
+          onToggleCheckbox={toggleCheckbox}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          assignments={currentRecords}
+          onViewAssignment={handleViewAssignment}
+        />
       </div>
 
       {/* Assignment Modal Component */}
