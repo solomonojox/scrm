@@ -120,25 +120,8 @@ export default function EventsPage() {
 
   return (
     <div className="bg-white text-black min-h-screen flex">
-      {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-gray-100 shadow-lg transition-transform duration-300 ease-in-out 
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
-      >
-        {/* Close button for mobile */}
-        <div className="flex justify-end md:hidden p-2">
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-gray-600 hover:text-black"
-          >
-            <X size={20} />
-          </button>
-        </div>
-        <Sidebar />
-      </div>
-
       {/* Main Content */}
-      <main className="flex-1 max-w-[1200px] mx-auto px-4  md:ml-80 sm:px-6 lg:px-8 pt-4">
+      <main className="flex-1  sm:px-6 lg:px-8 pt-4">
         {/* Header */}
         <header className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">

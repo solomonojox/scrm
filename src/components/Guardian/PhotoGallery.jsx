@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // ✅ missing import
 import Sidebar from "../../pages/Admin/guardian/Sidebar";
 
@@ -33,15 +33,13 @@ export default function Gallery() {
 
   return (
     <div className="bg-gray-200 font-sans text-black min-h-screen flex">
-      {/* Sidebar */}
-      <Sidebar />
 
       {/* Main Content */}
-      <div className="flex-1 max-w-5xl mx-auto p-4 md:ml-64"> {/* ✅ Added md:ml-64 */}
+      <div className="flex-1 "> {/* ✅ Added md:ml-64 */}
         <header className="flex items-center space-x-3 mb-4">
           <button
             aria-label="Back"
-            onClick={() => navigate("/guardian/event")}
+            onClick={() => navigate("/guardian/events")}
             className="text-black text-lg"
           >
             <i className="fas fa-arrow-left"></i>

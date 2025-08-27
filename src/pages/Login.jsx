@@ -38,11 +38,11 @@ const LoginPage = () => {
       const decoded = jwtDecode(response.data);
       const role =
         decoded[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         ];
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
-      }else if( role === "Guardian"){
+      } else if (role === "Guardian") {
         navigate("/guardian/dashboard");
       }
     } catch (err) {
@@ -50,7 +50,7 @@ const LoginPage = () => {
       setError(err.response?.data.responseMessage || err?.message || "Login failed. Please check your credentials.");
       notifyError(
         err.response?.data.responseMessage ||
-          "Login failed. Please try again."
+        "Login failed. Please try again."
       );
     } finally {
       setLoading(false);

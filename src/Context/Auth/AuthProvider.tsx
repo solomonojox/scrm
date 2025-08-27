@@ -26,6 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error('Error decoding token:', error);
         localStorage.removeItem('scrmToken');
+        localStorage.removeItem('schoolId');
       }
     }
   }, []);
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('scrmToken');
+    localStorage.removeItem('schoolId');
     // sessionStorage.removeItem('navPath')
     setUser(null);
     setIsAuthenticated(false);

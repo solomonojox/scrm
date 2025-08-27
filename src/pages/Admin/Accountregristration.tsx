@@ -30,7 +30,7 @@ export default function RegistrationForm() {
     setLoading(true);
 
     try {
-      const schoolId = localStorage.getItem("schoolId");
+      const schoolId = localStorage.getItem("schoolIdOnRegistration");
 
       if (!schoolId) {
         console.error("School ID not found in local storage.");

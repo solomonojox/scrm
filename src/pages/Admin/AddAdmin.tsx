@@ -21,7 +21,7 @@ const RegistrationForm = () => {
     setSuccessMsg("");
     setErrorMsg("");
 
-    const schoolId = localStorage.getItem("schoolId");
+    const schoolId = localStorage.getItem("schoolIdOnRegistration");
 
     if (!schoolId) {
       setErrorMsg("School ID not found. Please complete previous steps.");
@@ -46,6 +46,7 @@ const RegistrationForm = () => {
 
       setSuccessMsg("✅ School admin registered successfully!");
       localStorage.removeItem("continueRegistration");
+      localStorage.removeItem("schoolIdOnRegistration");
       setTimeout(() => {
         navigate("/login");
       }, 1500);
