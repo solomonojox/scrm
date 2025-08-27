@@ -13,7 +13,7 @@ export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="flex-1 min-w-0">
         {" "}
         {/* Added min-w-0 for flex shrinking */}
-        <div className="lg:ml-60 my-24 px-4 lg:px-4">
+        <div className="lg:ml-44 my-24 px-4 lg:px-4">
           <div>
             <GuardianHeader />
           </div>

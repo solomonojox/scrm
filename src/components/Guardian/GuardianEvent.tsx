@@ -119,7 +119,7 @@ export default function EventsPage() {
   }, []);
 
   return (
-    <div className="bg-white text-black min-h-screen flex">
+    <div className="bg-white rounded-2xl text-black min-h-screen flex">
       {/* Main Content */}
       <main className="flex-1  sm:px-6 lg:px-8 pt-4">
         {/* Header */}
@@ -131,7 +131,7 @@ export default function EventsPage() {
             >
               <Menu size={20} />
             </button>
-            <h1 className="text-sm font-normal">Events</h1>
+            <h1 className="text-2xl font-semibold">Events</h1>
           </div>
           <div className="flex items-center gap-2">
             {/* Filter Dropdown */}
@@ -186,11 +186,10 @@ export default function EventsPage() {
               <button
                 type="button"
                 onClick={() => setNotifySubscribed(true)}
-                className={`${
-                  notifySubscribed
-                    ? "bg-green-500 text-white"
-                    : "bg-white text-[#FF6F00]"
-                } text-xs font-semibold rounded-full px-3 py-1 inline-flex items-center gap-1 transition`}
+                className={`${notifySubscribed
+                  ? "bg-green-500 text-white"
+                  : "bg-white text-[#FF6F00]"
+                  } text-xs font-semibold rounded-full px-3 py-1 inline-flex items-center gap-1 transition`}
               >
                 <span>
                   {notifySubscribed
@@ -214,7 +213,7 @@ export default function EventsPage() {
         <section className="mb-12">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <h3 className="font-extrabold text-2xl leading-tight mb-1">Recent Events</h3>
+              <h3 className="font-semibold text-2xl leading-tight mb-1">Recent Events</h3>
               <p className="text-xs mb-4">Here's What We've Been Up To!</p>
               <div className="flex items-center gap-3">
                 <button
@@ -257,7 +256,7 @@ export default function EventsPage() {
 
         {/* All Events */}
         <section className="mb-12">
-          <h3 className="font-extrabold text-xl mb-1 underline underline-offset-4 decoration-2 decoration-black">
+          <h3 className="font-semibold text-xl mb-1 underline underline-offset-4 decoration-2 decoration-black">
             All Events
           </h3>
           <p className="text-xs mb-6 max-w-[220px]">

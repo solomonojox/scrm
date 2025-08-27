@@ -45,9 +45,8 @@ function StatCard({ title, value, accent, count, z = 10 }: StatCardProps) {
       style={{ zIndex: z }}
     >
       <div
-        className={`rounded-2xl w-full h-full bg-gradient-to-br ${
-          gradient[accent] || gradient.red
-        } p-4 relative overflow-hidden`}
+        className={`rounded-2xl w-full h-full bg-gradient-to-br ${gradient[accent] || gradient.red
+          } p-4 relative overflow-hidden`}
       >
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_left,white,transparent)]" />
 
