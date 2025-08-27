@@ -105,7 +105,7 @@ export default function EventsPage() {
   const [notifySubscribed, setNotifySubscribed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // ✅ Sidebar toggle state
 
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   // Auto-scroll for recent events
@@ -218,7 +218,11 @@ export default function EventsPage() {
               <p className="text-xs mb-4">Here's What We've Been Up To!</p>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => scrollRef.current.scrollBy({ left: -220, behavior: "smooth" })}
+                  onClick={() => {
+                    if (scrollRef.current) {
+                      scrollRef.current.scrollBy({ left: -220, behavior: "smooth" });
+                    }
+                  }}
                   aria-label="Previous"
                   className="text-gray-400 border border-gray-300 rounded-full w-7 h-7 flex items-center justify-center hover:border-[#FF6F00] hover:text-[#FF6F00]"
                 >
@@ -226,7 +230,11 @@ export default function EventsPage() {
                 </button>
                 <span className="text-xs text-[#FF6F00] font-semibold">1/5</span>
                 <button
-                  onClick={() => scrollRef.current.scrollBy({ left: 220, behavior: "smooth" })}
+                  onClick={() => {
+                    if (scrollRef.current) {
+                      scrollRef.current.scrollBy({ left: 220, behavior: "smooth" });
+                    }
+                  }}
                   aria-label="Next"
                   className="text-[#FF6F00] border border-[#FF6F00] rounded-full w-7 h-7 flex items-center justify-center hover:bg-[#FF6F00] hover:text-white"
                 >
