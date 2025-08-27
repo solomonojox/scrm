@@ -10,7 +10,7 @@ const items: NavItem[] = [
   { id: "mypupils", iconClass: "fas fa-users", label: "My Pupils", path: "/mypupils" },
   { id: "assignments", iconClass: "fas fa-book", label: "Assignments", path: "/assignments" },
   { id: "news", iconClass: "fas fa-newspaper", label: "News", path: "/guardian/news" },
-  { id: "events", iconClass: "fas fa-calendar-alt", label: "Events", path: "/events" },
+  { id: "events", iconClass: "fas fa-calendar-alt", label: "Events", path: "/guardian/event" },
   { id: "loans", iconClass: "fas fa-coins", label: "Loans", path: "/loans" },
   { id: "results", iconClass: "fas fa-chart-bar", label: "Results", path: "/results" },
 ];
