@@ -38,8 +38,8 @@ import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
 import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
 import LoanPayment from './pages/Guardian/Loans/LoanPayment';
 import MyPupils from './pages/Guardian/Pupils/MyPupils';
-
-
+import GuardianEvent from './components/Guardian/GuardianEvent'
+import Photo from './components/Guardian/PhotoGallery'
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('scrmToken');
@@ -114,8 +114,8 @@ function App() {
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />
       <Route path="/guardian/news" element={<GuardianNews />} />
-      
-
+            <Route path="/guardian/event" element={<GuardianEvent />} />
+           <Route path="/guardian/event/photo" element={<Photo/>} />
       {/* All students routes here */}
 
 
