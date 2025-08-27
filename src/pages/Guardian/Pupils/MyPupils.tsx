@@ -1,13 +1,18 @@
 import React from 'react'
+import imageAssets from '../../../assets/imageAssets'
+import AcademicPerfomance from './AcademicPerfomance'
+import AssignmentCompletion from './AssignmentCompletion'
+import { useNavigate } from 'react-router-dom'
 
 const MyPupils = () => {
+    const navigate = useNavigate()
     return (
         <div>
             <div className="bg-white p-6">
                 <div className="flex justify-between">
                     <div className="flex gap-4">
                         <div className="h-52 w-52 rounded-2xl overflow-hidden">
-                            <img src="" alt="" className='w-full h-full bg-red-600'/>
+                            <img src={imageAssets.pupil} alt="" className='w-full h-full object-cover bg-red-600' />
                         </div>
 
                         <div className="space-y-1">
@@ -16,7 +21,7 @@ const MyPupils = () => {
                             <p className='text-gray-500'>Age: 12 years</p>
                             <p className='text-gray-500'>Current Status: Absent today</p>
 
-                            <button className="rounded-lg py-1 px-6 text-white bg-orange-500">View Profile</button>
+                            <button className="rounded-lg py-1 px-6 text-white bg-orange-500" onClick={() => navigate("/guardian/pupil/profile/1")}>View Profile</button>
                         </div>
                     </div>
 
@@ -37,6 +42,11 @@ const MyPupils = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                    <AcademicPerfomance />
+                    <AssignmentCompletion />
                 </div>
             </div>
         </div>

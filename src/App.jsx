@@ -38,8 +38,14 @@ import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
 import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
 import LoanPayment from './pages/Guardian/Loans/LoanPayment';
 import MyPupils from './pages/Guardian/Pupils/MyPupils';
+
 import GuardianEvent from './components/Guardian/GuardianEvent'
 import Photo from './components/Guardian/PhotoGallery'
+
+import PupilProfile from './pages/Guardian/Pupils/PupilProfile';
+
+
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('scrmToken');
@@ -72,7 +78,13 @@ function App() {
       <Route path="/terms" element={<Terms />} />
 
       {/* All admin routes here */}
-      <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/students" element={<AdminStudents />} />
         <Route path="/admin/teachers" element={<AdminTeacher />} />
@@ -88,10 +100,8 @@ function App() {
       {/* All teachers routes here */}
       <Route path="/teacher/class" element={<Classroom />} />
 
-
-
       {/* All Guardians routes here */}
-      <Route element={<ProtectedRoute><GuardianLayout /></ProtectedRoute>}>
+      <Route element={<GuardianLayout />}>
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
         <Route path="/guardian/profile" element={<GuardianProfile />} />
@@ -101,24 +111,24 @@ function App() {
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path="/guardian/pupils" element={<MyPupils />} />
+        <Route path="/guardian/pupil/profile/:id" element={<PupilProfile />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
-        <Route path='/guardian/loans' element={<Loans />} />
-        <Route path='/guardian/loan-request-form' element={<LoanRequestForm />} />
-        <Route path='/guardian/all-loan-request' element={<AllLoanRequests />} />
-        <Route path='/guardian/loan-request-details' element={<LoanRequestDetails />} />
-        <Route path='/guardian/loan-payment' element={<LoanPayment />} />
+        <Route path="/guardian/loans" element={<Loans />} />
+        <Route path="/guardian/loan-request-form" element={<LoanRequestForm />} />
+        <Route path="/guardian/all-loan-request" element={<AllLoanRequests />} />
+        <Route path="/guardian/loan-request-details" element={<LoanRequestDetails />} />
+        <Route path="/guardian/loan-payment" element={<LoanPayment />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
-
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
       <Route path="/guardian/profile" element={<GuardianProfile />} />
       <Route path="/guardian/news" element={<GuardianNews />} />
+
             <Route path="/guardian/event" element={<GuardianEvent />} />
            <Route path="/guardian/event/photo" element={<Photo/>} />
+
       {/* All students routes here */}
-
-
     </Routes>
   );
 }

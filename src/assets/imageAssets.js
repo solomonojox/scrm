@@ -13,6 +13,7 @@ import claap from './claap.png';
 import log from './log.jpg';
 import profile from './profileImage.jpg'
 import reportLogo from './report-card-logo.png'
+import pupil from './pupil.jpg'
 
 
 const imageAssets = {
@@ -29,6 +30,7 @@ const imageAssets = {
   student,
   claap,
   log,
+  pupil,
 
   profile
 
