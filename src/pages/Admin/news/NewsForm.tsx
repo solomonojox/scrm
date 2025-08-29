@@ -14,23 +14,11 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    nationality: "",
-    state: "",
-    religion: "",
-    email: "",
-    username: "",
-    occupation: "",
-    workAddress: "",
-    relationship: "",
-    nin: "",
-    bvn: "",
+    title: "",
+    content: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,44 +32,19 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
     setFormError("");
 
     const payload = {
-      schoolId: "d5bca6af-0658-4f9d-a6a4-08ddcc154429",
-      firstname: formData.firstName,
-      lastname: formData.lastName,
-      relationship: formData.relationship,
-      phone: formData.phone,
-      occupation: formData.occupation,
-      homeAddress: formData.address,
-      workAddress: formData.workAddress,
-      stateOfOrigin: formData.state,
-      nationality: formData.nationality,
-      religion: formData.religion,
-      email: formData.email,
-      username: formData.username,
-      nin: formData.nin,
-      bvn: formData.bvn,
+      title: formData.title,
+      content: formData.content,
     };
 
     try {
-      const res = await newsService.create(payload);
+      const res = await newsService.addNews(payload);
       toast.success(res.responseMessage || "News added!");
       onNewsAdded();
       setTimeout(() => {
         onClose();
         setFormData({
-          firstName: "",
-          lastName: "",
-          phone: "",
-          address: "",
-          nationality: "",
-          state: "",
-          religion: "",
-          email: "",
-          username: "",
-          occupation: "",
-          workAddress: "",
-          relationship: "",
-          nin: "",
-          bvn: "",
+          title: "",
+          content: "",
         });
         setImagePreview(null);
       }, 2000);
@@ -104,54 +67,54 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
         <div className="p-4 sm:p-6">
           <h2 className="text-lg font-semibold mb-4 text-center">Add News</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Avatar upload */}
+            <label className="relative w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="preview"
-                  className="w-full h-full object-cover"
-                />
+                <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
               ) : (
                 <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
                   +
                 </span>
               )}
             </label>
-            {[
-              ["firstName", "First Name"],
-              ["lastName", "Last Name"],
-              ["phone", "Phone Number"],
-              ["address", "Home Address"],
-              ["nationality", "Nationality"],
-              ["state", "State of Origin"],
-              ["religion", "Religion"],
-              ["email", "Email"],
-              ["username", "Username"],
-              ["occupation", "Occupation"],
-              ["workAddress", "Work Address"],
-              ["relationship", "Relationship"],
-              ["nin", "NIN"],
-              ["bvn", "BVN"],
-            ].map(([key, label]) => (
+
+            {/* Title field */}
+            <div className="flex flex-col">
+              <label htmlFor="title" className="text-sm font-medium mb-2">
+                Title
+              </label>
               <input
-                key={key}
-                type={key === "email" ? "email" : "text"}
-                name={key}
-                placeholder={label}
-                required={["firstName", "lastName", "phone"].includes(key)}
-                className="border px-3 py-2 rounded text-sm w-full"
-                value={formData[key]}
+                id="title"
+                type="text"
+                name="title"
+                placeholder="Title"
+                required
+                className="border px-3 py-3 rounded text-sm w-full"
+                value={formData.title || ""}
                 onChange={handleInputChange}
               />
-            ))}
-            <div className="col-span-2 flex justify-end gap-3 mt-4">
+            </div>
+
+            {/* Content field (full width) */}
+            <div className="flex flex-col">
+              <label htmlFor="content" className="text-sm font-medium mb-2">
+                Content
+              </label>
+              <textarea
+                id="content"
+                name="content"
+                placeholder="Enter your content..."
+                required
+                className="border px-3 py-2 rounded text-sm w-full resize-none min-h-[120px]"
+                value={formData.content || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex justify-end gap-3 mt-4">
               <button
                 type="button"
                 onClick={onClose}

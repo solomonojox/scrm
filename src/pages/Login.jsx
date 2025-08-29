@@ -5,6 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 import { useAuth } from "../Context/Auth/useAuth";
+import logo from "../assets/looogo.png";
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -36,22 +37,20 @@ const LoginPage = () => {
       notifySuccess("Login successful!");
 
       const decoded = jwtDecode(response.data);
-      const role =
-        decoded[
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ];
+      const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
       if (role === "SchoolAdmin") {
         navigate("/admin/dashboard");
       } else if (role === "Guardian") {
         navigate("/guardian/dashboard");
       }
     } catch (err) {
-      // console.error("Login failed:", err.response?.data || err.message);
-      setError(err.response?.data.responseMessage || err?.message || "Login failed. Please check your credentials.");
-      notifyError(
+      setError(
         err.response?.data.responseMessage ||
-        "Login failed. Please try again."
+          err?.message ||
+          "Login failed. Please check your credentials."
       );
+      notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -59,25 +58,27 @@ const LoginPage = () => {
 
   return (
     <div className="relative">
+      {/* Background Image */}
       <img
         src={imageAssets.loginImage}
         alt="login image"
         className="w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
       />
 
+      {/* Logo at Top Right */}
+      <div className="absolute top-6 left-6">
+        <img src={logo} alt="EduCat logo" className="h-[50px]" />
+      </div>
+
+      {/* Login Form Section */}
       <div className="h-screen w-full flex items-center justify-center lg:justify-end lg:pr-[10%]">
         <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-[539px] max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">
-            Welcome Back!
-          </h2>
+          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
           <p className="text-center text-gray-600 mb-6">Please Login</p>
 
           <form onSubmit={handleLogin}>
             <div className="mb-4">
-              <label
-                htmlFor="regNumber"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="regNumber" className="block text-sm font-medium text-gray-700 mb-1">
                 School Registration Number
               </label>
               <input
@@ -92,10 +93,7 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
@@ -110,10 +108,7 @@ const LoginPage = () => {
             </div>
 
             <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
@@ -128,9 +123,7 @@ const LoginPage = () => {
             </div>
 
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            {successMessage && (
-              <p className="text-green-600 text-sm mb-4">{successMessage}</p>
-            )}
+            {successMessage && <p className="text-green-600 text-sm mb-4">{successMessage}</p>}
 
             <button
               type="submit"
@@ -164,17 +157,11 @@ const LoginPage = () => {
 
             <p className="text-xs text-center text-gray-600 mt-4">
               By signing in, you confirm our{" "}
-              <a
-                href="#"
-                className="text-orange-500 font-semibold underline"
-              >
+              <a href="#" className="text-orange-500 font-semibold underline">
                 Terms of Use
               </a>{" "}
               and{" "}
-              <a
-                href="#"
-                className="text-orange-500 font-semibold underline"
-              >
+              <a href="#" className="text-orange-500 font-semibold underline">
                 Privacy Policy
               </a>
             </p>
@@ -182,6 +169,7 @@ const LoginPage = () => {
         </div>
       </div>
 
+      {/* Orange Curved Background */}
       <div className="fixed top-0 left-0 w-full h-screen overflow-hidden -z-10">
         <svg
           viewBox="0 0 1438 953"

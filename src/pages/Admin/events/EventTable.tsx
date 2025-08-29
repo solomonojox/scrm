@@ -10,11 +10,12 @@ import asset from "../../../assets/imageAssets";
 // import { Session } from "../../../Types/Guardian/guardianTypes";
 import { News } from "../../../Types/newsType";
 import { useAuth } from "../../../Context/Auth/useAuth";
+import { event } from "../../../Types/Admin/eventType";
 
 type ReligionFilter = "all" | "christian" | "muslim";
 
-interface NewsTableProps {
-  records: News[];
+interface EventTableProps {
+  records: event[];
   totalRecords: number;
   currentPage: number;
   totalPages: number;
@@ -30,11 +31,11 @@ interface NewsTableProps {
   onToggleSelectAll: () => void;
   onToggleCheckbox: (id: string) => void;
   onDelete: (id: string) => void;
-  onAddNews: () => void;
+  onAddEvent: () => void;
   onRefresh: () => void;
 }
 
-const NewsTable: React.FC<NewsTableProps> = ({
+const EventTable: React.FC<EventTableProps> = ({
   records,
   totalRecords,
   currentPage,
@@ -51,7 +52,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
   onToggleSelectAll,
   onToggleCheckbox,
   onDelete,
-  onAddNews,
+  onAddEvent,
   onRefresh,
 }) => {
   const { user } = useAuth();
@@ -60,20 +61,21 @@ const NewsTable: React.FC<NewsTableProps> = ({
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(records);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "News Details");
-    XLSX.writeFile(wb, "news.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Events Details");
+    XLSX.writeFile(wb, "events.xlsx");
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const title = "News List";
-    const headers = [["content", "newsId", "publishedDate", "title"]];
+    const title = "Event List";
+    const headers = [["eventId", "eventTitle", "eventDescription", "eventDate", "eventType"]];
 
-    const data = records.map((news) => [
-      news.content || "",
-      news.newsId || "",
-      news.publishedDate || "",
-      news.title || "",
+    const data = records.map((event) => [
+      event.eventId || "",
+      event.eventTitle || "",
+      event.eventDescription || "",
+      event.eventDate || "",
+      event.eventType || "",
     ]);
 
     doc.text(title, 14, 15);
@@ -85,7 +87,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
       headStyles: { fillColor: [255, 165, 0] },
     });
 
-    doc.save("news.pdf");
+    doc.save("event.pdf");
   };
 
   function formatDateTime(isoString: any) {
@@ -140,7 +142,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
       {/* Breadcrumb & Add Button */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
         <p className="text-sm text-gray-600 mb-4 sm:mb-0">
-          Home <span className="text-orange-500 font-semibold">: All News</span>
+          Home <span className="text-orange-500 font-semibold">: All Events</span>
         </p>
         <div className="gap-4 flex items-center sm:flex-wrap">
           <div className="relative">
@@ -223,10 +225,10 @@ const NewsTable: React.FC<NewsTableProps> = ({
           </button>
 
           <button
-            onClick={onAddNews}
+            onClick={onAddEvent}
             className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 w-full sm:w-auto"
           >
-            Add News
+            Add Event
           </button>
         </div>
       </div>
@@ -238,7 +240,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
             Showing {totalRecords} result{totalRecords !== 1 ? "s" : ""}
             {searchQuery && ` for "${searchQuery}"`}
             {religionFilter !== "all" && ` (Filtered by ${religionFilter})`}
-            {totalRecords === 0 && <span className="text-red-500 ml-2">No news found</span>}
+            {totalRecords === 0 && <span className="text-red-500 ml-2">No event found</span>}
           </div>
         )}
       </div>
@@ -257,22 +259,24 @@ const NewsTable: React.FC<NewsTableProps> = ({
                 />
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              <th className="p-3 min-w-[120px]">News Id</th>
               <th className="p-3 min-w-[120px]">Title</th>
-              <th className="p-3 min-w-[120px]">Content </th>
-              <th className="p-3 min-w-[200px]">Published Date</th>
-              <th className="p-3 min-w-[120px]">Actions</th>
+              <th className="p-3 min-w-[200px]">Description</th>
+              <th className="p-3 min-w-[120px]">Venue</th>
+              <th className="p-3 min-w-[120px]">Date</th>
+              <th className="p-3 min-w-[120px]">Time</th>
+              <th className="p-3 min-w-[120px]">Type</th>
+              <th className="p-3 min-w-[120px]">Action</th>
             </tr>
           </thead>
           <tbody>
             {records.length === 0 ? (
               <tr>
                 <td colSpan={10} className="p-8 text-center text-gray-500">
-                  {searchQuery ? "No news found matching your search" : "No news available"}
+                  {searchQuery ? "No event found matching your search" : "No event available"}
                 </td>
               </tr>
             ) : (
-              records.map((n, index) => (
+              records.map((event, index) => (
                 <tr
                   key={index}
                   className={`border-t hover:bg-gray-100 ${
@@ -282,22 +286,21 @@ const NewsTable: React.FC<NewsTableProps> = ({
                   <td className="p-3">
                     <input
                       type="checkbox"
-                      checked={selectedIds.includes(n.newsId)}
-                      onChange={() => onToggleCheckbox(n.newsId)}
+                      checked={selectedIds.includes(event.eventId)}
+                      onChange={() => onToggleCheckbox(event.eventId)}
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
-                  <td className="p-3">{n.newsId}</td>
-                  <td className="p-3">{n.title}</td>
-                  <td className="p-3">{n.content}</td>
-                  <td className="p-3">{formatDateTime(n.publishedDate)}</td>
-                  <td className="p-3 flex gap-3">
-                    <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
-                    <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
-                    <FaTrash
-                      className="cursor-pointer text-red-600 hover:text-red-800"
-                      onClick={() => onDelete(n.newsId)}
-                    />
+                  <td className="p-3">{event?.eventTitle}</td>
+                  <td className="p-3">{event?.eventDescription}</td>
+                  <td className="p-3">{event?.eventVenue}</td>
+                  <td className="p-3">{event?.eventDate}</td>
+                  <td className="p-3">{event?.eventTime}</td>
+                  <td className="p-3">{event?.eventType}</td>
+                  <td className="p-3 flex gap-2 text-blue-600">
+                    <FaEye className="cursor-pointer" />
+                    <FaEdit className="cursor-pointer text-green-600" />
+                    <FaTrash className="cursor-pointer text-red-600" />
                   </td>
                 </tr>
               ))
@@ -341,4 +344,4 @@ const NewsTable: React.FC<NewsTableProps> = ({
   );
 };
 
-export default NewsTable;
+export default EventTable;
