@@ -102,12 +102,16 @@ function App() {
       <Route path="/teacher/class" element={<Classroom />} />
 
       {/* All Guardians routes here */}
-      <Route element={<GuardianLayout />}>
+      <Route
+        element={<ProtectedRoute>
+          <GuardianLayout />
+        </ProtectedRoute>}
+      >
         {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
         <Route path="/guardian/profile" element={<GuardianProfile />} />
         <Route path="/guardian/pupils" element={<MyPupils />} />
-        <Route path="/guardian/pupil/profile/:id" element={<PupilProfile />} />
+        <Route path="/guardian/pupil/profile" element={<PupilProfile />} />
         <Route path="/guardian/assignments" element={<AssignmentDashboard />} />
         <Route path="/guardian/news" element={<GuardianNews />} />
         <Route path="/newsfeed/:id" element={<NewsFeed />} />
