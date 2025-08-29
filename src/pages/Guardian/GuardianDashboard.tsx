@@ -1,5 +1,5 @@
 // src/components/Dashboard.tsx
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +15,13 @@ import {
   ChartData,
 } from "chart.js";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
+import { useAuth } from "../../Context/Auth/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
+import { fetchGuardiansStudentFailure, fetchGuardiansStudentStart, fetchGuardiansStudentSuccess } from "../../Store/Guardian/guardianStudentSlice";
+import { guardianStudentService } from "../../Services/Guardian/guardianStudent";
+import { guardianAccountService } from "../../Services/Guardian/account";
+import { fetchGuardiansAccountFailure, fetchGuardiansAccountStart, fetchGuardiansAccountSuccess } from "../../Store/Guardian/accountSlice";
 
 /* Register chart.js elements + plugins */
 ChartJS.register(
@@ -313,8 +320,39 @@ const doughnutOptions: ChartOptions<"doughnut"> = {
 };
 
 export default function GuardianDashboard(): React.JSX.Element {
+  const { user }= useAuth()
   const barRef = useRef<any>(null);
   const lineRef = useRef<any>(null);
+
+    const dispatch = useDispatch<AppDispatch>();
+  
+    const fetchedTotalGuardianStudent = useSelector((state: RootState) => state.getGuardianStudents.listRecords);
+    const fetchedGuardianAccount = useSelector((state: RootState) => state.getGuardianAccount.listRecords);
+    const fetchedLoading = useSelector((state: RootState) => state.getGuardianStudents.loading);
+    const error = useSelector((state: RootState) => state.getGuardianStudents.error);
+
+  
+
+    useEffect(() => {
+      if (user?.id && !fetchedLoading) {
+        fetchDashboardDetails();
+      }
+    }, [user, dispatch]);
+  
+    const fetchDashboardDetails = async () => {
+      dispatch(fetchGuardiansStudentStart());
+      dispatch(fetchGuardiansAccountStart());
+      try {
+        const data = await guardianStudentService.getAll(user?.id)
+        const accountData = await guardianAccountService.getGuardianAccount(user?.id)
+
+        dispatch(fetchGuardiansStudentSuccess(data));
+        dispatch(fetchGuardiansAccountSuccess(accountData));
+      } catch (err) {
+        dispatch(fetchGuardiansStudentFailure((err as Error).message));
+        dispatch(fetchGuardiansAccountFailure((err as Error).message));
+      }
+    };
 
   return (
     <div className="">
@@ -334,28 +372,28 @@ export default function GuardianDashboard(): React.JSX.Element {
             <div className="bg-[#e6c9b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
                 <p className="text-[13px] text-gray-600 mb-1">Total Number of Pupils</p>
-                <p className="font-semibold text-2xl text-gray-900 leading-none">2</p>
+                <p className="font-semibold text-2xl text-gray-900 leading-none">{fetchedTotalGuardianStudent?.length}</p>
               </div>
               <i className="fas fa-user-graduate text-orange-500 text-3xl" />
             </div>
             <div className="bg-[#c3cbd4] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
                 <p className="text-[13px] text-gray-600 mb-1">Savings Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 200,000</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none">₦ {fetchedGuardianAccount?.balance}</p>
               </div>
               <i className="fas fa-wallet text-gray-700 text-3xl" />
             </div>
             <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
                 <p className="text-[13px] text-gray-600 mb-1">Loan Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 300,000</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none">₦ {fetchedGuardianAccount?.balance}</p>
               </div>
               <i className="fas fa-coins text-red-500 text-3xl" />
             </div>
             <div className="bg-[#c9e6b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
               <div>
-                <p className="text-[13px] text-gray-600 mb-1">First Term School Fees</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 700,000</p>
+                <p className="text-[13px] text-gray-600 mb-1">Current Term</p>
+                <p className="font-semibold text-lg text-gray-900 leading-none"></p>
               </div>
               <i className="fas fa-hand-holding-usd text-green-600 text-3xl" />
             </div>

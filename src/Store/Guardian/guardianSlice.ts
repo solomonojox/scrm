@@ -3,12 +3,14 @@ import { Guardian } from "../../Types/Guardian/guardianTypes";
 
 interface GuardianTypes {
   listRecords: Guardian[];
+  selectedGuardian: Guardian | null;  
   loading: boolean;
   error: string | null;
 }
 
 const initialState: GuardianTypes = {
   listRecords: [],
+  selectedGuardian: null,
   loading: false,
   error: null,
 };
@@ -29,8 +31,15 @@ export const guardianSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
+        fetchGuardianStart: (state, action: PayloadAction<Guardian>) => {
+            state.loading = false;
+            state.selectedGuardian = action.payload;
+        },
+        clearSelectedGuardian: (state) => {
+            state.selectedGuardian = null;
+        },
     },
 });
 
-export const { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } = guardianSlice.actions;
+export const { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess, fetchGuardianStart, clearSelectedGuardian } = guardianSlice.actions;
 export default guardianSlice.reducer;

@@ -226,13 +226,13 @@ const ReportCard: React.FC = () => {
 
                   {leftSubjects.map((subject, index) => (
                     <React.Fragment key={index}>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm">
                         {subject.name}
                       </div>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
                         {subject.score || ""}
                       </div>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
                         {subject.grade || ""}
                       </div>
                     </React.Fragment>
@@ -256,13 +256,13 @@ const ReportCard: React.FC = () => {
 
                   {rightSubjects.map((subject, index) => (
                     <React.Fragment key={index}>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm">
                         {subject.name}
                       </div>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
                         {subject.score || ""}
                       </div>
-                      <div className="border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
+                      <div className="truncate border border-gray-300 p-2 sm:p-3 bg-white text-xs sm:text-sm text-center">
                         {subject.grade || ""}
                       </div>
                     </React.Fragment>
