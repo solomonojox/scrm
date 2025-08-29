@@ -7,6 +7,7 @@ import schoolFeeSlice from './schoolFeeSlice'
 import sessionSlice from './sessionSlice'
 import teacherSlice from './Teachers/teacherSlice'
 import NewsSlice from './newsSlice'
+import EventSlice from './eventSlice'
 import classroomSlice from "./Admin/classroomSlice";
 import classroomStudentsSlice from './Admin/classroomStudentsSlice'
 import  paymentSlice  from "./paymentSlice";
@@ -21,6 +22,7 @@ export const rootReducer = combineReducers({
   getStudent: studentSlice,
   getTeacher: teacherSlice,
   getNews: NewsSlice,
+  getEvents: EventSlice,
   getStudentsByClassId: classroomStudentsSlice,
   getPayment: paymentSlice,
   getGuardianStudents: guardianStudentSlice,

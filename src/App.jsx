@@ -43,6 +43,7 @@ import GuardianEvent from './components/Guardian/GuardianEvent'
 import Photo from './components/Guardian/PhotoGallery'
 
 import PupilProfile from './pages/Guardian/Pupils/PupilProfile';
+import AdminEvents from './pages/Admin/events/AdminEvents';
 
 
 
@@ -92,7 +93,7 @@ function App() {
         <Route path="/admin/classrooms" element={<AdminClassroom />} />
         <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/news" element={<AdminNews />} />
-        <Route path="/admin/events" element={<Events />} />
+        <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
       </Route>
