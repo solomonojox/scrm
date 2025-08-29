@@ -97,7 +97,7 @@ const GuardianHeader: React.FC = () => {
     dispatch(fetchGuardiansStart());
     try {
       const data = await guardianService.getGuardianById(user?.id);
-      console.log(data);
+
       dispatch(fetchGuardiansSuccess(data));
     } catch (err) {
       dispatch(fetchGuardiansFailure((err as Error).message));

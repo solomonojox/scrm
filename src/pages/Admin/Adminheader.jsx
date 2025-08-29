@@ -1,6 +1,6 @@
-import React from 'react';
-import logo from '../../assets/looogo.png';
-import { useAuth } from '../../Context/Auth/useAuth';
+import React from "react";
+import logo from "../../assets/looogo.png";
+import { useAuth } from "../../Context/Auth/useAuth";
 import { IoIosCopy } from "react-icons/io";
 
 const Adminheader = () => {
@@ -8,12 +8,13 @@ const Adminheader = () => {
 
   // Function to handle copy
   const handleCopy = (text) => {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard
+      .writeText(text)
       .then(() => {
-        alert('Copied to clipboard');
+        alert("Copied to clipboard");
       })
       .catch((err) => {
-        console.error('Failed to copy: ', err);
+        console.error("Failed to copy: ", err);
       });
   };
 
@@ -21,8 +22,7 @@ const Adminheader = () => {
     <div className="fixed top-0 left-0 w-full z-30 bg-white shadow-md">
       <header className="flex items-center justify-between px-6 h-[70px] border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <img src={logo} alt="EduCat logo" className="h-[45px] animate-bounce" />
-          
+          <img src={logo} alt="EduCat logo" className="h-[45px]" />
         </div>
 
         <div className="rounded-lg py-2 px-3 flex items-center justify-center gap-4 border shadow">
