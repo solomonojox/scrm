@@ -10,7 +10,7 @@ import { event } from "../../../Types/Admin/eventType";
 
 // ---------------- Types ----------------
 interface EventCardProps {
-  event: event;
+  event?: event;
   image: string;
   dateTime: string;
   title: string;
@@ -402,6 +402,7 @@ export default function GuardianEvent() {
                               alt="Orange desktop calendar"
                               className="w-48 h-36 object-cover"
                               src={imageAssets.fif}
+                             
                             />
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/20"></div>
                           </div>
