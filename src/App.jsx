@@ -38,12 +38,11 @@ import AllLoanRequests from './pages/Guardian/Loans/AllLoanRequests';
 import LoanRequestDetails from './pages/Guardian/Loans/LoanRequestDetails';
 import LoanPayment from './pages/Guardian/Loans/LoanPayment';
 import MyPupils from './pages/Guardian/Pupils/MyPupils';
-
-import GuardianEvent from './components/Guardian/GuardianEvent'
 import Photo from './components/Guardian/PhotoGallery'
 
 import PupilProfile from './pages/Guardian/Pupils/PupilProfile';
 import AdminEvents from './pages/Admin/events/AdminEvents';
+import GuardianEvent from './pages/Guardian/event/GuardianEvent';
 
 
 
