@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Filter, Bell, ChevronLeft, ChevronRight, Menu, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import imageAssets from "../../assets/imageAssets";
+import imageAssets from "../../../assets/imageAssets";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../Store/store";
+import { fetchEventFailure, fetchEventStart, fetchEventSuccess } from "../../../Store/eventSlice";
+import { eventsService } from "../../../Services/Events";
+import { event } from "../../../Types/Admin/eventType";
 
 // ---------------- Types ----------------
 interface EventCardProps {
+  event?: event;
   image: string;
   dateTime: string;
   title: string;
@@ -19,15 +25,65 @@ interface MonthData {
 }
 
 // ---------------- Subcomponents ----------------
-function EventCard({ image, dateTime, title, description, alt }: EventCardProps) {
+function EventCard({
+  image,
+  dateTime,
+  title,
+  description,
+  alt,
+}: EventCardProps): React.JSX.Element {
   return (
-    <div className="relative rounded-lg overflow-hidden shadow-lg">
-      <img src={image} alt={alt} className="w-full h-[180px] object-cover" />
-      <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[10px] p-2">
-        <div className="mb-1">{dateTime}</div>
-        <div className="font-semibold text-xs leading-tight mb-1">{title}</div>
-        <div className="text-[8px] leading-tight">{description}</div>
+    <div className="group relative rounded-xl cursor-pointer overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white border border-gray-100">
+      {/* Image Container */}
+      <div className="relative overflow-hidden">
+        <img
+          src={image}
+          alt={alt}
+          className="w-full h-[200px] object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70"></div>
+
+        {/* Date badge */}
+        <div className="flex items-center gap-2 absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-sm">
+          <div className="text-[10px] font-semibold text-gray-700 text-center">
+            {dateTime.split("|")[0]?.trim() || "TBD"}
+          </div>
+          <div className="text-[8px] text-gray-500 text-center">
+            {dateTime.split("|")[1]?.trim() || ""}
+          </div>
+        </div>
       </div>
+
+      {/* Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <div className="text-white">
+          {/* Title */}
+          <h3 className="font-bold text-sm leading-tight mb-2 line-clamp-2 group-hover:text-orange-200 transition-colors">
+            {title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-[11px] leading-relaxed text-gray-200 line-clamp-2 mb-3">
+            {description}
+          </p>
+
+          {/* Action section */}
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-1">
+              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+              <span className="text-[9px] text-orange-200 font-medium">Live Event</span>
+            </div>
+
+            <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[9px] font-semibold px-3 py-1.5 rounded-full hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
+              View Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Hover effect overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
     </div>
   );
 }
@@ -69,93 +125,6 @@ const recent: EventCardProps[] = [
   },
 ];
 
-const allEvents: EventCardProps[] = [
-  {
-    image: imageAssets.student,
-    alt: "Audience clapping",
-    dateTime: "22-02-2025 | 12:25pm",
-    title: "Digital Literacy for Students",
-    description: "Safe and Smart: Teaching Kids Responsible Internet Use.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Audience clapping",
-    dateTime: "22-02-2025 | 12:25pm",
-    title: "Digital Literacy for Students",
-    description: "Safe and Smart: Teaching Kids Responsible Internet Use.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Parent engagement session",
-    dateTime: "25-02-2025 | 2:30pm",
-    title: "Parent Engagement Workshop",
-    description: "Building stronger connections between home and school.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Technology workshop",
-    dateTime: "28-02-2025 | 10:00am",
-    title: "Tech Skills Development",
-    description: "Enhancing digital capabilities for modern learning.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Student presentation",
-    dateTime: "03-03-2025 | 1:15pm",
-    title: "Student Showcase",
-    description: "Celebrating student achievements and creativity.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-  {
-    image: imageAssets.student,
-    alt: "Community event",
-    dateTime: "05-03-2025 | 11:30am",
-    title: "Community Outreach",
-    description: "Connecting school with local community initiatives.",
-  },
-];
-
 // ---------------- Dynamic Months Generation Function ----------------
 const generateDynamicMonths = (): MonthData[] => {
   const currentDate = new Date();
@@ -180,7 +149,7 @@ const generateDynamicMonths = (): MonthData[] => {
 };
 
 // ---------------- Main Component ----------------
-export default function EventsPage() {
+export default function GuardianEvent() {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [notifySubscribed, setNotifySubscribed] = useState<boolean>(false);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -191,15 +160,37 @@ export default function EventsPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getEvents.listRecords) || [];
+  const fetchedLoading = useSelector((state: RootState) => state.getEvents.loading);
+  const error = useSelector((state: RootState) => state.getEvents.error);
+  console.log(fetchedRecord);
+
+  // fetch
+  //  fetch events
+  useEffect(() => {
+    if (!fetchedLoading) {
+      fetchEvents();
+    }
+  }, [dispatch]);
+
+  const fetchEvents = async () => {
+    dispatch(fetchEventStart());
+    try {
+      const data = await eventsService.getAllEvents();
+      dispatch(fetchEventSuccess(data));
+    } catch (err) {
+      dispatch(fetchEventFailure((err as Error).message));
+    }
+  };
+
   // Initialize months on component mount and update periodically
   useEffect(() => {
     const updateMonths = () => {
       setMonths(generateDynamicMonths());
     };
-
     // Initial load
     updateMonths();
-
     // Update every minute to catch month changes
     const interval = setInterval(updateMonths, 60000);
 
@@ -219,8 +210,8 @@ export default function EventsPage() {
   // Pagination logic
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
-  const currentEvents = allEvents.slice(indexOfFirstEvent, indexOfLastEvent);
-  const totalPages = Math.ceil(allEvents.length / eventsPerPage);
+  const currentEvents = fetchedRecord.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(fetchedRecord.length / eventsPerPage);
 
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -283,14 +274,14 @@ export default function EventsPage() {
           className="rounded-lg overflow-hidden mb-12 shadow-lg"
           style={{ background: "linear-gradient(90deg, #FF6F00 0%, #FFB300 100%)" }}
         >
-          <div className="flex flex-col md:flex-row md:items-center md:space-x-6 p-6 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between p-6 md:p-8">
             <div className="md:flex-1 mb-6 md:mb-0">
               <h2 className="text-white font-extrabold text-3xl leading-tight mb-2">
                 Upcoming
                 <br />
                 Events
               </h2>
-              <p className="text-white text-xs mb-4 max-w-[220px]">
+              <p className="text-white text-xs mb-4 max-w-[120px]">
                 Don't Miss These Exciting School Moments!
               </p>
               <button
@@ -310,7 +301,7 @@ export default function EventsPage() {
             </div>
             <div className="flex gap-4 md:flex-1 md:justify-end">
               {upcoming.map((ev, i) => (
-                <div key={i} className="w-[180px] md:w-[220px]">
+                <div key={i} className="w-[180px] md:w-[100%]">
                   <EventCard {...ev} />
                 </div>
               ))}
@@ -355,7 +346,7 @@ export default function EventsPage() {
               className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
             >
               {recent.map((ev, i) => (
-                <div key={i} className="snap-start shrink-0 w-[220px]">
+                <div key={i} className="snap-start shrink-0 w-[220px] md:w-[45%]">
                   <EventCard {...ev} />
                 </div>
               ))}
@@ -411,6 +402,7 @@ export default function EventsPage() {
                               alt="Orange desktop calendar"
                               className="w-48 h-36 object-cover"
                               src={imageAssets.fif}
+                             
                             />
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/20"></div>
                           </div>
@@ -426,14 +418,67 @@ export default function EventsPage() {
             <div className="flex-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {currentEvents.map((event, i) => (
-                  <div key={i} className="w-full max-w-sm">
-                    <EventCard {...event} />
+                  <div key={i} className="w-full max-w-sm group cursor-pointer">
+                    <div className="relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white border border-gray-100">
+                      {/* Image Container */}
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={imageAssets.student}
+                          alt={"image"}
+                          className="w-full h-[200px] object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70"></div>
+
+                        {/* Date badge */}
+                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 shadow-sm">
+                          <div className="text-[10px] font-semibold text-gray-700 text-center">
+                            {event?.eventDate?.split("|")[0]?.trim() || "TBD"}
+                          </div>
+                          <div className="text-[8px] text-gray-500 text-center">
+                            {event?.eventDate?.split("|")[1]?.trim() || ""}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <div className="text-white">
+                          {/* Title */}
+                          <h3 className="font-bold text-sm leading-tight mb-2 line-clamp-2 group-hover:text-orange-200 transition-colors">
+                            {event?.eventTitle}
+                          </h3>
+
+                          {/* Description */}
+                          <p className="text-[11px] leading-relaxed text-gray-200 line-clamp-2 mb-3">
+                            {event?.eventDescription}
+                          </p>
+
+                          {/* Action button */}
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center space-x-1">
+                              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse"></div>
+                              <span className="text-[9px] text-orange-200 font-medium">
+                                Live Event
+                              </span>
+                            </div>
+
+                            <button className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[9px] font-semibold px-3 py-1.5 rounded-full hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Hover effect overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-orange-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* Pagination */}
-              {allEvents.length > 0 && (
+              {fetchedRecord.length > 0 && (
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 p-4 text-sm text-gray-600">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
