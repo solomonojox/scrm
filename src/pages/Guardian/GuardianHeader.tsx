@@ -117,7 +117,7 @@ const GuardianHeader: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0 w-[100%] h-[70px] z-50">
+    <div className="fixed top-0  w-[100%] h-[70px] z-50">
       <header className=" bg-white lg:rounded-t-[20px] lg:rounded-[15px] z-20 shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
         {/* Search */}
         <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300">
@@ -134,7 +134,10 @@ const GuardianHeader: React.FC = () => {
           <div className="flex items-center gap-2 cursor-pointer">
             <img
               className="w-8 h-8 rounded-full border-2 border-gray-300"
-              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedRecord.firstname?.firstname}` || imageAssets.profile}
+              src={
+                `https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedRecord.firstname?.firstname}` ||
+                imageAssets.profile
+              }
               alt={"profile"}
             />
 

@@ -43,6 +43,7 @@ import Photo from './components/Guardian/PhotoGallery'
 import PupilProfile from './pages/Guardian/Pupils/PupilProfile';
 import AdminEvents from './pages/Admin/events/AdminEvents';
 import GuardianEvent from './pages/Guardian/event/GuardianEvent';
+import GuardianMessages from './pages/Guardian/messages/GuardianMessages';
 
 
 
@@ -125,6 +126,7 @@ function App() {
         <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
+        <Route path="/guardian/message" element={<GuardianMessages />} />
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
