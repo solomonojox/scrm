@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
 import { TeacherType } from "../../../Types/Teacher/teacherType";
+import { AdminType } from "../../../Types/Admin/adminType";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
@@ -15,14 +15,27 @@ interface Props {
   teachers: TeacherType[];
   selectedTeacher: TeacherType | null;
   onSelectTeacher: (teacher: TeacherType) => void;
+  selectedAdmin: AdminType | null;
+  onSelectAdmin: (admin: AdminType) => void;
+  admin: AdminType | AdminType[]; // ✅ can be object or array
 }
 
-const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeacher }) => {
+const ContactList: React.FC<Props> = ({
+  teachers,
+  selectedTeacher,
+  onSelectTeacher,
+  admin,
+  selectedAdmin,
+  onSelectAdmin,
+}) => {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const messages = useSelector((state: RootState) => state.getMessage.listRecords);
   const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
   const error = useSelector((state: RootState) => state.getGuardianStudents.error);
+
+  // ✅ Normalize admin into an array
+  const adminList: AdminType[] = Array.isArray(admin) ? admin : admin ? [admin] : [];
 
   // Fetch messages for all teachers when component mounts or teachers list changes
   useEffect(() => {
@@ -34,30 +47,12 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
   const fetchAllTeacherMessages = async () => {
     dispatch(fetchMessageStart());
     try {
-      // Prepare teacher parameters for bulk request
-      const teacherParams = teachers.map(teacher => ({
-        teacherId: teacher.teacherId,
-        role: teacher.role
-      }));
-      
-      // Use bulk endpoint if available, otherwise fall back to individual requests
       let allMessages: any = [];
-      
-      try {
-        // Try to use bulk endpoint first
-        const messagePromises = teachers.map(teacher => 
-          messageService.getMessageByUserId(teacher.teacherId, teacher.role)
-        );
-        
-        const messagesByTeacher = await Promise.all(messagePromises);
-        allMessages = messagesByTeacher.flat();
-        console.log(allMessages)
-
-      } catch (error) {
-        console.log("Bulk message endpoint not available, falling back to individual requests");
-        
-      }
-      
+      const messagePromises = teachers.map((teacher) =>
+        messageService.getMessageByUserId(teacher.teacherId, teacher.role)
+      );
+      const messagesByTeacher = await Promise.all(messagePromises);
+      allMessages = messagesByTeacher.flat();
       dispatch(fetchMessageSuccess(allMessages));
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -67,32 +62,27 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
 
   const sortMessagesAsc = (messages: any[]) => {
     if (!Array.isArray(messages)) return [];
-    return [...messages].sort((a, b) => {
-      return new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime();
-    });
+    return [...messages].sort(
+      (a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+    );
   };
 
-  // Helper function to get unread count for a specific teacher
-  const getUnreadCount = (teacherId: any) => {
+  const getUnreadCount = (id: any) => {
     if (!Array.isArray(messages)) return 0;
     return messages.filter(
-      (msg) => (msg.senderId === teacherId || msg.receiverId === teacherId) &&  msg.isRead === false).length;
+      (msg) => (msg.senderId === id || msg.receiverId === id) && msg.isRead === false
+    ).length;
   };
 
-  // Helper function to get last message for a teacher
-  const getLastMessage = (teacherId: any) => {
+  const getLastMessage = (id: any) => {
     if (!Array.isArray(messages)) return "No messages";
-    const teacherMessages = messages.filter(
-      (msg) => msg.senderId === teacherId || msg.receiverId === teacherId
-    );
-    if (teacherMessages.length === 0) return "No messages";
+    const filteredMessages = messages.filter((msg) => msg.senderId === id || msg.receiverId === id);
+    if (filteredMessages.length === 0) return "No messages";
 
-    const sortedMessages = sortMessagesAsc(teacherMessages);
+    const sortedMessages = sortMessagesAsc(filteredMessages);
     const lastMessage = sortedMessages[sortedMessages.length - 1];
     return lastMessage?.content || "No messages";
   };
-
-  
 
   return (
     <div className="w-full lg:w-80 bg-white border-r border-gray-200 flex flex-col">
@@ -105,14 +95,64 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
       </div>
 
       {/* Error display */}
-      {error && (
-        <div className="p-4 bg-red-100 text-red-700">
-          Error loading messages: {error}
-        </div>
-      )}
+      {error && <div className="p-4 bg-red-100 text-red-700">Error loading messages: {error}</div>}
 
       {/* Contact list */}
       <div className="flex-1 overflow-y-auto">
+        {/* ✅ Admins */}
+        {adminList.map((a) => {
+          const unreadCount = getUnreadCount(a?.schoolId);
+          const lastMessage = getLastMessage(a?.schoolId);
+
+          return (
+            <div
+              key={a?.schoolId}
+              onClick={() => onSelectAdmin(a)}
+              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors
+                ${selectedAdmin?.schoolId === a?.schoolId ? "bg-blue-50" : ""}
+                ${unreadCount > 0 ? "bg-orange-50" : ""}`}
+            >
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <div className="relative">
+                  <img
+                    src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${a.fullname}`}
+                    alt={a.fullname}
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover"
+                  />
+                  {a.fullname && (
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 lg:w-4 lg:h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                  )}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3
+                      className={`font-medium truncate text-sm lg:text-base ${
+                        unreadCount > 0 ? "text-gray-900 font-semibold" : "text-gray-900"
+                      }`}
+                    >
+                      {a.fullname}
+                    </h3>
+                    <span className="text-xs font-semibold px-2 bg-red-100 rounded-full text-red-500">
+                      Admin
+                    </span>
+                  </div>
+                  <p
+                    className={`text-xs lg:text-sm truncate mt-1 ${
+                      unreadCount > 0 ? "text-gray-800 font-medium" : "text-gray-600"
+                    }`}
+                  >
+                    {lastMessage}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* ✅ Teachers */}
         {teachers.map((teacher) => {
           const unreadCount = getUnreadCount(teacher.teacherId);
           const lastMessage = getLastMessage(teacher.teacherId);
@@ -120,10 +160,10 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
           return (
             <div
               key={teacher.teacherId}
-              onClick={() => {onSelectTeacher(teacher), {state: mess}}}
-              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                selectedTeacher?.teacherId === teacher.teacherId ? "bg-blue-50" : ""
-              }`}
+              onClick={() => onSelectTeacher(teacher)}
+              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 mt-2 transition-colors 
+                ${selectedTeacher?.teacherId === teacher.teacherId ? "bg-blue-100" : ""}
+                ${unreadCount > 0 ? "" : ""}`}
             >
               <div className="flex items-center gap-3">
                 {/* Avatar */}
@@ -146,9 +186,11 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
                         unreadCount > 0 ? "text-gray-900 font-semibold" : "text-gray-900"
                       }`}
                     >
-                      {teacher.role} {teacher.firstname}
+                      {teacher.firstname} {teacher.lastname}
                     </h3>
-                    <span className="text-xs text-gray-500">{"Primary 1"}</span>
+                    <span className="text-xs font-semibold px-2 bg-green-100 rounded-full text-green-500">
+                      {"Teacher"}
+                    </span>
                   </div>
                   <p
                     className={`text-xs lg:text-sm truncate mt-1 ${
@@ -158,13 +200,6 @@ const ContactList: React.FC<Props> = ({ teachers, selectedTeacher, onSelectTeach
                     {lastMessage}
                   </p>
                 </div>
-
-                {/* Unread indicator */}
-                {unreadCount > 0 && (
-                  <div className="flex items-center justify-center w-5 h-5 lg:w-6 lg:h-6 bg-orange-500 text-white text-xs font-medium rounded-full flex-shrink-0">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </div>
-                )}
               </div>
             </div>
           );

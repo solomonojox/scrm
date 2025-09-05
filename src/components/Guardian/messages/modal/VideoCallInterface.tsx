@@ -1,10 +1,12 @@
 import React from "react";
 import { Phone, Camera, Mic, MicOff, Video, VideoOff } from "lucide-react";
 import { TeacherType } from "../../../../Types/Teacher/teacherType";
+import { AdminType } from "../../../../Types/Admin/adminType";
 
 
 interface Props {
-  selectedTeacher: TeacherType;
+  selectedTeacher: TeacherType | null;
+  selectedAdmin: AdminType | null;
   isMuted: boolean;
   isVideoOff: boolean;
   onToggleMute: () => void;
@@ -13,6 +15,7 @@ interface Props {
 }
 
 const VideoCallInterface: React.FC<Props> = ({
+  selectedAdmin,
   selectedTeacher,
   isMuted,
   isVideoOff,

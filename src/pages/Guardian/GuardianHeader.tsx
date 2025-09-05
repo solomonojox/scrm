@@ -14,7 +14,11 @@ import { guardianService } from "../../Services/Guardian/guardian";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
 
-const GuardianHeader: React.FC = () => {
+interface GuardianHeaderProps {
+  onToggleSidebar?: () => void;
+}
+
+const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord: any = useSelector((state: RootState) => state.getGuardian.listRecords);
@@ -117,15 +121,26 @@ const GuardianHeader: React.FC = () => {
   };
 
   return (
-    <div className="fixed top-0  w-[100%] h-[70px] z-50">
-      <header className=" bg-white lg:rounded-t-[20px] lg:rounded-[15px] z-20 shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
+    <div
+      className="
+      fixed top-0 z-50 h-[70px] 
+      w-full lg:w-[calc(100%-14.5rem)]   /* subtract sidebar width (48 = 12rem) */ 
+      transition-all duration-300
+    "
+    >
+      <header className="bg-white lg:rounded-t-[20px] shadow-md h-full px-4 lg:px-8 flex items-center justify-between">
         {/* Search */}
-        <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300">
+        <div className="flex gap-2 bg-gray-200 items-center px-4 py-1.5 rounded-full bg-grey-300 flex-1 max-w-xs">
           <FiSearch className="text-gray-400" />
-          <input type="search" className="outline-none" placeholder="search..." name="" />
+          <input
+            type="search"
+            className="outline-none bg-transparent flex-1 text-sm"
+            placeholder="Search..."
+          />
         </div>
 
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Desktop nav items */}
+        <div className="hidden lg:flex items-center gap-6 ml-auto">
           <div className="flex items-center gap-3">
             <p className="cursor-pointer">{icons.notificationBell}</p>
             <p className="cursor-pointer">{icons.message}</p>
@@ -135,12 +150,11 @@ const GuardianHeader: React.FC = () => {
             <img
               className="w-8 h-8 rounded-full border-2 border-gray-300"
               src={
-                `https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedRecord.firstname?.firstname}` ||
+                `https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedRecord?.firstname}` ||
                 imageAssets.profile
               }
-              alt={"profile"}
+              alt="profile"
             />
-
             <div className="text-center">
               <b className="text-[13px]">
                 {fetchedRecord?.firstname} {fetchedRecord?.lastname}
@@ -150,8 +164,9 @@ const GuardianHeader: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:hidden">
-          <Menu className="size-10 border p-1" />
+        {/* Mobile menu button */}
+        <div className="lg:hidden ml-2">
+          <Menu onClick={onToggleSidebar} className="size-10 border p-1 rounded-md" />
         </div>
       </header>
     </div>

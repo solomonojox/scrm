@@ -4,6 +4,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/Auth/useAuth.js";
 import imageAssets from "../../assets/imageAssets.js";
 
+interface GuardianSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
 const icons = {
   message: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +53,7 @@ const items = [
   { id: "messaging", iconClass: icons.message, label: "Messaging", path: "/guardian/message" },
 ];
 
-const GuardianSidebar = () => {
+const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const auth = useAuth?.();
@@ -65,47 +70,65 @@ const GuardianSidebar = () => {
   };
 
   return (
-    <aside className="w-48 h-[100vh] bg-[#EE7306] fixed z-30 rounded-r-[30px]">
-      <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
-        <div className="flex flex-col items-center mt-[110px] space-y-[16px]">
-          {items.map((it) => {
-            const isActive = isActivePath(it.path);
-            return (
-              <Link
-                key={it.id}
-                to={it.path}
-                aria-label={it.label}
-                className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none ${
-                  isActive ? "bg-white/20" : ""
-                }`}
-                title={it.label}
-              >
-                {it.path === "/guardian/message" ? (
-                  icons.message
-                ) : (
-                  <i className={`${it.iconClass} text-white text-[11px] sm:text-sm`} />
-                )}
-              </Link>
-            );
-          })}
+    <>
+      {/* Overlay for mobile/tablet */}
+      <div
+        className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${
+          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={onClose}
+      />
+
+      <aside
+        className={`
+        w-56 h-[100vh] bg-[#EE7306] fixed top-0 left-0 z-60 rounded-r-[30px]
+        transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-[-100%]"} 
+        lg:translate-x-0
+      `}
+      >
+        {/* Close button (mobile only) */}
+        <button onClick={onClose} className="absolute top-4 right-4 lg:hidden text-white text-xl">
+          <i className="fas fa-times"></i>
+        </button>
+
+        {/* left strip with icons */}
+        <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
+          <div className="flex flex-col items-center mt-[110px] space-y-[16px]">
+            {items.map((it) => {
+              const isActive = isActivePath(it.path);
+              return (
+                <Link
+                  key={it.id}
+                  to={it.path}
+                  aria-label={it.label}
+                  onClick={onClose}
+                  className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none ${
+                    isActive ? "bg-white/20" : ""
+                  }`}
+                  title={it.label}
+                >
+                  {it.path === "/guardian/message" ? (
+                    icons.message
+                  ) : (
+                    <i className={`${it.iconClass} text-white text-[11px] sm:text-sm`} />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
 
-      {/* <div
-          className="absolute top-0 right-0 -translate-y-1/6 h-28 w-40 sm:w-60 rounded-t-full rounded-br-full"
-          style={{ background: "#F07A00", zIndex: 11 }}
-        /> */}
-      {/* <div className="absolute inset-0 bg-[#F07A00] w-[250px] rounded-3xl z-10">
-
-      </div> */}
-      <div className="relative z-20 flex flex-col ml-5 h-full py-6 justify-between">
-        <div>
+        {/* content */}
+        <div className="relative z-20 flex flex-col ml-5 h-full py-6 justify-between">
+          {/* Logo */}
           <div className="px-2 sm:px-4 mb-6">
             <div className="w-[86px] sm:w-[100px] ml-0 sm:ml-4">
               <img src={imageAssets?.logo || ""} alt="logo" className="w-full" />
             </div>
           </div>
 
+          {/* Nav */}
           <div className="flex-1 pt-4 overflow-y-auto overflow-x-hidden z-0 [&::-webkit-scrollbar]:hidden">
             <nav className="flex flex-col sm:gap-3 px-1 sm:px-2 space-y-1">
               {items.map((it) => {
@@ -114,6 +137,7 @@ const GuardianSidebar = () => {
                   <div key={it.id} className="flex items-center ml-[4px] w-[218px]">
                     <Link
                       to={it.path}
+                      onClick={onClose}
                       className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${
                         isActive
                           ? "bg-[#EDEDED] text-[#F07A00]"
@@ -128,29 +152,24 @@ const GuardianSidebar = () => {
               })}
             </nav>
           </div>
-        </div>
 
-        <div className="px-2 sm:px-4">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 rounded-xl focus:outline-none hover:bg-white/10 transition-colors px-3 py-2"
-          >
-            <div
-              className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-md"
-              aria-hidden
+          {/* logout */}
+          <div className="px-2 sm:px-4">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 rounded-xl focus:outline-none hover:bg-white/10 transition-colors px-3 py-2"
             >
-              <i className="fas fa-sign-out-alt text-white text-[11px] sm:text-sm" />
-            </div>
-            <div
-              className="hidden sm:block w-full text-left rounded-r-2xl"
-              style={{ color: "white" }}
-            >
-              <span className="text-sm sm:text-base font-medium">Log Out</span>
-            </div>
-          </button>
+              <div className="flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-md">
+                <i className="fas fa-sign-out-alt text-white text-[11px] sm:text-sm" />
+              </div>
+              <div className="hidden sm:block w-full text-left rounded-r-2xl text-white">
+                <span className="text-sm sm:text-base font-medium">Log Out</span>
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 
