@@ -81,17 +81,12 @@ const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) =>
 
       <aside
         className={`
-        w-56 h-[100vh] bg-[#EE7306] fixed top-0 left-0 z-60 rounded-r-[30px]
-        transition-transform duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-[-100%]"} 
-        lg:translate-x-0
+
+        fixed top-0 left-0 z-50 h-full w-64 bg-[#EE7306] rounded-r-[30px] text-white transition-transform
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0 lg:w-56
       `}
       >
-        {/* Close button (mobile only) */}
-        <button onClick={onClose} className="absolute top-4 right-4 lg:hidden text-white text-xl">
-          <i className="fas fa-times"></i>
-        </button>
-
         {/* left strip with icons */}
         <div className="absolute left-0 top-0 h-full w-6 sm:w-10 bg-[#FFA50080] rounded-r-3xl z-20">
           <div className="flex flex-col items-center mt-[110px] space-y-[16px]">

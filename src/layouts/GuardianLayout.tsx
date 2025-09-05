@@ -5,7 +5,7 @@ import GuardianHeader from "../pages/Guardian/GuardianHeader";
 import { useState } from "react";
 
 export const GuardianLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
