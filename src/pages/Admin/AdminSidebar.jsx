@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaThLarge,
   FaUserGraduate,
@@ -10,11 +10,12 @@ import {
   FaCalendarAlt,
   FaChalkboard,
   FaFileInvoiceDollar,
-  FaSignOutAlt
-} from 'react-icons/fa';
-import { FiChevronRight } from 'react-icons/fi';
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../Context/Auth/useAuth";
-import "../../Styles/customScrollBar.css"
+import "../../Styles/customScrollBar.css";
+import { MessageCircleDashed } from "lucide-react";
 
 const SidebarButton = ({ icon, label, to }) => {
   const location = useLocation();
@@ -28,37 +29,47 @@ const SidebarButton = ({ icon, label, to }) => {
         py-3 px-4 rounded-lg w-full
         transition-all duration-200
         group
-        ${isActive
-          ? 'bg-orange-50 text-orange-600 font-medium shadow-sm'
-          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}
+        ${
+          isActive
+            ? "bg-orange-50 text-orange-600 font-medium shadow-sm"
+            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+        }
           `}
     >
       <div className="flex items-center space-x-3">
-        <span className={`
+        <span
+          className={`
           text-lg
-          ${isActive ? 'text-orange-500' : 'text-gray-400 group-hover:text-gray-600'}
-        `}>
+          ${isActive ? "text-orange-500" : "text-gray-400 group-hover:text-gray-600"}
+        `}
+        >
           {icon}
         </span>
         <span className="text-sm">{label}</span>
       </div>
-      <FiChevronRight className={`
+      <FiChevronRight
+        className={`
         text-xs opacity-0 transform -translate-x-1
-        ${isActive ? 'opacity-100 translate-x-0 text-orange-500' : 'group-hover:opacity-70 group-hover:translate-x-0'}
+        ${
+          isActive
+            ? "opacity-100 translate-x-0 text-orange-500"
+            : "group-hover:opacity-70 group-hover:translate-x-0"
+        }
         transition-all duration-200
-        `} />
+        `}
+      />
     </Link>
   );
 };
 
 const AdminSidebar = () => {
-  const navigate = useNavigate()
-  const { logout } = useAuth()
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const handleLogout = () => {
     localStorage.removeItem("scrmToken");
     logout();
-    navigate('/login');
-  }
+    navigate("/login");
+  };
 
   return (
     <div
@@ -100,13 +111,15 @@ const AdminSidebar = () => {
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Operations
         </h3>
+        <SidebarButton icon={<MessageCircleDashed />} label="Messages" to="/admin/messages" />
         <SidebarButton icon={<FaNewspaper />} label="News" to="/admin/news" />
         <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/admin/events" />
         <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" to="/admin/schoolfee" />
       </div>
 
       <div className="mt-auto pt-4 border-t border-gray-100">
-        <button className="
+        <button
+          className="
           flex items-center space-x-2
           w-full text-left
           py-2.5 px-4 rounded-lg

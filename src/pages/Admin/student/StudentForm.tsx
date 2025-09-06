@@ -39,7 +39,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
     const guardians = useSelector((state: RootState) => state.getGuardian.listRecords);
     const teachers = useSelector((state: RootState) => state.getTeacher.listRecords);
     const sessions = useSelector((state: RootState) => state.getSession.listRecords);
-    console.log(sessions)
+    // console.log(sessions)
     const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords);
 
     // Set initial form data when editData changes
