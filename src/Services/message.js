@@ -12,6 +12,16 @@ export const messageService = {
       throw error;
     }
   },
+  getMessageByUserIdAndSelectedId: async (userId, userRole, otherUserId, otherUserRole) => {
+    try {
+      const res = await api.get(`/api/Message/GetConversation/${userId}/${userRole}/${otherUserId}/${otherUserRole}`);
+      // console.log("GetAllTeachers success:", res.data.data);
+      return res.data.data;
+    } catch (error) {
+      console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  },
 
   create: async (data) => {
     try {

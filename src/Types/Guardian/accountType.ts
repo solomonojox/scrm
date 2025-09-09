@@ -4,6 +4,7 @@ export interface Account {
   accountName?: string;
   bankName?: string;
   bankCode?: string | null;
+  
   balance?: 0.0;
   createdAt?: string;
   guardianId?: string;
