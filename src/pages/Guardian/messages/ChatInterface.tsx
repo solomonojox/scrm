@@ -41,9 +41,10 @@ const ChatInterface: React.FC<Props> = ({
   const [showGallery, setShowGallery] = useState(false);
   const [trigger, setTrigger] = useState(false);
 
-  const messages: any = useSelector(
+  const messages = useSelector(
     (state: RootState) => state.getMessage.listRecords
   );
+  const loading = useSelector((state: RootState) => state.getMessage.loading);
 
   // detect if current chat is with teacher or admin
   const isTeacher = !!selectedTeacher;
@@ -51,41 +52,56 @@ const ChatInterface: React.FC<Props> = ({
 
   const displayName = isTeacher
     ? `${selectedTeacher?.firstname ?? ""} ${selectedTeacher?.lastname ?? ""}`
-    : selectedAdmin?.fullname  || selectedAdmin?.schoolName || "School Admin";
+    : selectedAdmin?.fullname || selectedAdmin?.schoolName || "School Admin";
 
   const contactId = isTeacher
     ? selectedTeacher?.teacherId
-    : selectedAdmin?.schoolId;
+    : selectedAdmin?.schoolAdminId;
 
-  const contactRole = isTeacher ? selectedTeacher?.role : "SchoolAdmin";
+  const contactRole = isTeacher ? selectedTeacher?.role : selectedAdmin?.role;
 
   const avatarSeed = isTeacher
     ? selectedTeacher?.firstname || selectedTeacher?.lastname
-    : selectedAdmin?.fullname  || selectedAdmin?.schoolName;
+    : selectedAdmin?.fullname || selectedAdmin?.schoolName;
 
-  // fetch messages when contact changes
+  // fetch messages for the logged-in guardian + selected contact
   useEffect(() => {
-    if (user && (isTeacher || isAdmin)) {
+    if (user && contactId && contactRole) {
       fetchMessages();
+    } else {
+      dispatch(fetchMessageSuccess([]));
     }
-  }, [dispatch, user, selectedTeacher, selectedAdmin, trigger]);
+    // ✅ include contactId/contactRole so it re-fetches on contact change
+  }, [dispatch, user, trigger, contactId, contactRole]);
 
   const fetchMessages = async () => {
     dispatch(fetchMessageStart());
     try {
-      if (contactId && contactRole) {
-        const res = await messageService.getMessageByUserId(
+      if (user && contactId && contactRole) {
+        const res = await messageService.getMessageByUserIdAndSelectedId(
+          user.id,
+          user.role,
           contactId,
           contactRole
         );
         dispatch(fetchMessageSuccess(res));
       } else {
-        dispatch(fetchMessageSuccess([])); // no contact selected
+        dispatch(fetchMessageSuccess([]));
       }
     } catch (err) {
       console.error("Error fetching messages:", err);
       dispatch(fetchMessageFailure((err as Error).message));
     }
+  };
+
+  // filter conversation between guardian and selected contact
+  const filterMessages = (messages: any[]) => {
+    if (!contactId) return [];
+    return messages.filter(
+      (m) =>
+        (m.senderId === contactId && m.receiverId === user?.id) ||
+        (m.receiverId === contactId && m.senderId === user?.id)
+    );
   };
 
   const sortMessagesAsc = (messages: any[]) => {
@@ -95,14 +111,14 @@ const ChatInterface: React.FC<Props> = ({
     );
   };
 
-  const sortedMessage = sortMessagesAsc(messages);
+  const filteredMessages = sortMessagesAsc(filterMessages(messages));
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // scroll to bottom when new messages come
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [sortedMessage]);
+  }, [filteredMessages]);
 
   if (!isTeacher && !isAdmin) {
     return (
@@ -181,7 +197,9 @@ const ChatInterface: React.FC<Props> = ({
               <h3 className="font-medium text-gray-900 text-sm lg:text-base">
                 {displayName}
               </h3>
-              <p className="text-xs lg:text-sm text-gray-600">Online 2 hrs ago</p>
+              <p className="text-xs lg:text-sm text-gray-600">
+                Online 2 hrs ago
+              </p>
             </div>
           </div>
           <Phone
@@ -193,12 +211,16 @@ const ChatInterface: React.FC<Props> = ({
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto parent-scrollbar p-3 lg:p-4 space-y-3 lg:space-y-4">
-        {sortedMessage.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center h-full text-gray-400 text-sm">
+            Loading messages...
+          </div>
+        ) : filteredMessages.length === 0 ? (
           <div className="flex justify-center items-center h-full text-gray-400 text-sm">
             No messages yet. Start the conversation!
           </div>
         ) : (
-          sortedMessage.map((m) => (
+          filteredMessages.map((m) => (
             <div
               key={m.messageId}
               className={`flex ${
@@ -299,7 +321,9 @@ const ChatInterface: React.FC<Props> = ({
             onCapture={() => setShowCamera(false)}
           />
         )}
-        {showGallery && <PictureGallery onClose={() => setShowGallery(false)} />}
+        {showGallery && (
+          <PictureGallery onClose={() => setShowGallery(false)} />
+        )}
         {showAttachments && (
           <AttachmentMenu onSelect={handleAttachmentSelect} />
         )}

@@ -104,7 +104,7 @@ const AdminMessages: React.FC = () => {
           teachers={recordedTeachers}
           selectedTeacher={selectedTeacher}
           onSelectTeacher={handleSelectTeacher}
-          guardians={recordedGuardians}
+          guardian={recordedGuardians}
           selectedGuardian={selectedGuardian}
           onSelectGuardian={handleSelectGuardian} // ✅ fixed
         />

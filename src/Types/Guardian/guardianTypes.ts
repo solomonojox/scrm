@@ -15,6 +15,7 @@ export interface Guardian {
   username: string;
   nin: string;
   bvn: string;
-  role?: string
+  role?: string;
+  currentTerm?: number;
   // add any other returned properties you need…
 }
