@@ -22,15 +22,11 @@ export const paymentService = {
    */
   getPaymentsBySchoolId: async (schoolId) => {
     try {
-      const response = await api.get(
-        `/api/Payment/GetPaymentsBySchoolId?schoolId=${schoolId}`
-      );
+      const response = await api.get(`/api/Payment/GetPaymentsBySchoolId?schoolId=${schoolId}`);
       return response.data.data;
     } catch (error) {
       console.error("GetPaymentsBySchoolId error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch school payments"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school payments");
     }
   },
 
@@ -48,6 +44,30 @@ export const paymentService = {
     try {
       const response = await api.get(
         `/api/Payment/GetStudentPaymentForSession?studentId=${studentId}&sessionId=${sessionId}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error("GetStudentPayment error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
+
+  getClassFeeForSession: async (classId, sessionId) => {
+    try {
+      const response = await api.get(
+        `/api/SchoolFee/GetClassFeeForSession?classId=${classId}&sessionId=${sessionId}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error("GetStudentPayment error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
+
+  getStudentPaymentBalanceForSessiozn: async (studentId, sessionId) => {
+    try {
+      const response = await api.get(
+        `/api/Payment/GetStudentPaymentBalance?studentId=${studentId}&sessionId=${sessionId}`
       );
       return response.data.data;
     } catch (error) {

@@ -25,6 +25,25 @@ export const GuardianLayout = ({ children }: { children: React.ReactNode }) => {
             <Outlet />
           </div>
 
+<<<<<<< Updated upstream
+=======
+      {/* Main Content */}
+      <div
+        className={`
+          flex-1 min-w-0
+          transition-all duration-300
+          lg:ml-60   /* Push content right on large screens */
+        `}
+      >
+        {/* Header */}
+        <div className="sticky top-0 z-40 bg-[#EDEDED]">
+          <GuardianHeader onToggleSidebar={toggleSidebar} />
+        </div>
+
+        {/* Page content */}
+        <div className="my-24 w-full overflow-x-auto">
+          <Outlet />
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>

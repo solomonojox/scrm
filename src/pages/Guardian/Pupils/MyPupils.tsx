@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from '../../../Store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGuardiansStudentFailure, fetchGuardiansStudentStart, fetchGuardiansStudentSuccess } from '../../../Store/Guardian/guardianStudentSlice';
 import { paymentService } from '../../../Services/Payment';
+import FeeModal from './FeeModal';
 
 const MyPupils = () => {
     const navigate = useNavigate();
@@ -49,21 +50,50 @@ const MyPupils = () => {
 
     const selectedStudent = students[selectedIndex];
 
+    // console.log(selectedStudent)
+
     const [payments, setPayments] = useState<any>({});
+    const [classSessionFee, setClassSessionFee] = useState<number>(0);
+    const [studentBalance, setStudentBalance] = useState<any>({});
+    const [openPaymentModal, setOpenPaymentModal] = useState(false);
+
     useEffect(() => {
         fetchStudentPayments();
+        getClassFeeForSession();
+        getStudentPaymentBalanceSession();
     }, [selectedStudent]);
     const fetchStudentPayments = async () => {
         try {
             if (selectedStudent) {
                 const sessionPayment = await paymentService.getStudentPaymentForSession(selectedStudent?.studentId, selectedStudent?.currentSession);
                 setPayments(sessionPayment);
-                console.log(sessionPayment)
             }
         } catch (error) {
             console.error('Error fetching student payments:', error);
         }
     };
+
+    const getClassFeeForSession = async () => {
+        try {
+            if (selectedStudent) {
+                const classSeesionFee = await paymentService.getClassFeeForSession(selectedStudent?.classroomId, selectedStudent?.currentSession);
+                setClassSessionFee(classSeesionFee);
+            }
+        } catch (error) {
+            console.error('Error fetching student payments:', error);
+        }
+    }
+
+    const getStudentPaymentBalanceSession = async () => {
+        try {
+            if (selectedStudent) {
+                const studentBalance = await paymentService.getStudentPaymentBalanceForSessiozn(selectedStudent?.studentId, selectedStudent?.currentSession);
+                setStudentBalance(studentBalance);
+            }
+        } catch (error) {
+            console.error('Error fetching student payments:', error);
+        }
+    }
 
     if (loading) {
         return (
@@ -158,7 +188,7 @@ const MyPupils = () => {
             </div>
 
             {/* Student Information */}
-            <div className="flex justify-between">
+            <div className="flex flex-col md:flex-row justify-between">
                 <div className="flex gap-4">
                     <div className="h-52 w-52 rounded-2xl overflow-hidden">
                         <img
@@ -202,39 +232,47 @@ const MyPupils = () => {
                 <div className="p-4 space-y-4 shadow-lg rounded-lg">
                     <div className="space-y-1">
                         <h1 className="text-lg font-semibold">Fee Balance/Payment Status</h1>
-                        <p className="text-gray-700">Session School Fees: N{selectedStudent.feeAmount || '20,000'}</p>
-                        <p className="text-green-500">Amount Paid: N{payments?.totalPaid}</p>
-                        <p className="text-gray-500">Balance: N{selectedStudent.balance || '10,000'}</p>
+                        <p className="text-gray-700">Session School Fees: N{studentBalance?.totalFees?.toLocaleString() || '0.00'}</p>
+                        <p className="text-green-500">Amount Paid: N{studentBalance?.totalPaid}</p>
+                        <p className="text-gray-500">Balance: N{studentBalance?.balance?.toLocaleString() || '0.00'}</p>
                     </div>
 
                     <div className="space-y-2">
                         <p className="text-orange-500">Status</p>
-                        <div className="flex gap-2">
-                            <button
-                                className={`rounded-lg px-6 py-1 ${selectedStudent.paymentStatus === 'completed'
-                                    ? 'bg-green-500 text-white'
-                                    : 'bg-gray-200 text-gray-700'
-                                    }`}
+                        {studentBalance?.balance > 0 ? (
+                            <div className="flex flex-col md:flex-row gap-2">
+                                <span
+                                    className={`rounded-lg px-6 py-1 bg-red-500 text-white w-full text-center`}
+                                >
+                                    Pending
+                                </span>
+                                <button
+                                    className={`rounded-lg px-6 py-1 bg-purple-500 hover:bg-purple-700 text-white w-full`}
+                                    onClick={() => setOpenPaymentModal(true)}
+                                >
+                                    Pay Now
+                                </button>
+                            </div>
+                        ) : (
+                            <span
+                                className={`rounded-lg px-6 py-1 bg-green-600 text-white`}
                             >
-                                Completed
-                            </button>
-                            <button
-                                className={`rounded-lg px-6 py-1 ${selectedStudent.paymentStatus === 'pending'
-                                    ? 'bg-orange-500 text-white'
-                                    : 'bg-gray-200 text-gray-700'
-                                    }`}
-                            >
-                                Pending
-                            </button>
-                        </div>
+                                Paid
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
                 <AcademicPerfomance />
                 <AssignmentCompletion />
             </div>
+
+            <FeeModal
+                onClose={() => setOpenPaymentModal(false)}
+                open={openPaymentModal}
+            />
         </div>
     );
 };
