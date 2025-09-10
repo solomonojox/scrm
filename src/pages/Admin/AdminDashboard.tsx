@@ -423,7 +423,7 @@ function UpcomingClasses() {
   const fetchedRecord = useSelector((state: RootState) => state.getPayment.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getPayment.loading);
   const error = useSelector((state: RootState) => state.getPayment.error);
-  console.log(fetchedRecord)
+  // console.log(fetchedRecord)
 
   useEffect(() => {
     if (!fetchedLoading) {

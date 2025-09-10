@@ -9,6 +9,7 @@ export const newsService = {
   addNews: async (newsData) => {
     try {
       const response = await api.post(`/api/News/AddNews`, newsData);
+      console.log(response.data.data)
       return response.data;
     } catch (error) {
       console.error("AddNews error:", error);

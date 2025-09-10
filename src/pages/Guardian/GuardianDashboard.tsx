@@ -1,5 +1,5 @@
 // src/components/Dashboard.tsx
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +15,27 @@ import {
   ChartData,
 } from "chart.js";
 import { Bar, Line, Doughnut } from "react-chartjs-2";
+import { useAuth } from "../../Context/Auth/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../Store/store";
+import {
+  fetchGuardiansStudentFailure,
+  fetchGuardiansStudentStart,
+  fetchGuardiansStudentSuccess,
+} from "../../Store/Guardian/guardianStudentSlice";
+import { guardianStudentService } from "../../Services/Guardian/guardianStudent";
+import { guardianAccountService } from "../../Services/Guardian/account";
+import {
+  fetchGuardiansAccountFailure,
+  fetchGuardiansAccountStart,
+  fetchGuardiansAccountSuccess,
+} from "../../Store/Guardian/accountSlice";
+import { Check, Copy, X } from "lucide-react";
+import {
+  fetchGuardiansLoanAccountFailure,
+  fetchGuardiansLoanAccountStart,
+  fetchGuardiansLoanAccountSuccess,
+} from "../../Store/Guardian/loanAccountSlice";
 
 /* Register chart.js elements + plugins */
 ChartJS.register(
@@ -313,195 +334,321 @@ const doughnutOptions: ChartOptions<"doughnut"> = {
 };
 
 export default function GuardianDashboard(): React.JSX.Element {
+  const { user } = useAuth();
   const barRef = useRef<any>(null);
   const lineRef = useRef<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const fetchedTotalGuardianStudent = useSelector(
+    (state: RootState) => state.getGuardianStudents.listRecords
+  );
+  const fetchedGuardianAccount = useSelector(
+    (state: RootState) => state.getGuardianAccount.listRecords
+  );
+  console.log(fetchedGuardianAccount);
+  const fetchedGuardianLoanAccount = useSelector(
+    (state: RootState) => state.getGuardianLoanAccount.listRecords
+  );
+  const fetchedLoading = useSelector((state: RootState) => state.getGuardianStudents.loading);
+  const error = useSelector((state: RootState) => state.getGuardianStudents.error);
+
+  const accountInfo = {
+    "Account Type": "Savings Account",
+    Bank: fetchedGuardianAccount?.bankName,
+    "Account Name": fetchedGuardianAccount?.accountName,
+    "Account Number": fetchedGuardianAccount?.accountNumber,
+  };
+
+  const copyToClipboard = async (text, fieldName) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldName);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id && !fetchedLoading) {
+      fetchDashboardDetails();
+    }
+  }, [user, dispatch]);
+
+  const fetchDashboardDetails = async () => {
+    dispatch(fetchGuardiansStudentStart());
+    dispatch(fetchGuardiansAccountStart());
+    dispatch(fetchGuardiansLoanAccountStart());
+    try {
+      const data = await guardianStudentService.getAll(user?.id);
+      const savingsAccountData = await guardianAccountService.getGuardianAccount(user?.id);
+      const loanAccountData = await guardianAccountService.getGuardianLoanAccount(user?.id);
+
+      dispatch(fetchGuardiansStudentSuccess(data));
+      dispatch(fetchGuardiansAccountSuccess(savingsAccountData));
+      dispatch(fetchGuardiansLoanAccountSuccess(loanAccountData));
+    } catch (err) {
+      dispatch(fetchGuardiansStudentFailure((err as Error).message));
+      dispatch(fetchGuardiansAccountFailure((err as Error).message));
+      dispatch(fetchGuardiansLoanAccountFailure((err as Error).message));
+    }
+  };
 
   return (
     <div className="">
       <main className="mx-4 lg:mx-0">
-          {/* Welcome & button */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-            <h2 className="font-semibold text-gray-900 text-[20px] mb-3 sm:mb-0">
-              Welcome To EduCat(SCRM)
-            </h2>
-            <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-3 whitespace-nowrap hover:bg-orange-700 transition">
-              View Bank Account Details
+        {/* Welcome & button */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+          <h2 className="font-semibold text-gray-900 text-[20px] mb-3 sm:mb-0">
+            Welcome To EduCat(SCRM)
+          </h2>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-3 whitespace-nowrap hover:bg-orange-700 transition"
+          >
+            View Savings Account Details
+          </button>
+        </div>
+
+        {/* Info Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-[#e6c9b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-[13px] text-gray-600 mb-1">Total Number of Pupils</p>
+              <p className="font-semibold text-2xl text-gray-900 leading-none">
+                {fetchedTotalGuardianStudent?.length}
+              </p>
+            </div>
+            <i className="fas fa-user-graduate text-orange-500 text-3xl" />
+          </div>
+          <div className="bg-[#c3cbd4] rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-[13px] text-gray-600 mb-1">Savings Account Balance</p>
+              <p className="font-semibold text-lg text-gray-900 leading-none">
+                ₦ {fetchedGuardianAccount?.balance}
+              </p>
+            </div>
+            <i className="fas fa-wallet text-gray-700 text-3xl" />
+          </div>
+          <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-[13px] text-gray-600 mb-1">Loan Account Balance</p>
+              <p className="font-semibold text-lg text-gray-900 leading-none">
+                ₦ {fetchedGuardianLoanAccount?.balance}
+              </p>
+            </div>
+            <i className="fas fa-coins text-red-500 text-3xl" />
+          </div>
+          <div className="bg-[#c9e6b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
+            <div>
+              <p className="text-[13px] text-gray-600 mb-1">Current Term</p>
+              <p className="font-semibold text-lg text-gray-900 leading-none">
+                {fetchedTotalGuardianStudent[0]?.currentTerm === 1
+                  ? " First Term"
+                  : fetchedTotalGuardianStudent[0]?.currentTerm === 2
+                  ? "Second Term"
+                  : fetchedTotalGuardianStudent[0]?.currentTerm === 3
+                  ? "Third Term"
+                  : ""}
+              </p>
+            </div>
+            <i className="fas fa-hand-holding-usd text-green-600 text-3xl" />
+          </div>
+        </div>
+
+        {/* Weekly dropdown */}
+        <div className="flex justify-end mb-6">
+          <div className="relative inline-block text-left">
+            <button className="inline-flex justify-center rounded-md border border-orange-600 bg-orange-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-orange-700">
+              Weekly
+              <svg
+                className="-mr-1 ml-2 h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 9l-7 7-7-7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                />
+              </svg>
             </button>
           </div>
+        </div>
 
-          {/* Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-[#e6c9b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
-              <div>
-                <p className="text-[13px] text-gray-600 mb-1">Total Number of Pupils</p>
-                <p className="font-semibold text-2xl text-gray-900 leading-none">2</p>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left column */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Academic performance (bar) */}
+            <div
+              className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
+              style={{ minWidth: 320 }}
+            >
+              <h3 className="font-semibold text-[18px] text-gray-900 mb-3">Academic Performance</h3>
+              <div style={{ height: 320 }}>
+                <Bar ref={barRef} data={barData} options={barOptions} />
               </div>
-              <i className="fas fa-user-graduate text-orange-500 text-3xl" />
             </div>
-            <div className="bg-[#c3cbd4] rounded-lg p-4 flex items-center justify-between shadow-sm">
-              <div>
-                <p className="text-[13px] text-gray-600 mb-1">Savings Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 200,000</p>
+
+            {/* Assignment completion (line) */}
+            <div
+              className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
+              style={{ minWidth: 320 }}
+            >
+              <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
+                Assignment Completion
+              </h3>
+              <div style={{ height: 300 }}>
+                <Line ref={lineRef} data={lineData} options={lineOptions} />
               </div>
-              <i className="fas fa-wallet text-gray-700 text-3xl" />
-            </div>
-            <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
-              <div>
-                <p className="text-[13px] text-gray-600 mb-1">Loan Account Balance</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 300,000</p>
-              </div>
-              <i className="fas fa-coins text-red-500 text-3xl" />
-            </div>
-            <div className="bg-[#c9e6b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
-              <div>
-                <p className="text-[13px] text-gray-600 mb-1">First Term School Fees</p>
-                <p className="font-semibold text-lg text-gray-900 leading-none">₦ 700,000</p>
-              </div>
-              <i className="fas fa-hand-holding-usd text-green-600 text-3xl" />
             </div>
           </div>
 
-          {/* Weekly dropdown */}
-          <div className="flex justify-end mb-6">
-            <div className="relative inline-block text-left">
-              <button className="inline-flex justify-center rounded-md border border-orange-600 bg-orange-600 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-orange-700">
-                Weekly
-                <svg
-                  className="-mr-1 ml-2 h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19 9l-7 7-7-7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+          {/* Right column */}
+          <div className="space-y-6">
+            {/* Attendance summary */}
+            <div className="bg-white z-0 rounded-lg px-4  shadow-md flex flex-col sm:flex-row sm:space-x-4">
+              <div className="flex-1 min-w-[150px] py-10">
+                <h3 className="font-semibold text-[18px] text-gray-900 mb-3">Attendance Summary</h3>
 
-          {/* Main Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left column */}
-            <div className="space-y-6 lg:col-span-2">
-              {/* Academic performance (bar) */}
-              <div
-                className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
-                style={{ minWidth: 320 }}
-              >
-                <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
-                  Academic Performance
-                </h3>
-                <div style={{ height: 320 }}>
-                  <Bar ref={barRef} data={barData} options={barOptions} />
-                </div>
-              </div>
-
-              {/* Assignment completion (line) */}
-              <div
-                className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
-                style={{ minWidth: 320 }}
-              >
-                <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
-                  Assignment Completion
-                </h3>
-                <div style={{ height: 300 }}>
-                  <Line ref={lineRef} data={lineData} options={lineOptions} />
-                </div>
-              </div>
-            </div>
-
-            {/* Right column */}
-            <div className="space-y-6">
-              {/* Attendance summary */}
-              <div className="bg-white z-0 rounded-lg px-4  shadow-md flex flex-col sm:flex-row sm:space-x-4">
-                <div className="flex-1 min-w-[150px] py-10">
-                  <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
-                    Attendance Summary
-                  </h3>
-
-                  <div className="flex justify-center space-x-4">
-                    <div className="text-center">
-                      <div className="relative w-28 h-28 mx-auto">
-                        <Doughnut data={attendanceDataJason} options={doughnutOptions} />
+                <div className="flex justify-center space-x-4">
+                  <div className="text-center">
+                    <div className="relative w-28 h-28 mx-auto">
+                      <Doughnut data={attendanceDataJason} options={doughnutOptions} />
+                    </div>
+                    <div className="flex justify-center space-x-4 mt-2 text-[10px] text-gray-600">
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 rounded-full bg-indigo-500 inline-block" />
+                        <span>Present</span>
                       </div>
-                      <div className="flex justify-center space-x-4 mt-2 text-[10px] text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-indigo-500 inline-block" />
-                          <span>Present</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />
-                          <span>Absent</span>
-                        </div>
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" />
+                        <span>Absent</span>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="text-center">
-                      <div className="relative w-28 h-28 mx-auto">
-                        <Doughnut data={attendanceDataJoy} options={doughnutOptions} />
+                  <div className="text-center">
+                    <div className="relative w-28 h-28 mx-auto">
+                      <Doughnut data={attendanceDataJoy} options={doughnutOptions} />
+                    </div>
+                    <div className="flex justify-center space-x-4 mt-2 text-[10px] text-gray-600">
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 rounded-full bg-pink-400 inline-block" />
+                        <span>Present</span>
                       </div>
-                      <div className="flex justify-center space-x-4 mt-2 text-[10px] text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-pink-400 inline-block" />
-                          <span>Present</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <span className="w-2 h-2 rounded-full bg-green-600 inline-block" />
-                          <span>Absent</span>
-                        </div>
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 rounded-full bg-green-600 inline-block" />
+                        <span>Absent</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Fee payment history */}
-              <div className="bg-white rounded-lg px-4 py-6 shadow-md" style={{ minWidth: 320 }}>
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-semibold text-[18px] text-gray-900">Fee Payment History</h3>
-                  <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-1 whitespace-nowrap hover:bg-orange-700 transition">
-                    See All
-                  </button>
-                </div>
+            {/* Fee payment history */}
+            <div className="bg-white rounded-lg px-4 py-6 shadow-md" style={{ minWidth: 320 }}>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-semibold text-[18px] text-gray-900">Fee Payment History</h3>
+                <button className="bg-orange-600 text-white text-xs font-semibold rounded px-3 py-1 whitespace-nowrap hover:bg-orange-700 transition">
+                  See All
+                </button>
+              </div>
 
-                <div className="space-y-3">
-                  {[
-                    "Loan Settlement",
-                    "School Fees Payment",
-                    "End Of Session Party",
-                    "School Fees Payment",
-                    "Loan Settlement",
-                  ].map((title, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3 shadow-sm"
-                    >
-                      <img
-                        alt="Avatar"
-                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                        src="https://placehold.co/40x40/8aacc8/ffffff/png?text=Avatar"
-                      />
-                      <div className="flex-1 text-xs text-gray-700">
-                        <p className="font-semibold text-gray-900 leading-tight">{title}</p>
-                        <p className="leading-tight">Amount paid: N200,000</p>
-                      </div>
-                      <div className="text-[10px] text-gray-500 text-right flex flex-col items-end space-y-1">
-                        <p>12th August, 2025</p>
-                        <p>
-                          <i className="far fa-clock" /> 12:30pm
-                        </p>
-                      </div>
+              <div className="space-y-3">
+                {[
+                  "Loan Settlement",
+                  "School Fees Payment",
+                  "End Of Session Party",
+                  "School Fees Payment",
+                  "Loan Settlement",
+                ].map((title, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center space-x-3 bg-gray-50 rounded-lg p-3 shadow-sm"
+                  >
+                    <img
+                      alt="Avatar"
+                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                      src="https://placehold.co/40x40/8aacc8/ffffff/png?text=Avatar"
+                    />
+                    <div className="flex-1 text-xs text-gray-700">
+                      <p className="font-semibold text-gray-900 leading-tight">{title}</p>
+                      <p className="leading-tight">Amount paid: N200,000</p>
                     </div>
-                  ))}
-                </div>
+                    <div className="text-[10px] text-gray-500 text-right flex flex-col items-end space-y-1">
+                      <p>12th August, 2025</p>
+                      <p>
+                        <i className="far fa-clock" /> 12:30pm
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </main>
+        </div>
+      </main>
+
+      {/* Modal Overlay */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50 p-4">
+          {/* Modal Content */}
+          <div className="bg-white rounded-lg max-h-[550px] overflow-auto parent-scrollbar shadow-xl max-w-lg w-full mx-4 relative">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-800">Savings Account Details</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-orange-400 hover:text-orange-600 transition-colors duration-200"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-">
+              {Object.entries(accountInfo).map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between p-3 bg-gray-50">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-600 mb-1">{key}</p>
+                    <p className="text-gray-900 font-semibold truncate">{value}</p>
+                  </div>
+                  {key === "Account Number" ? (
+                    <button
+                      onClick={() => copyToClipboard(value, key)}
+                      className="ml-3 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-md transition-colors duration-200 flex-shrink-0"
+                      title={`Copy ${key}`}
+                    >
+                      {copiedField === key ? (
+                        <Check size={18} className="text-green-500" />
+                      ) : (
+                        <Copy size={18} />
+                      )}
+                    </button>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-orange-600 hover:bg-orange-500 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

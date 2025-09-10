@@ -1,26 +1,28 @@
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Filter,
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  Menu,
-  X,
-  ChevronDown,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom"; // ✅ Added
+import { Filter, Bell, ChevronLeft, ChevronRight, Menu, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import imageAssets from "../../assets/imageAssets";
-import Sidebar from "../../pages/Admin/guardian/Sidebar";
+
+// ---------------- Types ----------------
+interface EventCardProps {
+  image: string;
+  dateTime: string;
+  title: string;
+  description: string;
+  alt: string;
+}
+
+interface MonthData {
+  name: string;
+  isCurrent: boolean;
+  isLastMonth: boolean;
+}
 
 // ---------------- Subcomponents ----------------
-function EventCard({ image, dateTime, title, description, alt }) {
+function EventCard({ image, dateTime, title, description, alt }: EventCardProps) {
   return (
-    <div className="relative rounded-lg overflow-hidden shadow-lg"> {/* ✅ Added shadow */}
-      <img
-        src={image}
-        alt={alt}
-        className="w-full h-[180px] object-cover" // ✅ Bigger image height
-      />
+    <div className="relative rounded-lg overflow-hidden shadow-lg">
+      <img src={image} alt={alt} className="w-full h-[180px] object-cover" />
       <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[10px] p-2">
         <div className="mb-1">{dateTime}</div>
         <div className="font-semibold text-xs leading-tight mb-1">{title}</div>
@@ -33,7 +35,7 @@ function EventCard({ image, dateTime, title, description, alt }) {
 // ---------------- Data ----------------
 const filterOptions = ["All Events", "Upcoming", "Recent", "Past"];
 
-const upcoming = [
+const upcoming: EventCardProps[] = [
   {
     image: imageAssets.claap,
     alt: "Group of students raising hands in classroom",
@@ -50,7 +52,7 @@ const upcoming = [
   },
 ];
 
-const recent = [
+const recent: EventCardProps[] = [
   {
     image: imageAssets.claap,
     alt: "Audience clapping",
@@ -67,7 +69,7 @@ const recent = [
   },
 ];
 
-const allEvents = [
+const allEvents: EventCardProps[] = [
   {
     image: imageAssets.student,
     alt: "Audience clapping",
@@ -81,32 +83,128 @@ const allEvents = [
     dateTime: "22-02-2025 | 12:25pm",
     title: "Digital Literacy for Students",
     description: "Safe and Smart: Teaching Kids Responsible Internet Use.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Parent engagement session",
+    dateTime: "25-02-2025 | 2:30pm",
+    title: "Parent Engagement Workshop",
+    description: "Building stronger connections between home and school.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Technology workshop",
+    dateTime: "28-02-2025 | 10:00am",
+    title: "Tech Skills Development",
+    description: "Enhancing digital capabilities for modern learning.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Student presentation",
+    dateTime: "03-03-2025 | 1:15pm",
+    title: "Student Showcase",
+    description: "Celebrating student achievements and creativity.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
+  },
+  {
+    image: imageAssets.student,
+    alt: "Community event",
+    dateTime: "05-03-2025 | 11:30am",
+    title: "Community Outreach",
+    description: "Connecting school with local community initiatives.",
   },
 ];
 
-const months = [
-  "January 2025",
-  "February 2025",
-  "March 2025",
-  "April 2025",
-  "May 2025",
-  "June 2025",
-  "July 2025",
-  "August 2025",
-  "September 2025",
-  "October 2025",
-  "November 2025",
-  "December 2025",
-];
+// ---------------- Dynamic Months Generation Function ----------------
+const generateDynamicMonths = (): MonthData[] => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  const months: MonthData[] = [];
+
+  // Generate 12 months starting from current month
+  for (let i = 0; i < 12; i++) {
+    const date = new Date(currentYear, currentMonth + i, 1);
+    const monthName = date.toLocaleString("default", { month: "long" });
+    const year = date.getFullYear();
+
+    months.push({
+      name: `${monthName} ${year}`,
+      isCurrent: i === 0,
+      isLastMonth: i === 11,
+    });
+  }
+
+  return months;
+};
 
 // ---------------- Main Component ----------------
 export default function EventsPage() {
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [notifySubscribed, setNotifySubscribed] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false); // ✅ Sidebar toggle state
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [notifySubscribed, setNotifySubscribed] = useState<boolean>(false);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [months, setMonths] = useState<MonthData[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [eventsPerPage] = useState<number>(8);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Initialize months on component mount and update periodically
+  useEffect(() => {
+    const updateMonths = () => {
+      setMonths(generateDynamicMonths());
+    };
+
+    // Initial load
+    updateMonths();
+
+    // Update every minute to catch month changes
+    const interval = setInterval(updateMonths, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Auto-scroll for recent events
   useEffect(() => {
@@ -118,17 +216,27 @@ export default function EventsPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // Pagination logic
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = allEvents.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(allEvents.length / eventsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl text-black min-h-screen flex">
       {/* Main Content */}
-      <main className="flex-1  sm:px-6 lg:px-8 pt-4">
+      <main className="flex-1 sm:px-6 lg:px-8 pt-4">
         {/* Header */}
         <header className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
-            <button
-              className="md:hidden text-gray-700"
-              onClick={() => setSidebarOpen(true)}
-            >
+            <button className="md:hidden text-gray-700" onClick={() => setSidebarOpen(true)}>
               <Menu size={20} />
             </button>
             <h1 className="text-2xl font-semibold">Events</h1>
@@ -178,7 +286,9 @@ export default function EventsPage() {
           <div className="flex flex-col md:flex-row md:items-center md:space-x-6 p-6 md:p-8">
             <div className="md:flex-1 mb-6 md:mb-0">
               <h2 className="text-white font-extrabold text-3xl leading-tight mb-2">
-                Upcoming<br />Events
+                Upcoming
+                <br />
+                Events
               </h2>
               <p className="text-white text-xs mb-4 max-w-[220px]">
                 Don't Miss These Exciting School Moments!
@@ -186,14 +296,13 @@ export default function EventsPage() {
               <button
                 type="button"
                 onClick={() => setNotifySubscribed(true)}
-                className={`${notifySubscribed
-                  ? "bg-green-500 text-white"
-                  : "bg-white text-[#FF6F00]"
-                  } text-xs font-semibold rounded-full px-3 py-1 inline-flex items-center gap-1 transition`}
+                className={`${
+                  notifySubscribed ? "bg-green-500 text-white" : "bg-white text-[#FF6F00]"
+                } text-xs font-semibold rounded-full px-3 py-1 inline-flex items-center gap-1 transition`}
               >
                 <span>
                   {notifySubscribed
-                    ? "You’re all set to be notified!"
+                    ? "You're all set to be notified!"
                     : "Tap to receive a notification"}
                 </span>
                 {!notifySubscribed && <Bell className="w-3 h-3" />}
@@ -254,44 +363,105 @@ export default function EventsPage() {
           </div>
         </section>
 
-        {/* All Events */}
+        {/* All Events Section */}
         <section className="mb-12">
-          <h3 className="font-semibold text-xl mb-1 underline underline-offset-4 decoration-2 decoration-black">
-            All Events
-          </h3>
-          <p className="text-xs mb-6 max-w-[220px]">
-            From Classrooms to Celebrations, Every Event, Right Here!
-          </p>
-          <div className="flex items-start gap-6">
-            {/* Months */}
-            <div className="border-t border-gray-300 pt-4 text-xs text-gray-500 font-bold space-y-2 w-[160px] shrink-0">
-              {months.map((m) => (
-                <div key={m}>
-                  {m}
-                  {m === "December 2025" && (
-                    <div className="mt-7 text-center">
-                      <p className="text-gray-700 text-sm mb-2">
-                        Re-occurring events will appear here
-                      </p>
-                      <div className="inline-block rounded-lg shadow-md overflow-hidden">
-                        <img
-                          alt="Orange desktop calendar"
-                          className="w-[200px]"
-                          src={imageAssets.fif}
-                        />
+          <div className="flex gap-8">
+            {/* Sidebar with Dynamic Months */}
+            <div className="w-64 flex-shrink-0">
+              {/* Header */}
+              <div className="mb-8">
+                <h1 className="text-4xl font-bold text-black mb-2">All Events</h1>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  From Classrooms to Celebrations,
+                  <br />
+                  Every Event, Right Here!
+                </p>
+              </div>
+
+              {/* Dynamic Months List */}
+              <div className="space-y-3">
+                {months.map((month, index) => (
+                  <div key={`${month.name}-${index}`}>
+                    <div
+                      className={`text-sm font-medium cursor-pointer transition-all duration-200 ${
+                        month.isCurrent
+                          ? "text-[#FF6F00] bg-orange-50 px-3 py-2 rounded-lg border-l-4 border-[#FF6F00] font-semibold"
+                          : "text-gray-500 hover:text-gray-700 px-3 py-2"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{month.name}</span>
+                        {month.isCurrent && (
+                          <span className="text-xs bg-[#FF6F00] text-white px-2 py-1 rounded-full">
+                            Current
+                          </span>
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {/* Show calendar image after last month */}
+                    {month.isLastMonth && (
+                      <div className="mt-8 text-center">
+                        <p className="text-gray-600 text-sm mb-4">
+                          Re-occurring events will appear here
+                        </p>
+                        <div className="inline-block rounded-lg shadow-md overflow-hidden bg-white">
+                          <div className="relative">
+                            <img
+                              alt="Orange desktop calendar"
+                              className="w-48 h-36 object-cover"
+                              src={imageAssets.fif}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-orange-600/20"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-            {/* All Events Grid */}
-            <div className="grid grid-cols-2 gap-4 ml-40 flex-1">
-              {allEvents.map((ev, i) => (
-                <div key={i} className="max-w-[250px]">
-                  <EventCard {...ev} />
+
+            {/* Events Grid with Pagination */}
+            <div className="flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {currentEvents.map((event, i) => (
+                  <div key={i} className="w-full max-w-sm">
+                    <EventCard {...event} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {allEvents.length > 0 && (
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4 p-4 text-sm text-gray-600">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-6 py-2 border rounded ${
+                      currentPage === 1
+                        ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                        : "bg-orange-500 text-white hover:bg-orange-600"
+                    }`}
+                  >
+                    Prev
+                  </button>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-6 py-2 border rounded ${
+                      currentPage === totalPages
+                        ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                        : "bg-orange-500 text-white hover:bg-orange-600"
+                    }`}
+                  >
+                    Next
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>

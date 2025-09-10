@@ -3,13 +3,22 @@ import { FaComment } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { guardianService } from "../../../Services/Guardian/guardian";
 import { classroomService } from "../../../Services/Classroom";
+import Select from "react-select";
+import { RootState } from "../../../Store/store";
+import { useSelector } from "react-redux";
 
 interface GuardianFormProps {
   onClose: () => void;
   onGuardianAdded: () => void;
 }
 
+interface OptionType {
+  value: string;
+  label: string;
+}
+
 const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }) => {
+  const teachers = useSelector((state: RootState) => state.getTeacher.listRecords);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -18,6 +27,25 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
     teacherId: "",
     capacity: "",
   });
+
+  const teacherOptions: OptionType[] = teachers.map((teacher) => ({
+    value: teacher.teacherId,
+    label: `${teacher.firstname} ${teacher.lastname} (${teacher.phone})`,
+  }));
+
+  const getSelectedOption = (value: string, options: OptionType[]) => {
+    return options.find((option) => option.value === value) || null;
+  };
+
+  const handleSelectChange = (
+    name: string,
+    selectedOption: OptionType | { value: number } | null
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -85,19 +113,33 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
             {[
               ["name", "Name"],
               ["capacity", "Capacity"],
-              ["teacherId", "Teacher Id"],
             ].map(([key, label]) => (
-              <input
-                key={key}
-                type={key === "email" ? "email" : "text"}
-                name={key}
-                placeholder={label}
-                required={["schoolId", "name", "capacity"].includes(key)}
-                className="border px-3 py-2 rounded text-sm w-full"
-                value={formData[key]}
-                onChange={handleInputChange}
-              />
+              <div className="col-span-1" key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-1 px-2">{label}</label>
+                <input
+                  type={key === "email" ? "email" : "text"}
+                  name={key}
+                  placeholder={label}
+                  required={["schoolId", "name", "capacity"].includes(key)}
+                  className="border px-3 py-2 rounded text-sm w-full"
+                  value={formData[key]}
+                  onChange={handleInputChange}
+                />
+              </div>
             ))}
+
+            <div className="col-span-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
+              <Select
+                options={teacherOptions}
+                value={getSelectedOption(formData.teacherId, teacherOptions)}
+                onChange={(selected) => handleSelectChange("teacherId", selected)}
+                placeholder="Select Teacher"
+                className="text-sm"
+                isSearchable
+                required
+              />
+            </div>
             <div className="col-span-2 flex justify-end gap-3 mt-4">
               <button
                 type="button"

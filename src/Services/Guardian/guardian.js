@@ -14,9 +14,19 @@ export const guardianService = {
   },
 
   getGuardianById: async (id) => {
-    console.log(id);
     try {
       const res = await api.get(`/api/Guardian/GetGuardianById/${id}`);
+      // console.log("GetAllGuardians success:", res.data);
+      return res.data.data;
+    } catch (error) {
+      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+
+  getGuardianBySchoolId: async (id) => {
+    try {
+      const res = await api.get(`/api/Guardian/GetGuardiansBySchool/?schoolId=${id}`);
       // console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {

@@ -39,6 +39,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
     const guardians = useSelector((state: RootState) => state.getGuardian.listRecords);
     const teachers = useSelector((state: RootState) => state.getTeacher.listRecords);
     const sessions = useSelector((state: RootState) => state.getSession.listRecords);
+    // console.log(sessions)
     const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords);
 
     // Set initial form data when editData changes
@@ -74,7 +75,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
 
     const sessionOptions: OptionType[] = sessions.map(session => ({
         value: session.sessionId,
-        label: session.sessionName
+        label: session.sessionId
     }));
 
     const classroomOptions: OptionType[] = classrooms.map(classroom => ({
