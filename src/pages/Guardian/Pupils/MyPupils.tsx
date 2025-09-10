@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGuardiansStudentFailure, fetchGuardiansStudentStart, fetchGuardiansStudentSuccess } from '../../../Store/Guardian/guardianStudentSlice';
 import { paymentService } from '../../../Services/Payment';
 import FeeModal from './FeeModal';
+import { sessionService } from '../../../Services/Session';
 
 const MyPupils = () => {
     const navigate = useNavigate();
@@ -31,6 +32,7 @@ const MyPupils = () => {
         try {
             if (user?.id) {
                 const response = await guardianStudentService.getAll(user?.id);
+                const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
                 dispatch(fetchGuardiansStudentSuccess(response));
             }
         } catch (error) {
