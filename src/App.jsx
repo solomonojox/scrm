@@ -45,6 +45,7 @@ import AdminEvents from "./pages/Admin/events/AdminEvents";
 import GuardianEvent from "./pages/Guardian/event/GuardianEvent";
 import GuardianMessages from "./pages/Guardian/messages/GuardianMessages";
 import AdminMessages from "./pages/Admin/messages/AdminMessages";
+import TransactionDashboard from "./pages/Guardian/account/dashboard/TransactionDashboard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -128,6 +129,7 @@ function App() {
         <Route path="/guardian/report-card" element={<ReportCard />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/message" element={<GuardianMessages />} />
+        <Route path="/guardian/transactions" element={<TransactionDashboard />} />
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />

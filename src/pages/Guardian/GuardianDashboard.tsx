@@ -36,6 +36,7 @@ import {
   fetchGuardiansLoanAccountStart,
   fetchGuardiansLoanAccountSuccess,
 } from "../../Store/Guardian/loanAccountSlice";
+import TransactionHistory from "./account/TransactionHistory";
 
 /* Register chart.js elements + plugins */
 ChartJS.register(
@@ -497,15 +498,17 @@ export default function GuardianDashboard(): React.JSX.Element {
 
             {/* Assignment completion (line) */}
             <div
-              className="bg-white rounded-lg p-4 shadow-md overflow-x-auto"
+              className="bg-white rounded-lg shadow-md overflow-x-auto"
               style={{ minWidth: 320 }}
             >
-              <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
+              {/* <h3 className="font-semibold text-[18px] text-gray-900 mb-3">
                 Assignment Completion
               </h3>
               <div style={{ height: 300 }}>
                 <Line ref={lineRef} data={lineData} options={lineOptions} />
-              </div>
+              </div> */}
+
+              <TransactionHistory />
             </div>
           </div>
 
