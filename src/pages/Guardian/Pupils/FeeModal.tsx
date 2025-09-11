@@ -1,29 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Box,
   Typography,
   IconButton,
-  TextField
+  TextField,
+  Button,
+  CircularProgress
 } from "@mui/material";
 import { X } from "lucide-react";
-import Select from "react-select";
+import { useAuth } from "../../../Context/Auth/useAuth";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { paymentService } from "../../../Services/Payment";
 
 interface Props {
   onClose: () => void;
   open: boolean;
+  studentId: string; // make this single instead of array if only one student
+  classroomId: string;
+  sessionId: string;
+  paymentTerm: number;
 }
 
-const FeeModal: React.FC<Props> = ({ open, onClose }) => {
-  const classroomOptions = [
-    { value: "28983737338", label: "Classroom 1 (28983737338)" },
-    { value: "28983737339", label: "Classroom 2 (28983737339)" }
-  ];
+const FeeModal: React.FC<Props> = ({ open, onClose, studentId, classroomId, sessionId, paymentTerm }) => {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const sessionOptions = [
-    { value: "110009383773", label: "2023/2024 (110009383773)" },
-    { value: "110009383774", label: "2024/2025 (110009383774)" }
-  ];
+  // form state
+  const [amount, setAmount] = useState<number>(0);
+
+  // handle submit
+  const handleSubmit = async () => {
+    setLoading(true);
+    // build payload
+    const payload = {
+      studentId,
+      classroomId,
+      sessionId,
+      guardianId: user?.id, // get from logged-in user
+      amount,
+      paymentTerm,
+      schoolId: user?.schoolId
+    };
+
+    try {
+      const res = await paymentService.payStudentSchoolFee(payload);
+      console.log('res', res.data)
+      toast.success("Fees settled successfully!");
+      onClose();
+    } catch (err) {
+      toast.error(err ||"Failed to settle fees. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -40,7 +71,7 @@ const FeeModal: React.FC<Props> = ({ open, onClose }) => {
           outline: "none",
           maxHeight: "90vh",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         {/* Header */}
@@ -53,13 +84,10 @@ const FeeModal: React.FC<Props> = ({ open, onClose }) => {
             px: 2,
             py: 1.5,
             borderTopLeftRadius: "8px",
-            borderTopRightRadius: "8px"
+            borderTopRightRadius: "8px",
           }}
         >
-          <Typography
-            variant="subtitle1"
-            sx={{ color: "#fff", fontWeight: "bold" }}
-          >
+          <Typography variant="subtitle1" sx={{ color: "#fff", fontWeight: "bold" }}>
             Settle Fees Easily and Securely
           </Typography>
           <IconButton onClick={onClose} sx={{ color: "#fff" }}>
@@ -67,108 +95,124 @@ const FeeModal: React.FC<Props> = ({ open, onClose }) => {
           </IconButton>
         </Box>
 
-        {/* Scrollable Body */}
-        <Box
-          sx={{
-            p: 3,
-            overflowY: "auto"
-          }}
-        >
+        {/* Body */}
+        <Box sx={{ p: 3, overflowY: "auto" }}>
           <Typography sx={{ mb: 1 }}>Student ID</Typography>
           <TextField
             fullWidth
-            defaultValue="1233u4i4oo4o"
+            value={studentId}
+            disabled
             variant="outlined"
             InputProps={{
               sx: {
                 borderRadius: "8px",
+                height: "50px",
                 "& fieldset": { borderColor: "#F37021" },
-                "&:hover fieldset": { borderColor: "#F37021" },
-                "&.Mui-focused fieldset": { borderColor: "#F37021" }
-              }
+              },
             }}
-            sx={{ mb: 3 }}
+            sx={{ mb: 1 }}
           />
 
           <Typography sx={{ mb: 1 }}>Classroom ID</Typography>
-          <Select
-            options={classroomOptions}
-            defaultValue={classroomOptions[0]}
-            styles={{
-              control: (base) => ({
-                ...base,
-                borderColor: "#F37021",
+          <TextField
+            fullWidth
+            value={classroomId}
+            disabled
+            variant="outlined"
+            InputProps={{
+              sx: {
                 borderRadius: "8px",
-                "&:hover": { borderColor: "#F37021" }
-              })
+                height: "50px",
+                "& fieldset": { borderColor: "#F37021" },
+              },
             }}
+            sx={{ mb: 1 }}
           />
-
-          <Box sx={{ mb: 3 }} />
 
           <Typography sx={{ mb: 1 }}>Session ID</Typography>
-          <Select
-            options={sessionOptions}
-            defaultValue={sessionOptions[0]}
-            styles={{
-              control: (base) => ({
-                ...base,
-                borderColor: "#F37021",
+          <TextField
+            fullWidth
+            value={sessionId}
+            disabled
+            variant="outlined"
+            InputProps={{
+              sx: {
                 borderRadius: "8px",
-                "&:hover": { borderColor: "#F37021" }
-              })
+                height: "50px",
+                "& fieldset": { borderColor: "#F37021" },
+              },
             }}
+            sx={{ mb: 1 }}
           />
-
-          <Box sx={{ mb: 3 }} />
 
           <Typography sx={{ mb: 1 }}>Amount</Typography>
           <TextField
             fullWidth
-            defaultValue={0}
+            value={amount || ""}
+            onChange={(e) => setAmount(Number(e.target.value))}
             type="number"
             variant="outlined"
             InputProps={{
               sx: {
                 borderRadius: "8px",
+                height: "50px",
                 "& fieldset": { borderColor: "#F37021" },
-                "&:hover fieldset": { borderColor: "#F37021" },
-                "&.Mui-focused fieldset": { borderColor: "#F37021" }
-              }
+              },
             }}
-            sx={{ mb: 3 }}
+            sx={{ mb: 1 }}
           />
 
           <Typography sx={{ mb: 1 }}>Payment Terms</Typography>
           <TextField
             fullWidth
-            placeholder="e.g. Monthly, Per term"
+            value={paymentTerm}
+            disabled
+            // onChange={(e) => setPaymentTerms(e.target.value)}
+            // placeholder="e.g. Monthly, Per term"
             variant="outlined"
             InputProps={{
               sx: {
                 borderRadius: "8px",
+                height: "50px",
                 "& fieldset": { borderColor: "#F37021" },
-                "&:hover fieldset": { borderColor: "#F37021" },
-                "&.Mui-focused fieldset": { borderColor: "#F37021" }
-              }
+              },
             }}
-            sx={{ mb: 3 }}
+            sx={{ mb: 1 }}
           />
 
           <Typography sx={{ mb: 1 }}>Guardian ID</Typography>
           <TextField
             fullWidth
-            defaultValue="38839837662"
+            value={user?.id || ""}
+            disabled
             variant="outlined"
             InputProps={{
               sx: {
                 borderRadius: "8px",
+                height: "50px",
                 "& fieldset": { borderColor: "#F37021" },
-                "&:hover fieldset": { borderColor: "#F37021" },
-                "&.Mui-focused fieldset": { borderColor: "#F37021" }
-              }
+              },
             }}
+            sx={{ mb: 2 }}
           />
+
+          {/* Submit Button */}
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{
+              bgcolor: "#F37021",
+              color: "#fff",
+              borderRadius: "8px",
+              height: "50px",
+              "&:hover": { bgcolor: "#d85f1c" },
+            }}
+          >
+            {loading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : "Pay Now"}
+          </Button>
         </Box>
       </Box>
     </Modal>

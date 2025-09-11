@@ -75,4 +75,14 @@ export const paymentService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
     }
   },
+
+  payStudentSchoolFee: async (data) => {
+    try {
+      const response = await api.post(`/api/Payment/StudentSchoolFeePayment`, data);
+      return response.data;
+    } catch (error) {
+      console.error("AddStudentSchoolFee error:", error);
+      throw (error?.response?.data?.responseMessage || "Failed to add school fee");
+    }
+  }
 };
