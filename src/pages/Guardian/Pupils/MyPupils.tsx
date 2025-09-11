@@ -11,6 +11,7 @@ import { fetchGuardiansStudentFailure, fetchGuardiansStudentStart, fetchGuardian
 import { paymentService } from '../../../Services/Payment';
 import FeeModal from './FeeModal';
 import { sessionService } from '../../../Services/Session';
+import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from '../../../Store/sessionSlice';
 
 const MyPupils = () => {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const MyPupils = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const students: any = useSelector((state: RootState) => state.getGuardianStudents.listRecords);
+    const sessions: any = useSelector((state: RootState) => state.getSession.listRecords);
     const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
     const error = useSelector((state: RootState) => state.getGuardianStudents.error);
 
@@ -29,15 +31,18 @@ const MyPupils = () => {
 
     const fetchPupils = async () => {
         dispatch(fetchGuardiansStudentStart());
+        dispatch(fetchSessionStart());
         try {
             if (user?.id) {
                 const response = await guardianStudentService.getAll(user?.id);
                 const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
                 dispatch(fetchGuardiansStudentSuccess(response));
+                dispatch(fetchSessionSuccess(session));
             }
         } catch (error) {
             console.error('Error fetching pupils:', error);
             dispatch(fetchGuardiansStudentFailure((error as Error).message));
+            dispatch(fetchSessionFailure((error as Error).message));
         }
     };
 
@@ -274,6 +279,10 @@ const MyPupils = () => {
             <FeeModal
                 onClose={() => setOpenPaymentModal(false)}
                 open={openPaymentModal}
+                studentId={selectedStudent.studentId}
+                classroomId={selectedStudent.classroomId}
+                sessionId={selectedStudent.currentSession}
+                paymentTerm={selectedStudent.currentTerm}
             />
         </div>
     );
