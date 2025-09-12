@@ -93,113 +93,67 @@ import "../../../../Styles/customScrollBar.css";
 import { useAuth } from "../../../../Context/Auth/useAuth";
 import imageAssets from "../../../../assets/imageAssets";
 import { Phone, PhoneCallIcon } from "lucide-react";
+import { TransactionType } from "../../../../Types/Guardian/transactionType";
 
-type ReligionFilter = "all" | "christian" | "muslim";
+type StatusFilter = "all" | "pending" | "success" | "declined";
 
-// interface GuardianTableProps {
-
-//   allRecords: classrooms[]
-//   records: any[];
-//   totalRecords: number;
-//   currentPage: number;
-//   totalPages: number;
-//   searchQuery: string;
-//   headerSearchQuery: string;
-//   religionFilter: ReligionFilter;
-//   selectedIds: string[];
-//   selectAll: boolean;
-//   onPageChange: (page: number) => void;
-//   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-//   onHeaderSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-//   onReligionFilterChange: (filter: ReligionFilter) => void;
-//   onToggleSelectAll: () => void;
-//   onToggleCheckbox: (id: string) => void;
-//   onDelete: (id: string) => void;
-//   onAddGuardian: () => void;
-//   onRefresh: () => void
-//   viewDetails: (classroom: classrooms) => void;
-
-// }
-
-interface Transaction {
-  id: number;
-  naration: string;
-  amount: string;
-  date: string;
-  time: string;
-  status: string;
+interface TransactionHistoryTableProps {
+  transactions: TransactionType[];
+  records: any[];
+  totalRecords: number;
+  currentPage: number;
+  totalPages: number;
+  searchQuery: string;
+  headerSearchQuery: string;
+  statusFilter: StatusFilter;
+  selectedIds: string[];
+  selectAll: boolean;
+  onPageChange: (page: number) => void;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onHeaderSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onStatusFilterChange: (filter: StatusFilter) => void;
+  onToggleSelectAll: () => void;
+  onToggleCheckbox: (id: string) => void;
+  refresh: () => void;
 }
 
-const transactions: Transaction[] = [
-  {
-    id: 1001,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Successful",
-  },
-  {
-    id: 1002,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Failed",
-  },
-  {
-    id: 1003,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Successful",
-  },
-  {
-    id: 1004,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Successful",
-  },
-  {
-    id: 1005,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Failed",
-  },
-  {
-    id: 1006,
-    naration: "Bills",
-    amount: "N200,000",
-    date: "12 - 08 - 2025",
-    time: "12:30pm",
-    status: "Successful",
-  },
-];
-
-const TransactionHistoryTable: React.FC = () => {
+const TransactionHistoryTable: React.FC<TransactionHistoryTableProps> = ({
+  transactions,
+  records,
+  totalRecords,
+  currentPage,
+  totalPages,
+  searchQuery,
+  headerSearchQuery,
+  statusFilter,
+  selectedIds,
+  selectAll,
+  onPageChange,
+  onSearchChange,
+  onHeaderSearchChange,
+  onStatusFilterChange,
+  onToggleSelectAll,
+  onToggleCheckbox,
+  refresh,
+}) => {
   const { user } = useAuth();
-  const [showReligionFilter, setShowReligionFilter] = React.useState(false);
+  const [showStatusFilter, setShowStatusFilter] = React.useState(false);
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(transactions);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Classroom Details");
-    XLSX.writeFile(wb, "classrooms.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "transaction Details");
+    XLSX.writeFile(wb, "transactions.xlsx");
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const title = "Classroom List";
-    const headers = [["SchoolId", "Name", "TeacherId", "Capacity"]];
+    const title = "transaction List";
+    const headers = [["TransactionId", "Date", "Amount", "status"]];
 
     const data = transactions.map((transaction) => [
-      transaction.id || "",
-      transaction.date || "",
+      transaction.transactionId || "",
+      transaction.createdAt || "",
       transaction.amount || "",
       transaction.status || "",
     ]);
@@ -213,14 +167,108 @@ const TransactionHistoryTable: React.FC = () => {
       headStyles: { fillColor: [255, 165, 0] },
     });
 
-    doc.save("classrooms.pdf");
+    doc.save("transaction.pdf");
   };
+
+  function formatDateTime(isoString: any) {
+    const d = new Date(isoString);
+    const pad = (n: any) => n.toString().padStart(2, "0");
+
+    const year = d.getFullYear();
+    const month = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    const seconds = pad(d.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
 
   return (
     <>
       {/* Breadcrumb & Add Button */}
-      <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+        <div className="w-full sm:w-auto mb-4 sm:mb-0">
+          <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+            <FaSearch className="text-gray-400 text-lg" />
+            <input
+              type="text"
+              placeholder="Search"
+              value={headerSearchQuery}
+              onChange={onHeaderSearchChange}
+              className="ml-2 bg-transparent outline-none w-full text-sm"
+            />
+          </div>
+        </div>
         <div className="gap-4 flex items-center sm:flex-wrap">
+          <div className="relative">
+            <button
+              onClick={() => setShowStatusFilter(!showStatusFilter)}
+              className="flex items-center gap-2 border p-2 rounded hover:bg-gray-100"
+            >
+              <FaFilter className="text-orange-500" />
+              <span>Filter</span>
+            </button>
+            {showStatusFilter && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                <div className="py-1">
+                  <button
+                    onClick={() => {
+                      onStatusFilterChange("all");
+                      setShowStatusFilter(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      statusFilter === "all"
+                        ? "bg-orange-100 text-orange-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    All Status
+                  </button>
+                  <button
+                    onClick={() => {
+                      onStatusFilterChange("pending");
+                      setShowStatusFilter(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      statusFilter === "pending"
+                        ? "bg-orange-100 text-orange-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Pending
+                  </button>
+                  <button
+                    onClick={() => {
+                      onStatusFilterChange("success");
+                      setShowStatusFilter(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      statusFilter === "success"
+                        ? "bg-orange-100 text-orange-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Success
+                  </button>
+                  <button
+                    onClick={() => {
+                      onStatusFilterChange("declined");
+                      setShowStatusFilter(false);
+                    }}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      statusFilter === "declined"
+                        ? "bg-orange-100 text-orange-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    Decline
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={exportToExcel}
             title="Export to Excel"
@@ -238,7 +286,7 @@ const TransactionHistoryTable: React.FC = () => {
           </button>
 
           <button
-            // onClick={onRefresh}
+            onClick={refresh}
             title="Refresh"
             className="border p-2 rounded hover:bg-gray-100"
           >
@@ -249,40 +297,40 @@ const TransactionHistoryTable: React.FC = () => {
 
       {/* Search and Filter Info */}
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-        {/* {(searchQuery || religionFilter !== "all") && (
+        {(searchQuery || statusFilter !== "all") && (
           <div className="text-sm text-gray-600">
             Showing {totalRecords} result{totalRecords !== 1 ? "s" : ""}
             {searchQuery && ` for "${searchQuery}"`}
-            {religionFilter !== "all" && ` (Filtered by ${religionFilter})`}
-            {totalRecords === 0 && <span className="text-red-500 ml-2">No classroom found</span>}
+            {statusFilter !== "all" && ` (Filtered by ${statusFilter})`}
+            {totalRecords === 0 && <span className="text-red-500 ml-2">No transaction found</span>}
           </div>
-        )} */}
+        )}
       </div>
 
       {/* Table */}
-      <div className="bg-white shadow rounded-lg overflow-x-auto">
+      <div className="bg-white shadow rounded-lg overflow-x-auto parent-scrollbar">
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
             <tr>
               <th className="p-3 min-w-[50px]">
                 <input
                   type="checkbox"
-                  //   checked={selectAll}
-                  //   onChange={onToggleSelectAll}
+                  checked={selectAll}
+                  onChange={onToggleSelectAll}
                   className="cursor-pointer w-4 h-4"
                 />
               </th>
               <th className="p-3 min-w-[80px]">SN</th>
               <th className="p-3 min-w-[120px]">Narration</th>
-              <th className="p-3 min-w-[120px]">Amount Paid</th>
+              <th className="p-3 min-w-[100px]">Amount Paid</th>
               <th className="p-3 min-w-[100px]">Date</th>
-              <th className="p-3 min-w-[100px]">Time</th>
+              {/* <th className="p-3 min-w-[100px]">Time</th> */}
               <th className="p-3 min-w-[100px]">Status</th>
               <th className="p-3 min-w-[100px]">Contact Us</th>
             </tr>
           </thead>
           <tbody>
-            {transactions.length === 0 ? (
+            {records.length === 0 ? (
               <tr>
                 {/* <td colSpan={10} className="p-8 text-center text-gray-500">
                   {searchQuery
@@ -291,7 +339,7 @@ const TransactionHistoryTable: React.FC = () => {
                 </td> */}
               </tr>
             ) : (
-              transactions.map((t, index) => (
+              records.map((t, index) => (
                 <tr
                   key={index}
                   className={`border-t hover:bg-gray-100 ${
@@ -301,16 +349,16 @@ const TransactionHistoryTable: React.FC = () => {
                   <td className="p-3">
                     <input
                       type="checkbox"
-                      //   checked={selectedIds.includes(c.classroomId)}
-                      //   onChange={() => onToggleCheckbox(c.classroomId)}
+                      checked={selectedIds.includes(t?.transactionId)}
+                      onChange={() => onToggleCheckbox(t?.transactionId)}
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
                   <td className="p-3">{index + 1}</td>
-                  <td className="p-3">{t?.naration}</td>
-                  <td className="p-3">{t?.amount}</td>
-                  <td className="p-3">{t?.date}</td>
-                  <td className="p-3">{t?.time}</td>
+                  <td className="p-3">{t?.description}</td>
+                  <td className="p-3">₦ {t?.amount}</td>
+                  <td className="p-3">{formatDateTime(t?.createdAt)}</td>
+                  {/* <td className="p-3">{t?.createdAt}</td> */}
                   <td className="py-3 px-4">
                     {t?.status === "Processing" && (
                       <span className=" bg-[#E3F2FD]/50 text-[#1E88E5]/80 text-[12px] font-medium px-2 py-1 rounded-full">
@@ -327,7 +375,7 @@ const TransactionHistoryTable: React.FC = () => {
                         ❌ Failed
                       </span>
                     )}
-                    {t?.status === "Successful" && (
+                    {t?.status === "Success" && (
                       <span className=" bg-[#E6F4EA]/50 text-[#34A853]/80 text-[12px] font-medium px-2 py-1 rounded-full">
                         ✅ Successful
                       </span>
@@ -347,15 +395,16 @@ const TransactionHistoryTable: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      {/* {records.length > 0 && (
+      {records.length > 0 && (
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 p-4 text-sm text-gray-600">
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-6 py-2 border rounded ${currentPage === 1
-              ? "bg-white text-black border-gray-600 cursor-not-allowed"
-              : "bg-orange-500 text-white hover:bg-orange-600"
-              }`}
+            className={`px-6 py-2 border rounded ${
+              currentPage === 1
+                ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                : "bg-orange-500 text-white hover:bg-orange-600"
+            }`}
           >
             Prev
           </button>
@@ -366,16 +415,16 @@ const TransactionHistoryTable: React.FC = () => {
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-6 py-2 border rounded ${currentPage === totalPages
-              ? "bg-white text-black border-gray-600 cursor-not-allowed"
-              : "bg-orange-500 text-white hover:bg-orange-600"
-              }`}
+            className={`px-6 py-2 border rounded ${
+              currentPage === totalPages
+                ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                : "bg-orange-500 text-white hover:bg-orange-600"
+            }`}
           >
             Next
           </button>
         </div>
-
-      )} */}
+      )}
     </>
   );
 };

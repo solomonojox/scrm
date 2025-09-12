@@ -348,7 +348,6 @@ export default function GuardianDashboard(): React.JSX.Element {
   const fetchedGuardianAccount = useSelector(
     (state: RootState) => state.getGuardianAccount.listRecords
   );
-  console.log(fetchedGuardianAccount);
   const fetchedGuardianLoanAccount = useSelector(
     (state: RootState) => state.getGuardianLoanAccount.listRecords
   );

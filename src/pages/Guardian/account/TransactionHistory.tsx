@@ -1,52 +1,66 @@
 import { Eye, PhoneCallIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGuardiansTransactionFailure, fetchGuardiansTransactionStart, fetchGuardiansTransactionSuccess } from "../../../Store/Guardian/transactionSlice";
+import { transactionService } from "../../../Services/Guardian/transaction";
+import { TransactionType } from "../../../Types/Guardian/transactionType";
 
-const fetchedRecord = [
-  {
-    id: 1,
-    naration: "Savings",
-    amountPaid: "1,000",
-    date: "2023-01-01",
-    time: "10:00 AM",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    naration: "Loan Repayment",
-    amountPaid: "50,000",
-    date: "2023-01-01",
-    time: "10:00 AM",
-    status: "Successful",
-  },
-  {
-    id: 3,
-    naration: "School Fee",
-    amountPaid: "100,000",
-    date: "2023-01-01",
-    time: "10:00 AM",
-    status: "Failed",
-  },
-  {
-    id: 4,
-    naration: "Savings",
-    amountPaid: "10,000",
-    date: "2023-01-01",
-    time: "10:00 AM",
-    status: "Successful",
-  },
-  {
-    id: 5,
-    naration: "Loan Repayment",
-    amountPaid: "1,000",
-    date: "2023-01-01",
-    time: "10:00 AM",
-    status: "Pending",
-  },
-];
 
 const TransactionHistory = (): React.JSX.Element => {
   const navigate = useNavigate();
+   const dispatch = useDispatch<AppDispatch>();
+  
+    const fetchedRecord = useSelector(
+      (state: RootState) => state.getGuardianTransaction.listRecords
+    );
+    const fetchedLoading = useSelector(
+      (state: RootState) => state.getGuardianTransaction.loading
+    );
+    const error = useSelector(
+      (state: RootState) => state.getGuardianTransaction.error
+    );
+    const [currentPage ] = useState(1);
+    const recordsPerPage = 5;  
+    const indexOfLast = currentPage * recordsPerPage;
+    const indexOfFirst = indexOfLast - recordsPerPage;
+    const currentRecords: TransactionType[] = fetchedRecord.slice(
+      indexOfFirst,
+      indexOfLast
+    );
+   
+    //  Fetch transactions on mount
+    useEffect(() => {
+      fetchTransactions();
+    }, [dispatch]);
+  
+    const fetchTransactions = async () => {
+      dispatch(fetchGuardiansTransactionStart());
+      try {
+        const data = await transactionService.getClassroomBySchoolId(
+          localStorage.getItem("schoolId")
+        );
+        dispatch(fetchGuardiansTransactionSuccess(data));
+      } catch (err) {
+        dispatch(fetchGuardiansTransactionFailure((err as Error).message));
+      }
+    };
+
+     function formatDateTime(isoString: any) {
+    const d = new Date(isoString);
+    const pad = (n: any) => n.toString().padStart(2, "0");
+
+    const year = d.getFullYear();
+    const month = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    const seconds = pad(d.getSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+  
   return (
     <div className="py-6 md:py-2">
       <div className="flex items-center justify-between">
@@ -63,24 +77,24 @@ const TransactionHistory = (): React.JSX.Element => {
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
             <tr>
-              <th className="p-3 min-w-[30px]">
+              {/* <th className="p-3 min-w-[30px]">
                 <input
                   type="checkbox"
                   //   checked={selectAll}
                   //   onChange={onToggleSelectAll}
                   className="cursor-pointer w-4 h-4"
                 />
-              </th>
+              </th> */}
               <th className="p-3 min-w-[50px]">SN</th>
               <th className="p-3 min-w-[100px]">Narration</th>
               <th className="p-3 min-w-[50px]">Amount Paid</th>
               <th className="p-3 min-w-[100px]">Date</th>
-              <th className="p-3 min-w-[100px]">Time</th>
+              {/* <th className="p-3 min-w-[100px]">Time</th> */}
               <th className="p-3 min-w-[100px]">Status</th>
             </tr>
           </thead>
           <tbody>
-            {fetchedRecord.length === 0 ? (
+            {currentRecords.length === 0 ? (
               <tr>
                 {/* <td colSpan={10} className="p-8 text-center text-gray-500">
                   {searchQuery
@@ -89,26 +103,25 @@ const TransactionHistory = (): React.JSX.Element => {
                 </td> */}
               </tr>
             ) : (
-              fetchedRecord.map((t, index) => (
+              currentRecords.map((t, index) => (
                 <tr
                   key={index}
                   className={`border-t hover:bg-gray-100 ${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   }`}
                 >
-                  <td className="p-3">
+                  {/* <td className="p-3">
                     <input
                       type="checkbox"
                       //   checked={selectedIds.includes(c.classroomId)}
                       //   onChange={() => onToggleCheckbox(c.classroomId)}
                       className="cursor-pointer w-4 h-4"
                     />
-                  </td>
+                  </td> */}
                   <td className="p-3">{index + 1}</td>
-                  <td className="p-3">{t?.naration}</td>
-                  <td className="p-3">₦ {t?.amountPaid}</td>
-                  <td className="p-3">{t?.date}</td>
-                  <td className="p-3">{t?.time}</td>
+                  <td className="p-3">{t?.description}</td>
+                  <td className="p-3">₦ {t?.amount}</td>
+                  <td className="p-3">{formatDateTime(t?.createdAt)}</td>
                   <td className="py-3 px-4">
                     {t?.status === "Processing" && (
                       <span className=" bg-[#E3F2FD]/50 text-[#1E88E5]/80 text-[12px] font-medium px-2 py-1 rounded-full">
@@ -125,7 +138,7 @@ const TransactionHistory = (): React.JSX.Element => {
                         ❌ Failed
                       </span>
                     )}
-                    {t?.status === "Successful" && (
+                    {t?.status === "Success" && (
                       <span className=" bg-[#E6F4EA]/50 text-[#34A853]/80 text-[12px] font-medium px-2 py-1 rounded-full">
                         ✅ Successful
                       </span>
