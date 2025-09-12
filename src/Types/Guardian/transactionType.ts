@@ -1,0 +1,32 @@
+export interface TransactionType {
+amount?: number;
+createdAt?: string;
+description?: string;
+guardian?: string;
+bvn?: string;
+email?: string;
+firstname?: string;
+homeAddress?: string;
+imagePath?: string;
+lastname?: string;
+loanAccount?: string;
+nationality?: string;
+nin?: string;
+occupation?: string;
+passwordHash?: string;
+phone?: string;
+relationship?: string;
+religion?: string;
+resetStatus?: number;
+role?: string;
+schoolId?: string;
+serviceCharges?: string;
+stateOfOrigin?: string;
+students?: string;
+username?: string;
+workAddress?: string
+guardianId?: string;
+status?: string;
+transactionId: string;
+type?: number
+}

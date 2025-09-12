@@ -16,6 +16,7 @@ import guardianAccountSlice from "./Guardian/accountSlice"
 import MessageSlice from "./messageSlice"
 import adminSlice from "./Admin/adminSlice"
 import guardianLoanAccountSlice from "./Guardian/loanAccountSlice"
+import guardianTransactionsSlice from "./Guardian/transactionSlice"
 
 export const rootReducer = combineReducers({
   getGuardian: guardianSlice,
@@ -32,5 +33,6 @@ export const rootReducer = combineReducers({
   getGuardianAccount: guardianAccountSlice,
   getMessage: MessageSlice,
   getAdmin: adminSlice,
-  getGuardianLoanAccount: guardianLoanAccountSlice
+  getGuardianLoanAccount: guardianLoanAccountSlice,
+  getGuardianTransaction: guardianTransactionsSlice
 });
