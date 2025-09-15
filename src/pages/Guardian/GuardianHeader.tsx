@@ -109,7 +109,7 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
   };
 
   // Function to handle copy
-  const handleCopy = (text) => {
+  const handleCopy = (text: any) => {
     navigator.clipboard
       .writeText(text)
       .then(() => {
