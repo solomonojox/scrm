@@ -49,7 +49,7 @@ const FeeModal: React.FC<Props> = ({ open, onClose, studentId, classroomId, sess
       console.log('res', res.data)
       toast.success("Fees settled successfully!");
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       toast.error(err ||"Failed to settle fees. Please try again later.");
     } finally {
       setLoading(false);
