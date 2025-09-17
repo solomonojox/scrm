@@ -102,7 +102,7 @@ const NotificationSettings = () => {
               <h2 className="font-semibold text-gray-800">Event & Meeting</h2>
               <p className="text-sm text-gray-500">
                 Get alert when there is an upcoming meeting <br />
-                Get alert when there is an upcoming school event
+                Get alert when there is an upcoming school event.
               </p>
             </div>
             <button
