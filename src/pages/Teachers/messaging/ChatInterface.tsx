@@ -15,9 +15,10 @@ import {
 } from "../../../Store/messageSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
+import { Guardian } from "../../../Types/Guardian/guardianTypes";
 
 interface Props {
-  selectedTeacher: TeacherType | null;
+ selectedGuardian: Guardian | null;
   selectedAdmin: AdminType | null;
   onStartCall: () => void;
   onStartRecording: () => void;
@@ -25,7 +26,7 @@ interface Props {
 }
 
 const ChatInterface: React.FC<Props> = ({
-  selectedTeacher,
+  selectedGuardian,
   selectedAdmin,
   onStartCall,
   onStartRecording,
@@ -47,21 +48,21 @@ const ChatInterface: React.FC<Props> = ({
   const loading = useSelector((state: RootState) => state.getMessage.loading);
 
   // detect if current chat is with teacher or admin
-  const isTeacher = !!selectedTeacher;
+  const isTeacher = !!selectedGuardian;
   const isAdmin = !!selectedAdmin;
 
   const displayName = isTeacher
-    ? `${selectedTeacher?.firstname ?? ""} ${selectedTeacher?.lastname ?? ""}`
+    ? `${selectedGuardian?.firstname ?? ""} ${selectedGuardian?.lastname ?? ""}`
     : selectedAdmin?.fullname || selectedAdmin?.schoolName || "School Admin";
 
   const contactId = isTeacher
-    ? selectedTeacher?.teacherId
+    ? selectedGuardian?.guardianId
     : selectedAdmin?.schoolAdminId;
 
-  const contactRole = isTeacher ? selectedTeacher?.role : selectedAdmin?.role;
+  const contactRole = isTeacher ? selectedGuardian?.role : selectedAdmin?.role;
 
   const avatarSeed = isTeacher
-    ? selectedTeacher?.firstname || selectedTeacher?.lastname
+    ? selectedGuardian?.firstname || selectedGuardian?.lastname
     : selectedAdmin?.fullname || selectedAdmin?.schoolName;
 
   // fetch messages for the logged-in guardian + selected contact

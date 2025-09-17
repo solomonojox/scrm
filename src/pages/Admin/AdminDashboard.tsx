@@ -125,7 +125,7 @@ export default function AdminDashboard() {
       dispatch(fetchGuardiansSuccess(guardianData));
       dispatch(fetchTeacherSuccess(teacherData));
       dispatch(fetchStudentsSuccess(data));
-    } catch (err) {
+    } catch (err: any) {
       dispatch(fetchClassroomsFailure(err.message));
       dispatch(fetchGuardiansFailure(err.message));
       dispatch(fetchStudentsFailure(err.message));
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
 }
 
 // ─── StatCard ──────────────────────────────────────────────────────────────────
-function StatCard({ label, value, icon, bgColor, iconColor }) {
+function StatCard({ label, value, icon, bgColor, iconColor }: any) {
   return (
     <div className={`${bgColor} rounded-lg p-4 flex items-center justify-between shadow-sm`}>
       <div>
