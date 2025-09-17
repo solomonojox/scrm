@@ -38,8 +38,8 @@ export const teacherService = {
   getById: async (id) => {
     try {
       const res = await api.get(`/api/Teacher/GetTeacherById/${id}`);
-      // console.log("success:", res.data);
-      return res.data;
+      // console.log("success:", res.data.data);
+      return res.data.data;
     } catch (error) {
       console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
@@ -76,16 +76,6 @@ export const teacherService = {
     }
   },
 
-  getById: async (id) => {
-    try {
-      const res = await api.get(`/api/Teacher/GetTeacherById/${id}`);
-      // console.log("success:", res.data);
-      return res.data;
-    } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
-      throw error;
-    }
-  },
   delete: async (id) => {
     try {
       const res = await api.delete(`/api/Teacher/${id}`);
