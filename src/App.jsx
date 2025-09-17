@@ -52,6 +52,7 @@ import TeacherProfile from "./pages/Teachers/profile/TeacherProfile";
 import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
 import TeacherNews from "./pages/Teachers/news/TeacherNews";
 import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
+import TeacherMyPupils from "./pages/Teachers/My Pupils/My Pupils";
 import TeacherSettings from "./pages/Teachers/settings/Settings";
 
 const ProtectedRoute = ({ children }) => {
@@ -112,6 +113,7 @@ function App() {
         <Route path="/teacher/messages" element={<TeacherMessages />} />
         <Route path="/teacher/news" element={<TeacherNews />} />
         <Route path="/teacher/events" element={<TeacherEvent />} />
+        <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
         <Route path="/teacher/settings" element={<TeacherSettings/>} />
       </Route>
 
