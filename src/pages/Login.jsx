@@ -43,6 +43,8 @@ const LoginPage = () => {
         navigate("/admin/dashboard");
       } else if (role === "Guardian") {
         navigate("/guardian/dashboard");
+      }else if (role === "Teacher") {
+        navigate("/teacher/dashboard");
       }
     } catch (err) {
       setError(

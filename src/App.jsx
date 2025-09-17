@@ -46,6 +46,12 @@ import GuardianEvent from "./pages/Guardian/event/GuardianEvent";
 import GuardianMessages from "./pages/Guardian/messages/GuardianMessages";
 import AdminMessages from "./pages/Admin/messages/AdminMessages";
 import TransactionDashboard from "./pages/Guardian/account/dashboard/TransactionDashboard";
+import { TeacherLayout } from "./layouts/TeacherLayouts";
+import TeacherDashboard from "./pages/Teachers/dashboard/TeacherDashboard";
+import TeacherProfile from "./pages/Teachers/profile/TeacherProfile";
+import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
+import TeacherNews from "./pages/Teachers/news/TeacherNews";
+import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -99,7 +105,13 @@ function App() {
       </Route>
 
       {/* All teachers routes here */}
-      <Route path="/teacher/class" element={<Classroom />} />
+      <Route element={<TeacherLayout />}>
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/messages" element={<TeacherMessages />} />
+        <Route path="/teacher/news" element={<TeacherNews />} />
+        <Route path="/teacher/events" element={<TeacherEvent />} />
+      </Route>
 
       {/* All Guardians routes here */}
       <Route
