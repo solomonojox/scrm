@@ -53,6 +53,7 @@ import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
 import TeacherNews from "./pages/Teachers/news/TeacherNews";
 import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
 import TeacherMyPupils from "./pages/Teachers/My Pupils/My Pupils";
+import TeacherSettings from "./pages/Teachers/settings/Settings";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -113,6 +114,7 @@ function App() {
         <Route path="/teacher/news" element={<TeacherNews />} />
         <Route path="/teacher/events" element={<TeacherEvent />} />
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
+        <Route path="/teacher/settings" element={<TeacherSettings/>} />
       </Route>
 
       {/* All Guardians routes here */}
