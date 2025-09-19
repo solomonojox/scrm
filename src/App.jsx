@@ -52,7 +52,7 @@ import TeacherProfile from "./pages/Teachers/profile/TeacherProfile";
 import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
 import TeacherNews from "./pages/Teachers/news/TeacherNews";
 import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
-
+import Pupil from "./pages/Teachers/Pupils";
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
   return token ? children : <Navigate to="/login" />;
@@ -111,6 +111,7 @@ function App() {
         <Route path="/teacher/messages" element={<TeacherMessages />} />
         <Route path="/teacher/news" element={<TeacherNews />} />
         <Route path="/teacher/events" element={<TeacherEvent />} />
+         <Route path="/teacher/pupil" element={<Pupil />} />
       </Route>
 
       {/* All Guardians routes here */}
