@@ -1,33 +1,19 @@
 import React, { useEffect, useState } from "react";
 import ContactList from "./ContactList";
 import ChatInterface from "./ChatInterface";
-import VideoCallInterface from "../../../components/Guardian/messages/modal/VideoCallInterface";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import { useAuth } from "../../../Context/Auth/useAuth";
-import {
-  fetchGuardiansStudentFailure,
-  fetchGuardiansStudentStart,
-  fetchGuardiansStudentSuccess,
-} from "../../../Store/Guardian/guardianStudentSlice";
-import { guardianStudentService } from "../../../Services/Guardian/guardianStudent";
-import { teacherService } from "../../../Services/Teachers/TeacherService";
-import {
-  fetchTeacherFailure,
-  fetchTeacherStart,
-  fetchTeacherSuccess,
-} from "../../../Store/Teachers/teacherSlice";
-import { TeacherType } from "../../../Types/Teacher/teacherType";
-import {
-  fetchAdminFailure,
-  fetchAdminStart,
-  fetchAdminSuccess,
-} from "../../../Store/Admin/adminSlice";
+import {fetchAdminFailure,fetchAdminStart,fetchAdminSuccess,} from "../../../Store/Admin/adminSlice";
 import { adminService } from "../../../Services/Admin/adminService";
 import { AdminType } from "../../../Types/Admin/adminType";
+import { fetchGuardiansFailure, fetchGuardiansStart, fetchGuardiansSuccess } from "../../../Store/Guardian/guardianSlice";
+import { guardianService } from "../../../Services/Guardian/guardian";
+import { Guardian } from "../../../Types/Guardian/guardianTypes";
+import VideoCallInterface from "../../../components/Teachers/modal/VideoCallInterface";
 
 const TeacherMessages: React.FC = () => {
-  const [selectedTeacher, setSelectedTeacher] = useState<TeacherType | null>(null);
+    const [selectedGuardian, setSelectedGuardian] = useState<Guardian | null>(null);
   const [selectedAdmin, setSelectedAdmin] = useState<AdminType | null>(null);
   const [isCalling, setIsCalling] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -36,21 +22,20 @@ const TeacherMessages: React.FC = () => {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
 
-  const studentsTeachers = useSelector((state: RootState) => state.getTeacher.listRecords) || [];
+  const recordedGuardians = useSelector((state: RootState) => state.getGuardian.listRecords) || [];
   const admin = useSelector((state: RootState) => state.getAdmin.listRecords) || [];
   const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
   const error = useSelector((state: RootState) => state.getGuardianStudents.error);
 
-  // ✅ Select teacher
-  const handleSelectTeacher = (teacher: TeacherType) => {
-    setSelectedTeacher(teacher);
-    setSelectedAdmin(null);
-  };
-
-  // ✅ Select admin
+  // Select teacher
+   const handleSelectGuardian = (guardian: Guardian) => {
+     setSelectedGuardian(guardian);
+     setSelectedAdmin(null);
+   };
+  // Select admin
   const handleSelectAdmin = (admin: AdminType) => {
     setSelectedAdmin(admin);
-    setSelectedTeacher(null);
+    setSelectedGuardian(null);
   };
 
   // Video call handlers
@@ -61,7 +46,7 @@ const TeacherMessages: React.FC = () => {
 
   // Back button (reset selection)
   const handleBack = () => {
-    setSelectedTeacher(null);
+    setSelectedGuardian(null);
     setSelectedAdmin(null);
   };
 
@@ -79,37 +64,27 @@ const TeacherMessages: React.FC = () => {
   }, [dispatch, user]);
 
   const fetchPupils = async () => {
-    dispatch(fetchGuardiansStudentStart());
-    dispatch(fetchTeacherStart());
+    dispatch(fetchGuardiansStart());
     dispatch(fetchAdminStart());
 
     try {
       if (user?.id) {
         // Step 1: Fetch guardian students
-        const students = await guardianStudentService.getAll(user.id);
 
-        // Step 2: Convert into the shape TeacherService expects
-        const teacherIdsWrapped = students.map((s: any) => ({
-          teacher: { teacherId: s.teacherId },
-        }));
-
-        // Step 3: Fetch teachers
-        const teachers = await teacherService.getArrayOfTeachersById(teacherIdsWrapped);
+        const guardians = await guardianService.getGuardianBySchoolId(user?.schoolId);
 
         // Step 4: Fetch admins by school
         const admins = await adminService.getAdminBySchoolId(user.schoolId);
 
         // Step 5: Dispatch to Redux
-        dispatch(fetchGuardiansStudentSuccess(students));
-        dispatch(fetchTeacherSuccess(teachers));
+        dispatch(fetchGuardiansSuccess(guardians));
         dispatch(fetchAdminSuccess(admins));
       }
     } catch (err) {
       const message = (err as Error).message || "Something went wrong";
       console.error("Error fetching pupils:", message);
 
-      dispatch(fetchGuardiansStudentFailure(message));
-      dispatch(fetchTeacherFailure(message));
+      dispatch(fetchGuardiansFailure(message));
       dispatch(fetchAdminFailure(message));
     }
   };
@@ -119,13 +94,13 @@ const TeacherMessages: React.FC = () => {
       {/* Contact list */}
       <div
         className={`${
-          selectedTeacher || selectedAdmin ? "hidden lg:flex" : "flex"
+          selectedGuardian || selectedAdmin ? "hidden lg:flex" : "flex"
         } flex-1 lg:max-w-xs`}
       >
         <ContactList
-          teachers={studentsTeachers}
-          selectedTeacher={selectedTeacher}
-          onSelectTeacher={handleSelectTeacher}
+          guardian={recordedGuardians}
+          selectedGuardian={selectedGuardian}
+          onSelectGuardian={handleSelectGuardian} // ✅ fixed
           admin={admin}
           selectedAdmin={selectedAdmin}
           onSelectAdmin={handleSelectAdmin} // ✅ fixed
@@ -134,9 +109,9 @@ const TeacherMessages: React.FC = () => {
 
       {/* Chat / Placeholder (desktop) */}
       <div className="flex-1 hidden lg:flex">
-        {selectedTeacher || selectedAdmin ? (
+        {selectedGuardian || selectedAdmin ? (
           <ChatInterface
-            selectedTeacher={selectedTeacher}
+            selectedGuardian={selectedGuardian}
             selectedAdmin={selectedAdmin}
             onStartCall={handleStartCall}
             onBack={handleBack}
@@ -150,9 +125,9 @@ const TeacherMessages: React.FC = () => {
       </div>
 
       {/* Chat (mobile) */}
-      <div className={`${selectedTeacher || selectedAdmin ? "flex lg:hidden" : "hidden"} flex-1`}>
+      <div className={`${selectedGuardian || selectedAdmin ? "flex lg:hidden" : "hidden"} flex-1`}>
         <ChatInterface
-          selectedTeacher={selectedTeacher}
+          selectedGuardian={selectedGuardian}
           selectedAdmin={selectedAdmin}
           onStartCall={handleStartCall}
           onBack={handleBack}
@@ -161,9 +136,9 @@ const TeacherMessages: React.FC = () => {
       </div>
 
       {/* Video Call Modal */}
-      {isCalling && (selectedTeacher || selectedAdmin) && (
+      {isCalling && (selectedGuardian || selectedAdmin) && (
         <VideoCallInterface
-          selectedTeacher={selectedTeacher}
+          selectedGuardian={selectedGuardian}
           selectedAdmin={selectedAdmin}
           isMuted={isMuted}
           isVideoOff={isVideoOff}

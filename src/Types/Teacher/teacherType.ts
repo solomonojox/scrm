@@ -11,4 +11,10 @@ export interface TeacherType {
   email?: string;
   username?: string;
   role?: string;
+  imagePath?: null;
+  resetStatus?: 0;
+  assignments?: [];
+  subjects?: [];
+  classroom?: null;
+  payrollRecords?: null;
 }

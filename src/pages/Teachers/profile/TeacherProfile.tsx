@@ -3,21 +3,22 @@ import { FaCamera, FaEdit } from "react-icons/fa";
 import imageAssets from "../../../assets/imageAssets";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
-import {
-  fetchGuardiansFailure,
-  fetchGuardiansStart,
-  fetchGuardianStart,
-} from "../../../Store/Guardian/guardianSlice";
-import { guardianService } from "../../../Services/Guardian/guardian";
+import { teacherService } from "../../../Services/Teachers/TeacherService";
 import { useAuth } from "../../../Context/Auth/useAuth";
+import {
+  fetchATeacherStart,
+  fetchTeacherFailure,
+  fetchTeacherStart,
+  fetchTeacherSuccess,
+} from "../../../Store/Teachers/teacherSlice";
 
 export default function TeacherProfile() {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const fetchedRecord = useSelector((state: RootState) => state.getGuardian.selectedGuardian);
-  const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading);
-  const error = useSelector((state: RootState) => state.getGuardian.error);
+  const fetchedRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
+  const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
+  const error = useSelector((state: RootState) => state.getTeacher.error);
 
   // 🔑 toggle editing state
   const [isEditing, setIsEditing] = useState(false);
@@ -34,26 +35,22 @@ export default function TeacherProfile() {
     religion: "",
     email: "",
     username: "",
-    occupation: "",
-    workAddress: "",
   });
 
   // populate form when data fetched
   useEffect(() => {
     if (fetchedRecord) {
       setFormData({
-        firstname: fetchedRecord.firstname || "",
-        lastname: fetchedRecord.lastname || "",
-        phone: fetchedRecord.phone || "",
-        homeAddress: fetchedRecord.homeAddress || "",
-        nationality: fetchedRecord.nationality || "",
-        stateOfOrigin: fetchedRecord.stateOfOrigin || "",
-        role: fetchedRecord.role || "",
-        religion: fetchedRecord.religion || "",
-        email: fetchedRecord.email || "",
-        username: fetchedRecord.username || "",
-        occupation: fetchedRecord.occupation || "",
-        workAddress: fetchedRecord.workAddress || "",
+        firstname: fetchedRecord?.firstname || "",
+        lastname: fetchedRecord?.lastname || "",
+        phone: fetchedRecord?.phone || "",
+        homeAddress: fetchedRecord?.homeAddress || "",
+        nationality: fetchedRecord?.nationality || "",
+        stateOfOrigin: fetchedRecord?.stateOfOrigin || "",
+        role: fetchedRecord?.role || "",
+        religion: fetchedRecord?.religion || "",
+        email: fetchedRecord?.email || "",
+        username: fetchedRecord?.username || "",
       });
     }
   }, [fetchedRecord]);
@@ -71,21 +68,22 @@ export default function TeacherProfile() {
 
   useEffect(() => {
     if (user?.id && !fetchedLoading) {
-      fetchGuardian();
+      fetchTeacher();
     }
   }, [user, dispatch]);
 
-  const fetchGuardian = async () => {
-    dispatch(fetchGuardiansStart());
+  const fetchTeacher = async () => {
+    dispatch(fetchTeacherStart());
+
     try {
-      const data = await guardianService.getGuardianById(user?.id);
-      dispatch(fetchGuardianStart(data));
-    } catch (err) {
-      dispatch(fetchGuardiansFailure((err as Error).message));
+      const data = await teacherService.getById(user?.id);
+      dispatch(fetchATeacherStart(data));
+    } catch (err: any) {
+      dispatch(fetchTeacherFailure(err.message));
     }
   };
 
-  // 🔑 handle input change
+  // handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
@@ -94,17 +92,15 @@ export default function TeacherProfile() {
     }));
   };
 
-  // 🔑 handle form submit
+  // handle form submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log("Submitting changes:", formData);
       // call API to update
-      await guardianService.updateGuardian(user?.id, formData);
+      await teacherService.update(user?.id, formData);
 
       // after success, re-fetch guardian to update redux state
-      fetchGuardian();
-
+      fetchTeacher();
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating guardian:", error);
@@ -158,7 +154,7 @@ export default function TeacherProfile() {
                   {fetchedRecord?.firstname} {fetchedRecord?.lastname}
                 </p>
                 <p className="text-[12px] text-gray-600 font-semibold mb-2">
-                  {fetchedRecord?.occupation}
+                  {fetchedRecord?.role}
                 </p>
                 <div className="flex space-x-3">
                   <button
@@ -206,8 +202,6 @@ export default function TeacherProfile() {
                 { label: "Religion", id: "religion", type: "text" },
                 { label: "Email", id: "email", type: "email" },
                 { label: "Username", id: "username", type: "text" },
-                { label: "Occupation", id: "occupation", type: "text" },
-                { label: "Work Address", id: "workAddress", type: "text" },
               ].map((field) => (
                 <div key={field.id}>
                   <label

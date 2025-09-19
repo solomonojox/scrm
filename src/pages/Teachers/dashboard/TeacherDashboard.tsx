@@ -108,14 +108,9 @@ const timeData = [
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
-  const fetchedGuardianRecord = useSelector((state: RootState) => state.getGuardian.listRecords);
-  const fetchedClassroomsRecord = useSelector(
-    (state: RootState) => state.getClassrooms.listRecords
-  );
-  const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
-  const error = useSelector((state: RootState) => state.getStudent.error);
+  const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
+  const error = useSelector((state: RootState) => state.getTeacher.error);
 
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
@@ -130,26 +125,13 @@ export default function TeacherDashboard() {
   }, [dispatch]);
 
   const fetchdashboardCardDetails = async () => {
-    dispatch(fetchStudentsStart());
     dispatch(fetchTeacherStart());
-    dispatch(fetchGuardiansStart());
-    dispatch(fetchClassroomsStart());
-    try {
-      const data = await studentService.getAll(localStorage.getItem("schoolId"));
-      const teacherData = await teacherService.getAll(localStorage.getItem("schoolId"));
-      const guardianData = await guardianService.getAll(localStorage.getItem("schoolId"));
-      const classroomData = await classroomService.getAllClassrooms(
-        localStorage.getItem("schoolId")
-      );
 
-      dispatch(fetchClassroomsSuccess(classroomData));
-      dispatch(fetchGuardiansSuccess(guardianData));
+    try {
+      const teacherData = await teacherService.getById(user.id);
+
       dispatch(fetchTeacherSuccess(teacherData));
-      dispatch(fetchStudentsSuccess(data));
     } catch (err) {
-      dispatch(fetchClassroomsFailure(err.message));
-      dispatch(fetchGuardiansFailure(err.message));
-      dispatch(fetchStudentsFailure(err.message));
       dispatch(fetchTeacherFailure(err.message));
     }
   };
@@ -177,15 +159,16 @@ export default function TeacherDashboard() {
             <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
             <div className="flex items-center rounded-full pr-3 py-1">
               <img
-                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedTeacherRecord?.data?.email}`}
                 className="w-14 h-14 rounded-full"
                 alt="teacher"
               />
               <div className="text-xs">
                 <div className="font-semibold text-gray-700">
-                  {user?.schoolName.toLocaleUpperCase() || "Ade William"}
+                  <span>{fetchedTeacherRecord?.data?.firstname || ""}</span> {""}
+                  <span>{fetchedTeacherRecord?.data?.lastname || ""}</span>
                 </div>
-                <div className="text-gray-400">{user?.email || "class teacher"}</div>
+                <div className="text-gray-400">{"class teacher"}</div>
               </div>
             </div>
           </div>
@@ -199,28 +182,28 @@ export default function TeacherDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               label="Total Pupils"
-              value={fetchedRecord?.length}
+              value={"0"}
               icon={<FaUserGraduate />}
               bgColor="bg-[#E6C9B0]"
               iconColor="text-orange-600"
             />
             <StatCard
               label="Pending Assignments"
-              value={fetchedGuardianRecord?.length}
+              value={"0"}
               icon={<FaBookReader />}
               bgColor="bg-[#BFC6D0]"
               iconColor="text-blue-700"
             />
             <StatCard
               label="Attendace taken this week"
-              value={fetchedTeacherRecord?.length}
+              value={"0"}
               icon={<FaChalkboardTeacher />}
               bgColor="bg-[#E9B6B6]"
               iconColor="text-red-600"
             />
             <StatCard
               label="Unread messages"
-              value={fetchedClassroomsRecord?.length}
+              value={"0"}
               icon={<FaCertificate />}
               bgColor="bg-[#C9E3C3]"
               iconColor="text-green-600"
@@ -237,7 +220,6 @@ export default function TeacherDashboard() {
             </div>
           </div>
 
-          {/* SECOND ROW: TimeSpendingChart (3 cols) + UpcomingClasses (1 col) */}
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-[60%]">
               <AttendanceChart />
@@ -254,7 +236,7 @@ export default function TeacherDashboard() {
 }
 
 // ─── StatCard ──────────────────────────────────────────────────────────────────
-function StatCard({ label, value, icon, bgColor, iconColor }) {
+function StatCard({ label, value, icon, bgColor, iconColor }: any) {
   return (
     <div className={`${bgColor} rounded-lg p-4 flex items-center justify-between shadow-sm`}>
       <div>
