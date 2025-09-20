@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaThLarge,
@@ -345,7 +346,7 @@ const TeacherSidebar = () => {
           nonActiveIcon={iconsSvg.mypupils}
           activeIcon={iconsSvg.mypupilsActive}
           label="My Pupils"
-          to="/teacher/teachers"
+          to="/teacher/pupil"
         />
         {/* <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/teacher/guardians" /> */}
 

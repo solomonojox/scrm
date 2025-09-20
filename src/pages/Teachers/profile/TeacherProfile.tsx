@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaCamera, FaEdit } from "react-icons/fa";
+import { FaCamera, FaEdit, FaSpinner } from "react-icons/fa";
 import imageAssets from "../../../assets/imageAssets";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
@@ -92,9 +92,11 @@ export default function TeacherProfile() {
     }));
   };
 
-  // handle form submit
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       // call API to update
       await teacherService.update(user?.id, formData);
@@ -104,6 +106,8 @@ export default function TeacherProfile() {
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating guardian:", error);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -200,8 +204,8 @@ export default function TeacherProfile() {
                 { label: "State of Origin", id: "stateOfOrigin", type: "text" },
                 { label: "Role", id: "role", type: "text" },
                 { label: "Religion", id: "religion", type: "text" },
-                { label: "Email", id: "email", type: "email" },
-                { label: "Username", id: "username", type: "text" },
+                { label: "Email", id: "email", type: "email", disable: true },
+                { label: "Username", id: "username", type: "text", },
               ].map((field) => (
                 <div key={field.id}>
                   <label
@@ -215,12 +219,11 @@ export default function TeacherProfile() {
                     type={field.type}
                     value={(formData as any)[field.id] || ""}
                     onChange={handleChange}
-                    readOnly={!isEditing}
-                    className={`w-full rounded px-3 py-2 text-[12px]  ${
-                      isEditing
-                        ? "border focus:outline-none focus:ring-1 focus:ring-[#e67e22] border-[#EE7306]"
+                    readOnly={!isEditing || field.disable}
+                    className={`w-full rounded px-3 py-2 text-[12px]  ${isEditing
+                        ? `border focus:outline-none ${field.disable ? "text-gray-400" : "focus:ring-1 focus:ring-[#e67e22] border-[#EE7306]"}`
                         : "bg-gray-100 cursor-not-allowed border border-gray-300 outline-none"
-                    }`}
+                      }`}
                   />
                 </div>
               ))}
@@ -232,7 +235,12 @@ export default function TeacherProfile() {
                     type="submit"
                     className="bg-[#EE7306] text-white text-[12px] px-5 py-2 rounded font-bold"
                   >
-                    Save Changes
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <FaSpinner className="animate-spin" />
+                        Saving...
+                      </span>
+                    ) : "Save Changes"}
                   </button>
                 </div>
               )}
