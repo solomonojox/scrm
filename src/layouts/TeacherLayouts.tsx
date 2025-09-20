@@ -32,7 +32,7 @@ export const TeacherLayout = ({ children }: { children: React.ReactNode }) => {
       {/* Main Content */}
       <div className="flex-1 lg:ml-64">
         <Teacherheader onMenuClick={() => setIsSidebarOpen(true)} />
-        <main className="mt-14">
+        <main className="mt-20 p-4">
           <Outlet />
         </main>
       </div>
