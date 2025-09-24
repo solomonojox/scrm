@@ -51,7 +51,7 @@ interface Student {
   // other properties
 }
 
-export default function PupilsList({students}: any) {
+export default function PupilsList({ students }: any) {
   console.log(students)
   const navigate = useNavigate()
   const [openFolderModal, setOpenFolderModal] = useState(false);
