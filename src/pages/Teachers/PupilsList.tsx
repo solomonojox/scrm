@@ -46,6 +46,11 @@ const pupils = Array(8).fill({
   photo: "https://i.pravatar.cc/50?img=3"
 });
 
+interface Student {
+  id: string;
+  // other properties
+}
+
 export default function PupilsList() {
   const navigate = useNavigate()
   const [openFolderModal, setOpenFolderModal] = useState(false);
@@ -76,7 +81,7 @@ export default function PupilsList() {
   };
 
   const handleViewStudent = () => {
-    navigate(`/teacher/pupil/${selectedStudent!.id}`);
+    navigate(`/teacher/pupil/${(selectedStudent! as Student).id}`);
     handleMenuClose();
   };
 
@@ -122,13 +127,13 @@ export default function PupilsList() {
               </Box>
               All Pupils | All Folder
             </Box>
-            
+
             <Box display="flex" alignItems="center" gap={1}>
-              <TextField 
-                size="small" 
-                placeholder="Search students..." 
-                sx={{ 
-                  backgroundColor: 'white', 
+              <TextField
+                size="small"
+                placeholder="Search students..."
+                sx={{
+                  backgroundColor: 'white',
                   borderRadius: 1,
                   '& .MuiOutlinedInput-root': {
                     height: '36px'
@@ -160,93 +165,93 @@ export default function PupilsList() {
                 {pupils
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((pupil, idx) => (
-                  <TableRow key={idx} hover>
-                    <TableCell padding="checkbox">
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={pupil.id} 
-                        size="small" 
-                        color="primary" 
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Avatar 
-                        src={pupil.photo} 
-                        alt="student"
-                        sx={{ width: 40, height: 40 }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="subtitle2">
-                          {pupil.firstName} {pupil.lastName}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          DOB: {pupil.dob}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body2">
-                          {pupil.enteredClass}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          {pupil.classroomId}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body2">
-                          {pupil.age} yrs
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          {pupil.gender}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={pupil.guardianId} 
-                        size="small" 
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Chip 
-                        label={pupil.teacherId} 
-                        size="small" 
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box>
-                        <Typography variant="body2">
-                          {pupil.currentTerm}
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                          {pupil.sessionId}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => handleMenuOpen(e, pupil)}
-                      >
-                        <MoreVertical size={16} />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    <TableRow key={idx} hover>
+                      <TableCell padding="checkbox">
+                        <Checkbox />
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={pupil.id}
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Avatar
+                          src={pupil.photo}
+                          alt="student"
+                          sx={{ width: 40, height: 40 }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="subtitle2">
+                            {pupil.firstName} {pupil.lastName}
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            DOB: {pupil.dob}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="body2">
+                            {pupil.enteredClass}
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            {pupil.classroomId}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="body2">
+                            {pupil.age} yrs
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            {pupil.gender}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={pupil.guardianId}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={pupil.teacherId}
+                          size="small"
+                          variant="outlined"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box>
+                          <Typography variant="body2">
+                            {pupil.currentTerm}
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            {pupil.sessionId}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          onClick={(e) => handleMenuOpen(e, pupil)}
+                        >
+                          <MoreVertical size={16} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
-          
+
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
