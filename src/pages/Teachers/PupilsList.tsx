@@ -51,7 +51,8 @@ interface Student {
   // other properties
 }
 
-export default function PupilsList() {
+export default function PupilsList({students}: any) {
+  console.log(students)
   const navigate = useNavigate()
   const [openFolderModal, setOpenFolderModal] = useState(false);
   const [openDownloadModal, setOpenDownloadModal] = useState(false);
@@ -155,23 +156,23 @@ export default function PupilsList() {
                   <TableCell>Name</TableCell>
                   <TableCell>Class</TableCell>
                   <TableCell>Age/Gender</TableCell>
-                  <TableCell>Guardian ID</TableCell>
-                  <TableCell>Teacher ID</TableCell>
+                  {/* <TableCell>Guardian ID</TableCell>
+                  <TableCell>Teacher ID</TableCell> */}
                   <TableCell>Term/Session</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {pupils
+                {students
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((pupil, idx) => (
+                  .map((pupil: any, idx: number) => (
                     <TableRow key={idx} hover>
                       <TableCell padding="checkbox">
                         <Checkbox />
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={pupil.id}
+                          label={pupil.studentNo}
                           size="small"
                           color="primary"
                           variant="outlined"
@@ -187,7 +188,7 @@ export default function PupilsList() {
                       <TableCell>
                         <Box>
                           <Typography variant="subtitle2">
-                            {pupil.firstName} {pupil.lastName}
+                            {pupil.firstname} {pupil.lastname}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
                             DOB: {pupil.dob}
@@ -197,41 +198,41 @@ export default function PupilsList() {
                       <TableCell>
                         <Box>
                           <Typography variant="body2">
-                            {pupil.enteredClass}
+                            {pupil.homeAddress}
                           </Typography>
-                          <Typography variant="caption" color="textSecondary">
+                          {/* <Typography variant="caption" color="textSecondary">
                             {pupil.classroomId}
-                          </Typography>
+                          </Typography> */}
                         </Box>
                       </TableCell>
                       <TableCell>
                         <Box>
                           <Typography variant="body2">
-                            {pupil.age} yrs
+                            {pupil.dateOfBirth?.slice(0, 10)}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
                             {pupil.gender}
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Chip
                           label={pupil.guardianId}
                           size="small"
                           variant="outlined"
                         />
-                      </TableCell>
-                      <TableCell>
+                      </TableCell> */}
+                      {/* <TableCell>
                         <Chip
                           label={pupil.teacherId}
                           size="small"
                           variant="outlined"
                         />
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
                         <Box>
                           <Typography variant="body2">
-                            {pupil.currentTerm}
+                            {pupil.currentSession}
                           </Typography>
                           <Typography variant="caption" color="textSecondary">
                             {pupil.sessionId}
