@@ -76,7 +76,7 @@ export default function PupilsList() {
   };
 
   const handleViewStudent = () => {
-    navigate(`/teacher/pupil/${selectedStudent!.id}`);
+    navigate(`/teacher/pupil/${selectedStudent!.id!}`);
     handleMenuClose();
   };
 
