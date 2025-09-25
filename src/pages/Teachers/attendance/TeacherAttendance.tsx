@@ -7,7 +7,7 @@ const TeacherAttendance = (): React.JSX.Element => {
   return (
     <div>
         <div>
-            <AttendanceCalendar />
+          <AttendanceCalendar />
         </div>
         <div className="mt-6">
             <AttendanceCard />

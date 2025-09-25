@@ -32,6 +32,48 @@ const tableData: any[] = [
     size: "2.7MB",
     time: "02:45 PM",
   },
+  {
+    date: "2024-09-04",
+    title: "2021/2022",
+    size: "2.0MB",
+    time: "01:15 PM",
+  },
+  {
+    date: "2024-09-05",
+    title: "2020/2021",
+    size: "2.7MB",
+    time: "02:45 PM",
+  },
+  {
+    date: "2024-09-04",
+    title: "2021/2022",
+    size: "2.0MB",
+    time: "01:15 PM",
+  },
+  {
+    date: "2024-09-05",
+    title: "2020/2021",
+    size: "2.7MB",
+    time: "02:45 PM",
+  },
+  {
+    date: "2024-09-04",
+    title: "2021/2022",
+    size: "2.0MB",
+    time: "01:15 PM",
+  },
+  {
+    date: "2024-09-05",
+    title: "2020/2021",
+    size: "2.7MB",
+    time: "02:45 PM",
+  },
+  {
+    date: "2024-09-04",
+    title: "2021/2022",
+    size: "2.0MB",
+    time: "01:15 PM",
+  },
 ];
 
 const AllFolders = (): React.ReactElement => {
@@ -79,10 +121,36 @@ const AllFolders = (): React.ReactElement => {
         />
       </svg>
     ),
+    bigFolder: (
+      <svg
+        width="76"
+        height="76"
+        viewBox="0 0 76 76"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M63.3335 19.0013H34.8335L28.5002 12.668H12.6668C9.1835 12.668 6.3335 15.518 6.3335 19.0013V31.668H69.6668V25.3346C69.6668 21.8513 66.8168 19.0013 63.3335 19.0013Z"
+          fill="#FFA000"
+        />
+        <path
+          d="M63.3335 19H12.6668C9.1835 19 6.3335 21.85 6.3335 25.3333V57C6.3335 60.4833 9.1835 63.3333 12.6668 63.3333H63.3335C66.8168 63.3333 69.6668 60.4833 69.6668 57V25.3333C69.6668 21.85 66.8168 19 63.3335 19Z"
+          fill="#FFCA28"
+        />
+      </svg>
+    ),
   };
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [openShuffle, setOpenShuffle] = useState(false);
+  const [activeShuffle, setActiveShuffle] = useState("List");
+
+  const tab = ["List", "Grid"];
+
+  const handleShuffleClick = () => {
+    setOpenShuffle(!openShuffle);
+  };
 
   // Filtering logic (adjust to your real data shape)
   const filteredData = tableData.filter(
@@ -96,7 +164,7 @@ const AllFolders = (): React.ReactElement => {
   );
 
   // Pagination
-  const rowsPerPage = 5;
+  const rowsPerPage = 6;
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
@@ -107,13 +175,50 @@ const AllFolders = (): React.ReactElement => {
       {/* Filters */}
       <div className="w-full py-6 border border-[#c9c8c8] rounded-md my-6 px-4 lg:px-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium mb-4">All Folders</h2>
+          {
+            /* Title and separator */
+            activeShuffle === "List" ? (
+              <div className="flex items-center gap-4">
+                <h2 className="text-lg font-medium mb-4">All Folders</h2>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Folders Grid View{filteredData.length > 0 && ` (${filteredData.length})`}
+                </h2>
+              </div>
+            )
+          }
 
           <div>
-            <button className="inline-flex items-center gap-1 px-4 py-2 bg-[#EE7306] text-white rounded-full text-sm hover:bg-[#cf5c06] transition">
+            <button
+              onClick={handleShuffleClick}
+              className="inline-flex items-center gap-1 px-4 py-2 bg-[#EE7306] text-white rounded-full text-sm hover:bg-[#cf5c06] transition"
+            >
               {icons.shuffle}
               Shuffle
             </button>
+
+            {openShuffle && (
+              <div>
+                <div className="absolute mt-2 w-32 right-5 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                  {tab.map((item, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setActiveShuffle(item);
+                        setOpenShuffle(false);
+                      }}
+                      className={`px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center gap-2 ${
+                        activeShuffle === item ? "bg-gray-200 font-medium" : ""
+                      }`}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col md:flex-row items-center gap-6">
@@ -129,120 +234,212 @@ const AllFolders = (): React.ReactElement => {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
-        <div className="w-full overflow-x-auto">
-          <table className="w-full table-auto border-collapse min-w-[700px]">
-            <thead>
-              <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
-                <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  <input type="checkbox" title="select all" className="w-4 h-4" />
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  S/N
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  Title
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  Size
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  Date
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  Time
-                </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
-                  Options
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRows.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={8}
-                    className="py-6 px-4 text-center text-sm text-[#0A0A0A] font-medium"
-                  >
-                    No Folders records available.
-                  </td>
-                </tr>
-              ) : (
-                currentRows.map((item, index) => (
-                  <tr
-                    key={index}
-                    className={`border border-b-[#E0E0E0] ${
-                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                    } hover:bg-gray-100`}
-                  >
-                    <td className="px-4 py-3 border-b">
-                      <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
-                    </td>
-                    <td className="px-4 py-3 border-b">{indexOfFirstRow + index + 1}</td>
-                    <td className="px-4 py-3 border-b inline-flex items-center">
-                      {icons.folder} {item.title || "--"} session
-                    </td>
-                    <td className="px-4 py-3 border-b">{item.size ?? 0}</td>
-                    <td className="px-4 py-3 border-b">{item.date || "--"}</td>
-                    <td className="px-4 py-3 border-b">{item.time || "--"}</td>
-                    <td className="px-4 py-3 border-b">
-                      <button className="p-1 rounded hover:bg-gray-200">
-                        <MoreVertical className="w-5 h-5 text-gray-600" />
-                      </button>
-                    </td>
+      {activeShuffle === "List" ? (
+        <div>
+          {/* Table */}
+          <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
+            <div className="w-full overflow-x-auto">
+              <table className="w-full table-auto border-collapse min-w-[700px]">
+                <thead>
+                  <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
+                    <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                      <input type="checkbox" title="select all" className="w-4 h-4" />
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      S/N
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      Title
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      Size
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      Date
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      Time
+                    </th>
+                    <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
+                      Options
+                    </th>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {currentRows.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={8}
+                        className="py-6 px-4 text-center text-sm text-[#0A0A0A] font-medium"
+                      >
+                        No Folders records available.
+                      </td>
+                    </tr>
+                  ) : (
+                    currentRows.map((item, index) => (
+                      <tr
+                        key={index}
+                        className={`border border-b-[#E0E0E0] ${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        } hover:bg-gray-100`}
+                      >
+                        <td className="text-sm px-4 py-3 border-b">
+                          <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
+                        </td>
+                        <td className="text-sm px-4 py-3 border-b">
+                          {indexOfFirstRow + index + 1}
+                        </td>
+                        <td className="text-sm px-4 py-3 border-b inline-flex items-center gap-1">
+                          {icons.folder} {item.title || "--"} session
+                        </td>
+                        <td className="text-sm px-4 py-3 border-b">{item.size ?? 0}</td>
+                        <td className="text-sm px-4 py-3 border-b">{item.date || "--"}</td>
+                        <td className="text-sm px-4 py-3 border-b">{item.time || "--"}</td>
+                        <td className="text-sm px-4 py-3 border-b">
+                          <button className="p-1 rounded hover:bg-gray-200">
+                            <MoreVertical className="w-5 h-5 text-gray-600" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4 mt-4">
-          <p className="text-[12px] text-[#717182]">
-            Showing {indexOfFirstRow + 1} - {Math.min(indexOfLastRow, filteredData.length)} of{" "}
-            {filteredData.length} entries
-          </p>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
-                currentPage === 1
-                  ? "text-[#717182] cursor-not-allowed opacity-50"
-                  : "bg-[#EE7306] text-white"
-              }`}
-            >
-              Previous
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-3 py-1 border border-[#E0E0E0] rounded-md text-[12px] ${
-                  currentPage === i + 1
-                    ? "bg-[#EE7306] text-white"
-                    : "text-[#717182] hover:bg-gray-200"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
-                currentPage === totalPages || totalPages === 0
-                  ? "text-[#717182] cursor-not-allowed opacity-50"
-                  : "bg-[#EE7306] text-white"
-              }`}
-            >
-              Next
-            </button>
+            {/* Pagination */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4 mt-4">
+              <p className="text-[12px] text-[#717182]">
+                Showing {indexOfFirstRow + 1} - {Math.min(indexOfLastRow, filteredData.length)} of{" "}
+                {filteredData.length} entries
+              </p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                  className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
+                    currentPage === 1
+                      ? "text-[#717182] cursor-not-allowed opacity-50"
+                      : "bg-[#EE7306] text-white"
+                  }`}
+                >
+                  Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`px-3 py-1 border border-[#E0E0E0] rounded-md text-[12px] ${
+                      currentPage === i + 1
+                        ? "bg-[#EE7306] text-white"
+                        : "text-[#717182] hover:bg-gray-200"
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
+                    currentPage === totalPages || totalPages === 0
+                      ? "text-[#717182] cursor-not-allowed opacity-50"
+                      : "bg-[#EE7306] text-white"
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div>
+          {/* Grid View */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentRows.length === 0 ? (
+              <p className="py-6 px-4 text-center text-sm text-[#0A0A0A] font-medium">
+                No Folders records available.
+              </p>
+            ) : (
+              currentRows.map((item, index) => (
+                <div
+                  key={index}
+                  className="border border-[#E0E0E0] rounded-md p-4 bg-white shadow-sm hover:shadow-md transition"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-[#EE7306] border-gray-300 rounded"
+                      name={`${index}`}
+                      id={`${index}`}
+                    />
+                    <button className="p-1 rounded hover:bg-gray-200">
+                      <MoreVertical className="w-5 h-5 text-gray-600" />
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <p className="">{icons.bigFolder}</p>
+                    <h3 className="text-xs font-medium text-gray-900">
+                      {item.title || "--"} session
+                    </h3>
+                  </div>
+
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="text-sm text-gray-600">{item.size ?? 0}</div>
+                    <div className="text-sm text-gray-600">{item.date || "--"}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Pagination */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-4 mt-4">
+            <p className="text-[12px] text-[#717182]">
+              Showing {indexOfFirstRow + 1} - {Math.min(indexOfLastRow, filteredData.length)} of{" "}
+              {filteredData.length} entries
+            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
+                  currentPage === 1
+                    ? "text-[#717182] cursor-not-allowed opacity-50"
+                    : "bg-[#EE7306] text-white"
+                }`}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`px-3 py-1 border border-[#E0E0E0] rounded-md text-[12px] ${
+                    currentPage === i + 1
+                      ? "bg-[#EE7306] text-white"
+                      : "text-[#717182] hover:bg-gray-200"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className={`px-5 py-2 border border-[#E0E0E0] rounded-md text-[12px] ${
+                  currentPage === totalPages || totalPages === 0
+                    ? "text-[#717182] cursor-not-allowed opacity-50"
+                    : "bg-[#EE7306] text-white"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

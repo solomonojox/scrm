@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { ChevronLeft, ChevronRight, FileText, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, Plus, X } from "lucide-react";
 
 const AttendanceCalendar = (): React.JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 16)); // September 16, 2024
+  const [newAttendanceOpen, setNewAttendanceOpen] = useState(false);
+
+  const toggleNewAttendance = () => {
+    setNewAttendanceOpen(!newAttendanceOpen);
+  };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -72,7 +77,10 @@ const AttendanceCalendar = (): React.JSX.Element => {
                 Attendance Report
               </button>
 
-              <button className="inline-flex items-center justify-center text-xs sm:text-sm px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors shadow-sm w-full sm:w-auto">
+              <button
+                onClick={toggleNewAttendance}
+                className="inline-flex items-center justify-center text-xs sm:text-sm px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors shadow-sm w-full sm:w-auto"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 New Attendance
               </button>
@@ -80,69 +88,25 @@ const AttendanceCalendar = (): React.JSX.Element => {
           </div>
         </div>
       </div>
+
+      {/* New Attendance Modal */}
+      {newAttendanceOpen && (
+        <div className="fixed inset-0 bg-black/40 bg-opacity-10 flex items-center justify-center z-50">
+          <div className="bg-white h-screen w-[600px] rounded-md shadow-lg p-6">
+            <button
+              onClick={toggleNewAttendance}
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <h2 className="text-lg font-medium mb-4">New Attendance</h2>
+            <form className="space-y-4">{/* Form fields go here */}</form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AttendanceCalendar;
-
-// {/* Main content area */}
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-//         <div className="bg-white rounded-lg shadow-sm border">
-//           <div className="p-6">
-//             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-//               Attendance for {formatDate(currentDate)}
-//             </h2>
-
-//             {/* Placeholder content */}
-//             <div className="text-center py-12 text-gray-500">
-//               <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-//                 <FileText className="w-8 h-8 text-gray-400" />
-//               </div>
-//               <p className="text-lg font-medium">No attendance records found</p>
-//               <p className="mt-2">
-//                 Click "New Attendance" to add attendance records for this date.
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Quick stats */}
-//         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-//           <div className="bg-white p-6 rounded-lg shadow-sm border">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium text-gray-600">Present Today</p>
-//                 <p className="text-2xl font-semibold text-green-600">--</p>
-//               </div>
-//               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-//                 <div className="w-6 h-6 bg-green-500 rounded-full"></div>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="bg-white p-6 rounded-lg shadow-sm border">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium text-gray-600">Absent Today</p>
-//                 <p className="text-2xl font-semibold text-red-600">--</p>
-//               </div>
-//               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-//                 <div className="w-6 h-6 bg-red-500 rounded-full"></div>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="bg-white p-6 rounded-lg shadow-sm border">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-sm font-medium text-gray-600">Late Today</p>
-//                 <p className="text-2xl font-semibold text-yellow-600">--</p>
-//               </div>
-//               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-//                 <div className="w-6 h-6 bg-yellow-500 rounded-full"></div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>

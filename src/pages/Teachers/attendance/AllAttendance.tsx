@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { Edit2Icon, Edit3Icon, Eye, MoreVertical, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 
 const tableData: any[] = [
@@ -32,6 +32,21 @@ const AllAttendance = (): React.ReactElement => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
+
+  const handleOptionsClick = (rowIndex: number) => {
+    setOpenRowIndex(openRowIndex === rowIndex ? null : rowIndex);
+  };
+
+  const handleEdit = (rowIndex: number) => {
+    alert(`Edit clicked for row ${rowIndex + 1}`);
+    setOpenRowIndex(null);
+  };
+
+  const handleDelete = (rowIndex: number) => {
+    alert(`Delete clicked for row ${rowIndex + 1}`);
+    setOpenRowIndex(null);
+  };
 
   // Filtering logic (adjust to your real data shape)
   const filteredData = tableData.filter(
@@ -54,17 +69,17 @@ const AllAttendance = (): React.ReactElement => {
   return (
     <section className="w-full">
       {/* Filters */}
-        <div className="flex flex-col md:flex-row items-center gap-6 my-8">
-          <div className="w-full lg:w-[80%]">
-            <input
-              type="text"
-              placeholder="Search by date, present, absent, or late count"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border border-[#E0E0E0] rounded-md py-3 px-3 text-[12px] text-[#717182] focus:outline-none focus:border-[#EE7306]"
-            />
-          </div>
+      <div className="flex flex-col md:flex-row items-center gap-6 my-8">
+        <div className="w-full lg:w-[80%]">
+          <input
+            type="text"
+            placeholder="Search by date, present, absent, or late count"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full border border-[#E0E0E0] rounded-md py-3 px-3 text-[12px] text-[#717182] focus:outline-none focus:border-[#EE7306]"
+          />
         </div>
+      </div>
 
       {/* Table */}
       <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
@@ -72,28 +87,28 @@ const AllAttendance = (): React.ReactElement => {
           <table className="w-full table-auto border-collapse min-w-[700px]">
             <thead>
               <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
-                <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="py-3 px-2 sm:px-4 text-xs sm:text-sm min-w-[50px] text-[#717182] font-normal">
                   <input type="checkbox" title="select all" className="w-4 h-4" />
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[50px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   S/N
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[150px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Date
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[50px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Present
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[50px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Absent
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[50px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Late
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[200px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Overall % Attendance for The Day
                 </th>
-                <th className="border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-normal">
+                <th className="min-w-[100px] border-b py-3 px-2 sm:px-4 text-xs sm:text-sm text-[#717182] font-medium">
                   Options
                 </th>
               </tr>
@@ -119,18 +134,46 @@ const AllAttendance = (): React.ReactElement => {
                     <td className="px-4 py-3 border-b">
                       <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
                     </td>
-                    <td className="px-4 py-3 border-b">{indexOfFirstRow + index + 1}</td>
-                    <td className="px-4 py-3 border-b">{item.date || "--"}</td>
-                    <td className="px-4 py-3 border-b">{item.present ?? 0}</td>
-                    <td className="px-4 py-3 border-b">{item.absent ?? 0}</td>
-                    <td className="px-4 py-3 border-b">{item.late ?? 0}</td>
-                    <td className="px-4 py-3 border-b text-center">
+                    <td className="text-sm px-4 py-3 border-b">{indexOfFirstRow + index + 1}</td>
+                    <td className="text-sm px-4 py-3 border-b">{item.date || "--"}</td>
+                    <td className="text-sm px-4 py-3 border-b">{item.present ?? 0}</td>
+                    <td className="text-sm px-4 py-3 border-b">{item.absent ?? 0}</td>
+                    <td className="text-sm px-4 py-3 border-b">{item.late ?? 0}</td>
+                    <td className="text-sm px-4 py-3 border-b text-center">
                       {item.overallPercent ? `${item.overallPercent}%` : "--"}
                     </td>
-                    <td className="px-4 py-3 border-b">
-                      <button className="p-1 rounded hover:bg-gray-200">
+                    <td className="text-sm px-4 py-3 border-b relative">
+                      <button
+                        onClick={() => handleOptionsClick(index)}
+                        className="p-1 rounded hover:bg-gray-200"
+                      >
                         <MoreVertical className="w-5 h-5 text-gray-600" />
                       </button>
+
+                      {openRowIndex === index && (
+                        <div className="absolute top-8 right-20 md:right-24 bg-white border border-gray-200 rounded-lg shadow-lg z-30 w-28">
+                          <ul className="flex flex-col">
+                            <li
+                              // onClick={() => handleEdit(index)}
+                              className="text-xs inline-flex items-center px-4 py-2 hover:bg-yellow-100 bg-yellow-50 hover:text-yellow-500 text-yellow-600  cursor-pointer border-b border-gray-200"
+                            >
+                              <Eye className="w-4 h-4 inline-block mr-2" /> View
+                            </li>
+                            <li
+                              onClick={() => handleEdit(index)}
+                              className="text-xs inline-flex items-center px-4 py-2 hover:bg-green-100 bg-green-50 hover:text-green-500 text-green-600  cursor-pointer border-b border-gray-200"
+                            >
+                              <Edit3Icon className="w-4 h-4 inline-block mr-2" /> Edit
+                            </li>
+                            <li
+                              onClick={() => handleDelete(index)}
+                              className="text-xs inline-flex items-center px-4 py-2 hover:bg-red-100 bg-red-50 hover:text-red-500 text-red-600 cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4 inline-block mr-2" /> Delete
+                            </li>
+                          </ul>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
