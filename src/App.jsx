@@ -59,6 +59,7 @@ import TeacherMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
 import TeacherSettings from "./pages/Teachers/settings/Settings";
 import MyPupil from "./pages/Teachers/MyPupil";
 import ViewMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
+import AccountSetup from "./pages/Guardian/account/AccountSetup";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -154,6 +155,7 @@ function App() {
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/message" element={<GuardianMessages />} />
         <Route path="/guardian/transactions" element={<TransactionDashboard />} />
+        <Route path="/guardian/account-setup" element={<AccountSetup />} />
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
