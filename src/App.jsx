@@ -60,6 +60,8 @@ import TeacherSettings from "./pages/Teachers/settings/Settings";
 import MyPupil from "./pages/Teachers/MyPupil";
 import ViewMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
 import TeacherAttendance from "./pages/Teachers/attendance/TeacherAttendance";
+import NewAttendance from "./pages/Teachers/attendance/NewAttendance";
+import AttendanceReport from "./pages/Teachers/attendance/AttendanceReport";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -117,6 +119,8 @@ function App() {
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+        <Route path="/teacher/new-attendance" element={<NewAttendance />} />
+        <Route path="/teacher/attendance-report" element={<AttendanceReport />} />
         <Route path="/teacher/messages" element={<TeacherMessages />} />
         <Route path="/teacher/news" element={<TeacherNews />} />
         <Route path="/teacher/events" element={<TeacherEvent />} />

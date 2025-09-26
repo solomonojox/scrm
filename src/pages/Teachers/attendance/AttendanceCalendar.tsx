@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, FileText, Plus, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AttendanceCalendar = (): React.JSX.Element => {
-  const [currentDate, setCurrentDate] = useState(new Date(2024, 8, 16)); // September 16, 2024
-  const [newAttendanceOpen, setNewAttendanceOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const navigate =  useNavigate();
 
   const toggleNewAttendance = () => {
-    setNewAttendanceOpen(!newAttendanceOpen);
+    navigate("/teacher/new-attendance");
   };
+
+  const toggleAttendanceReport = () => {
+    navigate("/teacher/attendance-report");
+  }
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -72,7 +77,7 @@ const AttendanceCalendar = (): React.JSX.Element => {
 
             {/* Right side - Action buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <button className="inline-flex items-center justify-center text-xs sm:text-sm px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors shadow-sm w-full sm:w-auto">
+              <button onClick={toggleAttendanceReport} className="inline-flex items-center justify-center text-xs sm:text-sm px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-md transition-colors shadow-sm w-full sm:w-auto">
                 <FileText className="w-4 h-4 mr-2" />
                 Attendance Report
               </button>
@@ -89,22 +94,7 @@ const AttendanceCalendar = (): React.JSX.Element => {
         </div>
       </div>
 
-      {/* New Attendance Modal */}
-      {newAttendanceOpen && (
-        <div className="fixed inset-0 bg-black/40 bg-opacity-10 flex items-center justify-center z-50">
-          <div className="bg-white h-screen w-[600px] rounded-md shadow-lg p-6">
-            <button
-              onClick={toggleNewAttendance}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
-              aria-label="Close"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <h2 className="text-lg font-medium mb-4">New Attendance</h2>
-            <form className="space-y-4">{/* Form fields go here */}</form>
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 };
