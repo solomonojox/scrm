@@ -131,13 +131,13 @@ export default function TeacherDashboard() {
       const teacherData = await teacherService.getById(user.id);
 
       dispatch(fetchTeacherSuccess(teacherData));
-    } catch (err) {
+    } catch (err: any) {
       dispatch(fetchTeacherFailure(err.message));
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen font-inter p-4 sm:py-6 md:py-8">
+    <div className="bg-gray-50 min-h-screen font-inter p-4 sm:py-6 md:py-8">
       {/* MAIN CONTENT */}
       <div>
         {/* Header */}
