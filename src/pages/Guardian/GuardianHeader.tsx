@@ -13,6 +13,7 @@ import {
 import { guardianService } from "../../Services/Guardian/guardian";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../Store/store";
+import { useNavigate } from "react-router-dom";
 
 interface GuardianHeaderProps {
   onToggleSidebar?: () => void;
@@ -20,10 +21,16 @@ interface GuardianHeaderProps {
 
 const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
   const { user } = useAuth();
+  const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord: any = useSelector((state: RootState) => state.getGuardian.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading);
   const error = useSelector((state: RootState) => state.getGuardian.error);
+  // console.log(fetchedRecord)
+
+  if (user && fetchedRecord.accountStatus === 0) {
+    navigate('/guardian/account-setup')
+  }
 
   const icons = {
     message: (

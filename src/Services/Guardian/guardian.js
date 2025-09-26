@@ -16,7 +16,7 @@ export const guardianService = {
   getGuardianById: async (id) => {
     try {
       const res = await api.get(`/api/Guardian/GetGuardianById/${id}`);
-      // console.log("GetAllGuardians success:", res.data);
+      console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
@@ -54,6 +54,16 @@ export const guardianService = {
     } catch (error) {
       console.error("UpdateGuardian error:", error?.response?.data?.message || error.message);
       throw error;
+    }
+  },
+
+  accountSetUp: async (data) => {
+    try {
+      const res = await api.post(`/api/Account/SetUpAccount`, data)
+      return res.data
+    } catch (error) {
+      console.log(error)
+      throw error
     }
   },
 

@@ -18,8 +18,68 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Validation states
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [regNumberError, setRegNumberError] = useState("");
+
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Input validation handlers
+  const validateEmail = (value) => {
+    if (!value) {
+      setEmailError("Email is required");
+      return false;
+    } else if (!emailRegex.test(value)) {
+      setEmailError("Invalid email format");
+      return false;
+    } else {
+      setEmailError("");
+      return true;
+    }
+  };
+
+  const validatePassword = (value) => {
+    if (!value) {
+      setPasswordError("Password is required");
+      return false;
+    } else if (value.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return false;
+    } else {
+      setPasswordError("");
+      return true;
+    }
+  };
+
+  const validateRegNumber = (value) => {
+    if (!value) {
+      setRegNumberError("School Registration Number is required");
+      return false;
+    } else {
+      setRegNumberError("");
+      return true;
+    }
+  };
+
+  // Combined form validity: use error states and field values
+  const isFormValid =
+    !emailError &&
+    !passwordError &&
+    !regNumberError &&
+    email &&
+    password &&
+    schoolRegistrationNumber;
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    // Validate all fields before submit
+    const validEmail = validateEmail(email);
+    const validPassword = validatePassword(password);
+    const validRegNumber = validateRegNumber(schoolRegistrationNumber);
+    if (!validEmail || !validPassword || !validRegNumber) return;
+
     setLoading(true);
     setError(null);
     setSuccessMessage("");
@@ -43,7 +103,7 @@ const LoginPage = () => {
         navigate("/admin/dashboard");
       } else if (role === "Guardian") {
         navigate("/guardian/dashboard");
-      }else if (role === "Teacher") {
+      } else if (role === "Teacher") {
         navigate("/teacher/dashboard");
       }
     } catch (err) {
@@ -86,12 +146,16 @@ const LoginPage = () => {
               <input
                 id="regNumber"
                 type="text"
-                required
                 value={schoolRegistrationNumber}
-                onChange={(e) => setSchoolRegistrationNumber(e.target.value)}
+                onChange={(e) => {
+                  setSchoolRegistrationNumber(e.target.value);
+                  validateRegNumber(e.target.value);
+                }}
                 placeholder="Enter Number"
                 className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                onBlur={() => validateRegNumber(schoolRegistrationNumber)}
               />
+              {regNumberError && <p className="text-red-500 text-xs mt-1">{regNumberError}</p>}
             </div>
 
             <div className="mb-4">
@@ -101,12 +165,16 @@ const LoginPage = () => {
               <input
                 id="email"
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  validateEmail(e.target.value);
+                }}
                 placeholder="Enter Email"
                 className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                onBlur={() => validateEmail(email)}
               />
+              {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
             </div>
 
             <div className="mb-6">
@@ -116,12 +184,16 @@ const LoginPage = () => {
               <input
                 id="password"
                 type="password"
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validatePassword(e.target.value);
+                }}
                 placeholder="Enter Password"
                 className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                onBlur={() => validatePassword(password)}
               />
+              {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
             </div>
 
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -130,7 +202,7 @@ const LoginPage = () => {
             <button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
-              disabled={loading}
+              disabled={loading || !isFormValid}
             >
               {loading && (
                 <svg
