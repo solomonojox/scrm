@@ -63,6 +63,7 @@ import TeacherAttendance from "./pages/Teachers/attendance/TeacherAttendance";
 import NewAttendance from "./pages/Teachers/attendance/NewAttendance";
 import AttendanceReport from "./pages/Teachers/attendance/AttendanceReport";
 import AccountSetup from "./pages/Guardian/account/AccountSetup";
+import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
