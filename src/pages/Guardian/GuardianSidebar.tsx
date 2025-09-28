@@ -58,7 +58,7 @@ const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) =>
   const location = useLocation();
   const auth = useAuth?.();
 
-  const isActivePath = (path) => location.pathname.startsWith(path);
+  const isActivePath = (path: any) => location.pathname.startsWith(path);
 
   const handleLogout = async () => {
     try {
