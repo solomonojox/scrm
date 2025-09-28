@@ -7,14 +7,13 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
-// import { Session } from "../../../Types/Guardian/guardianTypes";
-import { Session } from "../../../Types/sessionType";
 import { useAuth } from "../../../Context/Auth/useAuth";
+import { SessionTerm } from "../../../Types/sessionTermType";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
-interface SessionTableProps {
-    records: Session[];
+interface SessionTermTableProps {
+    records: SessionTerm[];
     totalRecords: number;
     currentPage: number;
     totalPages: number;
@@ -35,7 +34,7 @@ interface SessionTableProps {
     setEditData: (data: any) => void;
 }
 
-const SessionTable: React.FC<SessionTableProps> = ({
+const SessionTermTable: React.FC<SessionTermTableProps> = ({
     records,
     totalRecords,
     currentPage,
@@ -62,25 +61,25 @@ const SessionTable: React.FC<SessionTableProps> = ({
     const exportToExcel = () => {
         const ws = XLSX.utils.json_to_sheet(records);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Sessions Details');
-        XLSX.writeFile(wb, "sessions.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, 'term Details');
+        XLSX.writeFile(wb, "term.xlsx");
     };
 
     const exportToPDF = () => {
         const doc = new jsPDF();
         const title = "Session List";
         const headers = [
-            ["id", "sessionId", "sessionName", "schoolId", "startDate", "endDate"]
+            ["id", "sessionId", "TermName", "schoolId", "startDate", "endDate"]
         ];
 
         const data = records.map((session) => [
-            session.classrooms || '',
-            session.endDate || '',
-            session.id || '',
-            session.schoolId || '',
+            session.sessionTermId || '',
             session.sessionId || '',
-            session.sessionName || '',
-            session.startDate || ''
+            session.termName || '',
+            session.schoolId || '',
+            session.startDate || '',
+            session.endDate || '',
+            
         ]);
 
         doc.text(title, 14, 15);
@@ -92,7 +91,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
             headStyles: { fillColor: [255, 165, 0] }
         });
 
-        doc.save("sessions.pdf");
+        doc.save("term.pdf");
     };
 
     return (
@@ -131,7 +130,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
             {/* Breadcrumb & Add Button */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
                 <p className="text-sm text-gray-600 mb-4 sm:mb-0">
-                    Home <span className="text-orange-500 font-semibold">: All Sessions</span>
+                    Home <span className="text-orange-500 font-semibold">: All Terms</span>
                 </p>
                 <div className="gap-4 flex items-center sm:flex-wrap">
                     <div className="relative">
@@ -205,7 +204,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
                         onClick={onAddSession}
                         className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 w-full sm:w-auto"
                     >
-                        Add Session
+                        Add Term
                     </button>
                 </div>
             </div>
@@ -218,7 +217,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
                         {searchQuery && ` for "${searchQuery}"`}
                         {religionFilter !== 'all' && ` (Filtered by ${religionFilter})`}
                         {totalRecords === 0 && (
-                            <span className="text-red-500 ml-2">No session found</span>
+                            <span className="text-red-500 ml-2">No terms found</span>
                         )}
                     </div>
                 )}
@@ -238,8 +237,8 @@ const SessionTable: React.FC<SessionTableProps> = ({
                                 />
                             </th>
                             {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-                            <th className="p-3 min-w-[120px]">Session Id</th>
-                            <th className="p-3 min-w-[120px]">Session name</th>
+                            <th className="p-3 min-w-[120px]">Session</th>
+                            <th className="p-3 min-w-[120px]">Term</th>
                             <th className="p-3 min-w-[120px]">Start Date </th>
                             <th className="p-3 min-w-[200px]">End date</th>
                             <th className="p-3 min-w-[200px]">Actions</th>
@@ -250,30 +249,28 @@ const SessionTable: React.FC<SessionTableProps> = ({
                             <tr>
                                 <td colSpan={10} className="p-8 text-center text-gray-500">
                                     {searchQuery
-                                        ? "No sessions found matching your search"
-                                        : "No sessions available"}
+                                        ? "No term found matching your search"
+                                        : "No term available"}
                                 </td>
                             </tr>
                         ) : (
                             records.map((s, index) => (
                                 <tr
-                                    key={index}
+                                    key={s.sessionTermId}
                                     className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                                 >
                                     <td className="p-3">
                                         <input
                                             type="checkbox"
-                                            checked={selectedIds.includes(s.sessionId)}
-                                            onChange={() => onToggleCheckbox(s.sessionId)}
+                                            checked={selectedIds.includes(s.sessionTermId)}
+                                            onChange={() => onToggleCheckbox(s.sessionTermId)}
                                             className="cursor-pointer w-4 h-4"
                                         />
                                     </td>
-                                    {/* <td className="p-3">{s.sessionId}</td> */}
+                                    {/* <td className="p-3">{s.sessionTermId}</td> */}
                                     <td className="p-3">{s.sessionId}</td>
-                                    <td className="p-3">{s.sessionName}</td>
+                                    <td className="p-3">{s.term}</td>
                                     <td className="p-3">{s?.startDate?.split('T')[0]}</td>
-                                    {/* <td className="p-3">{s.classrooms}</td> */}
-                                    {/* <td className="p-3">{s.id}</td> */}
                                     <td className="p-3">{s?.endDate?.split('T')[0]}</td>
                                     <td className="p-3 flex gap-3">
                                         <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(s); onAddSession(); }}>
@@ -325,4 +322,4 @@ const SessionTable: React.FC<SessionTableProps> = ({
     );
 };
 
-export default SessionTable;
+export default SessionTermTable;

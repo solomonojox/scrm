@@ -1,5 +1,6 @@
-import { MoreVertical } from "lucide-react";
+import { Edit3Icon, Eye, MoreVertical, Trash2 } from "lucide-react";
 import React, { useState } from "react";
+import '../../../Styles/customScrollBar.css';
 
 const tableData: any[] = [
   {
@@ -145,6 +146,21 @@ const AllFolders = (): React.ReactElement => {
   const [currentPage, setCurrentPage] = useState(1);
   const [openShuffle, setOpenShuffle] = useState(false);
   const [activeShuffle, setActiveShuffle] = useState("List");
+  const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
+
+  const handleOptionsClick = (rowIndex: number) => {
+    setOpenRowIndex(openRowIndex === rowIndex ? null : rowIndex);
+  };
+
+  const handleEdit = (rowIndex: number) => {
+    alert(`Edit clicked for row ${rowIndex + 1}`);
+    setOpenRowIndex(null);
+  };
+
+  const handleDelete = (rowIndex: number) => {
+    alert(`Delete clicked for row ${rowIndex + 1}`);
+    setOpenRowIndex(null);
+  };
 
   const tab = ["List", "Grid"];
 
@@ -238,7 +254,7 @@ const AllFolders = (): React.ReactElement => {
         <div>
           {/* Table */}
           <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto parent-scrollbar">
               <table className="w-full table-auto border-collapse min-w-[700px]">
                 <thead>
                   <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
@@ -295,10 +311,38 @@ const AllFolders = (): React.ReactElement => {
                         <td className="text-sm px-4 py-3 border-b">{item.size ?? 0}</td>
                         <td className="text-sm px-4 py-3 border-b">{item.date || "--"}</td>
                         <td className="text-sm px-4 py-3 border-b">{item.time || "--"}</td>
-                        <td className="text-sm px-4 py-3 border-b">
-                          <button className="p-1 rounded hover:bg-gray-200">
+                        <td className="text-sm px-4 py-3 border-b relative">
+                          <button
+                            onClick={() => handleOptionsClick(index)}
+                            className="p-1 rounded hover:bg-gray-200"
+                          >
                             <MoreVertical className="w-5 h-5 text-gray-600" />
                           </button>
+
+                          {openRowIndex === index && (
+                            <div className="absolute top-8 right-20 md:right-24 bg-white border border-gray-200 rounded-lg shadow-lg z-30 w-28">
+                              <ul className="flex flex-col">
+                                <li
+                                  // onClick={() => handleEdit(index)}
+                                  className="text-xs inline-flex items-center px-4 py-2 hover:bg-yellow-100 bg-yellow-50 hover:text-yellow-500 text-yellow-600  cursor-pointer border-b border-gray-200"
+                                >
+                                  <Eye className="w-4 h-4 inline-block mr-2" /> View
+                                </li>
+                                <li
+                                  onClick={() => handleEdit(index)}
+                                  className="text-xs inline-flex items-center px-4 py-2 hover:bg-green-100 bg-green-50 hover:text-green-500 text-green-600  cursor-pointer border-b border-gray-200"
+                                >
+                                  <Edit3Icon className="w-4 h-4 inline-block mr-2" /> Edit
+                                </li>
+                                <li
+                                  onClick={() => handleDelete(index)}
+                                  className="text-xs inline-flex items-center px-4 py-2 hover:bg-red-100 bg-red-50 hover:text-red-500 text-red-600 cursor-pointer"
+                                >
+                                  <Trash2 className="w-4 h-4 inline-block mr-2" /> Delete
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))

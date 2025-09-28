@@ -24,6 +24,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
     religion: "",
     email: "",
     username: "",
+    employmentDate: "",
+    dateOfBirth: "",
   });
 
   // Set initial form data when editData changes
@@ -39,6 +41,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
         religion: editData.religion || "",
         email: editData.email || "",
         username: editData.username || "",
+        employmentDate: editData.employmentDate || "",
+        dateOfBirth: editData.dateOfBirth || "",
       });
       if (editData.imageUrl) {
         setImagePreview(editData.imageUrl);
@@ -48,16 +52,17 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      if (file.size > 2 * 1024 * 1024) {
+        // 2MB limit
         toast.error("Image size should be less than 2MB");
         return;
       }
@@ -98,6 +103,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
       religion: formData.religion.trim(),
       email: formData.email.trim(),
       username: formData.username.trim(),
+      emplomentDate: formData.employmentDate.trim(),
+      dateOfBirth: formData.dateOfBirth.trim()
     };
 
     try {
@@ -106,7 +113,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
         toast.success("Teacher updated successfully!");
       } else {
         const res = await teacherService.create(payload);
-        console.log(res)
+        console.log(res);
         toast.success("Teacher added successfully!");
       }
 
@@ -122,12 +129,14 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
           religion: "",
           email: "",
           username: "",
+          employmentDate: "",
+          dateOfBirth: "",
         });
         setImagePreview(null);
       }
     } catch (err: any) {
-      const msg = err.response?.data?.responseMessage ||
-        (editData ? "Update failed" : "Submission failed");
+      const msg =
+        err.response?.data?.responseMessage || (editData ? "Update failed" : "Submission failed");
       setFormError(msg);
       toast.error(msg);
     } finally {
@@ -157,11 +166,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                   className="hidden"
                 />
                 {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="preview"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
                 ) : (
                   <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
                     +
@@ -196,7 +201,9 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number*</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number*
+                </label>
                 <input
                   type="text"
                   name="phone"
@@ -257,7 +264,9 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">State of Origin</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  State of Origin
+                </label>
                 <input
                   type="text"
                   name="state"
@@ -279,6 +288,34 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                   onChange={handleInputChange}
                 />
               </div>
+
+              <div className="col-span-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Employment Date
+                </label>
+                <input
+                  type="datetime-local"
+                  name="employmentDate"
+                  placeholder="Employment Date"
+                  className="border px-3 py-2 rounded text-sm w-full"
+                  value={formData.employmentDate}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="col-span-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date of Birth
+                </label>
+                <input
+                  type="datetime-local"
+                  name="dateOfBirth"
+                  placeholder="Date of Birth"
+                  className="border px-3 py-2 rounded text-sm w-full"
+                  value={formData.dateOfBirth}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
 
             <div className="col-span-2 flex justify-end gap-3 mt-4">
@@ -295,11 +332,13 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 disabled={loading}
                 className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 disabled:opacity-50"
               >
-                {loading ? (
-                  editData ? "Updating..." : "Saving..."
-                ) : (
-                  editData ? "Update" : "Submit"
-                )}
+                {loading
+                  ? editData
+                    ? "Updating..."
+                    : "Saving..."
+                  : editData
+                  ? "Update"
+                  : "Submit"}
               </button>
             </div>
           </form>

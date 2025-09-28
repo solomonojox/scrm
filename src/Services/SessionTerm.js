@@ -1,20 +1,18 @@
 import api from "./api";
 
-export const sessionService = {
+export const sessionTermService = {
   /**
    * Adds a new session
    * @param {Object} sessionData - The session object (schoolId, sessionId, name, dates, etc.)
    * @returns {Promise<Object>}
    */
-  addSession: async (sessionData) => {
+  addSessionTerm: async (sessionData) => {
     try {
-      const response = await api.post(`/api/Session/AddSession`, sessionData);
+      const response = await api.post(`/api/Session/AddSessionTerm`, sessionData);
       return response.data;
     } catch (error) {
-      console.error("AddSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add session"
-      );
+      console.error("AddSessionTerm error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to add session");
     }
   },
   delete: async (sessionData) => {
@@ -23,9 +21,7 @@ export const sessionService = {
       return response.data;
     } catch (error) {
       console.error("DeleteSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add session"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to add session");
     }
   },
 
@@ -33,16 +29,13 @@ export const sessionService = {
    * Retrieves all registered sessions
    * @returns {Promise<Array>} - List of sessions
    */
-  getAllRegisteredSessions: async (id) => {
+  getAllRegisteredSessionTerm: async (id) => {
     try {
-      const response = await api.get(`/api/Session/GetSessionsBySchoolId?schoolId=${id}`);
-      // console.log("session:", response.data);
+      const response = await api.get(`/api/Session/GetSessionTermBySchoolId?schoolId=${id}`);
       return response.data.data;
     } catch (error) {
       console.error("GetAllRegisteredSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch sessions"
-      );
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch sessions");
     }
   },
 };

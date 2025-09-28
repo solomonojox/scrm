@@ -72,7 +72,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
         const doc = new jsPDF();
         const title = "Teachers List";
         const headers = [
-            ["First Name", "Last Name", "Phone number", "Address", "Nationality", "State of Origin", "Religion"]
+            ["First Name", "Last Name", "Phone number", "Address", "Nationality", "State of Origin", "Religion", "Employment Date"]
         ];
 
         const data = records.map((guardian) => [
@@ -82,7 +82,8 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
             guardian.homeAddress || '',
             guardian.nationality || '',
             guardian.stateOfOrigin || '',
-            guardian.religion || ''
+            guardian.religion || '',
+            guardian.employmentDate || ''
         ]);
 
         doc.text(title, 14, 15);
@@ -97,6 +98,20 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
         doc.save("teachers.pdf");
     };
 
+    function formatDateTime(isoString: any) {
+        const d = new Date(isoString);
+        const pad = (n: any) => n.toString().padStart(2, "0");
+
+        const year = d.getFullYear();
+        const month = pad(d.getMonth() + 1);
+        const day = pad(d.getDate());
+        const hours = pad(d.getHours());
+        const minutes = pad(d.getMinutes());
+        const seconds = pad(d.getSeconds());
+
+        // return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return `${year}-${month}-${day} `;
+    }
     return (
         <>
             {/* Header */}
@@ -248,6 +263,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                             <th className="p-3 min-w-[120px]">Nationality</th>
                             <th className="p-3 min-w-[120px]">State of Origin</th>
                             <th className="p-3 min-w-[120px]">Religion</th>
+                            <th className="p-3 min-w-[120px]">Employment Date</th>
                             <th className="p-3 min-w-[120px]">Actions</th>
                         </tr>
                     </thead>
@@ -289,6 +305,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{t.nationality}</td>
                                     <td className="p-3">{t.stateOfOrigin}</td>
                                     <td className="p-3">{t.religion}</td>
+                                    <td className="p-3">{formatDateTime(t.employmentDate)}</td>
                                     <td className="p-3 gap-3">
                                         <span
                                             className="flex items-center cursor-pointer hover:text-orange-500 gap-1"
