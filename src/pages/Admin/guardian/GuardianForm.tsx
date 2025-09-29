@@ -13,7 +13,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     firstname: "",
     lastname: "",
     phone: "",
@@ -26,8 +26,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
     occupation: "",
     workAddress: "",
     relationship: "",
-    nin: "",
-    bvn: "",
+    // nin: "",
+    // bvn: "",
   });
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
   // console.log(editData)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,8 +68,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
       religion: formData.religion,
       email: formData.email,
       username: formData.username,
-      nin: formData.nin,
-      bvn: formData.bvn,
+      // nin: formData.nin,
+      // bvn: formData.bvn,
     };
 
     try {
@@ -95,8 +95,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
             occupation: "",
             workAddress: "",
             relationship: "",
-            nin: "",
-            bvn: "",
+            // nin: "",
+            // bvn: "",
           });
           setImagePreview(null);
         }, 2000);
@@ -153,8 +153,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
               ["occupation", "Occupation"],
               ["workAddress", "Work Address"],
               ["relationship", "Relationship"],
-              ["nin", "NIN"],
-              ["bvn", "BVN"],
+              // ["nin", "NIN"],
+              // ["bvn", "BVN"],
             ].map(([key, label]) => (
               <input
                 key={key}
