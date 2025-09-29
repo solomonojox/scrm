@@ -4,7 +4,7 @@ export const sessionService = {
   /**
    * Adds a new session
    * @param {Object} sessionData - The session object (schoolId, sessionId, name, dates, etc.)
-   * @returns {Promise<Object>}
+   * @returns {Promise<any>}
    */
   addSession: async (sessionData) => {
     try {
