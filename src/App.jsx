@@ -63,6 +63,7 @@ import TeacherAttendance from "./pages/Teachers/attendance/TeacherAttendance";
 import NewAttendance from "./pages/Teachers/attendance/NewAttendance";
 import AttendanceReport from "./pages/Teachers/attendance/AttendanceReport";
 import AccountSetup from "./pages/Guardian/account/AccountSetup";
+import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -108,10 +109,10 @@ function App() {
         <Route path="/admin/guardians" element={<AdminGuardian />} />
         <Route path="/admin/classrooms" element={<AdminClassroom />} />
         <Route path="/admin/session" element={<AdminSession />} />
+        <Route path="/admin/terms" element={<AdminSessionTerm />} />
         <Route path="/admin/messages" element={<AdminMessages />} />
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<AdminEvents />} />
-        <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
       </Route>
 

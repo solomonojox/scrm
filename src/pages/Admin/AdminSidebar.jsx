@@ -11,6 +11,7 @@ import {
   FaChalkboard,
   FaFileInvoiceDollar,
   FaSignOutAlt,
+  FaClipboard,
 } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../Context/Auth/useAuth";
@@ -107,6 +108,7 @@ const AdminSidebar = () => {
         </h3>
         <SidebarButton icon={<FaBook />} label="Classroom" to="/admin/classrooms" />
         <SidebarButton icon={<FaChalkboard />} label="Session" to="/admin/session" />
+        <SidebarButton icon={<FaClipboard />} label="Term" to="/admin/terms" />
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Operations

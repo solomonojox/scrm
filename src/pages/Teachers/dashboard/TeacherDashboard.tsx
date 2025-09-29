@@ -3,116 +3,47 @@
 
 import React, { useEffect, useState } from "react";
 // import NotificationModal from './Notification';
-import log from "../../../assets/imageAssets";
-import { paymentService } from "../../../Services/Payment";
 import {
   FaUserGraduate,
   FaChalkboardTeacher,
-  FaUserFriends,
-  FaBell,
-  FaComment,
   FaSearch,
-  FaChevronDown,
-  FaClock,
   FaBookReader,
   FaCertificate,
-  FaPencilAlt,
-  FaCheckSquare,
-  FaPencilRuler,
   FaRegBell,
 } from "react-icons/fa";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
 } from "recharts";
 import { BiMessageAlt } from "react-icons/bi";
 import { useAuth } from "../../../Context/Auth/useAuth";
-import imageAssets from "../../../assets/imageAssets";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchPaymentFailure,
-  fetchPaymentStart,
-  fetchPaymentSuccess,
-} from "../../../Store/paymentSlice";
 import { AppDispatch, RootState } from "../../../Store/store";
-import {
-  fetchStudentsFailure,
-  fetchStudentsStart,
-  fetchStudentsSuccess,
-} from "../../../Store/Student/studentSlice";
-import {
-  fetchTeacherFailure,
-  fetchTeacherStart,
-  fetchTeacherSuccess,
-} from "../../../Store/Teachers/teacherSlice";
-import {
-  fetchGuardiansFailure,
-  fetchGuardiansStart,
-  fetchGuardiansSuccess,
-} from "../../../Store/Guardian/guardianSlice";
-import {
-  fetchClassroomsFailure,
-  fetchClassroomsStart,
-  fetchClassroomsSuccess,
-} from "../../../Store/Admin/classroomSlice";
-import { studentService } from "../../../Services/Student/StudentService";
+import {fetchTeacherFailure,fetchTeacherStart,fetchTeacherSuccess} from "../../../Store/Teachers/teacherSlice";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
-import { guardianService } from "../../../Services/Guardian/guardian";
-import { classroomService } from "../../../Services/Classroom";
 import Calendar from "../../../components/Teachers/chart/Calendar";
 import GradeChart from "../../../components/Teachers/chart/GradeChart";
 import AttendanceChart from "../../../components/Teachers/chart/AttendanceChart";
 
-// ─── Sample DATA ───────────────────────────────────────────────────────────────
-const analyticsData = [
-  { month: "Jan", ux: 15, ui: 10, dev: 20 },
-  { month: "Feb", ux: 25, ui: 5, dev: 15 },
-  { month: "Mar", ux: 10, ui: 20, dev: 25 },
-  { month: "Apr", ux: 20, ui: 15, dev: 5 },
-  { month: "May", ux: 22, ui: 18, dev: 10 },
-  { month: "Jun", ux: 8, ui: 12, dev: 5 },
-  { month: "Jul", ux: 12, ui: 8, dev: 15 },
-  { month: "Aug", ux: 5, ui: 10, dev: 8 },
-  { month: "Sep", ux: 15, ui: 5, dev: 12 },
-  { month: "Oct", ux: 25, ui: 22, dev: 20 },
-  { month: "Nov", ux: 10, ui: 15, dev: 8 },
-  { month: "Dec", ux: 18, ui: 25, dev: 15 },
-];
-const timeData = [
-  { month: "Jan", Active: 80, Inactive: 40 },
-  { month: "Feb", Active: 70, Inactive: 30 },
-  { month: "Mar", Active: 75, Inactive: 35 },
-  { month: "Apr", Active: 80, Inactive: 40 },
-  { month: "May", Active: 60, Inactive: 20 },
-  { month: "Jun", Active: 30, Inactive: 90 },
-  { month: "Jul", Active: 20, Inactive: 100 },
-  { month: "Aug", Active: 10, Inactive: 75 },
-  { month: "Sep", Active: 55, Inactive: 65 },
-  { month: "Oct", Active: 85, Inactive: 80 },
-  { month: "Nov", Active: 65, Inactive: 60 },
-  { month: "Dec", Active: 90, Inactive: 85 },
-];
 
 // ─── AdminDashboard COMPONENT ─────────────────────────────────────────────────
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
 
-  const [showModal, setShowModal] = useState(false);
+  // local time greeting
+  const getGreeting = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) return "Good Morning";
+    if (currentHour < 18) return "Good Afternoon";
+    return "Good Evening";
+  }
+
   useEffect(() => {
     document.title = "EduCat Dashboard";
   }, []);
@@ -128,7 +59,7 @@ export default function TeacherDashboard() {
     dispatch(fetchTeacherStart());
 
     try {
-      const teacherData = await teacherService.getById(user.id);
+      const teacherData = await teacherService.getById(user?.id);
 
       dispatch(fetchTeacherSuccess(teacherData));
     } catch (err: any) {
@@ -159,14 +90,14 @@ export default function TeacherDashboard() {
             <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
             <div className="flex items-center rounded-full pr-3 py-1">
               <img
-                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedTeacherRecord?.data?.email}`}
+                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedTeacherRecord?.email}`}
                 className="w-14 h-14 rounded-full"
                 alt="teacher"
               />
               <div className="text-xs">
                 <div className="font-semibold text-gray-700">
-                  <span>{fetchedTeacherRecord?.data?.firstname || ""}</span> {""}
-                  <span>{fetchedTeacherRecord?.data?.lastname || ""}</span>
+                  <span>{fetchedTeacherRecord?.firstname || ""}</span> {""}
+                  <span>{fetchedTeacherRecord?.lastname || ""}</span>
                 </div>
                 <div className="text-gray-400">{"class teacher"}</div>
               </div>
@@ -176,7 +107,7 @@ export default function TeacherDashboard() {
 
         {/* DASHBOARD CONTENT */}
         <main className="space-y-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Good morning, Mr. Ade</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">{getGreeting()}, {fetchedTeacherRecord?.firstname || ""}</h2>
 
           {/* STAT CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

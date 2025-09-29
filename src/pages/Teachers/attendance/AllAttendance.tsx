@@ -1,5 +1,6 @@
 import { Edit2Icon, Edit3Icon, Eye, MoreVertical, Trash2 } from "lucide-react";
 import React, { useState } from "react";
+import '../../../Styles/customScrollBar.css';
 
 const tableData: any[] = [
   { date: "2024-09-01", present: 25, absent: 5, late: 2, overallPercent: 83 },
@@ -83,7 +84,7 @@ const AllAttendance = (): React.ReactElement => {
 
       {/* Table */}
       <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto parent-scrollbar">
           <table className="w-full table-auto border-collapse min-w-[700px]">
             <thead>
               <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
