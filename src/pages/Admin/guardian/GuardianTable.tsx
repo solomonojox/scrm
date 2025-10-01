@@ -253,7 +253,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                             <th className="p-3 min-w-[120px]">Nationality</th>
                             <th className="p-3 min-w-[120px]">State</th>
                             <th className="p-3 min-w-[120px]">Religion</th>
-                            <th className="p-3 min-w-[120px]">Actions</th>
+                            {/* <th className="p-3 min-w-[120px]">Actions</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -296,10 +296,10 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{g.religion}</td>
                                     <td className="p-3 ">
                                         {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
-                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
+                                        {/* <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
                                             Edit
                                             <FaEdit />
-                                        </span>
+                                        </span> */}
                                         {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
                                     </td>
                                 </tr>
