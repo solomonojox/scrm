@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { FaTimes, FaChevronDown, FaFilter, FaSync, FaEye, FaSearch } from "react-icons/fa";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { FaTimes, FaFilter, FaSync, FaSearch } from "react-icons/fa";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import imageAssets from "../../../assets/imageAssets";
 import { classrooms } from "../../../Types/classroomTypes";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,83 +11,152 @@ import {
   fetchClassroomStudentsSuccess,
 } from "../../../Store/Admin/classroomStudentsSlice";
 import { classroomService } from "../../../Services/Classroom";
-import Adminheader from "../../../pages/Admin/Adminheader";
-import AdminSidebar from "../../../pages/Admin/AdminSidebar";
 import * as XLSX from "xlsx";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
-import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
-
-interface Student {
-  sn: number;
-  firstName: string;
-  lastName: string;
-  gender: "Male" | "Female";
-}
+import { schoolFeeService } from "../../../Services/Schfee";
 
 interface ViewClassroomModalProps {
   closeViewModal: () => void;
   classroomDetails?: classrooms;
-  students?: Student[];
 }
 
-type ReligionFilter = "all" | "male" | "female";
+type PaymentFilter = "all" | "paid" | "unpaid";
+
+interface StudentWithPayment extends classrooms {
+  hasPaid?: boolean;
+}
 
 const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
   closeViewModal,
   classroomDetails,
-  students: initialStudents,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getStudentsByClassId.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudentsByClassId.loading);
   const error = useSelector((state: RootState) => state.getStudentsByClassId.error);
-  const [totalStudents, setTotalStudents] = useState<number>(0);
+  
   const [teacherFirstname, setTeacherFirstname] = useState<string>("");
   const [teacherLastname, setTeacherLastname] = useState<string>("");
-  const classroomId: any = classroomDetails?.classroomId;
-  const teacherId: any = classroomDetails?.teacherId;
+  const [feeAmount, setFeeAmount] = useState<number>(0);
+  const [currentSession, setCurrentSession] = useState<string>("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [paymentFilter, setPaymentFilter] = useState<PaymentFilter>("all");
+  const [showPaymentFilter, setShowPaymentFilter] = useState(false);
+  
+  const classroomId = classroomDetails?.classroomId;
+  const teacherId = classroomDetails?.teacherId;
+  const recordsPerPage = 5;
 
-  useEffect(() => {
-    if (!fetchedLoading) {
-      fetchClassroomStudents();
-    }
-  }, [dispatch]);
-
-  const fetchClassroomStudents = async () => {
+  // Fetch classroom students - memoized with useCallback
+  const fetchClassroomStudents = useCallback(async () => {
+    if (!classroomId || !teacherId) return;
+    
     dispatch(fetchClassroomStudentsStart());
     try {
       const data = await classroomService.getStudentsByClassroomId(classroomId);
-      const teacherData = await teacherService.getById(teacherId);
-      setTeacherFirstname(teacherData?.data?.firstname);
-      setTeacherLastname(teacherData?.data?.lastname);
-      setTotalStudents(data.length);
-      console.log(teacherData);
+      
+      // Extract session from first student
+      const session = data[0]?.currentSession || "";
+      setCurrentSession(session);
+      
+      // Fetch teacher and fee data in parallel
+      const [teacherData, feeData] = await Promise.all([
+        teacherService.getById(teacherId),
+        session ? schoolFeeService.getClassFeeForSession(classroomId, session) : Promise.resolve(0)
+      ]);
+
+      setTeacherFirstname(teacherData?.firstname || "");
+      setTeacherLastname(teacherData?.lastname || "");
+      setFeeAmount(feeData || 0);
+
       dispatch(fetchClassroomStudentsSuccess(data));
     } catch (err) {
       dispatch(fetchClassroomStudentsFailure((err as Error).message));
     }
-  };
+  }, [classroomId, teacherId, dispatch]);
 
+  // Fetch on mount only
+  useEffect(() => {
+    fetchClassroomStudents();
+  }, [fetchClassroomStudents]);
+
+  // Calculate payment statistics
+  const paymentStats = useMemo(() => {
+    const total = fetchedRecord.length;
+    // TODO: Replace with actual payment status from API
+    // This assumes you have a hasPaid property or similar
+    const paid = fetchedRecord.filter((s: StudentWithPayment) => s.hasPaid).length;
+    const unpaid = total - paid;
+    
+    return { total, paid, unpaid };
+  }, [fetchedRecord]);
+
+  // Filter records based on search and payment filter
+  const filteredRecords = useMemo(() => {
+    let filtered = fetchedRecord;
+
+    // Payment filter - TODO: Replace with actual payment status field
+    if (paymentFilter !== "all") {
+      filtered = filtered.filter((student: StudentWithPayment) => {
+        if (paymentFilter === "paid") return student.hasPaid;
+        if (paymentFilter === "unpaid") return !student.hasPaid;
+        return true;
+      });
+    }
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((student: classrooms) =>
+        student.firstname?.toLowerCase().includes(query) ||
+        student.lastname?.toLowerCase().includes(query) ||
+        student.studentNo?.toLowerCase().includes(query) ||
+        student.gender?.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [fetchedRecord, searchQuery, paymentFilter]);
+
+  // Pagination calculations
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+  const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
+  const totalRecords = filteredRecords.length;
+
+  // Export functions
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(fetchedRecord);
+    const exportData = filteredRecords.map((student: classrooms, index: number) => ({
+      SN: index + 1,
+      StudentID: student.studentNo,
+      FirstName: student.firstname,
+      LastName: student.lastname,
+      Gender: student.gender,
+    }));
+    
+    const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Classroom Details");
-    XLSX.writeFile(wb, "classrooms.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Students");
+    XLSX.writeFile(wb, `${classroomDetails?.name}_students.xlsx`);
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
-    const title = "Classroom List";
-    const headers = [["SchoolId", "Name", "TeacherId", "Capacity"]];
+    const title = `${classroomDetails?.name} - Student List`;
+    const headers = [["SN", "Student ID", "First Name", "Last Name", "Gender"]];
 
-    const data = fetchedRecord.map((classroom) => [
-      classroom.name || "",
-      classroom.schoolId || "",
-      classroom.capacity || "",
-      classroom.teacherId || "",
+    const data = filteredRecords.map((student: classrooms, index: number) => [
+      index + 1,
+      student.studentNo || "",
+      student.firstname || "",
+      student.lastname || "",
+      student.gender || "",
     ]);
 
     doc.text(title, 14, 15);
@@ -94,54 +164,14 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
       head: headers,
       body: data,
       startY: 20,
-      styles: { fontSize: 8 },
-      headStyles: { fillColor: [255, 165, 0] },
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [240, 126, 0] },
     });
 
-    doc.save("classrooms.pdf");
+    doc.save(`${classroomDetails?.name}_students.pdf`);
   };
 
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [headerSearchQuery, setHeaderSearchQuery] = useState("");
-  const [religionFilter, setReligionFilter] = useState<ReligionFilter>("all");
-  // const [classroomDetails, setClassroomDetails]= useState<classrooms>()
-  const [showReligionFilter, setShowReligionFilter] = React.useState(false);
-
-  const recordsPerPage = 5;
-
-  const filteredRecords = useMemo(() => {
-    let filtered = fetchedRecord;
-
-    if (religionFilter !== "all") {
-      filtered = filtered.filter(
-        (classroom: classrooms) => classroom.gender?.toLowerCase() === religionFilter
-      );
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (student: classrooms) =>
-          student.firstname?.toLowerCase().includes(query) ||
-          student.gender ||
-          student.lastname?.toLowerCase().includes(query) ||
-          student.studentNo?.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [fetchedRecord, searchQuery, religionFilter]);
-
-  const indexOfLast = currentPage * recordsPerPage;
-  const indexOfFirst = indexOfLast - recordsPerPage;
-  const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
-
-  const totalRecords = filteredRecords.length;
-
+  // Event handlers
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     setSelectAll(false);
@@ -158,11 +188,9 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
   };
 
   const toggleCheckbox = (id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((sid) => sid !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,26 +200,25 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
     setSelectedIds([]);
   };
 
-  const handleHeaderSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderSearchQuery(e.target.value);
-    setSearchQuery(e.target.value);
+  const formatAmount = (amount: number) => {
+    return amount.toLocaleString("en-NG", {
+      style: "currency",
+      currency: "NGN",
+    });
   };
 
+  // Error state
   if (error) {
     return (
-      <div className="bg-[#f8f8f8] font-sans text-[13px] text-[#333] min-h-screen">
-        <Adminheader />
-        <AdminSidebar />
-        <div className="flex-1 pl-64 mt-[80px] flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-600 mb-4">Error: {error}</p>
-            <button
-              onClick={fetchClassroomStudents}
-              className="bg-[#f07e00] hover:bg-[#d46b00] text-white px-4 py-2 rounded"
-            >
-              Retry
-            </button>
-          </div>
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-sm p-4">
+        <div className="bg-white rounded-lg p-8 max-w-md">
+          <p className="text-red-600 mb-4">Error: {error}</p>
+          <button
+            onClick={fetchClassroomStudents}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -201,7 +228,10 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 backdrop-blur-sm p-2 sm:p-4">
       <div className="w-full max-w-7xl max-h-[95vh] bg-white rounded-lg shadow-xl overflow-hidden">
         {/* Header with close button */}
-        <div className="flex items-center justify-end px-4 pt-2 bg-white sticky top-0 z-10">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 bg-white border-b sticky top-0 z-10">
+          <h1 className="text-lg sm:text-2xl font-semibold text-gray-800">
+            View Classroom
+          </h1>
           <button
             onClick={closeViewModal}
             className="text-gray-500 hover:text-gray-700 p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -210,108 +240,108 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
           </button>
         </div>
 
-        <h1 className="text-lg sm:text-2xl font-semibold text-center mb-6 text-gray-800">
-          View Classroom
-        </h1>
-
-        <div className="overflow-y-auto max-h-[calc(95vh-60px)] sm:max-h-[calc(95vh-68px)]">
+        <div className="overflow-y-auto max-h-[calc(95vh-60px)]">
           {/* Orange Background Container */}
-          <div className="bg-orange-500 p-3 md:p-6">
-            {/* Main Content Container */}
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-2">
+          <div className="bg-orange-500 p-4 md:p-6">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
               {/* Form Section */}
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {/* Left Column */}
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <label className="text-white font-semibold text-sm w-50 text-nowrap ">
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[120px]">
                       Name:
                     </label>
                     <input
                       type="text"
-                      value={classroomDetails?.name}
+                      value={classroomDetails?.name || ""}
                       readOnly
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <label className="text-white font-semibold text-sm w-50 text-nowrap ">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[120px]">
                       Capacity:
                     </label>
                     <input
                       type="text"
-                      value={classroomDetails?.capacity}
+                      value={classroomDetails?.capacity || ""}
                       readOnly
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <label className="text-white font-semibold text-sm w-50 text-nowrap ">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[120px]">
                       Teacher Name:
                     </label>
                     <input
                       type="text"
-                      value={`${teacherFirstname} ${teacherLastname}`}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      value={`${teacherFirstname} ${teacherLastname}`.trim() || "Loading..."}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <label className="text-white font-semibold text-sm w-32 text-nowrap ">
-                      Total No of Students:
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[120px]">
+                      Total Students:
                     </label>
                     <input
                       type="text"
-                      value={totalStudents}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      value={paymentStats.total}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
                 </div>
 
                 {/* Right Column */}
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex flex-col md:flex-row gap-1">
-                    <label className="text-white font-semibold md:w-[400px] text-nowrap">
-                      School Fee (₦):
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[160px]">
+                      School Fee:
                     </label>
                     <input
                       type="text"
-                      // value={formData.schoolFee}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      value={formatAmount(feeAmount)}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-1">
-                    <label className="text-white font-semibold md:w-[400px] text-nowrap">
-                      Total No of Student Paid:
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[160px]">
+                      Students Paid:
                     </label>
                     <input
                       type="text"
-                      // value={formData.totalPayments}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      value={paymentStats.paid}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
 
-                  <div className="flex flex-col md:flex-row gap-1">
-                    <label className="text-white font-semibold md:w-[400px] text-nowrap">
-                      Total No of Student owing:
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <label className="text-white font-semibold text-sm min-w-[160px]">
+                      Students Owing:
                     </label>
                     <input
                       type="text"
-                      // value={formData.totalOwing}
-                      className="w-full px-2 sm:px-3 py-1 sm:py-2 border border-white text-white text-sm sm:text-base rounded focus:outline-none focus:ring-2 focus:ring-white/50"
+                      value={paymentStats.unpaid}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-white/20 border border-white/50 text-white placeholder-white/70 rounded focus:outline-none focus:ring-2 focus:ring-white/50"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Book Image */}
-              <div className="flex-shrink-0 flex justify-center lg:justify-end mt-4 lg:mt-0">
-                <div className=" ">
+              <div className="flex-shrink-0 flex justify-center lg:justify-end">
+                <div className="w-32 h-32 lg:w-40 lg:h-40">
                   <img
-                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300 ease-in-out"
+                    className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     src={imageAssets.book}
                     alt="book"
                   />
@@ -320,76 +350,61 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
             </div>
           </div>
 
-          <div className="p-2 md:p-8">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+          <div className="p-4 md:p-8">
+            {/* Search Bar */}
+            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80 mb-4">
               <FaSearch className="text-gray-400 text-lg" />
               <input
                 type="text"
-                placeholder="Search"
-                value={headerSearchQuery}
-                onChange={handleHeaderSearchChange}
+                placeholder="Search students..."
+                value={searchQuery}
+                onChange={handleSearchChange}
                 className="ml-2 bg-transparent outline-none w-full text-sm"
               />
             </div>
-            {/* Breadcrumb & Add Button */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-              <p className="text-sm text-gray-600 mb-4 sm:mb-0">
+
+            {/* Breadcrumb & Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+              <p className="text-sm text-gray-600">
                 Classroom{" "}
                 <span className="text-orange-500 font-semibold">
                   : All Students in {classroomDetails?.name}
                 </span>
               </p>
-              <div className="gap-4 flex items-center sm:flex-wrap">
+              
+              <div className="flex items-center gap-2 flex-wrap">
                 <div className="relative">
                   <button
-                    onClick={() => setShowReligionFilter(!showReligionFilter)}
-                    className="flex items-center gap-2 border p-2 rounded hover:bg-gray-100"
+                    onClick={() => setShowPaymentFilter(!showPaymentFilter)}
+                    className="flex items-center gap-2 border px-3 py-2 rounded hover:bg-gray-100 transition-colors"
                   >
                     <FaFilter className="text-orange-500" />
-                    <span>Filter</span>
+                    <span className="text-sm">Filter</span>
                   </button>
-                  {showReligionFilter && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                  {showPaymentFilter && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 border">
                       <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setReligionFilter("all");
-                            setShowReligionFilter(false);
-                          }}
-                          className={`block w-full text-left px-4 py-2 text-sm ${
-                            religionFilter === "all"
-                              ? "bg-orange-100 text-orange-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Gender
-                        </button>
-                        <button
-                          onClick={() => {
-                            setReligionFilter("male");
-                            setShowReligionFilter(false);
-                          }}
-                          className={`block w-full text-left px-4 py-2 text-sm ${
-                            religionFilter === "male"
-                              ? "bg-orange-100 text-orange-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Male
-                        </button>
-                        <button
-                          onClick={() => {
-                            setReligionFilter("female");
-                            setShowReligionFilter(false);
-                          }}
-                          className={`block w-full text-left px-4 py-2 text-sm ${
-                            religionFilter === "female"
-                              ? "bg-orange-100 text-orange-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Female
-                        </button>
+                        {[
+                          { value: "all", label: "All Students" },
+                          { value: "paid", label: "Paid" },
+                          { value: "unpaid", label: "Unpaid" },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setPaymentFilter(option.value as PaymentFilter);
+                              setShowPaymentFilter(false);
+                              setCurrentPage(1);
+                            }}
+                            className={`block w-full text-left px-4 py-2 text-sm ${
+                              paymentFilter === option.value
+                                ? "bg-orange-100 text-orange-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -398,15 +413,15 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
                 <button
                   onClick={exportToExcel}
                   title="Export to Excel"
-                  className="border p-2 rounded hover:bg-gray-100"
+                  className="border p-2 rounded hover:bg-gray-100 transition-colors"
                 >
-                  <img className="h-6 w-6" src={imageAssets.excelLogo} alt="Excel export" />
+                  <img className="h-6 w-6" src={imageAssets.excelLogo} alt="Excel" />
                 </button>
 
                 <button
                   onClick={exportToPDF}
                   title="Export to PDF"
-                  className="border p-2 rounded hover:bg-gray-100"
+                  className="border p-2 rounded hover:bg-gray-100 transition-colors"
                 >
                   <BsFileEarmarkPdfFill className="text-red-500 text-2xl" />
                 </button>
@@ -414,97 +429,91 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
                 <button
                   onClick={fetchClassroomStudents}
                   title="Refresh"
-                  className="border p-2 rounded hover:bg-gray-100"
+                  className="border p-2 rounded hover:bg-gray-100 transition-colors"
+                  disabled={fetchedLoading}
                 >
-                  <FaSync className="text-orange-500" />
+                  <FaSync className={`text-orange-500 ${fetchedLoading ? "animate-spin" : ""}`} />
                 </button>
               </div>
             </div>
 
             {/* Search and Filter Info */}
-            <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-              {(searchQuery || religionFilter !== "all") && (
-                <div className="text-sm text-gray-600">
-                  Showing {totalRecords} result{totalRecords !== 1 ? "s" : ""}
-                  {searchQuery && ` for "${searchQuery}"`}
-                  {religionFilter !== "all" && ` (Filtered by ${religionFilter})`}
-                  {totalRecords === 0 && (
-                    <span className="text-red-500 ml-2">No student found</span>
-                  )}
-                </div>
-              )}
-            </div>
+            {(searchQuery || paymentFilter !== "all") && (
+              <div className="mb-4 text-sm text-gray-600">
+                Showing {totalRecords} result{totalRecords !== 1 ? "s" : ""}
+                {searchQuery && ` for "${searchQuery}"`}
+                {paymentFilter !== "all" && ` (${paymentFilter})`}
+                {totalRecords === 0 && (
+                  <span className="text-red-500 ml-2">- No students found</span>
+                )}
+              </div>
+            )}
 
             {/* Table */}
             <div className="bg-white shadow rounded-lg overflow-x-auto">
-              <table className="w-full text-sm text-left whitespace-nowrap">
-                <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-200 text-gray-700">
                   <tr>
-                    <th className="p-3 min-w-[50px]">
+                    <th className="p-3 text-left">
                       <input
                         type="checkbox"
-                        checked={selectAll}
+                        checked={selectAll && currentRecords.length > 0}
                         onChange={toggleSelectAll}
+                        disabled={currentRecords.length === 0}
                         className="cursor-pointer w-4 h-4"
                       />
                     </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      SN
-                    </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      Photo
-                    </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      Student Id
-                    </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      First Name
-                    </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      Last Name
-                    </th>
-                    <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-gray-700 border-r border-gray-300">
-                      Gender
-                    </th>
+                    <th className="px-4 py-3 text-left font-semibold">SN</th>
+                    <th className="px-4 py-3 text-left font-semibold">Photo</th>
+                    <th className="px-4 py-3 text-left font-semibold">Student ID</th>
+                    <th className="px-4 py-3 text-left font-semibold">First Name</th>
+                    <th className="px-4 py-3 text-left font-semibold">Last Name</th>
+                    <th className="px-4 py-3 text-left font-semibold">Gender</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {currentRecords.length === 0 ? (
+                  {fetchedLoading ? (
                     <tr>
-                      <td colSpan={10} className="p-8 text-center text-gray-500">
-                        {searchQuery
-                          ? "No student found matching your search"
-                          : "No student available"}
+                      <td colSpan={7} className="p-8 text-center text-gray-500">
+                        Loading students...
+                      </td>
+                    </tr>
+                  ) : currentRecords.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-gray-500">
+                        {searchQuery || paymentFilter !== "all"
+                          ? "No students found matching your criteria"
+                          : "No students in this classroom"}
                       </td>
                     </tr>
                   ) : (
-                    currentRecords.map((c, index) => (
+                    currentRecords.map((student, index) => (
                       <tr
-                        key={index}
-                        className={`border-t hover:bg-gray-100 ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        key={student.classroomId || index}
+                        className={`border-t hover:bg-gray-50 transition-colors ${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
                         }`}
                       >
                         <td className="p-3">
                           <input
                             type="checkbox"
-                            checked={selectedIds.includes(c.classroomId)}
-                            onChange={() => toggleCheckbox(c.classroomId)}
+                            checked={selectedIds.includes(student.classroomId)}
+                            onChange={() => toggleCheckbox(student.classroomId)}
                             className="cursor-pointer w-4 h-4"
                           />
                         </td>
-                        <td className="p-3">{index + 1}</td>
-                        <td className="p-3">
+                        <td className="px-4 py-3">{indexOfFirst + index + 1}</td>
+                        <td className="px-4 py-3">
                           <img
-                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${c.studentNo}`}
-                            alt="avatar"
+                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${student.studentNo}`}
+                            alt={`${student.firstname} ${student.lastname}`}
                             className="w-10 h-10 rounded-full"
                           />
                         </td>
-                        <td className="p-3">{c.studentNo}</td>
-                        <td className="p-3">{c.firstname}</td>
-                        <td className="p-3">{c.lastname}</td>
-                        <td className="p-3">{c.gender}</td>
+                        <td className="px-4 py-3">{student.studentNo || "N/A"}</td>
+                        <td className="px-4 py-3">{student.firstname || "N/A"}</td>
+                        <td className="px-4 py-3">{student.lastname || "N/A"}</td>
+                        <td className="px-4 py-3">{student.gender || "N/A"}</td>
                       </tr>
                     ))
                   )}
@@ -514,28 +523,28 @@ const ViewClassroomModal: React.FC<ViewClassroomModalProps> = ({
 
             {/* Pagination */}
             {currentRecords.length > 0 && (
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 p-4 mb-20 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 p-4 mt-4 text-sm text-gray-600">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className={`px-6 py-2 border rounded ${
+                  className={`px-6 py-2 border rounded transition-colors ${
                     currentPage === 1
-                      ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-orange-500 text-white hover:bg-orange-600"
                   }`}
                 >
                   Prev
                 </button>
-                <span>
+                <span className="font-medium">
                   Page {currentPage} of {totalPages}
-                  {searchQuery && ` (${totalRecords} results)`}
+                  <span className="text-gray-500 ml-2">({totalRecords} total)</span>
                 </span>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className={`px-6 py-2 border rounded ${
+                  className={`px-6 py-2 border rounded transition-colors ${
                     currentPage === totalPages
-                      ? "bg-white text-black border-gray-600 cursor-not-allowed"
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-orange-500 text-white hover:bg-orange-600"
                   }`}
                 >

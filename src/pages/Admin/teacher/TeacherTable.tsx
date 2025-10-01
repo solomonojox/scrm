@@ -21,14 +21,14 @@ interface GuardianTableProps {
     searchQuery: string;
     headerSearchQuery: string;
     religionFilter: ReligionFilter;
-    selectedIds: string[];
+    selectedIds: string[] | any;
     selectAll: boolean;
     onPageChange: (page: number) => void;
     onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onHeaderSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onReligionFilterChange: (filter: ReligionFilter) => void;
     onToggleSelectAll: () => void;
-    onToggleCheckbox: (id: string) => void;
+    onToggleCheckbox: (id: string | any) => void;
     onDelete: (id: string) => void;
     onAddGuardian: () => void;
     onRefresh: () => void
@@ -98,20 +98,12 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
         doc.save("teachers.pdf");
     };
 
-    function formatDateTime(isoString: any) {
-        const d = new Date(isoString);
-        const pad = (n: any) => n.toString().padStart(2, "0");
-
-        const year = d.getFullYear();
-        const month = pad(d.getMonth() + 1);
-        const day = pad(d.getDate());
-        const hours = pad(d.getHours());
-        const minutes = pad(d.getMinutes());
-        const seconds = pad(d.getSeconds());
-
-        // return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-        return `${year}-${month}-${day} `;
+    const formatDate = (dateString: any) => {
+        const options: Intl.DateTimeFormatOptions = {  month: 'long', day: 'numeric', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
     }
+    
+
     return (
         <>
             {/* Header */}
@@ -305,7 +297,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{t.nationality}</td>
                                     <td className="p-3">{t.stateOfOrigin}</td>
                                     <td className="p-3">{t.religion}</td>
-                                    <td className="p-3">{formatDateTime(t.employmentDate)}</td>
+                                    <td className="p-3">{formatDate(t?.employmentDate)}</td>
                                     <td className="p-3 gap-3">
                                         <span
                                             className="flex items-center cursor-pointer hover:text-orange-500 gap-1"

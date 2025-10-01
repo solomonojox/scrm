@@ -28,6 +28,29 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
     dateOfBirth: "",
   });
 
+  // Helper function to format date for input[type="date"]
+  const formatDateForInput = (dateString: string | null | undefined): string => {
+    if (!dateString) return "";
+    
+    try {
+      // Handle various date formats
+      const date = new Date(dateString);
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) return "";
+      
+      // Format as YYYY-MM-DD
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "";
+    }
+  };
+
   // Set initial form data when editData changes
   useEffect(() => {
     if (editData) {
@@ -41,8 +64,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
         religion: editData.religion || "",
         email: editData.email || "",
         username: editData.username || "",
-        employmentDate: editData.employmentDate || "",
-        dateOfBirth: editData.dateOfBirth || "",
+        employmentDate: formatDateForInput(editData.employmentDate),
+        dateOfBirth: formatDateForInput(editData.dateOfBirth),
       });
       if (editData.imageUrl) {
         setImagePreview(editData.imageUrl);
@@ -79,6 +102,23 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
       setFormError("Phone number is required");
       return false;
     }
+    
+    // Validate phone number format (basic validation)
+    const phoneRegex = /^[0-9+\-\s()]{10,}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setFormError("Please enter a valid phone number");
+      return false;
+    }
+    
+    // Validate email if provided
+    if (formData.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setFormError("Please enter a valid email address");
+        return false;
+      }
+    }
+    
     return true;
   };
 
@@ -103,7 +143,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
       religion: formData.religion.trim(),
       email: formData.email.trim(),
       username: formData.username.trim(),
-      emplomentDate: formData.employmentDate.trim(),
+      employmentDate: formData.employmentDate.trim(),
       dateOfBirth: formData.dateOfBirth.trim()
     };
 
@@ -145,20 +185,24 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50 p-4">
       <div
         className="bg-white rounded-lg w-full max-w-md sm:max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-orange-500 h-2 rounded-t-lg" />
         <div className="p-4 sm:p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4 text-center text-gray-800">
             {editData ? "Edit Teacher" : "Add Teacher"}
           </h2>
-          {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
+          {formError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-4 text-center text-sm">
+              {formError}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
+              <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer hover:border-orange-500 transition-colors">
                 <input
                   type="file"
                   accept="image/*"
@@ -175,26 +219,30 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
               </label>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Name*</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="firstName"
-                  placeholder="First Name"
+                  placeholder="Enter first name"
                   required
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.firstName}
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name*</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name <span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
                   name="lastName"
-                  placeholder="Last Name"
+                  placeholder="Enter last name"
                   required
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.lastName}
                   onChange={handleInputChange}
                 />
@@ -202,14 +250,14 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number*
+                  Phone Number <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="tel"
                   name="phone"
-                  placeholder="Phone Number"
+                  placeholder="Enter phone number"
                   required
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.phone}
                   onChange={handleInputChange}
                 />
@@ -220,8 +268,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="email"
                   name="email"
-                  placeholder="Email"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter email address"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.email}
                   onChange={handleInputChange}
                 />
@@ -232,8 +280,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="text"
                   name="username"
-                  placeholder="Username"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter username"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.username}
                   onChange={handleInputChange}
                 />
@@ -244,8 +292,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="text"
                   name="address"
-                  placeholder="Home Address"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter home address"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.address}
                   onChange={handleInputChange}
                 />
@@ -256,8 +304,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="text"
                   name="nationality"
-                  placeholder="Nationality"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter nationality"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.nationality}
                   onChange={handleInputChange}
                 />
@@ -270,8 +318,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="text"
                   name="state"
-                  placeholder="State of Origin"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter state of origin"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.state}
                   onChange={handleInputChange}
                 />
@@ -282,8 +330,8 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 <input
                   type="text"
                   name="religion"
-                  placeholder="Religion"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  placeholder="Enter religion"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.religion}
                   onChange={handleInputChange}
                 />
@@ -294,12 +342,12 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                   Employment Date
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name="employmentDate"
-                  placeholder="Employment Date"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.employmentDate}
                   onChange={handleInputChange}
+                  max={new Date().toISOString().split('T')[0]} // Can't be in the future
                 />
               </div>
 
@@ -308,21 +356,21 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                   Date of Birth
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name="dateOfBirth"
-                  placeholder="Date of Birth"
-                  className="border px-3 py-2 rounded text-sm w-full"
+                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
+                  max={new Date().toISOString().split('T')[0]} // Can't be in the future
                 />
               </div>
             </div>
 
-            <div className="col-span-2 flex justify-end gap-3 mt-4">
+            <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border rounded text-sm hover:bg-gray-100"
+                className="px-6 py-2 border border-gray-300 rounded text-sm hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={loading}
               >
                 Cancel
@@ -330,15 +378,15 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 disabled:opacity-50"
+                className="px-6 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading
                   ? editData
                     ? "Updating..."
                     : "Saving..."
                   : editData
-                  ? "Update"
-                  : "Submit"}
+                  ? "Update Teacher"
+                  : "Add Teacher"}
               </button>
             </div>
           </form>

@@ -30,6 +30,26 @@ export const schoolFeeService = {
     }
   },
 
+  getClassFeeForSession: async (classId, sessionId) => {
+    try {
+      const response = await api.get(`/api/SchoolFee/GetClassFeeForSession?classId=${classId}&sessionId=${sessionId}`);
+      return response.data.data; // ✅ get the array inside `data`
+    } catch (error) {
+      console.error("GetClassFeeForSession error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
+
+  update: async (id, feeData) => {
+    try {
+      const response = await api.put(`/api/SchoolFee/UpdateSchoolFee?id=${id}`, feeData);
+      return response.data;
+    } catch (error) {
+      console.error("UpdateSchoolFee error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to update school fee");
+    }
+  },
+
   
   getAllSchoolFeesBySchoolId: async (id) => {
     try {

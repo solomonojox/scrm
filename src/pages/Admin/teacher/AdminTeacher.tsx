@@ -86,7 +86,7 @@ const AdminTeacher: React.FC = () => {
     if (selectAll) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(currentRecords.map((g) => g.teacherId));
+      setSelectedIds(currentRecords.map((g: any) => g.teacherId));
     }
     setSelectAll(!selectAll);
   };
