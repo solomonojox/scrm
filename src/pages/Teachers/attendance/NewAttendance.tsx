@@ -1,22 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { Check, X, Clock, Save, RotateCcw, ArrowLeft, Users, Loader2 } from "lucide-react";
-import '../../../Styles/customScrollBar.css';
+import { Check, X, Clock, ArrowLeft, Users, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
+import "../../../Styles/customScrollBar.css";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../Store/store";
+import { classroomService } from "../../../Services/Classroom";
+import {
+  fetchClassroomsFailure,
+  fetchClassroomsStart,
+  fetchClassroomsSuccess,
+} from "../../../Store/Admin/classroomSlice";
+import { useAuth } from "../../../Context/Auth/useAuth";
+import {
+  fetchStudentsFailure,
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+} from "../../../Store/Student/studentSlice";
+import Select from "react-select";
+import {
+  fetchSessionFailure,
+  fetchSessionStart,
+  fetchSessionSuccess,
+} from "../../../Store/sessionSlice";
+import { sessionService } from "../../../Services/Session";
+import { attendanceService } from "../../../Services/Attendance";
 
 interface Student {
-  id: number;
+  id: string; // UUID from API (studentId field)
   firstName: string;
   lastName: string;
-  studentId: string;
-  photo: string;
+  studentId: string; // Student number for display (studentId from API)
+  photo: string | null;
+  classroomId: string;
+  studentNo: string;
+}
+
+interface AttendanceState extends Student {
   present: boolean | null;
   absent: boolean | null;
   late: boolean | null;
   time: string | null;
 }
 
-interface ClassData {
-  name: string;
-  students: Student[];
+interface AttendancePayload {
+  classroomId: string;
+  sessionId: string;
+  studentId: string;
+  firstName: string;
+  lastName: string;
+  timeIn: string;
+  status: number; // 0=Present, 1=Absent, 2=Late
 }
 
 interface SummaryStats {
@@ -27,313 +60,153 @@ interface SummaryStats {
   attendancePercentage: number;
 }
 
+interface OptionType {
+  value: string | number | undefined;
+  label: string;
+}
+
 type AttendanceType = "present" | "absent" | "late";
 
 const NewAttendance: React.FC = () => {
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const { user } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getClassrooms.listRecords);
+  const fetchedStudents = useSelector((state: RootState) => state.getStudentsByClassId.listRecords);
+  const sessions = useSelector((state: RootState) => state.getSession.listRecords);
+  const fetchedLoading = useSelector((state: RootState) => state.getClassrooms.loading);
+  const error = useSelector((state: RootState) => state.getClassrooms.error);
+
+  const [attendanceState, setAttendanceState] = useState<AttendanceState[]>([]);
+  const [currentDate] = useState<Date>(new Date());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [selectedClass, setSelectedClass] = useState<string>("");
+  const [selectedSession, setSelectedSession] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [students, setStudents] = useState<Student[]>([]);
 
-  // Mock class data with students
-  const classData: Record<string, ClassData> = {
-    jss1: {
-      name: "JSS 1",
-      students: [
-        {
-          id: 1001,
-          firstName: "Jason",
-          lastName: "Ethan",
-          studentId: "JSS1/001",
-          photo: "/api/placeholder/40/40",
+  const sessionOptions: OptionType[] = sessions.map((session) => ({
+    value: session?.sessionId,
+    label: session?.sessionId,
+  }));
+
+  const getSelectedOption = (value: string, options: OptionType[]) => {
+    return options.find((option) => option.value === value) || null;
+  };
+
+  const handleSelectChange = (selectedOption: OptionType | null) => {
+    setSelectedSession(selectedOption ? String(selectedOption.value) : "");
+  };
+
+  // Sync fetchedStudents → local attendance state
+  useEffect(() => {
+    if (fetchedStudents && fetchedStudents.length > 0) {
+      setAttendanceState(
+        fetchedStudents.map((student: any) => ({
+          ...student,
           present: null,
           absent: null,
           late: null,
           time: null,
-        },
-        {
-          id: 1002,
-          firstName: "Emma",
-          lastName: "Wilson",
-          studentId: "JSS1/002",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 1003,
-          firstName: "Michael",
-          lastName: "Brown",
-          studentId: "JSS1/003",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 1004,
-          firstName: "Sarah",
-          lastName: "Davis",
-          studentId: "JSS1/004",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 1005,
-          firstName: "David",
-          lastName: "Miller",
-          studentId: "JSS1/005",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-      ],
-    },
-    jss2: {
-      name: "JSS 2",
-      students: [
-        {
-          id: 2001,
-          firstName: "Alice",
-          lastName: "Johnson",
-          studentId: "JSS2/001",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 2002,
-          firstName: "Robert",
-          lastName: "Smith",
-          studentId: "JSS2/002",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 2003,
-          firstName: "Lisa",
-          lastName: "Garcia",
-          studentId: "JSS2/003",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 2004,
-          firstName: "John",
-          lastName: "Martinez",
-          studentId: "JSS2/004",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 2005,
-          firstName: "Ashley",
-          lastName: "Rodriguez",
-          studentId: "JSS2/005",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 2006,
-          firstName: "James",
-          lastName: "Wilson",
-          studentId: "JSS2/006",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-      ],
-    },
-    jss3: {
-      name: "JSS 3",
-      students: [
-        {
-          id: 3001,
-          firstName: "sophia",
-          lastName: "Taylor",
-          studentId: "JSS3/001",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 3002,
-          firstName: "William",
-          lastName: "Anderson",
-          studentId: "JSS3/002",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 3003,
-          firstName: "Olivia",
-          lastName: "Thomas",
-          studentId: "JSS3/003",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 3004,
-          firstName: "Benjamin",
-          lastName: "Jackson",
-          studentId: "JSS3/004",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-      ],
-    },
-    sss1: {
-      name: "SSS 1",
-      students: [
-        {
-          id: 4001,
-          firstName: "Charlotte",
-          lastName: "White",
-          studentId: "SSS1/001",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4002,
-          firstName: "Daniel",
-          lastName: "Harris",
-          studentId: "SSS1/002",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4003,
-          firstName: "Mia",
-          lastName: "Clark",
-          studentId: "SSS1/003",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4004,
-          firstName: "Ethan",
-          lastName: "Lewis",
-          studentId: "SSS1/004",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4005,
-          firstName: "Isabella",
-          lastName: "Walker",
-          studentId: "SSS1/005",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4006,
-          firstName: "Alexander",
-          lastName: "Hall",
-          studentId: "SSS1/006",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-        {
-          id: 4007,
-          firstName: "Grace",
-          lastName: "Allen",
-          studentId: "SSS1/007",
-          photo: "/api/placeholder/40/40",
-          present: null,
-          absent: null,
-          late: null,
-          time: null,
-        },
-      ],
-    },
+        }))
+      );
+    } else {
+      setAttendanceState([]);
+    }
+  }, [fetchedStudents]);
+
+  // Fixed: Fetch on component mount
+  useEffect(() => {
+    fetchClassroom();
+  }, []);
+
+  const fetchClassroom = async () => {
+    console.log("fetchClassroom called, user:", user);
+    dispatch(fetchSessionStart());
+    dispatch(fetchClassroomsStart());
+    try {
+      if (user?.role === "Teacher") {
+        console.log("Fetching classrooms for teacher:", user.id);
+        const classroomData = await classroomService.getClassroomByTeacherId(user?.id);
+        const data = await sessionService.getAllRegisteredSessions(user?.schoolId);
+
+        console.log("Session data received:", data);
+        console.log("Classroom data received:", classroomData);
+
+        dispatch(fetchSessionSuccess(data));
+        dispatch(fetchClassroomsSuccess(classroomData));
+      } else {
+        console.warn("User is not a teacher or user data is missing");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      dispatch(fetchSessionFailure((err as Error).message));
+      dispatch(fetchClassroomsFailure((err as Error).message));
+    }
   };
 
   const formatDate = (date: Date): string => {
-    const options: Intl.DateTimeFormatOptions = {
+    return date.toLocaleDateString("en-US", {
       weekday: "long",
       day: "numeric",
       month: "long",
-    };
-    return date.toLocaleDateString("en-US", options);
+    });
   };
+
+  
 
   const getCurrentTime = (): string => {
     return new Date().toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true,
+      hour12: false,
     });
   };
 
-  // Simulate API call to fetch students
+  // Fetch students by class
   const fetchStudentsForClass = async (classKey: string): Promise<void> => {
+
+    dispatch(fetchStudentsStart());
     setLoading(true);
     try {
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response = await classroomService.getStudentsByClassroomId(classKey);
 
-      if (classData[classKey]) {
-        setStudents(classData[classKey].students);
-      } else {
-        setStudents([]);
+      // Fixed: Check if response has the expected structure
+      if (!response || !Array.isArray(response)) {
+        console.error("Invalid response structure:", response);
+        dispatch(fetchStudentsFailure("Invalid response structure"));
+        setAttendanceState([]);
+        return;
       }
+
+      // Map API response to match component structure
+      const mappedStudents: any = response.map((student: any) => ({
+        id: student.studentId, // UUID as unique identifier
+        firstName: student.firstname,
+        lastName: student.lastname,
+        studentId: student.studentId, // Student number for display
+        studentNo: student.studentNo, // Student number for display
+        classroomId: student.classroomId,
+      }));
+
+      console.log("Mapped Students:", mappedStudents);
+
+      // Update Redux state
+      dispatch(fetchStudentsSuccess(mappedStudents));
+
+      // OPTIONAL: Directly set attendance state as fallback
+      // This ensures UI updates even if Redux has issues
+      setAttendanceState(
+        mappedStudents.map((student: any) => ({
+          ...student,
+          present: null,
+          absent: null,
+          late: null,
+          time: null,
+        }))
+      );
     } catch (error) {
       console.error("Error fetching students:", error);
-      setStudents([]);
+      dispatch(fetchStudentsFailure((error as Error).message));
+      setAttendanceState([]);
     } finally {
       setLoading(false);
     }
@@ -342,39 +215,37 @@ const NewAttendance: React.FC = () => {
   const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     const selectedClassKey = e.target.value;
     setSelectedClass(selectedClassKey);
-    setIsSubmitted(false); // Reset submission state
+    setIsSubmitted(false);
 
     if (selectedClassKey) {
       fetchStudentsForClass(selectedClassKey);
     } else {
-      setStudents([]);
+      setAttendanceState([]);
     }
   };
 
-  const handleAttendanceChange = (studentId: number, type: AttendanceType): void => {
+  const handleAttendanceChange = (studentId: string, type: AttendanceType): void => {
     if (isSubmitted) return;
 
-    setStudents((prev) =>
-      prev.map((student) => {
-        if (student.id === studentId) {
-          const currentTime = getCurrentTime();
-          return {
-            ...student,
-            present: type === "present" ? true : false,
-            absent: type === "absent" ? true : false,
-            late: type === "late" ? true : false,
-            time: currentTime,
-          };
-        }
-        return student;
-      })
+    setAttendanceState((prev) =>
+      prev.map((student) =>
+        student.id === studentId
+          ? {
+              ...student,
+              present: type === "present" ? true : false,
+              absent: type === "absent" ? true : false,
+              late: type === "late" ? true : false,
+              time: getCurrentTime(),
+            }
+          : student
+      )
     );
   };
 
   const clearAllAttendance = (): void => {
     if (isSubmitted) return;
 
-    setStudents((prev) =>
+    setAttendanceState((prev) =>
       prev.map((student) => ({
         ...student,
         present: null,
@@ -385,18 +256,18 @@ const NewAttendance: React.FC = () => {
     );
   };
 
-  const submitAttendance = (): void => {
+  const submitAttendance = async (): Promise<void> => {
     if (!selectedClass) {
-      alert("Please select a class first!");
+      toast.success(" Class is not selected!");
       return;
     }
 
-    if (students.length === 0) {
-      alert("No students found for the selected class!");
+    if (!selectedSession) {
+      toast.success("Session is not selected!");
       return;
     }
 
-    const markedStudents = students.filter(
+    const markedStudents = attendanceState.filter(
       (s) => s.present !== null || s.absent !== null || s.late !== null
     );
 
@@ -405,21 +276,40 @@ const NewAttendance: React.FC = () => {
       return;
     }
 
-    setIsSubmitted(true);
-    alert(
-      `Attendance submitted successfully for ${classData[selectedClass]?.name}!\nTotal students marked: ${markedStudents.length}`
-    );
+    console.log(markedStudents);
+
+    // Format attendance data for API
+    const attendancePayload = markedStudents.map((student) => ({
+      classroomId: student.classroomId,
+      sessionId: selectedSession,
+      studentId: student?.studentId,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      timeIn: student.time || getCurrentTime(),
+      status: student.absent ? 0 : student.present ? 1 : 2, // 1=Present, 0=Absent, 2=Late
+    }));
+
+    try {
+      setLoading(true);
+      const res = await attendanceService.saveAttendance(attendancePayload);
+
+      if (res) {
+        setIsSubmitted(true);
+      }
+    } catch (error) {
+      console.error("Error submitting attendance:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const resetSubmission = (): void => {
-    setIsSubmitted(false);
-  };
+  const resetSubmission = (): void => setIsSubmitted(false);
 
   const getSummaryStats = (): SummaryStats => {
-    const totalStudents = students.length;
-    const present = students.filter((s) => s.present === true).length;
-    const absent = students.filter((s) => s.absent === true).length;
-    const late = students.filter((s) => s.late === true).length;
+    const totalStudents = attendanceState.length;
+    const present = attendanceState.filter((s) => s.present === true).length;
+    const absent = attendanceState.filter((s) => s.absent === true).length;
+    const late = attendanceState.filter((s) => s.late === true).length;
     const attendancePercentage =
       totalStudents > 0 ? Math.round((present / totalStudents) * 100) : 0;
 
@@ -437,72 +327,72 @@ const NewAttendance: React.FC = () => {
         </div>
 
         {/* Header */}
-        <div className="bg-white rounded-t-lg shadow-sm p-3 sm:p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b gap-4">
-          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
-            <button className="text-gray-600 hover:text-gray-800 sm:block hidden">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <div className="flex-1 sm:flex-none">
+        <div className="bg-white rounded-t-lg shadow-sm p-3 sm:p-4 border-b">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
+            {/* Date Section */}
+            <div className="flex-shrink-0">
               <p className="text-sm sm:text-base text-gray-600">{formatDate(currentDate)}</p>
             </div>
-            <button className="text-gray-600 hover:text-gray-800 sm:block hidden">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
+
+            {/* Controls Section */}
+            <div className="w-full lg:w-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+              {/* Session Select */}
+              <div className="w-full lg:w-48">
+                <label className="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+                  Session <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  options={sessionOptions}
+                  value={getSelectedOption(selectedSession, sessionOptions)}
+                  onChange={handleSelectChange}
+                  placeholder="Select Session"
+                  className="text-sm w-full"
+                  isSearchable
+                  required
                 />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-2 w-full sm:w-auto">
-            <select
-              name="Class"
-              id="Class"
-              value={selectedClass}
-              onChange={handleClassChange}
-              disabled={isSubmitted}
-              className="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-orange-500 text-white border-none outline-none rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <option className="bg-gray-500" value="">
-                Select Class
-              </option>
-              {Object.entries(classData).map(([key, data]) => (
-                <option key={key} value={key}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-
-            {selectedClass && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm">
-                <Users className="w-4 h-4" />
-                <span>{students.length} Students</span>
               </div>
-            )}
+
+              {/* Class Select */}
+              <div className="w-full lg:w-48">
+                <label className="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+                  Class <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={selectedClass}
+                  onChange={handleClassChange}
+                  disabled={isSubmitted}
+                  className="w-full px-3 sm:px-4 py-2 bg-orange-500 text-white border-none outline-none rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">Select Class</option>
+                  {fetchedRecord.map((cls, index) => (
+                    <option key={index} value={cls.classroomId}>
+                      {cls.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Student Count Badge */}
+              {selectedClass && (
+                <div className="w-full sm:w-auto">
+                  <div className="flex items-center justify-center gap-2 px-3 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm h-10">
+                    <Users className="w-4 h-4" />
+                    <span>{attendanceState.length} Students</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Loading State */}
+        {/* Loading */}
         {loading && (
           <div className="bg-white shadow-sm p-8 flex flex-col items-center justify-center">
             <Loader2 className="w-8 h-8 animate-spin text-orange-500 mb-4" />
-            <p className="text-gray-600">
-              Loading students for {classData[selectedClass]?.name}...
-            </p>
+            <p className="text-gray-600">Loading students...</p>
           </div>
         )}
 
-        {/* No Class Selected */}
+        {/* No Class */}
         {!selectedClass && !loading && (
           <div className="bg-white shadow-sm p-8 text-center">
             <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
@@ -513,114 +403,87 @@ const NewAttendance: React.FC = () => {
           </div>
         )}
 
-        {/* No Students Found */}
-        {selectedClass && !loading && students.length === 0 && (
+        {/* No Students */}
+        {selectedClass && !loading && attendanceState.length === 0 && (
           <div className="bg-white shadow-sm p-8 text-center">
             <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Students Found</h3>
-            <p className="text-gray-600">
-              No students are enrolled in {classData[selectedClass]?.name}.
-            </p>
+            <p className="text-gray-600">No students are enrolled in this class.</p>
           </div>
         )}
 
-        {/* Table - Only show when students are loaded */}
-        {!loading && students.length > 0 && (
+        {/* Table */}
+        {!loading && attendanceState.length > 0 && (
           <>
             <div className="bg-white shadow-sm">
               <div className="overflow-x-auto parent-scrollbar">
                 <table className="w-full min-w-[800px]">
                   <thead className="bg-orange-500 text-white">
                     <tr>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        SN
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        Photo
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        First Name
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium hidden sm:table-cell">
-                        Last Name
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium hidden md:table-cell">
-                        Student ID
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        Time
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        Present
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        Absent
-                      </th>
-                      <th className="px-2 sm:px-4 py-3 text-left text-xs sm:text-sm font-medium">
-                        Late
-                      </th>
+                      <th className="px-4 py-3 text-left">SN</th>
+                      <th className="px-4 py-3 text-left">Photo</th>
+                      <th className="px-4 py-3 text-left">First Name</th>
+                      <th className="px-4 py-3 text-left hidden sm:table-cell">Last Name</th>
+                      <th className="px-4 py-3 text-left hidden md:table-cell">Student ID</th>
+                      <th className="px-4 py-3 text-left">Time</th>
+                      <th className="px-4 py-3 text-left">Present</th>
+                      <th className="px-4 py-3 text-left">Absent</th>
+                      <th className="px-4 py-3 text-left">Late</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {students.map((student, index) => (
+                    {attendanceState.map((student, index) => (
                       <tr key={student.id} className="hover:bg-gray-50">
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-gray-900">
-                          {index + 1}
-                        </td>
-                        <td className="px-2 sm:px-4 py-3">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm">
-                            {student.firstName.charAt(0)}
-                          </div>
-                        </td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-gray-900">
-                          <div className="sm:hidden">
-                            <div className="font-medium">{student.firstName}</div>
-                            <div className="text-xs text-gray-500">{student.lastName}</div>
-                            <div className="text-xs text-gray-500 md:hidden">
-                              {student.studentId}
-                            </div>
-                          </div>
-                          <div className="hidden sm:block">{student.firstName}</div>
-                        </td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-gray-900 hidden sm:table-cell">
-                          {student.lastName}
-                        </td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-gray-900 hidden md:table-cell">
-                          {student.studentId}
-                        </td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-gray-900">
-                          {student.time && (
-                            <div className="flex items-center gap-1 text-green-600">
-                              <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span className="text-xs sm:text-sm">{student.time}</span>
+                        <td className="px-4 py-3">{index + 1}</td>
+                        <td className="px-4 py-3">
+                          {student.photo ? (
+                            <img
+                              src={student.photo}
+                              alt={`${student.firstName} ${student.lastName}`}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                              {student.firstName.charAt(0)}
                             </div>
                           )}
                         </td>
-                        <td className="px-2 sm:px-4 py-3">
+                        <td className="px-4 py-3">{student.firstName}</td>
+                        <td className="px-4 py-3 hidden sm:table-cell">{student.lastName}</td>
+                        <td className="px-4 py-3 hidden md:table-cell">{student.studentNo}</td>
+                        <td className="px-4 py-3">
+                          {student.time && (
+                            <div className="flex items-center gap-1 text-green-600">
+                              <Clock className="w-4 h-4" />
+                              <span>{student.time}</span>
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
                           <input
                             type="checkbox"
                             checked={student.present === true}
                             disabled={isSubmitted}
                             onChange={() => handleAttendanceChange(student.id, "present")}
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 rounded focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-4 h-4 cursor-pointer"
                           />
                         </td>
-                        <td className="px-2 sm:px-4 py-3">
+                        <td className="px-4 py-3">
                           <input
                             type="checkbox"
                             checked={student.absent === true}
                             disabled={isSubmitted}
                             onChange={() => handleAttendanceChange(student.id, "absent")}
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 rounded focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-4 h-4 cursor-pointer"
                           />
                         </td>
-                        <td className="px-2 sm:px-4 py-3">
+                        <td className="px-4 py-3">
                           <input
                             type="checkbox"
                             checked={student.late === true}
                             disabled={isSubmitted}
                             onChange={() => handleAttendanceChange(student.id, "late")}
-                            className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 rounded focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-4 h-4 cursor-pointer"
                           />
                         </td>
                       </tr>
@@ -630,82 +493,62 @@ const NewAttendance: React.FC = () => {
               </div>
             </div>
 
-            {/* Summary Section */}
-            <div className="bg-white rounded-b-lg shadow-sm p-4 sm:p-6">
+            {/* Summary */}
+            <div className="bg-white rounded-b-lg shadow-sm p-4">
               <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
-                <div className="w-full lg:w-auto">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">
-                    Summary Section - {classData[selectedClass]?.name}
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 w-full lg:max-w-2xl">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Summary Section</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Total Students</div>
-                      <div className="text-lg sm:text-2xl font-semibold text-blue-600 bg-blue-50 rounded-lg py-2 px-2 sm:px-3">
-                        {stats.totalStudents}
-                      </div>
+                      <p>Total Students</p>
+                      <p className="font-bold text-blue-600">{stats.totalStudents}</p>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Present</div>
-                      <div className="text-lg sm:text-2xl font-semibold text-green-600 bg-green-50 rounded-lg py-2 px-2 sm:px-3">
-                        {stats.present}
-                      </div>
+                      <p>Present</p>
+                      <p className="font-bold text-green-600">{stats.present}</p>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Absent</div>
-                      <div className="text-lg sm:text-2xl font-semibold text-red-600 bg-red-50 rounded-lg py-2 px-2 sm:px-3">
-                        {stats.absent}
-                      </div>
+                      <p>Absent</p>
+                      <p className="font-bold text-red-600">{stats.absent}</p>
                     </div>
                     <div className="text-center">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Late</div>
-                      <div className="text-lg sm:text-2xl font-semibold text-yellow-600 bg-yellow-50 rounded-lg py-2 px-2 sm:px-3">
-                        {stats.late}
-                      </div>
+                      <p>Late</p>
+                      <p className="font-bold text-yellow-600">{stats.late}</p>
                     </div>
-                    <div className="text-center col-span-2 sm:col-span-1">
-                      <div className="text-xs sm:text-sm text-gray-600 mb-1">Attendance %</div>
-                      <div className="text-lg sm:text-2xl font-semibold text-purple-600 bg-purple-50 rounded-lg py-2 px-2 sm:px-3">
-                        {stats.attendancePercentage}%
-                      </div>
+                    <div className="text-center">
+                      <p>Attendance %</p>
+                      <p className="font-bold text-purple-600">{stats.attendancePercentage}%</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                  {!isSubmitted && (
+                <div className="flex gap-3">
+                  {!isSubmitted ? (
                     <>
                       <button
                         onClick={clearAllAttendance}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm sm:text-base"
+                        className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
                       >
-                        <RotateCcw className="w-4 h-4" />
                         Clear All
                       </button>
                       <button
                         onClick={submitAttendance}
-                        className="flex items-center justify-center gap-2 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm sm:text-base"
+                        className="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
                       >
-                        <Save className="w-4 h-4" />
                         Save
                       </button>
                     </>
-                  )}
-
-                  {isSubmitted && (
-                    <div className="flex flex-col sm:flex-row items-center gap-3">
-                      <div className="flex items-center gap-2 text-green-600">
-                        <Check className="w-5 h-5" />
-                        <span className="font-medium text-sm sm:text-base">
-                          Attendance Submitted
-                        </span>
-                      </div>
-                      <button
+                  ) : (
+                    <div className="flex gap-3">
+                      <span className="text-green-600 flex items-center">
+                        <Check className="w-5 h-5 mr-2" /> Submitted
+                      </span>
+                      {/* <button
                         onClick={resetSubmission}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm sm:text-base"
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                       >
-                        <RotateCcw className="w-4 h-4" />
                         Edit Again
-                      </button>
+                      </button> */}
                     </div>
                   )}
                 </div>

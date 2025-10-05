@@ -69,7 +69,7 @@ const ClassroomForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded }
 
     try {
       const res = await classroomService.addClassroom(payload);
-      toast.success(res.responseMessage || "Classroom added!");
+      toast.success("Classroom added!");
       onGuardianAdded();
       setTimeout(() => {
         onClose();

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Select from "react-select";
 import { sessionService } from "../../../Services/Session";
 import { useAuth } from "../../../Context/Auth/useAuth";
 

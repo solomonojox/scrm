@@ -260,7 +260,7 @@ const SidebarButton = ({ activeIcon, nonActiveIcon, icon, label, to }) => {
         transition-all duration-200
         group
         ${
-          isActive
+          isActive 
             ? "bg-orange-50 text-orange-600 font-medium shadow-sm"
             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
         }
