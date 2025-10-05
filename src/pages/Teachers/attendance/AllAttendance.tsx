@@ -1,6 +1,6 @@
 import { Edit2Icon, Edit3Icon, Eye, MoreVertical, Trash2 } from "lucide-react";
 import React, { useState } from "react";
-import '../../../Styles/customScrollBar.css';
+import "../../../Styles/customScrollBar.css";
 
 const tableData: any[] = [
   { date: "2024-09-01", present: 25, absent: 5, late: 2, overallPercent: 83 },
@@ -18,6 +18,123 @@ const tableData: any[] = [
   { date: "2024-09-13", present: 29, absent: 1, late: 0, overallPercent: 95 },
   { date: "2024-09-14", present: 30, absent: 0, late: 0, overallPercent: 100 },
 ];
+
+const MobileCard = ({
+  date,
+  present,
+  absent,
+  late,
+  overallPercent,
+  index,
+  onEdit,
+  onDelete,
+  onView,
+}: any) => {
+  const [showOptions, setShowOptions] = useState(false);
+
+  // Determine color based on attendance percentage
+  const getPercentageColor = (percent: number) => {
+    if (percent >= 90) return "bg-green-100 text-green-700 border-green-200";
+    if (percent >= 75) return "bg-yellow-100 text-yellow-700 border-yellow-200";
+    return "bg-red-100 text-red-700 border-red-200";
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 mb-3 hover:shadow-lg transition-shadow">
+      {/* Header with Date and Options */}
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <p className="text-xs text-gray-500 mb-1">Date</p>
+          <p className="text-sm font-semibold text-gray-800">{date}</p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Attendance Badge */}
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-bold border ${getPercentageColor(
+              overallPercent
+            )}`}
+          >
+            {overallPercent}%
+          </span>
+
+          {/* Options Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowOptions(!showOptions)}
+              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <MoreVertical className="w-5 h-5 text-gray-600" />
+            </button>
+
+            {showOptions && (
+              <div className="absolute top-8 right-0 bg-white border border-gray-200 rounded-lg shadow-xl z-50 w-32">
+                <ul className="flex flex-col">
+                  <li
+                    onClick={() => {
+                      onView?.(index);
+                      setShowOptions(false);
+                    }}
+                    className="text-xs inline-flex items-center px-4 py-2 hover:bg-yellow-100 bg-yellow-50 hover:text-yellow-600 text-yellow-600 cursor-pointer border-b border-gray-200 rounded-t-lg transition-colors"
+                  >
+                    <Eye className="w-4 h-4 inline-block mr-2" /> View
+                  </li>
+                  <li
+                    onClick={() => {
+                      onEdit?.(index);
+                      setShowOptions(false);
+                    }}
+                    className="text-xs inline-flex items-center px-4 py-2 hover:bg-green-100 bg-green-50 hover:text-green-600 text-green-600 cursor-pointer border-b border-gray-200 transition-colors"
+                  >
+                    <Edit3Icon className="w-4 h-4 inline-block mr-2" /> Edit
+                  </li>
+                  <li
+                    onClick={() => {
+                      onDelete?.(index);
+                      setShowOptions(false);
+                    }}
+                    className="text-xs inline-flex items-center px-4 py-2 hover:bg-red-100 bg-red-50 hover:text-red-600 text-red-600 cursor-pointer rounded-b-lg transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4 inline-block mr-2" /> Delete
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Attendance Stats Grid */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* Present */}
+        <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+          <p className="text-xs text-green-600 mb-1 font-medium">Present</p>
+          <p className="text-lg font-bold text-green-700">{present}</p>
+        </div>
+
+        {/* Absent */}
+        <div className="bg-red-50 rounded-lg p-3 border border-red-200">
+          <p className="text-xs text-red-600 mb-1 font-medium">Absent</p>
+          <p className="text-lg font-bold text-red-700">{absent}</p>
+        </div>
+
+        {/* Late */}
+        <div className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+          <p className="text-xs text-yellow-600 mb-1 font-medium">Late</p>
+          <p className="text-lg font-bold text-yellow-700">{late}</p>
+        </div>
+      </div>
+
+      {/* Quick Summary Bar */}
+      <div className="mt-3 pt-3 border-t border-gray-200">
+        <div className="flex items-center justify-between text-xs text-gray-600">
+          <span>Total: {present + absent + late} students</span>
+          <span className="font-medium">Attendance: {overallPercent}%</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AllAttendance = (): React.ReactElement => {
   const icons = {
@@ -83,8 +200,9 @@ const AllAttendance = (): React.ReactElement => {
       </div>
 
       {/* Table */}
-      <div className="w-full bg-white shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md border">
-        <div className="w-full overflow-x-auto parent-scrollbar">
+      <div className="w-full md:bg-white md:shadow-[1px_0_10px_-2px_rgba(0,0,0,0.1)] rounded-md md:border">
+        {/* Desktop View table */}
+        <div className="hidden md:block w-full overflow-x-auto parent-scrollbar">
           <table className="w-full table-auto border-collapse min-w-[700px]">
             <thead>
               <tr className="text-left bg-gray-200 border-b border-t border-b-[#E0E0E0]">
@@ -140,8 +258,16 @@ const AllAttendance = (): React.ReactElement => {
                     <td className="text-sm px-4 py-3 border-b">{item.present ?? 0}</td>
                     <td className="text-sm px-4 py-3 border-b">{item.absent ?? 0}</td>
                     <td className="text-sm px-4 py-3 border-b">{item.late ?? 0}</td>
-                    <td className="text-sm px-4 py-3 border-b text-center">
-                      {item.overallPercent ? `${item.overallPercent}%` : "--"}
+                    <td className="py-4 px-4 text-sm text-[#333333]">
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-16 bg-gray-200 rounded-full h-2">
+                          <div
+                            className="h-2 rounded-full bg-[#EE7306]"
+                            style={{ width: `${item.overallPercent}%` }}
+                          ></div>
+                        </div>
+                        <span className="font-medium">{item.overallPercent}%</span>
+                      </div>
                     </td>
                     <td className="text-sm px-4 py-3 border-b relative">
                       <button
@@ -181,6 +307,27 @@ const AllAttendance = (): React.ReactElement => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden">
+          {currentRows.map((item, index) => (
+            <MobileCard
+              key={index}
+              present={item.present}
+              absent={item.absent}
+              late={item.late}
+              overallPercent={item.overallPercent}
+              date={item.date}
+              handleOptionsClick={() => handleOptionsClick(index)}
+              handleEdit={() => handleEdit(index)}
+              handleDelete={() => handleDelete(index)}
+              openRowIndex={openRowIndex === index}
+              index={index}
+              onEdit={() => handleEdit(index)}
+              onDelete={() => handleDelete(index)}
+            />
+          ))}
         </div>
 
         {/* Pagination */}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AllAttendance from "./AllAttendance";
+import AllResult from "./AllResult";
 import AllFolders from "./AllFolders";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +11,7 @@ import {
   fetchClassroomsSuccess,
 } from "../../../Store/Admin/classroomSlice";
 
-const AttendanceList = (): React.JSX.Element => {
+const ResultList = (): React.JSX.Element => {
   const icons = {
     folder: (
       <svg
@@ -55,9 +55,9 @@ const AttendanceList = (): React.JSX.Element => {
       </svg>
     ),
   };
-  const [activeTab, setActiveTab] = React.useState<string | React.JSX.Element>("All Attendance");
+  const [activeTab, setActiveTab] = React.useState<string | React.JSX.Element>("All Results");
   const tabs = [
-    { id: 1, label: "All Attendance" },
+    { id: 1, label: "All Results" },
     { id: 2, label: "All Folders" },
     // { id: 3, label: icons.folder },
     // { id: 4, label: icons.file },
@@ -106,15 +106,15 @@ const AttendanceList = (): React.JSX.Element => {
       <section>
         <div className="">
           <div className="">
-            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between px-4 sm:px-0 pb-6">
-              <h2 className="text-lg font-medium">Attendance List</h2>
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between sm:px-0 pb-6">
+              <h2 className="text-lg font-medium">Result List (JSS1)</h2>
               {/* Class Select */}
-              <div className="w-full lg:w-48">
+              <div className="w-full md:w-48">
                 <select
                   value={selectedClass}
                   onChange={handleClassChange}
                   disabled={isSubmitted}
-                  className="w-full px-3 sm:px-4 py-2 bg-orange-500 text-white border-none outline-none rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-3 sm:px-4 py-2 bg-[#EE7306] text-white border-none outline-none rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">Select Class</option>
                   {fetchedRecord.map((cls, index) => (
@@ -143,7 +143,7 @@ const AttendanceList = (): React.JSX.Element => {
                 ))}
               </div>
             </div>
-            {activeTab === "All Attendance" && <AllAttendance />}
+            {activeTab === "All Results" && <AllResult />}
             {activeTab === "All Folders" && <AllFolders />}
           </div>
         </div>
@@ -152,4 +152,4 @@ const AttendanceList = (): React.JSX.Element => {
   );
 };
 
-export default AttendanceList;
+export default ResultList;
