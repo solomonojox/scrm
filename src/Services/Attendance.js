@@ -3,7 +3,7 @@ import api from "./api";
 export const attendanceService = {
   /**
    * Adds a new school fee
-   * @param {Object} attendance 
+   * @param {Object} attendance
    * @returns {Promise<Object>}
    */
   saveAttendance: async (attendance) => {
@@ -15,6 +15,17 @@ export const attendanceService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
     }
   },
+  getAttendanceByClassroomIdAndSchoolId: async (schoolId, classroomId) => {
+    try {
+      const response = await api.get(
+        `/api/Attendance/GetClassAttendanceSummary/${schoolId}/${classroomId}`
+      );
+      return response.data.data; 
+    } catch (error) {
+      console.error("GetClassFeeForSession error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+    }
+  },
 
   //   getAllSchoolFees: async () => {
   //     try {
@@ -22,16 +33,6 @@ export const attendanceService = {
   //       return response.data.data; // ✅ get the array inside `data`
   //     } catch (error) {
   //       console.error("GetAllSchoolFees error:", error);
-  //       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
-  //     }
-  //   },
-
-  //   getClassFeeForSession: async (classId, sessionId) => {
-  //     try {
-  //       const response = await api.get(`/api/SchoolFee/GetClassFeeForSession?classId=${classId}&sessionId=${sessionId}`);
-  //       return response.data.data; // ✅ get the array inside `data`
-  //     } catch (error) {
-  //       console.error("GetClassFeeForSession error:", error);
   //       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
   //     }
   //   },
