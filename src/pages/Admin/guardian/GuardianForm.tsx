@@ -26,8 +26,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
     occupation: "",
     workAddress: "",
     relationship: "",
-    // nin: "",
-    // bvn: "",
+    nin: "",
+    bvn: "",
   });
 
   useEffect(() => {
@@ -68,8 +68,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
       religion: formData.religion,
       email: formData.email,
       username: formData.username,
-      // nin: formData.nin,
-      // bvn: formData.bvn,
+      nin: formData.nin,
+      bvn: formData.bvn,
     };
 
     try {
@@ -95,8 +95,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
             occupation: "",
             workAddress: "",
             relationship: "",
-            // nin: "",
-            // bvn: "",
+            nin: "",
+            bvn: "",
           });
           setImagePreview(null);
         }, 2000);
@@ -153,8 +153,8 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
               ["occupation", "Occupation"],
               ["workAddress", "Work Address"],
               ["relationship", "Relationship"],
-              // ["nin", "NIN"],
-              // ["bvn", "BVN"],
+              ["nin", "NIN"],
+              ["bvn", "BVN"],
             ].map(([key, label]) => (
               <input
                 key={key}
