@@ -64,6 +64,9 @@ import NewAttendance from "./pages/Teachers/attendance/NewAttendance";
 import AttendanceReport from "./pages/Teachers/attendance/AttendanceReport";
 import AccountSetup from "./pages/Guardian/account/AccountSetup";
 import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
+import TeacherResult from "./pages/Teachers/results/TeacherResult";
+import NewResult from "./pages/Teachers/results/NewResult";
+import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -130,7 +133,9 @@ function App() {
         <Route path="/teacher/pupil/:id" element={<ViewMyPupils />} />
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
         <Route path="/teacher/settings" element={<TeacherSettings />} />
-
+        <Route path="/teacher/results" element={<TeacherResult />} />
+        <Route path="/teacher/new-result" element={<NewResult />} />
+        <Route path="/teacher/report-card" element={<TeacherReportCard />} />
       </Route>
 
       {/* All Guardians routes here */}

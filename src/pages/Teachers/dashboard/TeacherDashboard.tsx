@@ -33,6 +33,7 @@ export default function TeacherDashboard() {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
+  console.log("fetchedTeacherRecord", fetchedTeacherRecord);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
 

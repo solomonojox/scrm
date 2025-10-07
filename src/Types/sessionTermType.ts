@@ -6,4 +6,5 @@ export interface SessionTerm{
     startDate: string;
     endDate: string;
     term?: string;
+    sessionKey?: string;
 }

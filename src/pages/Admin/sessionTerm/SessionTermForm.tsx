@@ -13,7 +13,7 @@ interface SessionTermFormProps {
 }
 
 interface OptionType {
-  value: string;
+  value: string | number| undefined;
   label: string;
 }
 
@@ -23,15 +23,15 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({
-    sessionId: "",
+    sessionKey: "",
     termName: "",
     startDate: "",
     endDate: "",
   });
 
   const sessionOptions: OptionType[] = sessions.map((session) => ({
-    value: session.sessionId,
-    label: session.sessionId,
+    value: session?.sessionKey,
+    label: session?.sessionId,
   }));
 
   const getSelectedOption = (value: string, options: OptionType[]) => {
@@ -48,7 +48,7 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
   useEffect(() => {
     if (editData) {
       setFormData({
-        sessionId: editData.sessionId || "",
+        sessionKey: editData.sessionKey || "",
         termName: editData.termName || "",
         startDate: editData.startDate ? editData.startDate.split("T")[0] : "",
         endDate: editData.endDate ? editData.endDate.split("T")[0] : "",
@@ -57,7 +57,7 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
     } else {
       // Reset when switching back to add mode
       setFormData({
-        sessionId: "",
+        sessionKey: "",
         termName: "",
         startDate: "",
         endDate: "",
@@ -87,7 +87,7 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
 
     const payload = {
       schoolId: user?.schoolId,
-      sessionId: formData.sessionId,
+      sessionKey: formData.sessionKey,
       termName: formData.termName,
       startDate: new Date(formData.startDate).toISOString(),
       endDate: new Date(formData.endDate).toISOString(),
@@ -134,8 +134,8 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
               <label className="block text-sm font-medium text-gray-700 mb-1">Session*</label>
               <Select
                 options={sessionOptions}
-                value={getSelectedOption(formData.sessionId, sessionOptions)}
-                onChange={(selected) => handleSelectChange("sessionId", selected)}
+                value={getSelectedOption(formData.sessionKey, sessionOptions)}
+                onChange={(selected) => handleSelectChange("sessionKey", selected)}
                 placeholder="Select Session"
                 className="text-sm"
                 isSearchable
