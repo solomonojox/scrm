@@ -1,29 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Check, X, Clock, ArrowLeft, Users, Loader2 } from "lucide-react";
+import React, { useState, useEffect, useContext } from "react";
+import { Check, Clock, ArrowLeft, Users, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import "../../../Styles/customScrollBar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import { classroomService } from "../../../Services/Classroom";
-import {
-  fetchClassroomsFailure,
-  fetchClassroomsStart,
-  fetchClassroomsSuccess,
-} from "../../../Store/Admin/classroomSlice";
+import { fetchClassroomsFailure,fetchClassroomsStart,fetchClassroomsSuccess,} from "../../../Store/Admin/classroomSlice";
 import { useAuth } from "../../../Context/Auth/useAuth";
-import {
-  fetchStudentsFailure,
-  fetchStudentsStart,
-  fetchStudentsSuccess,
-} from "../../../Store/Student/studentSlice";
+import { fetchStudentsFailure,fetchStudentsStart,fetchStudentsSuccess } from "../../../Store/Student/studentSlice";
 import Select from "react-select";
-import {
-  fetchSessionFailure,
-  fetchSessionStart,
-  fetchSessionSuccess,
-} from "../../../Store/sessionSlice";
+import { fetchSessionFailure,fetchSessionStart,fetchSessionSuccess } from "../../../Store/sessionSlice";
 import { sessionService } from "../../../Services/Session";
 import { attendanceService } from "../../../Services/Attendance";
+import { AppContext } from "../../../Context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 interface Student {
   id: string; // UUID from API (studentId field)
@@ -69,6 +59,8 @@ type AttendanceType = "present" | "absent" | "late";
 
 const NewAttendance: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { notifySuccess, notifyError } = useContext(AppContext);
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getClassrooms.listRecords);
   const fetchedStudents = useSelector((state: RootState) => state.getStudentsByClassId.listRecords);
@@ -83,7 +75,7 @@ const NewAttendance: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const sessionOptions: OptionType[] = sessions.map((session) => ({
+  const sessionOptions: OptionType[] = sessions.map((session: any) => ({
     value: session?.sessionId,
     label: session?.sessionId,
   }));
@@ -119,17 +111,12 @@ const NewAttendance: React.FC = () => {
   }, []);
 
   const fetchClassroom = async () => {
-    console.log("fetchClassroom called, user:", user);
     dispatch(fetchSessionStart());
     dispatch(fetchClassroomsStart());
     try {
       if (user?.role === "Teacher") {
-        console.log("Fetching classrooms for teacher:", user.id);
         const classroomData = await classroomService.getClassroomByTeacherId(user?.id);
         const data = await sessionService.getAllRegisteredSessions(user?.schoolId);
-
-        console.log("Session data received:", data);
-        console.log("Classroom data received:", classroomData);
 
         dispatch(fetchSessionSuccess(data));
         dispatch(fetchClassroomsSuccess(classroomData));
@@ -151,8 +138,6 @@ const NewAttendance: React.FC = () => {
     });
   };
 
-  
-
   const getCurrentTime = (): string => {
     return new Date().toLocaleTimeString("en-US", {
       hour: "2-digit",
@@ -163,7 +148,6 @@ const NewAttendance: React.FC = () => {
 
   // Fetch students by class
   const fetchStudentsForClass = async (classKey: string): Promise<void> => {
-
     dispatch(fetchStudentsStart());
     setLoading(true);
     try {
@@ -171,7 +155,6 @@ const NewAttendance: React.FC = () => {
 
       // Fixed: Check if response has the expected structure
       if (!response || !Array.isArray(response)) {
-        console.error("Invalid response structure:", response);
         dispatch(fetchStudentsFailure("Invalid response structure"));
         setAttendanceState([]);
         return;
@@ -186,8 +169,6 @@ const NewAttendance: React.FC = () => {
         studentNo: student.studentNo, // Student number for display
         classroomId: student.classroomId,
       }));
-
-      console.log("Mapped Students:", mappedStudents);
 
       // Update Redux state
       dispatch(fetchStudentsSuccess(mappedStudents));
@@ -272,11 +253,8 @@ const NewAttendance: React.FC = () => {
     );
 
     if (markedStudents.length === 0) {
-      alert("Please mark attendance for at least one student!");
       return;
     }
-
-    console.log(markedStudents);
 
     // Format attendance data for API
     const attendancePayload = markedStudents.map((student) => ({
@@ -294,7 +272,9 @@ const NewAttendance: React.FC = () => {
       const res = await attendanceService.saveAttendance(attendancePayload);
 
       if (res) {
-        setIsSubmitted(true);
+        notifySuccess("Attendance Created Successfully");
+        setIsSubmitted(false);
+        navigate("/teacher/attendance");
       }
     } catch (error) {
       console.error("Error submitting attendance:", error);
@@ -302,8 +282,6 @@ const NewAttendance: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const resetSubmission = (): void => setIsSubmitted(false);
 
   const getSummaryStats = (): SummaryStats => {
     const totalStudents = attendanceState.length;
