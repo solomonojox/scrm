@@ -16,7 +16,7 @@ export const guardianService = {
   getGuardianById: async (id) => {
     try {
       const res = await api.get(`/api/Guardian/GetGuardianById/${id}`);
-      console.log("GetAllGuardians success:", res.data);
+      // console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
