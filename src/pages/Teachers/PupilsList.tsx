@@ -34,7 +34,7 @@ import Select from "react-select";
 import { classroomService } from "../../Services/Classroom";
 
 interface Student {
-  id: string;
+  studentId: string;
 }
 
 export default function PupilsList({ classrooms }: any) {
@@ -73,7 +73,8 @@ export default function PupilsList({ classrooms }: any) {
 
   // View / Delete / Messaging actions
   const handleViewStudent = () => {
-    navigate(`/teacher/pupil/${(selectedStudent! as Student).id}`);
+    // console.log(selectedStudent)
+    navigate(`/teacher/pupil/${selectedStudent.studentId}`, { state: selectedStudent });
     handleMenuClose();
   };
 

@@ -361,7 +361,7 @@ export default function GuardianDashboard(): React.JSX.Element {
     "Account Number": fetchedGuardianAccount?.accountNumber,
   };
 
-  console.log(fetchedTotalGuardianStudent)
+  // console.log(fetchedTotalGuardianStudent)
 
   const copyToClipboard = async (text: any, fieldName: any) => {
     try {

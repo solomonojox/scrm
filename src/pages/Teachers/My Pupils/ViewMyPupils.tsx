@@ -1,6 +1,24 @@
-import React from "react";
+import { useLocation } from "react-router-dom";
 
 const ViewMyPupils = () => {
+  const location = useLocation();
+  const moreDetails = location.state;
+  console.log(moreDetails);
+
+  const calculateAge = (dob: string): number => {
+    const birth = new Date(dob);
+    const today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Header with Back Button */}
@@ -27,12 +45,16 @@ const ViewMyPupils = () => {
             </svg>
           </div>
         </div>
-        <h2 className="mt-4 text-xl font-bold text-gray-800">Jason Ethan</h2>
+        <h2 className="mt-4 text-xl font-bold text-gray-800">{moreDetails?.firstname} {moreDetails.lastname}</h2>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm text-gray-600">12 years</span>
+          <span className="text-sm text-gray-600">{calculateAge(moreDetails?.dateOfBirth)} years</span>
           <span className="text-gray-300">•</span>
-          <span className="text-sm text-gray-600">Male</span>
-          <span className="text-gray-300">•</span>
+          {moreDetails?.gender && (
+            <div>
+              <span className="text-sm text-gray-600">{moreDetails?.gender}</span>
+              <span className="text-gray-300">•</span>
+            </div>
+          )}
           <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">JSS1</span>
         </div>
       </div>
@@ -54,28 +76,28 @@ const ViewMyPupils = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">Jason</span>
+                    <span className="text-gray-700">{moreDetails?.firstname}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Last Name</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">Ethan</span>
+                    <span className="text-gray-700">{moreDetails?.lastname}</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Date Of Birth</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">Date of birth</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">22/2/2222</span>
+                    <span className="text-gray-700">{moreDetails?.dateOfBirth.split('T')[0]}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Age</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">12 years</span>
+                    <span className="text-gray-700">{calculateAge(moreDetails?.dateOfBirth)}</span>
                   </div>
                 </div>
               </div>
@@ -87,28 +109,28 @@ const ViewMyPupils = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Entered Class</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">JSS1</span>
+                    <span className="text-gray-700">{moreDetails?.classroom || 'N/A'}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Current Term</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">First Term</span>
+                    <span className="text-gray-700">{moreDetails?.currentTerm}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Session ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">2023/2024</span>
+                    <span className="text-gray-700">{moreDetails?.currentSession}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Classroom ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">JSS1A</span>
+                    <span className="text-gray-700">{moreDetails?.classroomId}</span>
                   </div>
                 </div>
               </div>
@@ -120,14 +142,14 @@ const ViewMyPupils = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Guardian ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">2222222222</span>
+                    <span className="text-gray-700">{moreDetails?.guardianId}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Teacher ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">1111111111</span>
+                    <span className="text-gray-700">{moreDetails?.teacherId}</span>
                   </div>
                 </div>
               </div>
@@ -139,14 +161,14 @@ const ViewMyPupils = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Student ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">STU-12345</span>
+                    <span className="text-gray-700">{moreDetails?.studentId}</span>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Gender</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">Male</span>
+                    <span className="text-gray-700">{moreDetails?.gender || 'N/A'}</span>
                   </div>
                 </div>
               </div>
@@ -156,10 +178,10 @@ const ViewMyPupils = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 mt-8">
-          <button className="px-5 py-2.5 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors shadow-sm">
+          {/* <button className="px-5 py-2.5 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors shadow-sm">
             Edit Profile
-          </button>
-          <button className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors" onClick={() => window.history.back()}>
+          </button> */}
+          <button className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-orange-500 transition-colors" onClick={() => window.history.back()}>
             Back to List
           </button>
         </div>
