@@ -38,19 +38,19 @@ const ViewMyPupils = () => {
       </div>
 
       {/* Form Section */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="mx-auto px-4 py-6">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Section Header */}
           <div className="bg-orange-500 px-6 py-3">
             <h3 className="text-white font-medium">Student Information</h3>
           </div>
-          
+
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Personal Information Group */}
               <div className="space-y-5">
                 <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Personal Details</h4>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
@@ -83,7 +83,7 @@ const ViewMyPupils = () => {
               {/* Academic Information Group */}
               <div className="space-y-5">
                 <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Academic Information</h4>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Entered Class</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
@@ -116,7 +116,7 @@ const ViewMyPupils = () => {
               {/* Contact Information Group */}
               <div className="space-y-5">
                 <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Contact Information</h4>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Guardian ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
@@ -135,7 +135,7 @@ const ViewMyPupils = () => {
               {/* Identification Group */}
               <div className="space-y-5">
                 <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Identification</h4>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Student ID</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">

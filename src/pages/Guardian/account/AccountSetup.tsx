@@ -10,9 +10,11 @@ import {
     Typography,
     Paper,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AccountSetup = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [bvn, setBvn] = useState("");
     const [nin, setNin] = useState("");
     const [loading, setLoading] = useState(false);
@@ -55,6 +57,7 @@ const AccountSetup = () => {
             toast.success("Account set up successfully");
             setBvn("");
             setNin("");
+            navigate("/guardian/dashboard");
         } catch (error: any) {
             console.error(error.response.data);
             const err = error.response.data

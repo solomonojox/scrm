@@ -361,7 +361,7 @@ export default function GuardianDashboard(): React.JSX.Element {
     "Account Number": fetchedGuardianAccount?.accountNumber,
   };
 
-  const copyToClipboard = async (text, fieldName) => {
+  const copyToClipboard = async (text: any, fieldName: any) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(fieldName);

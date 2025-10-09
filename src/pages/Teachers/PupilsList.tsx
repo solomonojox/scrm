@@ -23,45 +23,34 @@ import {
   MenuItem,
   TablePagination,
   Chip,
-  Avatar
+  Avatar,
+  CircularProgress,
 } from "@mui/material";
 import { User, Users, UserCheck, MoreVertical } from "lucide-react";
 import FolderIcon from "@mui/icons-material/Folder";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useNavigate } from "react-router-dom";
-
-const pupils = Array(8).fill({
-  id: "10001",
-  firstName: "Owen",
-  lastName: "Owen",
-  enteredClass: "Jss1",
-  dob: "22/2/2222",
-  age: 12,
-  guardianId: "122222222",
-  teacherId: "22222222",
-  gender: "Male",
-  currentTerm: "1st Term",
-  sessionId: "2025/2026",
-  classroomId: "Jss1A",
-  photo: "https://i.pravatar.cc/50?img=3"
-});
+import Select from "react-select";
+import { classroomService } from "../../Services/Classroom";
 
 interface Student {
   id: string;
-  // other properties
 }
 
-export default function PupilsList({ students }: any) {
-  console.log(students)
-  const navigate = useNavigate()
+export default function PupilsList({ classrooms }: any) {
+  const navigate = useNavigate();
   const [openFolderModal, setOpenFolderModal] = useState(false);
   const [openDownloadModal, setOpenDownloadModal] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedClassroom, setSelectedClassroom] = useState<any>(null);
 
+  // Handle menu open/close
   const handleMenuOpen = (event: any, student: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedStudent(student);
@@ -72,6 +61,7 @@ export default function PupilsList({ students }: any) {
     setSelectedStudent(null);
   };
 
+  // Pagination handlers
   const handleChangePage = (event: any, newPage: number) => {
     setPage(newPage);
   };
@@ -81,6 +71,7 @@ export default function PupilsList({ students }: any) {
     setPage(0);
   };
 
+  // View / Delete / Messaging actions
   const handleViewStudent = () => {
     navigate(`/teacher/pupil/${(selectedStudent! as Student).id}`);
     handleMenuClose();
@@ -94,6 +85,25 @@ export default function PupilsList({ students }: any) {
   const handleDelete = () => {
     console.log("Delete student:", selectedStudent);
     handleMenuClose();
+  };
+
+  // Fetch students by selected classroom
+  const handleClassroomChange = async (selectedOption: any) => {
+    setSelectedClassroom(selectedOption);
+    if (!selectedOption) return;
+
+    try {
+      setLoading(true);
+      const response = await classroomService.getClassroomTudentsByClassId(
+        selectedOption.value
+      );
+      setStudents(response || []); // Adjust if your API shape differs
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      setStudents([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -112,7 +122,7 @@ export default function PupilsList({ students }: any) {
               fontSize: "1rem",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between"
+              justifyContent: "space-between",
             }}
           >
             <Box display="flex" alignItems="center" gap={2}>
@@ -130,133 +140,154 @@ export default function PupilsList({ students }: any) {
             </Box>
 
             <Box display="flex" alignItems="center" gap={1}>
+              {/* Search Input */}
               <TextField
                 size="small"
                 placeholder="Search students..."
                 sx={{
-                  backgroundColor: 'white',
+                  backgroundColor: "white",
                   borderRadius: 1,
-                  '& .MuiOutlinedInput-root': {
-                    height: '36px'
-                  }
+                  "& .MuiOutlinedInput-root": { height: "36px" },
                 }}
               />
+
+              {/* Classroom Select */}
+              <Box sx={{ minWidth: 200 }}>
+                <Select
+                  placeholder="Select Classroom"
+                  options={classrooms?.map((cls: any) => ({
+                    label: cls.name,
+                    value: cls.classroomId,
+                  }))}
+                  value={selectedClassroom}
+                  onChange={handleClassroomChange}
+                  isClearable
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      height: 36,
+                      minHeight: 36,
+                      borderRadius: 6,
+                    }),
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
 
+          {/* Table */}
           <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox />
-                  </TableCell>
-                  <TableCell>Student ID</TableCell>
-                  <TableCell>Photo</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Class</TableCell>
-                  <TableCell>Age/Gender</TableCell>
-                  {/* <TableCell>Guardian ID</TableCell>
-                  <TableCell>Teacher ID</TableCell> */}
-                  <TableCell>Term/Session</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {students
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((pupil: any, idx: number) => (
-                    <TableRow key={idx} hover>
-                      <TableCell padding="checkbox">
-                        <Checkbox />
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={pupil.studentNo}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Avatar
-                          src={pupil.photo}
-                          alt="student"
-                          sx={{ width: 40, height: 40 }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Box>
-                          <Typography variant="subtitle2">
-                            {pupil.firstname} {pupil.lastname}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            DOB: {pupil.dob}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box>
-                          <Typography variant="body2">
-                            {pupil.homeAddress}
-                          </Typography>
-                          {/* <Typography variant="caption" color="textSecondary">
-                            {pupil.classroomId}
-                          </Typography> */}
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box>
-                          <Typography variant="body2">
-                            {pupil.dateOfBirth?.slice(0, 10)}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            {pupil.gender}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      {/* <TableCell>
-                        <Chip
-                          label={pupil.guardianId}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </TableCell> */}
-                      {/* <TableCell>
-                        <Chip
-                          label={pupil.teacherId}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </TableCell> */}
-                      <TableCell>
-                        <Box>
-                          <Typography variant="body2">
-                            {pupil.currentSession}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            {pupil.sessionId}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => handleMenuOpen(e, pupil)}
-                        >
-                          <MoreVertical size={16} />
-                        </IconButton>
+            {loading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                py={5}
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox />
+                    </TableCell>
+                    <TableCell>Student ID</TableCell>
+                    <TableCell>Photo</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Class</TableCell>
+                    <TableCell>Age/Gender</TableCell>
+                    <TableCell>Term/Session</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+                  {students.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} align="center">
+                        No students found
                       </TableCell>
                     </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+                  ) : (
+                    students
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((pupil: any, idx: number) => (
+                        <TableRow key={idx} hover>
+                          <TableCell padding="checkbox">
+                            <Checkbox />
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={pupil.studentNo}
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Avatar
+                              src={pupil.photo}
+                              alt="student"
+                              sx={{ width: 40, height: 40 }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Box>
+                              <Typography variant="subtitle2">
+                                {pupil.firstname} {pupil.lastname}
+                              </Typography>
+                              <Typography variant="caption" color="textSecondary">
+                                DOB: {pupil.dob}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2">
+                              {pupil.classroomId?.name || "N/A"}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Box>
+                              <Typography variant="body2">
+                                {pupil.age || pupil.dateOfBirth?.slice(0, 10)}
+                              </Typography>
+                              <Typography variant="caption" color="textSecondary">
+                                {pupil.gender}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <Box>
+                              <Typography variant="body2">
+                                {pupil.currentTerm}
+                              </Typography>
+                              <Typography variant="caption" color="textSecondary">
+                                {pupil.sessionId}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => handleMenuOpen(e, pupil)}
+                            >
+                              <MoreVertical size={16} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </TableContainer>
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={pupils.length}
+            count={students.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -272,10 +303,7 @@ export default function PupilsList({ students }: any) {
         onClose={handleMenuClose}
         PaperProps={{
           elevation: 3,
-          sx: {
-            borderRadius: 2,
-            minWidth: 180,
-          }
+          sx: { borderRadius: 2, minWidth: 180 },
         }}
       >
         <MenuItem onClick={handleViewStudent}>
@@ -286,7 +314,7 @@ export default function PupilsList({ students }: any) {
           <Users size={16} style={{ marginRight: 8 }} />
           Messaging
         </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <User size={16} style={{ marginRight: 8 }} />
           Delete
         </MenuItem>
