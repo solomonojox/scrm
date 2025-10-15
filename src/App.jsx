@@ -23,8 +23,6 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import AdminSchoolFee from "./pages/Admin/schoolFee/AdminSchoolFee";
 import Payroll from "./pages/Admin/Payroll/Payroll";
-import PaymentHistory from "./pages/Admin/Payroll/PaymentHistory";
-
 
 // import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from "./layouts/GuardianLayout";
@@ -120,7 +118,7 @@ function App() {
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
         <Route path="/teacher/settings" element={<TeacherSettings/>} />
          <Route path="/admin/payroll" element={<Payroll />} />
-          <Route path="/admin/payment-history" element={<PaymentHistory />} />
+         
       </Route>
 
       {/* All Guardians routes here */}
