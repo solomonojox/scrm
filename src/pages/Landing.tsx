@@ -452,7 +452,7 @@ const Landing = () => {
           </div>
 
           <div className="max-w-7xl mx-auto mt-2 text-xs text-center md:text-right">
-            © 2025 SCRM. All rights reserved.
+            © 2025 EDUCAT. All rights reserved.
           </div>
         </footer>
       </>

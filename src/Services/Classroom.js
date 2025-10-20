@@ -59,4 +59,24 @@ export const classroomService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
     }
   },
+
+  getClassroomByTeacherId: async (teacherId) => {
+    try {
+      const response = await api.get(`/api/Classroom/GetClassroomByTeacherId/${teacherId}`);
+      return response.data.data;
+    } catch (error) {
+      console.error("GetAllClassroom error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+    }
+  },
+
+  getClassroomTudentsByClassId: async (classId) => {
+    try {
+      const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classId}`);
+      return response.data.data;
+    } catch (error) {
+      console.error("GetAllClassroom error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+    }
+  },
 };

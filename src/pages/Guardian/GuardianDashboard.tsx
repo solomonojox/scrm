@@ -361,7 +361,9 @@ export default function GuardianDashboard(): React.JSX.Element {
     "Account Number": fetchedGuardianAccount?.accountNumber,
   };
 
-  const copyToClipboard = async (text, fieldName) => {
+  // console.log(fetchedTotalGuardianStudent)
+
+  const copyToClipboard = async (text: any, fieldName: any) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopiedField(fieldName);
@@ -384,11 +386,11 @@ export default function GuardianDashboard(): React.JSX.Element {
     try {
       const data = await guardianStudentService.getAll(user?.id);
       const savingsAccountData = await guardianAccountService.getGuardianAccount(user?.id);
-      const loanAccountData = await guardianAccountService.getGuardianLoanAccount(user?.id);
+      // const loanAccountData = await guardianAccountService.getGuardianLoanAccount(user?.id);
 
       dispatch(fetchGuardiansStudentSuccess(data));
       dispatch(fetchGuardiansAccountSuccess(savingsAccountData));
-      dispatch(fetchGuardiansLoanAccountSuccess(loanAccountData));
+      // dispatch(fetchGuardiansLoanAccountSuccess(loanAccountData));
     } catch (err) {
       dispatch(fetchGuardiansStudentFailure((err as Error).message));
       dispatch(fetchGuardiansAccountFailure((err as Error).message));
@@ -413,7 +415,7 @@ export default function GuardianDashboard(): React.JSX.Element {
         </div>
 
         {/* Info Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#e6c9b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
             <div>
               <p className="text-[13px] text-gray-600 mb-1">Total Number of Pupils</p>
@@ -432,7 +434,7 @@ export default function GuardianDashboard(): React.JSX.Element {
             </div>
             <i className="fas fa-wallet text-gray-700 text-3xl" />
           </div>
-          <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
+          {/* <div className="bg-[#e6b7b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
             <div>
               <p className="text-[13px] text-gray-600 mb-1">Loan Account Balance</p>
               <p className="font-semibold text-lg text-gray-900 leading-none">
@@ -440,7 +442,7 @@ export default function GuardianDashboard(): React.JSX.Element {
               </p>
             </div>
             <i className="fas fa-coins text-red-500 text-3xl" />
-          </div>
+          </div> */}
           <div className="bg-[#c9e6b7] rounded-lg p-4 flex items-center justify-between shadow-sm">
             <div>
               <p className="text-[13px] text-gray-600 mb-1">Current Term</p>

@@ -5,7 +5,7 @@ export const guardianAccountService = {
   getGuardianAccount: async (id) => {
     try {
       const res = await api.get(`/api/Account/GetGuardianSavingsAccount/${id}`);
-      //   console.log("GetAllGuardians success:", res.data.data);
+        // console.log("GetAllGuardians success:", res.data.data);
       return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
@@ -16,7 +16,7 @@ export const guardianAccountService = {
   getGuardianLoanAccount: async (id) => {
     try {
       const res = await api.get(`/api/Account/GetGuardianLoanAccount/${id}`);
-      //   console.log("GetAllGuardians success:", res.data.data);
+        console.log("GetAllGuardians success:", res.data.data);
       return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);

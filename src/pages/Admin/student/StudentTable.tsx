@@ -200,6 +200,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                             <th className="p-3 min-w-[120px]">First Name</th>
                             <th className="p-3 min-w-[120px]">Last Name</th>
                             <th className="p-3 min-w-[80px]">Class</th>
+                            <th className="p-3 min-w-[80px]">Gender</th>
                             <th className="p-3 min-w-[100px]">Date of Birth</th>
                             <th className="p-3 min-w-[200px]">Address</th>
                             <th className="p-3 min-w-[120px]">Guardian</th>
@@ -239,6 +240,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                     <td className="p-3">{student?.firstname}</td>
                                     <td className="p-3">{student?.lastname}</td>
                                     <td className="p-3">{student?.classroomName}</td>
+                                    <td className="p-3">{student?.gender}</td>
                                     <td className="p-3">
                                         {student?.dateOfBirth ? new Date(student?.dateOfBirth).toLocaleDateString() : '-'}
                                     </td>

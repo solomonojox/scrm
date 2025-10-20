@@ -244,16 +244,16 @@ const AllGuardians: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this guardian?")) return;
-    try {
-      await onboardingService.deleteGuardian(id);
-      await fetchGuardian();
-      toast.success("Deleted!");
-    } catch (error) {
-      toast.error("Delete failed");
-    }
-  };
+  // const handleDelete = async (id: string) => {
+  //   if (!window.confirm("Are you sure you want to delete this guardian?")) return;
+  //   try {
+  //     await onboardingService.deleteGuardian(id);
+  //     await fetchGuardian();
+  //     toast.success("Deleted!");
+  //   } catch (error) {
+  //     toast.error("Delete failed");
+  //   }
+  // };
 
   useEffect(() => {
     document.title = "EduCat Guardian";
@@ -451,7 +451,7 @@ const AllGuardians: React.FC = () => {
                       <FaEdit className="cursor-pointer text-green-600 hover:text-green-800" />
                       <FaTrash
                         className="cursor-pointer text-red-600 hover:text-red-800"
-                        onClick={() => handleDelete(g.guardianId)}
+                        // onClick={() => handleDelete(g.guardianId)}
                       />
                     </td>
                   </tr>

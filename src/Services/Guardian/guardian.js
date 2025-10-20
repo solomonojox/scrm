@@ -57,6 +57,16 @@ export const guardianService = {
     }
   },
 
+  accountSetUp: async (data) => {
+    try {
+      const res = await api.post(`/api/Account/SetUpAccount`, data)
+      return res.data
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  },
+
   delete: async (id) => {
     try {
       const res = await api.delete(`/api/Guardian/${id}`);

@@ -4,7 +4,7 @@ export const sessionService = {
   /**
    * Adds a new session
    * @param {Object} sessionData - The session object (schoolId, sessionId, name, dates, etc.)
-   * @returns {Promise<Object>}
+   * @returns {Promise<any>}
    */
   addSession: async (sessionData) => {
     try {
@@ -12,6 +12,17 @@ export const sessionService = {
       return response.data;
     } catch (error) {
       console.error("AddSession error:", error);
+      throw new Error(
+        error?.response?.data?.responseMessage || "Failed to add session"
+      );
+    }
+  },
+  delete: async (sessionData) => {
+    try {
+      const response = await api.post(`/api/Session/delete`, sessionData);
+      return response.data;
+    } catch (error) {
+      console.error("DeleteSession error:", error);
       throw new Error(
         error?.response?.data?.responseMessage || "Failed to add session"
       );

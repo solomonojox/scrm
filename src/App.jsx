@@ -53,8 +53,21 @@ import TeacherProfile from "./pages/Teachers/profile/TeacherProfile";
 import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
 import TeacherNews from "./pages/Teachers/news/TeacherNews";
 import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
-import TeacherMyPupils from "./pages/Teachers/My Pupils/My Pupils";
+
+import Pupil from "./pages/Teachers/PupilsList";
+
+import TeacherMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
 import TeacherSettings from "./pages/Teachers/settings/Settings";
+import MyPupil from "./pages/Teachers/MyPupil";
+import ViewMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
+import TeacherAttendance from "./pages/Teachers/attendance/TeacherAttendance";
+import NewAttendance from "./pages/Teachers/attendance/NewAttendance";
+import AttendanceReport from "./pages/Teachers/attendance/AttendanceReport";
+import AccountSetup from "./pages/Guardian/account/AccountSetup";
+import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
+import TeacherResult from "./pages/Teachers/results/TeacherResult";
+import NewResult from "./pages/Teachers/results/NewResult";
+import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -100,10 +113,10 @@ function App() {
         <Route path="/admin/guardians" element={<AdminGuardian />} />
         <Route path="/admin/classrooms" element={<AdminClassroom />} />
         <Route path="/admin/session" element={<AdminSession />} />
+        <Route path="/admin/terms" element={<AdminSessionTerm />} />
         <Route path="/admin/messages" element={<AdminMessages />} />
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<AdminEvents />} />
-        <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
                <Route path="/admin/payroll" element={<Payroll />} />
          
@@ -113,12 +126,21 @@ function App() {
       <Route element={<TeacherLayout />}>
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+        <Route path="/teacher/new-attendance" element={<NewAttendance />} />
+        <Route path="/teacher/attendance-report" element={<AttendanceReport />} />
         <Route path="/teacher/messages" element={<TeacherMessages />} />
         <Route path="/teacher/news" element={<TeacherNews />} />
         <Route path="/teacher/events" element={<TeacherEvent />} />
+        <Route path="/teacher/pupil" element={<MyPupil />} />
+        <Route path="/teacher/pupil/:id" element={<ViewMyPupils />} />
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
         <Route path="/teacher/settings" element={<TeacherSettings/>} />
         
+      
+        <Route path="/teacher/results" element={<TeacherResult />} />
+        <Route path="/teacher/new-result" element={<NewResult />} />
+        <Route path="/teacher/report-card" element={<TeacherReportCard />} />
       </Route>
 
       {/* All Guardians routes here */}
@@ -150,6 +172,7 @@ function App() {
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/message" element={<GuardianMessages />} />
         <Route path="/guardian/transactions" element={<TransactionDashboard />} />
+        <Route path="/guardian/account-setup" element={<AccountSetup />} />
       </Route>
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />

@@ -13,7 +13,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     firstname: "",
     lastname: "",
     phone: "",
@@ -42,7 +42,7 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
   // console.log(editData)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

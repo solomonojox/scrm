@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaThLarge,
@@ -259,7 +260,7 @@ const SidebarButton = ({ activeIcon, nonActiveIcon, icon, label, to }) => {
         transition-all duration-200
         group
         ${
-          isActive
+          isActive 
             ? "bg-orange-50 text-orange-600 font-medium shadow-sm"
             : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
         }
@@ -345,7 +346,7 @@ const TeacherSidebar = () => {
           nonActiveIcon={iconsSvg.mypupils}
           activeIcon={iconsSvg.mypupilsActive}
           label="My Pupils"
-          to="/teacher/teachers"
+          to="/teacher/pupil"
         />
         {/* <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/teacher/guardians" /> */}
 

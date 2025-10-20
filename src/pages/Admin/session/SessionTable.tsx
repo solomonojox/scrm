@@ -239,7 +239,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
                             </th>
                             {/* <th className="p-3 min-w-[80px]">Photo</th> */}
                             <th className="p-3 min-w-[120px]">Session Id</th>
-                            <th className="p-3 min-w-[120px]">Session name</th>
+                            {/* <th className="p-3 min-w-[120px]">Session name</th> */}
                             <th className="p-3 min-w-[120px]">Start Date </th>
                             <th className="p-3 min-w-[200px]">End date</th>
                             <th className="p-3 min-w-[200px]">Actions</th>
@@ -257,7 +257,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
                         ) : (
                             records.map((s, index) => (
                                 <tr
-                                    key={s.sessionId}
+                                    key={index}
                                     className={`border-t hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                                 >
                                     <td className="p-3">
@@ -270,7 +270,7 @@ const SessionTable: React.FC<SessionTableProps> = ({
                                     </td>
                                     {/* <td className="p-3">{s.sessionId}</td> */}
                                     <td className="p-3">{s.sessionId}</td>
-                                    <td className="p-3">{s.sessionName}</td>
+                                    {/* <td className="p-3">{s.sessionName}</td> */}
                                     <td className="p-3">{s?.startDate?.split('T')[0]}</td>
                                     {/* <td className="p-3">{s.classrooms}</td> */}
                                     {/* <td className="p-3">{s.id}</td> */}

@@ -6,4 +6,5 @@ export interface Session{
     startDate: string;
     endDate: string;
     classrooms: []
+    sessionKey?: string;    
 }

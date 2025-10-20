@@ -9,45 +9,49 @@ import ClassroomForm from "./ClassroomForm";
 import { classrooms } from "../../../Types/classroomTypes";
 import { classroomService } from "../../../Services/Classroom";
 import ViewClassroomModal from "../../../components/Admin/classroom/ViewClassroomModal";
-import { fetchClassroomsFailure, fetchClassroomsStart, fetchClassroomsSuccess } from "../../../Store/Admin/classroomSlice";
+import {
+  fetchClassroomsFailure,
+  fetchClassroomsStart,
+  fetchClassroomsSuccess,
+} from "../../../Store/Admin/classroomSlice";
 
-type ReligionFilter = 'all' | 'christian' | 'muslim';
+type ReligionFilter = "all" | "christian" | "muslim";
 
 const AdminClassroom: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getClassrooms.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getClassrooms.loading);
   const error = useSelector((state: RootState) => state.getClassrooms.error);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openViewDetailModal, setOpenViewDetailModal] = useState(false)
+  const [openViewDetailModal, setOpenViewDetailModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
-  const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  const [classroomDetails, setClassroomDetails]= useState<classrooms>()
-  
+  const [religionFilter, setReligionFilter] = useState<ReligionFilter>("all");
+  const [classroomDetails, setClassroomDetails] = useState<classrooms>();
+
   const recordsPerPage = 5;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;
 
-    if (religionFilter !== 'all') {
-      filtered = filtered.filter((classroom: classrooms) =>
-        classroom.name?.toLowerCase() === religionFilter
+    if (religionFilter !== "all") {
+      filtered = filtered.filter(
+        (classroom: classrooms) => classroom.name?.toLowerCase() === religionFilter
       );
     }
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((classroom: classrooms) =>
-        classroom.name?.toLowerCase().includes(query) ||
-        classroom.capacity ||
-        classroom.classroomId?.toLowerCase().includes(query) ||
-        classroom.teacherId?.toLowerCase().includes(query)
-
+      filtered = filtered.filter(
+        (classroom: classrooms) =>
+          classroom.name?.toLowerCase().includes(query) ||
+          classroom.capacity ||
+          classroom.classroomId?.toLowerCase().includes(query) ||
+          classroom.teacherId?.toLowerCase().includes(query)
       );
     }
 
@@ -68,8 +72,7 @@ const AdminClassroom: React.FC = () => {
   const fetchClassroom = async () => {
     dispatch(fetchClassroomsStart());
     try {
-
-      const data = await classroomService.getClassroomBySchoolId(localStorage.getItem('schoolId'));
+      const data = await classroomService.getClassroomBySchoolId(localStorage.getItem("schoolId"));
       dispatch(fetchClassroomsSuccess(data));
     } catch (err) {
       dispatch(fetchClassroomsFailure((err as Error).message));
@@ -122,11 +125,10 @@ const AdminClassroom: React.FC = () => {
     }
   };
 
-  const handleViewDetails = (classroom: classrooms)=> {
-    console.log(classroom)
-    setClassroomDetails(classroom)
-    setOpenViewDetailModal(true)
-  }
+  const handleViewDetails = (classroom: classrooms) => {
+    setClassroomDetails(classroom);
+    setOpenViewDetailModal(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
@@ -156,20 +158,15 @@ const AdminClassroom: React.FC = () => {
         />
 
         {isModalOpen && (
-          <ClassroomForm
-            onClose={() => setIsModalOpen(false)}
-            onGuardianAdded={fetchClassroom}
-          />
+          <ClassroomForm onClose={() => setIsModalOpen(false)} onGuardianAdded={fetchClassroom} />
         )}
 
-        {
-          openViewDetailModal && (
-            <ViewClassroomModal 
-              closeViewModal={()=> setOpenViewDetailModal(false)}
-              classroomDetails={classroomDetails}
-            />
-          )
-        }
+        {openViewDetailModal && (
+          <ViewClassroomModal
+            closeViewModal={() => setOpenViewDetailModal(false)}
+            classroomDetails={classroomDetails}
+          />
+        )}
       </div>
     </div>
   );

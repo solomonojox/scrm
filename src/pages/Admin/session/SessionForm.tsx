@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import Select from "react-select";
 import { sessionService } from "../../../Services/Session";
 import { useAuth } from "../../../Context/Auth/useAuth";
 
@@ -16,7 +15,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({
     sessionId: "",
-    sessionName: "",
+    // sessionName: "",
     startDate: "",
     endDate: ""
   });
@@ -33,7 +32,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
     if (editData) {
       setFormData({
         sessionId: editData.sessionId || "",
-        sessionName: editData.sessionName || "",
+        // sessionName: editData.sessionName || "",
         startDate: editData.startDate || "",
         endDate: editData.endDate || ""
       });
@@ -57,7 +56,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
     const payload = {
       schoolId: user?.schoolId,
       sessionId: formData.sessionId,
-      sessionName: formData.sessionName,
+      // sessionName: formData.sessionName,
       startDate: new Date(formData.startDate).toISOString(),
       endDate: new Date(formData.endDate).toISOString()
     };
@@ -74,7 +73,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
           onClose();
           setFormData({
             sessionId: "",
-            sessionName: "",
+            // sessionName: "",
             startDate: "",
             endDate: ""
           });
@@ -113,7 +112,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Term</label>
               <Select
                 options={sessionNameOptions}
@@ -124,12 +123,12 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
                 className="text-sm"
                 required
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
               <input
-                type="datetime-local"
+                type="date"
                 name="startDate"
                 required
                 className="border px-3 py-2 rounded text-sm w-full"
@@ -141,7 +140,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
               <input
-                type="datetime-local"
+                type="date"
                 name="endDate"
                 required
                 className="border px-3 py-2 rounded text-sm w-full"

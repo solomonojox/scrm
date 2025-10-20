@@ -17,4 +17,6 @@ export interface TeacherType {
   subjects?: [];
   classroom?: null;
   payrollRecords?: null;
+  employmentDate?: string
+  dateOfBirth?: string
 }
