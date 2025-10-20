@@ -22,6 +22,7 @@ import AdminNews from "./pages/Admin/news/AdminNews";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import AdminSchoolFee from "./pages/Admin/schoolFee/AdminSchoolFee";
+import Payroll from "./pages/Admin/Payroll/Payroll";
 
 // import Dashboard from './pages/Admin/guardian/Dashboard';
 import { GuardianLayout } from "./layouts/GuardianLayout";
@@ -117,6 +118,8 @@ function App() {
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
+               <Route path="/admin/payroll" element={<Payroll />} />
+         
       </Route>
 
       {/* All teachers routes here */}
@@ -132,7 +135,9 @@ function App() {
         <Route path="/teacher/pupil" element={<MyPupil />} />
         <Route path="/teacher/pupil/:id" element={<ViewMyPupils />} />
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
-        <Route path="/teacher/settings" element={<TeacherSettings />} />
+        <Route path="/teacher/settings" element={<TeacherSettings/>} />
+        
+      
         <Route path="/teacher/results" element={<TeacherResult />} />
         <Route path="/teacher/new-result" element={<NewResult />} />
         <Route path="/teacher/report-card" element={<TeacherReportCard />} />
