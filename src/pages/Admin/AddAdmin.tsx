@@ -40,7 +40,7 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post(
-        "https://scrmapi.tranquility.org.ng/api/SchoolAdmin/Register",
+        "https://educat.codeweb.com.ng/api/SchoolAdmin/Register",
         payload
       );
 
@@ -50,7 +50,7 @@ const RegistrationForm = () => {
       setTimeout(() => {
         navigate("/login");
       }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       const err = error.response?.data?.title || "Registration failed. Please try again.";
       setErrorMsg(`❌ ${err}`);
 
@@ -120,7 +120,7 @@ const RegistrationForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Username</label>
+              <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
 
                 type="email"
