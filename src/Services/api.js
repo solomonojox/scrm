@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://scrmapi.tranquility.org.ng",
+  baseURL: "https://educat.codeweb.com.ng",
 });
 
 // Attach token to every request
