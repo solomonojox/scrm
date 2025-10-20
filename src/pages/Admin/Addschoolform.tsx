@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 import Header from "../Header";
 import Footer from "../Footer";
@@ -11,7 +12,6 @@ const formFields = [
   { label: "School Email", name: "schoolEmail", type: "email", placeholder: "Enter Email" },
   { label: "School Phone Number", name: "schoolPhone", type: "tel", placeholder: "Enter Number" },
   { label: "School Address", name: "address", type: "text", placeholder: "Enter Address" },
-  { label: "Country", name: "country", type: "text", placeholder: "Enter Country" },
   { label: "State", name: "state", type: "text", placeholder: "Enter State" },
   { label: "City", name: "city", type: "text", placeholder: "Enter City" },
   { label: "Owner Name", name: "ownerName", type: "text", placeholder: "Enter Name" },
@@ -22,15 +22,22 @@ const formFields = [
 
 const schoolTypes = ["Primary", "Secondary", "College"];
 
+// Country options for React Select
+const countryOptions = [
+  { value: 1, label: "Nigeria" },
+  { value: 2, label: "Ghana" }
+];
+
 const AddSchoolForm = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     schoolName: "",
     schoolEmail: "",
     schoolPhone: "",
     address: "",
     typeOfSchool: "",
     country: "",
+    countryId: 0,
     state: "",
     city: "",
     ownerName: "",
@@ -45,17 +52,26 @@ const AddSchoolForm = () => {
   const [successModal, setSuccessModal] = useState(false);
   const [schoolRegNumber, setSchoolRegNumber] = useState("");
 
+  // console.log(formData);
 
-  const handleChange = e => {
+  const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
   };
 
+  // Handle country selection change
+  const handleCountryChange = (selectedOption: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      countryId: selectedOption.value,
+      country: selectedOption.label
+    }));
+  };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -74,7 +90,7 @@ const AddSchoolForm = () => {
       }
       setSuccess("School registered successfully!");
 
-    } catch (err) {
+    } catch (err: any) {
       console.log(err)
       const msg = err.response?.data?.responseMessage || err.message;
       setError(msg);
@@ -166,7 +182,61 @@ const AddSchoolForm = () => {
           </section>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-            {formFields.map(({ label, name, type, placeholder }) => (
+            {formFields.slice(0, 4).map(({ label, name, type, placeholder }) => (
+              <div key={name}>
+                <label htmlFor={name} className="block text-[13px] text-gray-700 mb-1">
+                  {label}
+                </label>
+                <input
+                  id={name}
+                  name={name}
+                  type={type}
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  className="w-full border border-orange-400 rounded-md px-3 py-2 text-[13px] placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Country Dropdown */}
+            <div>
+              <label htmlFor="country" className="block text-[13px] text-gray-700 mb-1">
+                Country
+              </label>
+              <Select
+                id="country"
+                name="country"
+                options={countryOptions}
+                value={countryOptions.find(option => option.value === formData.countryId)}
+                onChange={handleCountryChange}
+                placeholder="Select Country"
+                className="text-[13px]"
+                styles={{
+                  control: (base, state) => ({
+                    ...base,
+                    borderColor: state.isFocused ? '#fb923c' : '#fb923c',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    minHeight: '42px',
+                    boxShadow: state.isFocused ? '0 0 0 1px #fb923c' : 'none',
+                    '&:hover': {
+                      borderColor: '#fb923c'
+                    }
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    fontSize: '13px',
+                    backgroundColor: state.isSelected ? '#fb923c' : state.isFocused ? '#fed7aa' : 'white',
+                    color: state.isSelected ? 'white' : 'black'
+                  })
+                }}
+                required
+              />
+            </div>
+
+            {formFields.slice(4).map(({ label, name, type, placeholder }) => (
               <div key={name}>
                 <label htmlFor={name} className="block text-[13px] text-gray-700 mb-1">
                   {label}
