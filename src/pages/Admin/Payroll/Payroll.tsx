@@ -205,7 +205,7 @@ const BulkPaymentPageStatic = ({ onBack }) => {
       </div>
 
       <section className="border-0">
-        <div className="bg-indigo-900 w-full text-white rounded-lg overflow-hidden shadow-md">
+        <div className="bg-[#124A71] w-full text-white rounded-lg overflow-hidden shadow-md">
           <div className="flex justify-between p-4 items-center text-sm">
             <p>No 1111111</p>
             <div className="text-center">
@@ -592,7 +592,7 @@ const PayrollDashboard = () => {
 
       {/* Info Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+        <div className="bg-green-50 p-6 rounded-2xl shadow flex justify-between items-center">
           <div>
             <h3 className="text-sm text-gray-500">Total Payroll</h3>
             <p className="text-2xl font-semibold text-gray-800 mt-2">
@@ -602,7 +602,7 @@ const PayrollDashboard = () => {
           <DollarSign className="w-8 h-8 text-green-600" />
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+        <div className="bg-blue-50 p-6 rounded-2xl shadow flex justify-between items-center">
           <div>
             <h3 className="text-sm text-gray-500">Paid Staff</h3>
             <p className="text-2xl font-semibold text-gray-800 mt-2">{allPayrollData.filter(r => r.status === "Paid").length}</p>
@@ -610,7 +610,7 @@ const PayrollDashboard = () => {
           <Users className="w-8 h-8 text-blue-600" />
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+        <div className="bg-yellow-50 p-6 rounded-2xl shadow flex justify-between items-center">
           <div>
             <h3 className="text-sm text-gray-500">Pending Payments</h3>
             <p className="text-2xl font-semibold text-gray-800 mt-2">{allPayrollData.filter(r => r.status !== "Paid").length}</p>
@@ -618,7 +618,7 @@ const PayrollDashboard = () => {
           <CreditCard className="w-8 h-8 text-yellow-600" />
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
+        <div className="bg-orange-50 p-6 rounded-2xl shadow flex justify-between items-center">
           <div>
             <h3 className="text-sm text-gray-500">This Month's Total</h3>
             <p className="text-2xl font-semibold text-gray-800 mt-2">₦820,000</p>
