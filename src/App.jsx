@@ -105,7 +105,8 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/session" element={<AdminSession />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
-             
+               {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
+         
       </Route>
 
       {/* All teachers routes here */}
@@ -118,7 +119,6 @@ function App() {
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
         <Route path="/teacher/settings" element={<TeacherSettings/>} />
          <Route path="/admin/payroll" element={<Payroll />} />
-         
       </Route>
 
       {/* All Guardians routes here */}
