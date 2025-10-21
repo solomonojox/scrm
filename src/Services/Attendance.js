@@ -37,15 +37,15 @@ export const attendanceService = {
   //     }
   //   },
 
-  //   update: async (id, feeData) => {
-  //     try {
-  //       const response = await api.put(`/api/SchoolFee/UpdateSchoolFee?id=${id}`, feeData);
-  //       return response.data;
-  //     } catch (error) {
-  //       console.error("UpdateSchoolFee error:", error);
-  //       throw new Error(error?.response?.data?.responseMessage || "Failed to update school fee");
-  //     }
-  //   },
+    update: async (attendanceData) => {
+      try {
+        const response = await api.put(`/api/Attendance/EditAttendance`, attendanceData);
+        return response.data;
+      } catch (error) {
+        console.error("UpdateAttendance error:", error);
+        throw new Error(error?.response?.data?.responseMessage || "Failed to update attendance");
+      }
+    },
 
   //   getAllSchoolFeesBySchoolId: async (id) => {
   //     try {

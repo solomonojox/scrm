@@ -68,6 +68,9 @@ import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
 import TeacherResult from "./pages/Teachers/results/TeacherResult";
 import NewResult from "./pages/Teachers/results/NewResult";
 import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
+import TeacherAssignment from "./pages/Teachers/assignment/TeacherAssignment";
+import { NoRoute } from "./pages/NoRoute";
+import { NotFound } from "./pages/NotFound";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -86,10 +89,18 @@ function App() {
     }
   }, []);
 
+  const hasRoutes = true; // Could check if routes array is empty
+
+  if (!hasRoutes) {
+    return <NoRoute />;
+  }
+
   return (
     <Routes>
       {/* All Auth/Onboarding routes here */}
       <Route path="/" element={<Landing />} />
+      {/* 404 - catch all unmatched routes */}
+      <Route path="*" element={<NotFound />} />
 
       <Route path="/get-started" element={<GetStarted />} />
       <Route path="/add-school-form" element={<Addschoolform />} />
@@ -118,14 +129,14 @@ function App() {
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
-               <Route path="/admin/payroll" element={<Payroll />} />
-         
+        <Route path="/admin/payroll" element={<Payroll />} />
       </Route>
 
       {/* All teachers routes here */}
       <Route element={<TeacherLayout />}>
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/assignments" element={<TeacherAssignment />} />
         <Route path="/teacher/attendance" element={<TeacherAttendance />} />
         <Route path="/teacher/new-attendance" element={<NewAttendance />} />
         <Route path="/teacher/attendance-report" element={<AttendanceReport />} />
@@ -135,9 +146,8 @@ function App() {
         <Route path="/teacher/pupil" element={<MyPupil />} />
         <Route path="/teacher/pupil/:id" element={<ViewMyPupils />} />
         <Route path="/teacher/MyPupils" element={<TeacherMyPupils />} />
-        <Route path="/teacher/settings" element={<TeacherSettings/>} />
-        
-      
+        <Route path="/teacher/settings" element={<TeacherSettings />} />
+
         <Route path="/teacher/results" element={<TeacherResult />} />
         <Route path="/teacher/new-result" element={<NewResult />} />
         <Route path="/teacher/report-card" element={<TeacherReportCard />} />

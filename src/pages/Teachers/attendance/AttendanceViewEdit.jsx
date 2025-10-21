@@ -17,7 +17,6 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
   const [editedStudents, setEditedStudents] = useState([]);
   const [expandedStudent, setExpandedStudent] = useState(null);
 
-  console.log(attendanceItem);
 
   useEffect(() => {
     if (attendanceItem?.students) {
@@ -214,7 +213,7 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
                       <h3 className="font-medium text-gray-900 truncate">
                         {student.firstName} {student.lastName}
                       </h3>
-                      <p className="text-xs text-gray-500 truncate">ID: {student.studentId}</p>
+                      <p className="text-xs text-gray-500 truncate">ID: {student.studentNo}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

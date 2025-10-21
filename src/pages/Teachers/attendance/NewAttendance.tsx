@@ -17,8 +17,8 @@ import { useNavigate } from "react-router-dom";
 
 interface Student {
   id: string; // UUID from API (studentId field)
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   studentId: string; // Student number for display (studentId from API)
   photo: string | null;
   classroomId: string;
@@ -261,8 +261,8 @@ const NewAttendance: React.FC = () => {
       classroomId: student.classroomId,
       sessionId: selectedSession,
       studentId: student?.studentId,
-      firstName: student.firstName,
-      lastName: student.lastName,
+      firstName: student.firstname,
+      lastName: student.lastname,
       timeIn: student.time || getCurrentTime(),
       status: student.absent ? 0 : student.present ? 1 : 2, // 1=Present, 0=Absent, 2=Late
     }));
@@ -417,17 +417,17 @@ const NewAttendance: React.FC = () => {
                           {student.photo ? (
                             <img
                               src={student.photo}
-                              alt={`${student.firstName} ${student.lastName}`}
+                              alt={`${student.firstname} ${student.lastname}`}
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (
                             <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                              {student.firstName.charAt(0)}
+                              {student.firstname.charAt(0)}
                             </div>
                           )}
                         </td>
-                        <td className="px-4 py-3">{student.firstName}</td>
-                        <td className="px-4 py-3 hidden sm:table-cell">{student.lastName}</td>
+                        <td className="px-4 py-3">{student.firstname}</td>
+                        <td className="px-4 py-3 hidden sm:table-cell">{student.lastname}</td>
                         <td className="px-4 py-3 hidden md:table-cell">{student.studentNo}</td>
                         <td className="px-4 py-3">
                           {student.time && (

@@ -41,7 +41,7 @@ const MyPupil = () => {
     };
     return (
         <div>
-            <MyPupilCards />
+            {/* <MyPupilCards /> */}
             <PupilsList classrooms={classrooms} students={students} />
         </div>
     )
