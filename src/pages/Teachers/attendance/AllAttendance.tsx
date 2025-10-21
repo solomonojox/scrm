@@ -1,8 +1,10 @@
 import { Edit3Icon, Eye, MoreVertical, Trash2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../../../Styles/customScrollBar.css";
 import AttendanceViewEdit from "./AttendanceViewEdit";
-
+import { attendanceService } from "../../../Services/Attendance";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../../Context/AppContext";
 
 interface MobileCardProps {
   date: string;
@@ -121,29 +123,29 @@ const MobileCard: React.FC<MobileCardProps> = ({
   );
 };
 
-
-
 const AllAttendance = ({ attendanceData, loading }: any): React.ReactElement => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  
+  const navigate = useNavigate();
+  const { notifySuccess, notifyError } = useContext(AppContext);
+  const [isLoading, setIsLoading] = useState(false);
   // State for view/edit functionality
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showViewEdit, setShowViewEdit] = useState(false);
-  const [viewMode, setViewMode] = useState<'view' | 'edit'>('view');
+  const [viewMode, setViewMode] = useState<"view" | "edit">("view");
 
   // Handlers for view, edit, delete
   const handleView = (item: any) => {
     console.log("View:", item);
     setSelectedItem(item);
-    setViewMode('view');
+    setViewMode("view");
     setShowViewEdit(true);
   };
 
   const handleEdit = (item: any) => {
     console.log("Edit:", item);
     setSelectedItem(item);
-    setViewMode('edit');
+    setViewMode("edit");
     setShowViewEdit(true);
   };
 
@@ -162,22 +164,24 @@ const AllAttendance = ({ attendanceData, loading }: any): React.ReactElement => 
     setSelectedItem(null);
   };
 
-  const handleSave = (updatedData: any) => {
+  const handleSave = async (updatedData: any) => {
     console.log("Save updated data:", updatedData);
-    
-    // Update the attendance data in your state or call API
-    // Example: Call your API to update the attendance
-    // updateAttendanceAPI(updatedData).then(() => {
-    //   // Refresh the attendance list
-    //   fetchAttendanceData(); 
-    // });
-    
-    // For now, just close the view
-    setShowViewEdit(false);
-    setSelectedItem(null);
-    
-    // Optional: Show success message
-    alert("Attendance updated successfully!");
+
+    try {
+      setIsLoading(true);
+      const res = await attendanceService.update(updatedData);
+
+      if (res) {
+        setShowViewEdit(false);
+        setSelectedItem(null);
+        notifySuccess("Attendance Updated Successfully");
+        navigate("/teacher/attendance");
+      }
+    } catch (error) {
+      console.error("Error submitting attendance:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Filtered data
@@ -205,7 +209,6 @@ const AllAttendance = ({ attendanceData, loading }: any): React.ReactElement => 
       day: "numeric",
     });
   };
-
 
   // If viewing/editing, show the AttendanceViewEdit component
   if (showViewEdit && selectedItem) {

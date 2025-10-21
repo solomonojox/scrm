@@ -41,6 +41,8 @@ import {
   fetchClassroomStudentsStart, 
   fetchClassroomStudentsSuccess 
 } from "../../../Store/Admin/classroomStudentsSlice";
+import { resultService } from "../../../Services/Results";
+import { useNavigate } from "react-router-dom";
 
 interface OptionType {
   value: string | number;
@@ -65,6 +67,7 @@ interface SubjectFormData {
 
 const NewResult = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const sessions = useSelector((state: RootState) => state.getSession.listRecords);
   const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords || []);
@@ -349,7 +352,7 @@ const NewResult = () => {
 
       const payload = [
         {
-          schoolId: user?.schoolId || "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          schoolId: user?.schoolId ,
           classroomId: selectedClassroomId,
           subjectId: selectedSubjectId,
           sessionId: formData.sessionId,
@@ -357,16 +360,17 @@ const NewResult = () => {
           scores: scores,
         },
       ];
+      const res = await resultService.addResult(payload); 
 
-      // TODO: Replace with actual API call
-      console.log("Save Results Payload:", payload);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log(res)
+     if (res.status === true) {
+        setShowSuccess(true);
+        setResults({});
+        setTimeout(() => setShowSuccess(false), 5000);
+        navigate("/teacher/results");
+      }
 
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
 
-      // Optionally clear form after successful save
-      // setResults({});
     } catch (error) {
       setErrorMessage("Failed to save results. Please try again.");
       setShowError(true);
@@ -882,33 +886,33 @@ const NewResult = () => {
                     </thead>
                     <tbody>
                       {filteredStudents.map((student: any, idx: number) => {
-                        const total = studentTotals[student.id] || 0;
+                        const total = studentTotals[student.studentId] || 0;
                         const { grade, color } = getGrade(total);
 
                         return (
                           <tr
-                            key={student.id}
+                            key={idx}
                             className={`border-b ${
                               idx % 2 === 0 ? "bg-white" : "bg-orange-50"
                             } hover:bg-orange-100 transition-colors`}
                           >
                             <td className="py-3 px-4 text-sm font-semibold text-gray-700">{idx + 1}</td>
                             <td className="py-3 px-4 text-sm font-bold text-gray-800">
-                              {student.name || `${student.firstName} ${student.lastName}`}
+                              { `${student.firstname} ${student.lastname}`}
                             </td>
                             <td className="py-3 px-4 text-sm text-gray-600 font-mono">
-                              {student.studentId || student.studentNumber}
+                              {student.studentNo}
                             </td>
                             <td className="py-3 px-4">
                               <input
                                 type="number"
                                 min="0"
                                 max="20"
-                                value={results[student.id]?.ca1 || ""}
-                                onChange={(e) => handleScoreChange(student.id, "ca1", e.target.value)}
+                                value={results[student.studentId]?.ca1 || ""}
+                                onChange={(e) => handleScoreChange(student.studentId, "ca1", e.target.value)}
                                 className="w-20 border border-orange-200 rounded-lg py-2 px-3 text-center text-sm focus:outline-none focus:ring focus:ring-[#EE7306] transition-all"
                                 placeholder="0"
-                                aria-label={`CA1 score for ${student.name}`}
+                                aria-label={`CA1 score for ${student.firstname}`}
                               />
                             </td>
                             <td className="py-3 px-4">
@@ -916,11 +920,11 @@ const NewResult = () => {
                                 type="number"
                                 min="0"
                                 max="20"
-                                value={results[student.id]?.ca2 || ""}
-                                onChange={(e) => handleScoreChange(student.id, "ca2", e.target.value)}
+                                value={results[student.studentId]?.ca2 || ""}
+                                onChange={(e) => handleScoreChange(student.studentId, "ca2", e.target.value)}
                                 className="w-20 border border-orange-200 rounded-lg py-2 px-3 text-center text-sm focus:outline-none focus:ring focus:ring-[#EE7306] transition-all"
                                 placeholder="0"
-                                aria-label={`CA2 score for ${student.name}`}
+                                aria-label={`CA2 score for ${student.firstname}`}
                               />
                             </td>
                             <td className="py-3 px-4">
@@ -928,11 +932,11 @@ const NewResult = () => {
                                 type="number"
                                 min="0"
                                 max="60"
-                                value={results[student.id]?.exam || ""}
-                                onChange={(e) => handleScoreChange(student.id, "exam", e.target.value)}
+                                value={results[student.studentId]?.exam || ""}
+                                onChange={(e) => handleScoreChange(student.studentId, "exam", e.target.value)}
                                 className="w-20 border-2 border-purple-200 rounded-lg py-2 px-3 text-center text-sm focus:outline-none focus:ring focus:ring-purple-500 transition-all"
                                 placeholder="0"
-                                aria-label={`Exam score for ${student.name}`}
+                                aria-label={`Exam score for ${student.firstname}`}
                               />
                             </td>
                             <td className="py-3 px-4 text-center">
@@ -958,12 +962,12 @@ const NewResult = () => {
                 {/* Mobile Card View */}
                 <div className="lg:hidden p-4 space-y-4">
                   {filteredStudents.map((student: any, idx: number) => {
-                    const total = studentTotals[student.id] || 0;
+                    const total = studentTotals[student.studentId] || 0;
                     const { grade, color } = getGrade(total);
 
                     return (
                       <div
-                        key={student.id}
+                        key={idx}
                         className="bg-gradient-to-br from-white to-blue-50 rounded-2xl border border-orange-200 p-5 shadow-lg"
                       >
                         {/* Student Header */}
@@ -974,11 +978,11 @@ const NewResult = () => {
                                 {idx + 1}
                               </span>
                               <h3 className="text-base font-bold text-gray-800">
-                                {student.name || `${student.firstName} ${student.lastName}`}
+                                {`${student.firstname} ${student.lastname}`}
                               </h3>
                             </div>
                             <p className="text-xs text-gray-600 font-medium ml-10 font-mono">
-                              {student.studentId || student.studentNumber}
+                              {student.studentNo}
                             </p>
                           </div>
                           <div className="text-center">
@@ -996,36 +1000,36 @@ const NewResult = () => {
                         <div className="grid grid-cols-2 gap-3 mb-4">
                           <div>
                             <label
-                              htmlFor={`ca1-${student.id}`}
+                              htmlFor={`ca1-${student.studentId}`}
                               className="block text-xs font-bold text-gray-700 mb-2"
                             >
                               CA1 (20)
                             </label>
                             <input
-                              id={`ca1-${student.id}`}
+                              id={`ca1-${student.studentId}`}
                               type="number"
                               min="0"
                               max="20"
-                              value={results[student.id]?.ca1 || ""}
-                              onChange={(e) => handleScoreChange(student.id, "ca1", e.target.value)}
+                              value={results[student.studentId]?.ca1 || ""}
+                              onChange={(e) => handleScoreChange(student.studentId, "ca1", e.target.value)}
                               className="w-full border border-orange-200 rounded-xl py-3 px-4 text-center text-sm font-bold focus:outline-none focus:ring focus:ring-[#EE7306] transition-all"
                               placeholder="0"
                             />
                           </div>
                           <div>
                             <label
-                              htmlFor={`ca2-${student.id}`}
+                              htmlFor={`ca2-${student.studentId}`}
                               className="block text-xs font-bold text-gray-700 mb-2"
                             >
                               CA2 (20)
                             </label>
                             <input
-                              id={`ca2-${student.id}`}
+                              id={`ca2-${student.studentId}`}
                               type="number"
                               min="0"
                               max="20"
-                              value={results[student.id]?.ca2 || ""}
-                              onChange={(e) => handleScoreChange(student.id, "ca2", e.target.value)}
+                              value={results[student.studentId]?.ca2 || ""}
+                              onChange={(e) => handleScoreChange(student.studentId, "ca2", e.target.value)}
                               className="w-full border border-orange-200 rounded-xl py-3 px-4 text-center text-sm font-bold focus:outline-none focus:ring focus:ring-[#EE7306] transition-all"
                               placeholder="0"
                             />
@@ -1034,18 +1038,18 @@ const NewResult = () => {
 
                         <div className="mb-4">
                           <label
-                            htmlFor={`exam-${student.id}`}
+                            htmlFor={`exam-${student.studentId}`}
                             className="block text-xs font-bold text-gray-700 mb-2"
                           >
                             Exam (60)
                           </label>
                           <input
-                            id={`exam-${student.id}`}
+                            id={`exam-${student.studentId}`}
                             type="number"
                             min="0"
                             max="60"
-                            value={results[student.id]?.exam || ""}
-                            onChange={(e) => handleScoreChange(student.id, "exam", e.target.value)}
+                            value={results[student.studentId]?.exam || ""}
+                            onChange={(e) => handleScoreChange(student.studentId, "exam", e.target.value)}
                             className="w-full border-2 border-purple-200 rounded-xl py-3 px-4 text-center text-sm font-bold focus:outline-none focus:ring focus:ring-purple-500 transition-all"
                             placeholder="0"
                           />

@@ -110,7 +110,7 @@ export default function PupilsList({ classrooms }: any) {
   return (
     <Box>
       {/* Pupils Table */}
-      <Box mt={5}>
+      <Box>
         <Paper sx={{ borderRadius: 3, boxShadow: 4, overflow: "hidden" }}>
           {/* Header with icons */}
           <Box

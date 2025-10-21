@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 const ViewMyPupils = () => {
   const location = useLocation();
   const moreDetails = location.state;
-  console.log(moreDetails);
 
   const calculateAge = (dob: string): number => {
     const birth = new Date(dob);
@@ -23,7 +22,10 @@ const ViewMyPupils = () => {
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Header with Back Button */}
       <div className="relative bg-gradient-to-r from-orange-400 to-orange-600">
-        <div className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-black/20 p-2 rounded-full shrink-0 h-10 w-10 hover:bg-black/30 transition-all flex items-center justify-center" onClick={() => window.history.back()}>
+        <div
+          className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-black/20 p-2 rounded-full shrink-0 h-10 w-10 hover:bg-black/30 transition-all flex items-center justify-center"
+          onClick={() => window.history.back()}
+        >
           ←
         </div>
         <div className="h-40 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
@@ -34,20 +36,33 @@ const ViewMyPupils = () => {
       {/* Profile Section */}
       <div className="flex flex-col items-center -mt-16 px-4">
         <div className="relative">
-          <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Profile"
-            className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover"
-          />
+          {/* initial Name */}
+          <div className="h-32 w-32 rounded-full bg-orange-50 flex items-center justify-center text-4xl font-bold shadow-md">
+            {moreDetails?.firstname.charAt(0).toUpperCase()}
+            {moreDetails?.lastname.charAt(0).toUpperCase()}
+          </div>
           <div className="absolute -bottom-2 -right-2 bg-orange-500 text-white rounded-full p-1 shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
         </div>
-        <h2 className="mt-4 text-xl font-bold text-gray-800">{moreDetails?.firstname} {moreDetails.lastname}</h2>
+        <h2 className="mt-4 text-xl font-bold text-gray-800">
+          {moreDetails?.firstname} {moreDetails.lastname}
+        </h2>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm text-gray-600">{calculateAge(moreDetails?.dateOfBirth)} years</span>
+          <span className="text-sm text-gray-600">
+            {calculateAge(moreDetails?.dateOfBirth)} years
+          </span>
           <span className="text-gray-300">•</span>
           {moreDetails?.gender && (
             <div>
@@ -55,7 +70,9 @@ const ViewMyPupils = () => {
               <span className="text-gray-300">•</span>
             </div>
           )}
-          <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">JSS1</span>
+          <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded-full">
+            {moreDetails?.classroom || ""}
+          </span>
         </div>
       </div>
 
@@ -71,7 +88,9 @@ const ViewMyPupils = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Personal Information Group */}
               <div className="space-y-5">
-                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Personal Details</h4>
+                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">
+                  Personal Details
+                </h4>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
@@ -88,9 +107,11 @@ const ViewMyPupils = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Date of birth</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Date of birth
+                  </label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">{moreDetails?.dateOfBirth.split('T')[0]}</span>
+                    <span className="text-gray-700">{moreDetails?.dateOfBirth.split("T")[0]}</span>
                   </div>
                 </div>
 
@@ -104,17 +125,23 @@ const ViewMyPupils = () => {
 
               {/* Academic Information Group */}
               <div className="space-y-5">
-                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Academic Information</h4>
+                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">
+                  Academic Information
+                </h4>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Entered Class</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Entered Class
+                  </label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">{moreDetails?.classroom || 'N/A'}</span>
+                    <span className="text-gray-700">{moreDetails?.classroom || "N/A"}</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Current Term</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Current Term
+                  </label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
                     <span className="text-gray-700">{moreDetails?.currentTerm}</span>
                   </div>
@@ -128,7 +155,9 @@ const ViewMyPupils = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Classroom ID</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Classroom ID
+                  </label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
                     <span className="text-gray-700">{moreDetails?.classroomId}</span>
                   </div>
@@ -137,10 +166,14 @@ const ViewMyPupils = () => {
 
               {/* Contact Information Group */}
               <div className="space-y-5">
-                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Contact Information</h4>
+                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">
+                  Contact Information
+                </h4>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1">Guardian ID</label>
+                  <label className="block text-sm font-medium text-gray-600 mb-1">
+                    Guardian ID
+                  </label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
                     <span className="text-gray-700">{moreDetails?.guardianId}</span>
                   </div>
@@ -156,7 +189,9 @@ const ViewMyPupils = () => {
 
               {/* Identification Group */}
               <div className="space-y-5">
-                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">Identification</h4>
+                <h4 className="text-gray-500 text-sm font-semibold uppercase tracking-wide border-b pb-1">
+                  Identification
+                </h4>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Student ID</label>
@@ -168,7 +203,7 @@ const ViewMyPupils = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-600 mb-1">Gender</label>
                   <div className="flex items-center border border-orange-200 rounded-lg px-4 py-3 bg-orange-50/50">
-                    <span className="text-gray-700">{moreDetails?.gender || 'N/A'}</span>
+                    <span className="text-gray-700">{moreDetails?.gender || "N/A"}</span>
                   </div>
                 </div>
               </div>
@@ -181,7 +216,10 @@ const ViewMyPupils = () => {
           {/* <button className="px-5 py-2.5 bg-orange-500 text-white rounded-lg font-medium hover:bg-orange-600 transition-colors shadow-sm">
             Edit Profile
           </button> */}
-          <button className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-orange-500 transition-colors" onClick={() => window.history.back()}>
+          <button
+            className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-orange-500 transition-colors"
+            onClick={() => window.history.back()}
+          >
             Back to List
           </button>
         </div>
