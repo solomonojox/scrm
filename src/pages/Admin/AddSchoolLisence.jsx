@@ -20,6 +20,7 @@ const AddSchoolLicense = () => {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
   const schoolId = localStorage.getItem('schoolIdOnRegistration');
   if (!schoolId) {
@@ -63,7 +64,7 @@ const AddSchoolLicense = () => {
       });
 
       const response = await axios.post(
-        `https://scrmapi.tranquility.org.ng/api/School/UploadDocument/${schoolId}`,
+        `${baseUrl}/api/School/UploadDocument/${schoolId}`,
         formData
       );
 

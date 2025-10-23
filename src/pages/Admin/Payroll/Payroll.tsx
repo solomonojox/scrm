@@ -172,7 +172,12 @@ const PayrollModal = ({ isOpen, onClose, mode, data, onSubmit }) => {
 };
 
 /* ---------------------- Bulk Payment Modal ---------------------- */
-const BulkPaymentModal = ({ isOpen, onClose, onProceed }) => {
+interface BulkPaymentModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onProceed: () => void;
+}
+const BulkPaymentModal = ({ isOpen, onClose, onProceed }: BulkPaymentModalProps) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-center justify-center z-40 bg-black/30 backdrop-blur-sm">
@@ -191,8 +196,12 @@ const BulkPaymentModal = ({ isOpen, onClose, onProceed }) => {
     </div>
   );
 };
+
 /* ---------------------- Bulk Payment Page (reduced bold version) ---------------------- */
-const BulkPaymentPageStatic = ({ onBack }) => {
+interface BulkPaymentPageStaticProps {
+  onBack: () => void;
+}
+const BulkPaymentPageStatic = ({ onBack }: BulkPaymentPageStaticProps) => {
   return (
     <div className="min-h-screen bg-white p-6">
       <div className="mb-4">
@@ -448,19 +457,19 @@ const PayrollDashboard = () => {
     setShowFormModal(true);
   };
 
-  const handleEdit = (row) => {
+  const handleEdit = (row: any) => {
     setModalMode("edit");
     setSelectedData(row);
     setShowFormModal(true);
   };
 
-  const handleView = (row) => {
+  const handleView = (row: any) => {
     setModalMode("view");
     setSelectedData(row);
     setShowFormModal(true);
   };
 
-  const handleDelete = (row, target = "record") => {
+  const handleDelete = (row: any, target = "record") => {
     setSelectedData(row);
     setDeleteTarget(target);
     setShowDeleteModal(true);
@@ -475,7 +484,7 @@ const PayrollDashboard = () => {
     setShowDeleteModal(false);
   };
 
-  const handleSubmitForm = (data) => {
+  const handleSubmitForm = (data: any) => {
     if (modalMode === "add") {
       setAllPayrollData((prev) => [
         ...prev,
@@ -486,13 +495,13 @@ const PayrollDashboard = () => {
     }
   };
 
-  const openSlipFromHistory = (row) => {
+  const openSlipFromHistory = (row: any) => {
     setSelectedData(row);
     setShowSlipModal(true);
   };
 
   // Generate payroll for a single row and add to history
-  const handleGeneratePayroll = (row) => {
+  const handleGeneratePayroll = (row: any) => {
     const net =
       (parseFloat(row.basicSalary || 0) || 0) +
       (parseFloat(row.allowance || 0) || 0) -
@@ -532,34 +541,34 @@ const PayrollDashboard = () => {
   const tableConfig =
     activeTab === "all"
       ? {
-          headers: [
-            "SN",
-            "Staff ID",
-            "Name",
-            "Role",
-            "Basic Salary",
-            "Allowances",
-            "Deductions",
-            "Date",
-            "Status",
-            "Actions",
-          ],
-          data: allPayrollData,
-        }
+        headers: [
+          "SN",
+          "Staff ID",
+          "Name",
+          "Role",
+          "Basic Salary",
+          "Allowances",
+          "Deductions",
+          "Date",
+          "Status",
+          "Actions",
+        ],
+        data: allPayrollData,
+      }
       : {
-          headers: [
-            "SN",
-            "Staff ID",
-            "Name",
-            "Role",
-            "Net Pay",
-            "Department",
-            "Date",
-            "Status",
-            "Actions",
-          ],
-          data: paymentHistoryData,
-        };
+        headers: [
+          "SN",
+          "Staff ID",
+          "Name",
+          "Role",
+          "Net Pay",
+          "Department",
+          "Date",
+          "Status",
+          "Actions",
+        ],
+        data: paymentHistoryData,
+      };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -636,11 +645,10 @@ const PayrollDashboard = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`pb-2 px-4 text-sm font-medium ${
-              activeTab === tab.key
-                ? "text-orange-500 border-b-2 border-orange-500"
-                : "text-gray-500 hover:text-orange-500"
-            }`}
+            className={`pb-2 px-4 text-sm font-medium ${activeTab === tab.key
+              ? "text-orange-500 border-b-2 border-orange-500"
+              : "text-gray-500 hover:text-orange-500"
+              }`}
           >
             {tab.label}
           </button>
@@ -658,7 +666,7 @@ const PayrollDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {tableConfig.data.map((row, idx) => (
+            {tableConfig.data.map((row: any, idx) => (
               <tr key={row.id} className="border-b hover:bg-gray-50 transition-colors">
                 <td className="py-3 px-4">{idx + 1}</td>
                 <td className="py-3 px-4">{row.staffId}</td>

@@ -237,7 +237,7 @@ const MyPupils = () => {
                 <div className="p-4 space-y-4 shadow-lg rounded-lg">
                     <div className="space-y-1">
                         <h1 className="text-lg font-semibold">Fee Balance/Payment Status</h1>
-                        <p className="text-gray-700">Session School Fees: N{classSessionFee?.toLocaleString() || '0.00'}</p>
+                        <p className="text-gray-700">Session School Fees: N{studentBalance?.totalFees?.toLocaleString() || '0.00'}</p>
                         <p className="text-green-500">Amount Paid: N{studentBalance?.totalPaid}</p>
                         <p className="text-gray-500">Balance: N{studentBalance?.balance?.toLocaleString() || '0.00'}</p>
                     </div>
