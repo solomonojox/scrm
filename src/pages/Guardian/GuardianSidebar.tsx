@@ -73,9 +73,8 @@ const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) =>
     <>
       {/* Overlay for mobile/tablet */}
       <div
-        className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300 ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={onClose}
       />
 
@@ -98,9 +97,8 @@ const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) =>
                   to={it.path}
                   aria-label={it.label}
                   onClick={onClose}
-                  className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none ${
-                    isActive ? "bg-white/20" : ""
-                  }`}
+                  className={`w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center rounded-md focus:outline-none ${isActive ? "bg-white/20" : ""
+                    }`}
                   title={it.label}
                 >
                   {it.path === "/guardian/message" ? (
@@ -133,11 +131,10 @@ const GuardianSidebar: React.FC<GuardianSidebarProps> = ({ isOpen, onClose }) =>
                     <Link
                       to={it.path}
                       onClick={onClose}
-                      className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${
-                        isActive
+                      className={`w-full text-left px-4 py-1 transition-colors focus:outline-none rounded-full ${isActive
                           ? "bg-[#EDEDED] text-[#F07A00]"
                           : "bg-transparent text-white hover:bg-white/10"
-                      }`}
+                        }`}
                       style={{ marginLeft: "0.5rem" }}
                     >
                       <span className="text-sm sm:text-base font-medium">{it.label}</span>
