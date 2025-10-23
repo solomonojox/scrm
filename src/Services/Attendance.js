@@ -1,11 +1,6 @@
 import api from "./api";
 
 export const attendanceService = {
-  /**
-   * Adds a new school fee
-   * @param {Object} attendance
-   * @returns {Promise<Object>}
-   */
   saveAttendance: async (attendance) => {
     try {
       const response = await api.post(`/api/Attendance/SaveAttendance`, attendance);

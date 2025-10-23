@@ -17,8 +17,8 @@ import { useNavigate } from "react-router-dom";
 
 interface Student {
   id: string; // UUID from API (studentId field)
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   studentId: string; // Student number for display (studentId from API)
   photo: string | null;
   classroomId: string;
@@ -68,7 +68,7 @@ const NewAttendance: React.FC = () => {
   const fetchedLoading = useSelector((state: RootState) => state.getClassrooms.loading);
   const error = useSelector((state: RootState) => state.getClassrooms.error);
 
-  const [attendanceState, setAttendanceState] = useState<AttendanceState[]>([]);
+  const [attendanceState, setAttendanceState] = useState<any[]>([]);
   const [currentDate] = useState<Date>(new Date());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -120,9 +120,7 @@ const NewAttendance: React.FC = () => {
 
         dispatch(fetchSessionSuccess(data));
         dispatch(fetchClassroomsSuccess(classroomData));
-      } else {
-        console.warn("User is not a teacher or user data is missing");
-      }
+      } 
     } catch (err) {
       console.error("Fetch error:", err);
       dispatch(fetchSessionFailure((err as Error).message));
@@ -417,17 +415,17 @@ const NewAttendance: React.FC = () => {
                           {student.photo ? (
                             <img
                               src={student.photo}
-                              alt={`${student.firstname} ${student.lastname}`}
+                              alt={`${student.firstName} ${student.lastName}`}
                               className="w-8 h-8 rounded-full object-cover"
                             />
                           ) : (
                             <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
-                              {student.firstname.charAt(0)}
+                              {student.firstName.charAt(0)}
                             </div>
                           )}
                         </td>
-                        <td className="px-4 py-3">{student.firstname}</td>
-                        <td className="px-4 py-3 hidden sm:table-cell">{student.lastname}</td>
+                        <td className="px-4 py-3">{student.firstName}</td>
+                        <td className="px-4 py-3 hidden sm:table-cell">{student.lastName}</td>
                         <td className="px-4 py-3 hidden md:table-cell">{student.studentNo}</td>
                         <td className="px-4 py-3">
                           {student.time && (
