@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Check, Clock, ArrowLeft, Users, Loader2 } from "lucide-react";
+import { Check, Clock, ArrowLeft, Users, Loader2, Calendar } from "lucide-react";
 import { toast } from "react-toastify";
 import "../../../Styles/customScrollBar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import { classroomService } from "../../../Services/Classroom";
-import { fetchClassroomsFailure,fetchClassroomsStart,fetchClassroomsSuccess,} from "../../../Store/Admin/classroomSlice";
+import {
+  fetchClassroomsFailure,
+  fetchClassroomsStart,
+  fetchClassroomsSuccess,
+} from "../../../Store/Admin/classroomSlice";
 import { useAuth } from "../../../Context/Auth/useAuth";
-import { fetchStudentsFailure,fetchStudentsStart,fetchStudentsSuccess } from "../../../Store/Student/studentSlice";
+import {
+  fetchStudentsFailure,
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+} from "../../../Store/Student/studentSlice";
 import Select from "react-select";
-import { fetchSessionFailure,fetchSessionStart,fetchSessionSuccess } from "../../../Store/sessionSlice";
+import {
+  fetchSessionFailure,
+  fetchSessionStart,
+  fetchSessionSuccess,
+} from "../../../Store/sessionSlice";
 import { sessionService } from "../../../Services/Session";
 import { attendanceService } from "../../../Services/Attendance";
 import { AppContext } from "../../../Context/AppContext";
@@ -69,7 +81,7 @@ const NewAttendance: React.FC = () => {
   const error = useSelector((state: RootState) => state.getClassrooms.error);
 
   const [attendanceState, setAttendanceState] = useState<any[]>([]);
-  const [currentDate] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [selectedSession, setSelectedSession] = useState<string>("");
@@ -86,6 +98,20 @@ const NewAttendance: React.FC = () => {
 
   const handleSelectChange = (selectedOption: OptionType | null) => {
     setSelectedSession(selectedOption ? String(selectedOption.value) : "");
+  };
+
+  // Handle date change
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    setCurrentDate(newDate);
+  };
+
+  // Format date for input value (YYYY-MM-DD)
+  const getInputDateValue = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   // Sync fetchedStudents → local attendance state
@@ -120,7 +146,7 @@ const NewAttendance: React.FC = () => {
 
         dispatch(fetchSessionSuccess(data));
         dispatch(fetchClassroomsSuccess(classroomData));
-      } 
+      }
     } catch (err) {
       console.error("Fetch error:", err);
       dispatch(fetchSessionFailure((err as Error).message));
@@ -133,6 +159,7 @@ const NewAttendance: React.FC = () => {
       weekday: "long",
       day: "numeric",
       month: "long",
+      year: "numeric",
     });
   };
 
@@ -259,10 +286,11 @@ const NewAttendance: React.FC = () => {
       classroomId: student.classroomId,
       sessionId: selectedSession,
       studentId: student?.studentId,
-      firstName: student.firstname,
-      lastName: student.lastname,
+      firstName: student.firstName,
+      lastName: student.lastName,
       timeIn: student.time || getCurrentTime(),
       status: student.absent ? 0 : student.present ? 1 : 2, // 1=Present, 0=Absent, 2=Late
+      date: currentDate,
     }));
 
     try {
@@ -306,12 +334,26 @@ const NewAttendance: React.FC = () => {
         <div className="bg-white rounded-t-lg shadow-sm p-3 sm:p-4 border-b">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-4">
             {/* Date Section */}
-            <div className="flex-shrink-0">
-              <p className="text-sm sm:text-base text-gray-600">{formatDate(currentDate)}</p>
+            <div className="flex-shrink-0 w-full lg:w-auto">
+              <label className="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
+                <Calendar className="w-4 h-4" />
+                Date <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-col gap-2">
+                <input
+                  type="date"
+                  value={getInputDateValue(currentDate)}
+                  onChange={handleDateChange}
+                  disabled={isSubmitted}
+                  max={getInputDateValue(new Date())}
+                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                {/* <p className="text-sm text-gray-600">{formatDate(currentDate)}</p> */}
+              </div>
             </div>
 
             {/* Controls Section */}
-            <div className="w-full lg:w-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-end">
+            <div className="w-full lg:w-auto grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
               {/* Session Select */}
               <div className="w-full lg:w-48">
                 <label className="inline-flex items-center gap-1 text-sm font-medium text-gray-700 mb-1">
@@ -360,6 +402,7 @@ const NewAttendance: React.FC = () => {
             </div>
           </div>
         </div>
+
         {/* Loading */}
         {loading && (
           <div className="bg-white shadow-sm p-8 flex flex-col items-center justify-center">
@@ -519,12 +562,6 @@ const NewAttendance: React.FC = () => {
                       <span className="text-green-600 flex items-center">
                         <Check className="w-5 h-5 mr-2" /> Submitted
                       </span>
-                      {/* <button
-                        onClick={resetSubmission}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                      >
-                        Edit Again
-                      </button> */}
                     </div>
                   )}
                 </div>
