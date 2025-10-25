@@ -124,11 +124,16 @@ const LoginPage = () => {
       <img
         src={imageAssets.loginImage}
         alt="login image"
-        className="w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
+        className="hidden lg:block w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
       />
 
-      {/* Logo at Top Right */}
-      <div className="absolute top-6 left-6">
+      {/* Logo at Top Right on large screens */}
+      <div className="hidden lg:block absolute top-6 left-6">
+        <img src={logo} alt="EduCat logo" className="h-[50px]" />
+      </div>
+
+      {/* Logo at Top Center on small screens */}
+      <div className="lg:hidden flex justify-center absolute top-[2vh] md:top-[10vh] left-0 right-0">
         <img src={logo} alt="EduCat logo" className="h-[50px]" />
       </div>
 
