@@ -71,12 +71,18 @@ import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 import TeacherAssignment from "./pages/Teachers/assignment/TeacherAssignment";
 import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
+import StudentCbtLogin from "./pages/Cbt/Login page";
+import AdminCbtLogin from "./pages/Cbt/AdminCbt";
+import RegisterSchool  from "./pages/Cbt/RegisterSchool";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
   return token ? children : <Navigate to="/login" />;
 };
-
+const ProtectedRoute2 = ({ children }) => {
+  const token = localStorage.getItem("scrmToken");
+  return token ? children : <Navigate to="/StudentCbtLogin" />;
+};
 function App() {
   useEffect(() => {
     const token = localStorage.getItem("scrmToken");
@@ -188,6 +194,9 @@ function App() {
       <Route path="/payment" element={<StudentFeePaymentTable />} />
 
       {/* All students routes here */}
+            <Route path="/studentscbt" element={<StudentCbtLogin />} />
+            <Route path="/admincbt" element={<AdminCbtLogin />} />
+            <Route path="/registerschool" element={<RegisterSchool />} />
     </Routes>
   );
 }
