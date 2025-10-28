@@ -82,7 +82,7 @@ const EducatLogin = () => {
           />
         </div>
 
-        {/* ✅ Login Button (uses plain navigation) */}
+        {/* ✅ Login Button */}
         <button
           onClick={handleLogin}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition"
@@ -95,10 +95,13 @@ const EducatLogin = () => {
         </p>
       </div>
 
-      {/* Footer */}
+      {/* ✅ Footer with working Register School link */}
       <p className="mt-6 text-gray-600 text-sm">
         School not registered yet?{" "}
-        <a href="#" className="text-orange-500 font-semibold hover:underline">
+        <a
+          href="/registerschool"
+          className="text-orange-500 font-semibold hover:underline"
+        >
           Register Your School
         </a>
       </p>
