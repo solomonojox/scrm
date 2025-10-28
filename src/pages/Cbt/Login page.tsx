@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import image from '' ;
 
 const EducatLogin = () => {
   const [activeTab, setActiveTab] = useState("student");
@@ -9,6 +8,17 @@ const EducatLogin = () => {
     { id: "teacher", label: "Teacher" },
     { id: "admin", label: "School Admin" },
   ];
+
+  // ✅ Simple navigation (no router)
+  const handleLogin = () => {
+    if (activeTab === "admin") {
+      window.location.href = "/admincbt";
+    } else if (activeTab === "teacher") {
+      window.location.href = "/teacher-dashboard.html";
+    } else {
+      window.location.href = "/student-dashboard.html";
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-orange-50 font-sans">
@@ -72,12 +82,14 @@ const EducatLogin = () => {
           />
         </div>
 
-        {/* Button */}
-        <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition">
+        {/* ✅ Login Button (uses plain navigation) */}
+        <button
+          onClick={handleLogin}
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition"
+        >
           Login as {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
         </button>
 
-        {/* Demo Note */}
         <p className="text-center text-sm text-gray-500 mt-4">
           Demo: Use any school registration number, email and password
         </p>
