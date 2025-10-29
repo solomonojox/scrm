@@ -5,13 +5,13 @@ const EducatAdmin = () => {
   const [activeTab, setActiveTab] = useState("students");
   const [showModal, setShowModal] = useState(false);
 
-  const students = [
+  const students: any = [
     { name: "John Smith", email: "john@school.edu", class: "Grade 12A", status: "active" },
     { name: "Emma Johnson", email: "emma@school.edu", class: "Grade 11B", status: "active" },
     { name: "Michael Brown", email: "michael@school.edu", class: "Grade 12A", status: "active" },
   ];
 
-  const teachers = [
+  const teachers:any = [
     { name: "Dr. Sarah Wilson", email: "sarah@school.edu", subject: "Mathematics", status: "active" },
     { name: "Prof. James Lee", email: "james@school.edu", subject: "Physics", status: "active" },
   ];
@@ -32,11 +32,11 @@ const EducatAdmin = () => {
     guardianPhone: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     alert(`${activeTab === "students" ? "Student" : "Teacher"} added successfully!`);
     setFormData({
@@ -149,7 +149,7 @@ const EducatAdmin = () => {
               </tr>
             </thead>
             <tbody>
-              {(activeTab === "students" ? students : teachers).map((user, i) => (
+              {(activeTab === "students" ? students : teachers).map((user: any, i: number) => (
                 <tr key={i} className="border-b border-orange-100 hover:bg-orange-50 transition">
                   <td className="p-3 font-medium">{user.name}</td>
                   <td className="p-3">{user.email}</td>

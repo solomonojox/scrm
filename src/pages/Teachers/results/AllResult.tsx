@@ -10,108 +10,6 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 
-const tableData = [
-  {
-    date: "2024-09-01",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-02",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-03",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-04",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-05",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-06",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-07",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-08",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-09",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-10",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-  {
-    date: "2024-09-11",
-    name: "Felix Adeleke",
-    class: "JSS1",
-    term: "2",
-    session: "2023/2024",
-    assessment: "Examination",
-    studentId: "10293HGS",
-  },
-];
-
 interface MobileCardProps {
   item: any;
   index: number;
@@ -250,7 +148,7 @@ const MobileCard = ({ item, index, onEdit, onDelete, onView, serialNumber }: Mob
   );
 };
 
-const AllResult = () => {
+const AllResult = ({ students }: { students: any[] }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openRowIndex, setOpenRowIndex] = useState(null);
@@ -275,13 +173,11 @@ const AllResult = () => {
   };
 
   // Filtering logic
-  const filteredData = tableData.filter(
+  const filteredData = students.filter(
     (item, index) =>
       searchTerm === "" ||
-      item?.date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.class?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.assessment?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.firstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.lastname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item?.studentId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (index + 1).toString().includes(searchTerm)
   );
@@ -294,7 +190,7 @@ const AllResult = () => {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   return (
-    <section className="w-full min-h-screen bg-white py-3 sm:py-6">
+    <section className="w-full bg-white py-3 sm:py-6">
       {/* Search Filter - Mobile Optimized */}
       <div className="mb-6">
         <div className="relative">
@@ -315,35 +211,32 @@ const AllResult = () => {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full table-auto border-collapse">
             <thead>
-              <tr className="bg-[#EE7306]">
+              <tr className="bg-gray-200">
                 <th className="py-4 px-4 text-left">
                   <input type="checkbox" title="select all" className="w-4 h-4 rounded" />
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   S/N
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Name
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Student ID
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
-                  Class
-                </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Term
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Session
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Assessment
                 </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                {/* <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Date
-                </th>
-                <th className="py-4 px-4 text-left text-xs font-bold text-white uppercase tracking-wider">
+                </th> */}
+                <th className="py-4 px-4 text-left text-xs font-bold text-[#717182] uppercase tracking-wider">
                   Options
                 </th>
               </tr>
@@ -369,13 +262,22 @@ const AllResult = () => {
                     <td className="text-sm px-4 py-3 text-gray-700 font-semibold">
                       {indexOfFirstRow + index + 1}
                     </td>
-                    <td className="text-sm px-4 py-3 text-gray-800 font-bold">{item?.name}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.studentId}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.class}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.term}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.session}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.assessment}</td>
-                    <td className="text-sm px-4 py-3 text-gray-700">{item?.date}</td>
+                    <td className="text-sm px-4 py-3 text-gray-800 font-bold">
+                      {item?.firstname} {item?.lastname}
+                    </td>
+                    <td className="text-sm px-4 py-3 text-gray-700">{item?.studentNo}</td>
+                    <td className="text-sm px-4 py-3 text-gray-700">
+                      {item?.currentTerm === 1
+                        ? "First Term"
+                        : item?.currentTerm === 2
+                        ? "Second Term"
+                        : "Third Term"}
+                    </td>
+                    <td className="text-sm px-4 py-3 text-gray-700">{item?.currentSession}</td>
+                    <td className="text-sm px-4 py-3 text-gray-700">
+                      {item?.assessment || "Report Card"}
+                    </td>
+                    {/* <td className="text-sm px-4 py-3 text-gray-700">{item?.date}</td> */}
                     <td className="text-sm px-4 py-3 relative">
                       <button
                         onClick={() => handleOptionsClick(index)}
