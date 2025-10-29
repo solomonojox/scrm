@@ -44,7 +44,7 @@ const TeacherDashboard = () => {
         </div>
         <div className="flex items-center space-x-6">
           <div className="text-right">
-            <h2 className="font-semibold">Dr. Sarah Johnson</h2>
+            <h2 className="font-semibold">Dr. Sarah D Johnson</h2>
             <p className="text-sm text-gray-500">aj@s</p>
           </div>
           <button onClick={() => (window.location.href = "/studentscbt")} className="flex items-center space-x-2 bg-orange-100 hover:bg-orange-200 text-orange-600 px-3 py-1 rounded-md">
