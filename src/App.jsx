@@ -76,6 +76,7 @@ import AdminCbtLogin from "./pages/Cbt/AdminCbt";
 import RegisterSchool  from "./pages/Cbt/RegisterSchool";
 import TeacherDashBoard  from "./pages/Cbt/TeacherDashBoard";
 import TeacherCbt  from "./pages/Cbt/TeacherCbt";
+import StudentCbt  from "./pages/Cbt/StudentDashBoard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -201,6 +202,7 @@ function App() {
             <Route path="/registerschool" element={<RegisterSchool />} />
             <Route path="/teacherdashboard" element={<TeacherDashBoard />} />
             <Route path="/teachercbt" element={<TeacherCbt />} />
+            <Route path="/studentcbt" element={<StudentCbt />} />
     </Routes>
   );
 }

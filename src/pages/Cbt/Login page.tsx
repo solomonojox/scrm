@@ -16,7 +16,7 @@ const EducatLogin = () => {
     } else if (activeTab === "teacher") {
       window.location.href = "/teacherDashBoard";
     } else {
-      window.location.href = "/student-dashboard.html";
+      window.location.href = "/studentcbt";
     }
   };
 
