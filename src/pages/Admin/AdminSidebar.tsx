@@ -16,7 +16,7 @@ import {
 import { FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../Context/Auth/useAuth";
 import "../../Styles/customScrollBar.css";
-import { MessageCircleDashed } from "lucide-react";
+import { CoinsIcon, MessageCircleDashed } from "lucide-react";
 
 interface AdminSidebarProps {
   isOpen?: boolean;
@@ -127,6 +127,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Operations
           </h3>
+          <SidebarButton icon={<CoinsIcon />} label="Payroll" to="/admin/payroll" onClose={onClose} />
           <SidebarButton icon={<MessageCircleDashed />} label="Messages" to="/admin/messages" onClose={onClose} />
           <SidebarButton icon={<FaNewspaper />} label="News" to="/admin/news" onClose={onClose} />
           <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/admin/events" onClose={onClose} />

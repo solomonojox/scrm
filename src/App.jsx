@@ -10,8 +10,6 @@ import Addschoolform from "./pages/Admin/Addschoolform";
 import Terms from "./pages/Admin/Terms";
 import Guardian from "./pages/Admin/guardian/guardian";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import Classroom from "./pages/Teachers/Classroom";
-import Events from "./pages/Admin/Events";
 import StudentFeePaymentTable from "./pages/StudentFeePaymentTable";
 import AdminGuardian from "./pages/Admin/guardian/AdminGuardian";
 import AdminStudents from "./pages/Admin/student/AdminStudents";
@@ -54,8 +52,6 @@ import TeacherMessages from "./pages/Teachers/messaging/TeacherMessages";
 import TeacherNews from "./pages/Teachers/news/TeacherNews";
 import TeacherEvent from "./pages/Teachers/events/TeacherEvent";
 
-import Pupil from "./pages/Teachers/PupilsList";
-
 import TeacherMyPupils from "./pages/Teachers/My Pupils/ViewMyPupils";
 import TeacherSettings from "./pages/Teachers/settings/Settings";
 import MyPupil from "./pages/Teachers/MyPupil";
@@ -74,9 +70,6 @@ import { NotFound } from "./pages/NotFound";
 import StudentCbtLogin from "./pages/Cbt/Login page";
 import AdminCbtLogin from "./pages/Cbt/AdminCbt";
 import RegisterSchool  from "./pages/Cbt/RegisterSchool";
-import TeacherDashBoard  from "./pages/Cbt/TeacherDashBoard";
-import TeacherCbt  from "./pages/Cbt/TeacherCbt";
-import StudentCbt  from "./pages/Cbt/StudentDashBoard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -200,9 +193,6 @@ function App() {
             <Route path="/studentscbt" element={<StudentCbtLogin />} />
             <Route path="/admincbt" element={<AdminCbtLogin />} />
             <Route path="/registerschool" element={<RegisterSchool />} />
-            <Route path="/teacherdashboard" element={<TeacherDashBoard />} />
-            <Route path="/teachercbt" element={<TeacherCbt />} />
-            <Route path="/studentcbt" element={<StudentCbt />} />
     </Routes>
   );
 }
