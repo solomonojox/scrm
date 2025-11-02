@@ -67,16 +67,9 @@ import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 import TeacherAssignment from "./pages/Teachers/assignment/TeacherAssignment";
 import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
-import RegisterSchool from "./pages/Cbt/RegisterSchool";
-import { AdminCbtLayout } from "./layouts/cbt/AdminCbtLayout";
-import AdminCbtDashboard from "./pages/Cbt/Admin/dashboard/AdminCbtDashboard";
-import AdminCbtUserManagement from "./pages/Cbt/Admin/userManagement/AdminCbtUserManagement";
-import CbtLogin from "./pages/Cbt/CbtLogin";
-import { StudentCbtLayout } from "./layouts/cbt/StudentCbtLayout";
-import StudentCbtDashboard from "./pages/Cbt/Students/dashboard/StudentCbtDashboard";
-import StudentExamDashboard from "./pages/Cbt/Students/exam/StudentExamdashboard";
-import ExamResultDetails from "./pages/Cbt/Students/exam/ExamResultDetails";
-import ExamInterface from "./pages/Cbt/Students/exam/ExamInterface";
+import StudentCbtLogin from "./pages/Cbt/Login page";
+import AdminCbtLogin from "./pages/Cbt/AdminCbt";
+import RegisterSchool  from "./pages/Cbt/RegisterSchool";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -196,23 +189,10 @@ function App() {
       <Route path="/Guardian/allguardian" element={<Guardian />} />
       <Route path="/payment" element={<StudentFeePaymentTable />} />
 
-      {/*routes for cbt is here */}
-      <Route path="/cbt/login" element={<CbtLogin />} />
-      <Route path="/cbt/registerschool" element={<RegisterSchool />} />
-
-      {/* Admin cbt routes */}
-      <Route element={<AdminCbtLayout />}>
-        <Route path="/cbt/admin/dashboard" element={<AdminCbtDashboard />} />
-        <Route path="/cbt/admin/userManagement" element={<AdminCbtUserManagement />} />
-      </Route>
-
-      {/* student cbt routes */}
-      <Route element={<StudentCbtLayout />}>
-        <Route path="/cbt/student/dashboard" element={<StudentCbtDashboard />} />
-        <Route path="/cbt/student/exams" element={<StudentExamDashboard />} />
-        <Route path="/cbt/student/exam/:id" element={<ExamInterface />} />
-        <Route path="/cbt/student/exams/result" element={<ExamResultDetails />} />
-      </Route>
+      {/* All students routes here */}
+            <Route path="/studentscbt" element={<StudentCbtLogin />} />
+            <Route path="/admincbt" element={<AdminCbtLogin />} />
+            <Route path="/registerschool" element={<RegisterSchool />} />
     </Routes>
   );
 }
