@@ -9,10 +9,15 @@ import {
 import { classroomService } from "../../../Services/Classroom";
 import { AppDispatch, RootState } from "../../../Store/store";
 import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../../../Context/Auth/useAuth";
+import { sessionService } from "../../../Services/Session";
+import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../../Store/sessionSlice";
 
 const ResultList = ({ selectedClass }: { selectedClass: string }): React.JSX.Element => {
+  const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const fetchedStudents = useSelector((state: RootState) => state.getStudentsByClassId.listRecords);
+  const fetchedSessions = useSelector((state: RootState) => state.getSession.listRecords);
   const [activeTab, setActiveTab] = React.useState<string | React.JSX.Element>("All Results");
   const tabs = [
     { id: 1, label: "All Results" },
@@ -30,13 +35,17 @@ const ResultList = ({ selectedClass }: { selectedClass: string }): React.JSX.Ele
   //Fetch students by classroom ID
   const fetchStudentsForClass = async (classId: string) => {
     dispatch(fetchClassroomStudentsStart());
+    dispatch(fetchSessionStart());
     try {
       const studentData = await classroomService.getStudentsByClassroomId(classId);
+      const data = await sessionService.getAllRegisteredSessions(user?.schoolId);
+      dispatch(fetchSessionSuccess(data));
       dispatch(fetchClassroomStudentsSuccess(studentData));
 
     } catch (err) {
       console.error("Fetch students error:", err);
       dispatch(fetchClassroomStudentsFailure((err as Error).message));
+      dispatch(fetchSessionFailure((err as Error).message));
     }
   };
 
@@ -62,7 +71,7 @@ const ResultList = ({ selectedClass }: { selectedClass: string }): React.JSX.Ele
                 ))}
               </div>
             </div>
-            {activeTab === "All Results" && <AllResult students={fetchedStudents} />}
+            {activeTab === "All Results" && <AllResult fetchedSessions={fetchedSessions} students={fetchedStudents} />}
             {activeTab === "All Folders" && <AllFolders />}
           </div>
         </div>
