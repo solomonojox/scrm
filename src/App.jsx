@@ -69,7 +69,10 @@ import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
 import StudentCbtLogin from "./pages/Cbt/Login page";
 import AdminCbtLogin from "./pages/Cbt/AdminCbt";
-import RegisterSchool  from "./pages/Cbt/RegisterSchool";
+import RegisterSchool from "./pages/Cbt/RegisterSchool";
+import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
+import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
+import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -190,9 +193,21 @@ function App() {
       <Route path="/payment" element={<StudentFeePaymentTable />} />
 
       {/* All students routes here */}
-            <Route path="/studentscbt" element={<StudentCbtLogin />} />
-            <Route path="/admincbt" element={<AdminCbtLogin />} />
-            <Route path="/registerschool" element={<RegisterSchool />} />
+      <Route path="/studentscbt" element={<StudentCbtLogin />} />
+      <Route path="/admincbt" element={<AdminCbtLogin />} />
+      <Route path="/registerschool" element={<RegisterSchool />} />
+
+      {/* <Route
+        element={
+          <ProtectedRoute>
+            <GuardianLayout />
+          </ProtectedRoute>
+        }
+      >
+      </Route> */}
+        <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+        <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
+        <Route path="/super-admin/school-info" element={<SchoolInfoPage />} />
     </Routes>
   );
 }
