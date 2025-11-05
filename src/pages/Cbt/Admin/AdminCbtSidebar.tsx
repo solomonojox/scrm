@@ -9,11 +9,20 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../Context/Auth/useAuth";
 
-const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
-  const location = useLocation(); // 
-  const { user } = useAuth();
+type Role = "Student" | "Teacher" | "SchoolAdmin";
 
-  const menuByRole: any = {
+interface MenuItem {
+  id: string;
+  label: string;
+  link: string;
+  icon: React.ReactNode;
+}
+
+const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
+  const location = useLocation();
+  const { cbtUser } = useAuth();
+
+  const menuByRole: Record<Role, MenuItem[]> = {
     Student: [
       {
         id: "dashboard",
@@ -21,21 +30,11 @@ const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
         link: "/cbt/student/dashboard",
         icon: <LayoutDashboardIcon />,
       },
-      {
-        id: "subject",
-        label: "My Subjects",
-        link: "/cbt/student/subject",
-        icon: <BarChart3 />,
-      },
-      {
-        id: "exams",
-        label: "My Exams",
-        link: "/cbt/student/exams",
-        icon: <BookAudio />,
-      },
+      { id: "subject", label: "My Subjects", link: "/cbt/student/subject", icon: <BarChart3 /> },
+      { id: "exams", label: "My Exams", link: "/cbt/student/exams", icon: <BookAudio /> },
     ],
 
-    teacher: [
+    Teacher: [
       {
         id: "dashboard",
         label: "Dashboard",
@@ -45,7 +44,7 @@ const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
       {
         id: "questions",
         label: "Manage Questions",
-        link: "/cbt/teacher/questions",
+        link: "/cbt/teacher/exams",
         icon: <FileText />,
       },
     ],
@@ -63,21 +62,16 @@ const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
         link: "/cbt/admin/userManagement",
         icon: <ShieldUserIcon />,
       },
-      {
-        id: "settings",
-        label: "Settings",
-        link: "/cbt/admin/settings",
-        icon: <Settings />,
-      },
+      { id: "settings", label: "Settings", link: "/cbt/admin/settings", icon: <Settings /> },
     ],
   };
 
-  const tabs = menuByRole[user?.role] || [];
+  const tabs = menuByRole[cbtUser?.role as Role] || [];
 
   return (
-    <div className="fixed left-0 z-20 shadow-lg bg-white">
+    <div className="hidden lg:block fixed left-0 z-20 shadow-lg bg-white">
       <div
-        className={` inset-y-0 left-0 w-64 lg:h-[calc(100vh-3.5rem)] bg-white shadow-lg transform ${
+        className={` fixed left-0 z-20 inset-y-0 w-64 lg:h-[calc(100vh-3.5rem)] bg-white shadow-lg transform  ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:shadow-none`}
       >

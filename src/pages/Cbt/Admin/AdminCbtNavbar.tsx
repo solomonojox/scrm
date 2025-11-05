@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
-  const { user, logout } = useAuth()
+  const { cbtUser, logout } = useAuth()
     const navigate = useNavigate();
     const handleLogout = () => {
       localStorage.removeItem("scrmToken");
@@ -70,12 +70,12 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             >
               <div className="flex flex-col items-center space-x-1">
                 <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white">
-                  {user?.role
+                  {cbtUser?.role
                     .split(" ")
                     .map((role) => role.charAt(0))
                     .join("")}
                 </div>
-                <span className="hidden md:block text-sm">{ user?.role === 'SchoolAdmin' ? "School Admin" : " "}</span>
+                <span className="hidden md:block text-sm">{ cbtUser?.role === 'SchoolAdmin' ? "School Admin" : cbtUser?.role}</span>
               </div>
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -90,7 +90,7 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
                   href="#"
                   className="flex items-center px-4 py-2 text-gray-700 hover:text-orange-600"
                 >
-                  <User className="w-4 h-4 mr-2" />
+                  <cbtUser className="w-4 h-4 mr-2" />
                   <span>Profile</span>
                 </a> */}
                 <button

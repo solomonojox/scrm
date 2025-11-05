@@ -6,9 +6,8 @@ import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
 import { AppContext } from "../../Context/AppContext";
 import { jwtDecode } from "jwt-decode";
 
-
 const CbtLogin = () => {
-  const { login } = useAuth();
+  const { cbtLogin } = useAuth();
   const navigate = useNavigate();
   const { notifySuccess, notifyError } = useContext(AppContext);
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
@@ -91,15 +90,15 @@ const CbtLogin = () => {
         password,
       };
       const response = await cbtAuthService.login(data);
-      login(response.data);
-
+      cbtLogin(response.data);
+      
       setSuccessMessage("Login successful!");
       notifySuccess("Login successful!");
+      
+
 
       const decoded = jwtDecode(response.data);
-      // const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-
-     const role = decoded?.role
+      const role = decoded?.role;
 
       if (role === "SchoolAdmin") {
         navigate("/cbt/admin/dashboard");
@@ -223,8 +222,6 @@ const CbtLogin = () => {
               )}
               {loading ? "Logging in..." : "Login"}
             </button>
-
-    
           </form>
         </div>
 

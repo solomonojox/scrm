@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
 import { AppContext } from "../../Context/AppContext";
 
 const RegisterSchool = () => {
   // const { login } = useAuth();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { notifySuccess, notifyError } = useContext(AppContext);
   const [step, setStep] = useState(1);
   const [schoolData, setSchoolData] = useState({
@@ -109,20 +109,20 @@ const RegisterSchool = () => {
     try {
       // Prepare data for API
       const { confirmPassword, ...dataToSend } = schoolData;
-      console.log(dataToSend)
+      console.log(dataToSend);
 
       const response = await cbtAuthService.registerSchool(dataToSend);
 
-      if(response){
-        const result = response.data;
-        notifySuccess('School registered successfully', 'success');
+
+      if (response?.status === true) {
+        const result = response?.data?.data?.applicationInformation
+        notifySuccess("School registered successfully", "success");
+        // Store the schoolId from response
+        setRegisteredSchoolId(result.schoolId);
+
+        // Move to step 2
+        setStep(2);
       }
-
-      // Store the schoolId from response
-      setRegisteredSchoolId(result.schoolId);
-
-      // Move to step 2
-      setStep(2);
     } catch (error) {
       console.error("School registration error:", error);
     } finally {
@@ -145,21 +145,12 @@ const RegisterSchool = () => {
         schoolId: registeredSchoolId,
       };
 
-      // TODO: Replace with your actual API endpoint
-      const response = await fetch("/api/admin/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await cbtAuthService.registerAdmin(payload);
 
-      if (!response.ok) throw new Error("Admin creation failed");
-
-      // Success - redirect to login or dashboard
-      alert("School and admin registered successfully!");
-      // Navigate to login page or dashboard
-      // window.location.href = '/cbt/login';
+      if (response?.status === true) {
+        notifySuccess("Admin registered successfully", "success");
+        navigate('/cbt/login');
+      }
     } catch (error) {
       console.error("Admin creation error:", error);
       alert("Failed to create admin. Please try again.");

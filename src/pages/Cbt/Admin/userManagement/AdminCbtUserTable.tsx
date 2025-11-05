@@ -22,7 +22,7 @@ const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
         <thead>
           <tr className="bg-orange-100 text-gray-700 text-sm">
             <th className="text-left p-3">Name</th>
-            <th className="text-left p-3">Email</th>
+            <th className="text-left p-3">{activeTab === "students" ? "Student ID" : "Email"}</th>
             <th className="text-left p-3">{activeTab === "students" ? "Class" : "Subject"}</th>
             <th className="text-left p-3">Status</th>
             <th className="text-left p-3">Actions</th>
@@ -32,12 +32,18 @@ const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
         <tbody>
           {users.map((user: any, i: number) => (
             <tr key={i} className="border-b border-orange-100 hover:bg-orange-50 transition">
-              <td className="p-3 text-sm font-medium">{user.name}</td>
-              <td className="p-3 text-sm">{user.email}</td>
-              <td className="p-3 text-sm">{activeTab === "students" ? user.class : user.subject}</td>
+              <td className="p-3 text-sm font-medium">
+                {user.firstname} {user.lastname}
+              </td>
+              <td className="p-3 text-sm">
+                {activeTab === "students" ? user.studentNo : user.email}
+              </td>
+              <td className="p-3 text-sm">
+                {activeTab === "students" ? user.class : user.subject}
+              </td>
               <td className="p-3 text-sm">
                 <span className="bg-orange-500 text-white text-xs px-3 py-1 rounded-full">
-                  {user.status}
+                  {user.status || "Active"}
                 </span>
               </td>
               <td className="p-3 text-sm flex items-center space-x-3">
