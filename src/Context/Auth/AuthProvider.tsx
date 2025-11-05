@@ -36,9 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const decoded = jwtDecode<Partial<any>>(token);
     localStorage.setItem('schoolId', decoded.schoolId);
     setUser({
-      id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
-      email: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
-      role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || '',
+      id: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || decoded?.userId || '',
+      email: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || decoded?.email || '',
+      role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || decoded?.role ||'',
       schoolReg: decoded.schoolReg || '',
       schoolName: decoded.schoolName || '',
       schoolId: decoded.schoolId || '',

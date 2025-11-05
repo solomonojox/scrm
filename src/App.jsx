@@ -69,8 +69,6 @@ import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
 import StudentCbtLogin from "./pages/Cbt/Login page";
 import AdminCbtLogin from "./pages/Cbt/AdminCbt";
-import RegisterSchool from "./pages/Cbt/RegisterSchool";
-import CbtLogin from "./pages/Cbt/CbtLogin";
 import { AdminCbtLayout } from "./layouts/cbt/AdminCbtLayout";
 import AdminCbtDashboard from "./pages/Cbt/Admin/dashboard/AdminCbtDashboard";
 import AdminCbtUserManagement from "./pages/Cbt/Admin/userManagement/AdminCbtUserManagement";
@@ -79,6 +77,8 @@ import StudentCbtDashboard from "./pages/Cbt/Students/dashboard/StudentCbtDashbo
 import StudentExamDashboard from "./pages/Cbt/Students/exam/StudentExamdashboard";
 import ExamInterface from "./pages/Cbt/Students/exam/ExamInterface";
 import ExamResultDetails from "./pages/Cbt/Students/exam/ExamResultDetails";
+import RegisterSchool from "./pages/Cbt/RegisterSchool";
+import CbtLogin from "./pages/Cbt/CbtLogin";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");

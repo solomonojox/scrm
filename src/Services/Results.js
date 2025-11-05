@@ -13,8 +13,8 @@ export const resultService = {
   getResultBySchoolAndClass: async (schoolId, studentId, classroomId, sessionId, term) => {
     try {
       const response = await api.get(
-        '/api/Result/GetStudentResultBySchoolAndClass?schoolId=1e6e8616-b236-4454-bb91-08de0faeb290&studentId=bfffe480-0ec0-49f9-c326-08de0fb1e943&classroomId=5421aafb-2940-4e47-a7e0-ee24a4e480aa&sessionId=4cb1ac85-af82-40ea-b6bd-0aea27008071&term=1'
-        // `/api/Result/GetStudentResultBySchoolAndClass?schoolId=${schoolId}&studentId=${studentId}&classroomId=${classroomId}&sessionId=${sessionId}&term=${term}`
+        // '/api/Result/GetStudentResultBySchoolAndClass?schoolId=1e6e8616-b236-4454-bb91-08de0faeb290&studentId=bfffe480-0ec0-49f9-c326-08de0fb1e943&classroomId=5421aafb-2940-4e47-a7e0-ee24a4e480aa&sessionId=4cb1ac85-af82-40ea-b6bd-0aea27008071&term=1'
+        `/api/Result/GetStudentResultBySchoolAndClass?schoolId=${schoolId}&studentId=${studentId}&classroomId=${classroomId}&sessionId=${sessionId}&term=${term}`
         );
 
       return response.data;
