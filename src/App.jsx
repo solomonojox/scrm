@@ -82,6 +82,10 @@ import CbtLogin from "./pages/Cbt/CbtLogin";
 import { TeacherCbtLayout } from "./layouts/cbt/TeacherCbtLayout";
 import TeacherCbtDashboard from "./pages/Cbt/Teacher/dashboard/TeacherCbtDashboard";
 import TeacherCbtExam from "./pages/Cbt/Teacher/ManageQuestion/TeacherCbtExam";
+import RegisterSchool from "./pages/Cbt/RegisterSchool";
+import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
+import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
+import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -228,6 +232,19 @@ function App() {
         <Route path="/cbt/teacher/dashboard" element={<TeacherCbtDashboard />} />
         <Route path="/cbt/teacher/exams" element={<TeacherCbtExam />} />
       </Route>
+      <Route path="/registerschool" element={<RegisterSchool />} />
+
+      {/* <Route
+        element={
+          <ProtectedRoute>
+            <GuardianLayout />
+          </ProtectedRoute>
+        }
+      >
+      </Route> */}
+        <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+        <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
+        <Route path="/super-admin/school-info" element={<SchoolInfoPage />} />
     </Routes>
   );
 }
