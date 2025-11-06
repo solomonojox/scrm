@@ -2,75 +2,124 @@ import React, { useState, useMemo, useEffect } from "react";
 import { UserPlus } from "lucide-react";
 import AdminCbtUserTable from "./AdminCbtUserTable";
 import AdminCbtUserForm from "./AdminCbtUserForm";
+import { cbtAdminService } from "../../../../Services/Cbt/Admin/CbtAdminService";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import { useAuth } from "../../../../Context/Auth/useAuth";
+import {
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+  fetchStudentsFailure,
+} from "../../../../Store/Student/studentSlice";
+import {
+  fetchTeacherStart,
+  fetchTeacherSuccess,
+  fetchTeacherFailure,
+} from "../../../../Store/Teachers/teacherSlice";
 
 const AdminCbtUserManagement = () => {
+  // Old UI logic — still works
   const [activeTab, setActiveTab] = useState<any>("students");
   const [showModal, setShowModal] = useState(false);
-  const [search, setSearch] = useState("");
 
-  // Pagination state
-  const [page, setPage] = useState(1);
-  const pageSize = 5;
+  // New Logic
+  const { cbtUser } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const students: any[] = [
-    { name: "John Smith", email: "john@school.edu", class: "Grade 12A", status: "active" },
-    { name: "Emma Johnson", email: "emma@school.edu", class: "Grade 11B", status: "active" },
-    { name: "Michael Brown", email: "michael@school.edu", class: "Grade 12A", status: "active" },
-    { name: "Sarah Dean", email: "sarah@school.edu", class: "Grade 10A", status: "active" },
-    { name: "Kyle Grant", email: "kyle@school.edu", class: "Grade 9A", status: "active" },
-    { name: "Lily Evans", email: "lily@school.edu", class: "Grade 11C", status: "active" },
-  ];
+  const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
 
-  const teachers: any[] = [
-    {
-      name: "Dr. Sarah Wilson",
-      email: "sarah@school.edu",
-      subject: "Mathematics",
-      status: "active",
-    },
-    { name: "Prof. James Lee", email: "james@school.edu", subject: "Physics", status: "active" },
-    { name: "Mrs. Collins", email: "collins@school.edu", subject: "Chemistry", status: "active" },
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Reset page when tab changes
+  const recordsPerPage = 5;
+
+  // Fetch students & teachers on mount
   useEffect(() => {
-    setPage(1);
+    if (!fetchedStudentLoading) {
+      fetchStudents();
+    }
+  }, []);
+
+  // Reset pagination when switching tabs
+  useEffect(() => {
+    setCurrentPage(1);
+    setSearchQuery("");
   }, [activeTab]);
 
-  // Select the correct dataset
-  const rawData = activeTab === "students" ? students : teachers;
+  const fetchStudents = async () => {
+    dispatch(fetchStudentsStart());
+    dispatch(fetchTeacherStart());
 
-  // Apply search filter
-  const filteredData = useMemo(() => {
-    return rawData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
-  }, [rawData, search]);
+    try {
+      const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
+      const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
 
-  // Calculate paginated data
-  const paginatedData = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return filteredData.slice(start, start + pageSize);
-  }, [filteredData, page]);
+      dispatch(fetchStudentsSuccess(data?.data));
+      dispatch(fetchTeacherSuccess(teachers?.data));
+    } catch (err) {
+      const msg = (err as Error).message;
+      dispatch(fetchStudentsFailure(msg));
+      dispatch(fetchTeacherFailure(msg));
+    }
+  };
 
-  // Total number of pages
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  // Filter based on active tab
+  const filteredRecords = useMemo(() => {
+    // Choose the correct data source based on active tab
+    const sourceData = activeTab === "students" ? fetchedStudentRecord : fetchedTeacherRecord;
+
+    // Ensure we always work with an array
+    let filtered = Array.isArray(sourceData) ? sourceData : [];
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter((record: any) => {
+        if (activeTab === "students") {
+          // Student search fields
+          return (
+            record.firstname?.toLowerCase().includes(q) ||
+            record.lastname?.toLowerCase().includes(q) ||
+            record.homeAddress?.toLowerCase().includes(q) ||
+            record.guardianId?.toLowerCase().includes(q)
+          );
+        } else {
+          // Teacher search fields (adjust field names based on your data structure)
+          return (
+            record.firstname?.toLowerCase().includes(q) ||
+            record.lastname?.toLowerCase().includes(q) ||
+            record.email?.toLowerCase().includes(q) ||
+            record.subject?.toLowerCase().includes(q) ||
+            record.phoneNumber?.toLowerCase().includes(q)
+          );
+        }
+      });
+    }
+
+    return filtered;
+  }, [fetchedStudentRecord, fetchedTeacherRecord, searchQuery, activeTab]);
+
+  // Pagination Logic with safety checks
+  const indexOfLast = currentPage * recordsPerPage;
+  const indexOfFirst = indexOfLast - recordsPerPage;
+  const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   return (
     <div className="p-6 font-sans">
-      {/* USER MANAGEMENT HEADER */}
       <div className="bg-white shadow-sm border border-orange-100 rounded-xl p-6">
-        {/* Header Section */}
+        {/* HEADER */}
         <div className="flex flex-wrap items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-gray-800">User Management</h2>
 
-          <div className="flex items-start md:items-center flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+          <div className="flex flex-col md:flex-row md:space-x-4 space-y-3 md:space-y-0">
             {/* Tabs */}
             <div className="bg-orange-100 rounded-full flex p-1">
               <button
                 onClick={() => setActiveTab("students")}
-                className={`px-4 py-1 rounded-full text-sm font-medium transition ${
-                  activeTab === "students"
-                    ? "bg-orange-500 text-white"
-                    : "text-gray-700 hover:text-orange-600"
+                className={`px-4 py-1 rounded-full text-sm font-medium ${
+                  activeTab === "students" ? "bg-orange-500 text-white" : "text-gray-700"
                 }`}
               >
                 Students
@@ -78,20 +127,18 @@ const AdminCbtUserManagement = () => {
 
               <button
                 onClick={() => setActiveTab("teachers")}
-                className={`px-4 py-1 rounded-full text-sm font-medium transition ${
-                  activeTab === "teachers"
-                    ? "bg-orange-500 text-white"
-                    : "text-gray-700 hover:text-orange-600"
+                className={`px-4 py-1 rounded-full text-sm font-medium ${
+                  activeTab === "teachers" ? "bg-orange-500 text-white" : "text-gray-700"
                 }`}
               >
                 Teachers
               </button>
             </div>
 
-            {/* Add Button */}
+            {/* ADD BUTTON */}
             <button
               onClick={() => setShowModal(true)}
-              className="flex items-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition"
+              className="flex items-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold text-sm"
             >
               <UserPlus className="w-4 h-4 mr-2" />
               {activeTab === "students" ? "Add Student" : "Add Teacher"}
@@ -104,23 +151,25 @@ const AdminCbtUserManagement = () => {
           <input
             type="text"
             placeholder={`Search ${activeTab}...`}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full border border-orange-100 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full border border-orange-100 rounded-lg px-4 py-2"
           />
         </div>
 
-        {/* TABLE WITH PAGINATION */}
-        <AdminCbtUserTable
-          activeTab={activeTab}
-          users={paginatedData}
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={setPage}
-        />
+        {(
+          /* TABLE */
+          <AdminCbtUserTable
+            activeTab={activeTab}
+            users={currentRecords}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
 
-      {/* FORM MODAL */}
+      {/* Modal */}
       {showModal && (
         <AdminCbtUserForm activeTab={activeTab} closeModal={() => setShowModal(false)} />
       )}

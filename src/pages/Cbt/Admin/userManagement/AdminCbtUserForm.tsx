@@ -1,32 +1,212 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { useAuth } from "../../../../Context/Auth/useAuth";
+import { cbtAdminService } from "../../../../Services/Cbt/Admin/CbtAdminService";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { sessionService } from "../../../../Services/Session";
+import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../../../Store/sessionSlice";
 
-const AdminCbtUserForm = ({ activeTab, closeModal }: any) => {
+interface OptionType {
+  value: string;
+  label: string;
+}
+
+interface Teacher {
+  teacherId: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+}
+
+interface AdminCbtUserFormProps {
+  activeTab: "students" | "teachers";
+  closeModal: () => void;
+  onSuccess?: () => void;
+}
+
+const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserFormProps) => {
+  const { cbtUser } = useAuth();
+   const dispatch = useDispatch<AppDispatch>();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
     email: "",
     phone: "",
-    class: "",
-    subject: "",
-    password: "",
-    dob: "",
+    homeAddress: "",
+    dateOfBirth: "",
     gender: "",
-    section: "",
-    guardianName: "",
-    guardianEmail: "",
-    guardianPhone: "",
+    nationality: "",
+    stateOfOrigin: "",
+    religion: "",
+    employmentDate: "",
+    username: "",
+    teacherId: "",
+    // Student specific
+    currentTerm: "",
+    sessionId: "",
   });
 
-  const handleChange = (e: any) => {
+  const sessions = useSelector((state: RootState) => state.getSession.listRecords || []);
+  const fetchedLoading = useSelector((state: RootState) => state.getSession.loading);
+  const teachers = useSelector((state: RootState) => state.getTeacher.listRecords || []) as Teacher[];
+
+  useEffect(() => {
+    if(!fetchedLoading){
+      fetchSession();
+    };
+  }, []);
+
+  const fetchSession = async () => {
+    dispatch(fetchSessionStart());
+    try {
+      const res = await sessionService.getAllRegisteredSessions(cbtUser?.schoolId);
+
+      dispatch(fetchSessionSuccess(res));
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+      dispatch(fetchSessionFailure("Failed to fetch sessions"));
+    }
+  };
+
+  // Term options
+  const termOptions: OptionType[] = [
+    { value: "1", label: "First Term" },
+    { value: "2", label: "Second Term" },
+    { value: "3", label: "Third Term" },
+  ];
+
+  // Session options
+  const sessionOptions: OptionType[] = sessions.map((session: any) => ({
+    value: String(session.sessionId || session.id),
+    label: session.name || `Session ${session.sessionId || session.id}`,
+  }));
+
+  // Teacher options for student assignment
+  const teacherOptions: OptionType[] = teachers.map((teacher) => ({
+    value: String(teacher.teacherId),
+    label: `${teacher.firstname} ${teacher.lastname} (${teacher.phone})`,
+  }));
+
+  const getSelectedOption = (value: string, options: OptionType[]) => {
+    if (!value) return null;
+    return options.find((option) => option.value === String(value)) || null;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    alert(`${activeTab === "students" ? "Student" : "Teacher"} added successfully!`);
-    closeModal();
+  const handleSelectChange = (name: string, selectedOption: OptionType | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : "",
+    }));
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (activeTab === "students") {
+        const studentPayload = {
+          schoolId: cbtUser?.schoolId,
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          gender: formData.gender,
+          dateOfBirth: formData.dateOfBirth,
+          homeAddress: formData.homeAddress,
+          teacherId: formData.teacherId || "",
+          currentTerm: formData.currentTerm ? parseInt(formData.currentTerm) : 0,
+          sessionId: formData.sessionId || "",
+        };
+
+        await cbtAdminService.addStudent(studentPayload);
+      } else {
+        // Teacher payload - note the corrected field names to match API
+        const teacherPayload = {
+          schoolId: cbtUser?.schoolId,
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          phone: formData.phone,
+          homeAddress: formData.homeAddress,
+          nationality: formData.nationality,
+          stateoforigin: formData.stateOfOrigin, // Note: API uses 'stateoforigin' not 'stateOfOrigin'
+          religion: formData.religion,
+          dateOfbirth: formData.dateOfBirth, // Note: API uses 'dateOfbirth' not 'dateOfBirth'
+          employmentDate: formData.employmentDate,
+          email: formData.email,
+          username: formData.username,
+        };
+
+        await cbtAdminService.addTeacher(teacherPayload);
+      }
+
+      console.log(`${activeTab === "students" ? "Student" : "Teacher"} added successfully!`);
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      closeModal();
+    } catch (error) {
+      console.error("Error adding user:", error);
+      alert(`Failed to add ${activeTab === "students" ? "student" : "teacher"}. Please try again.`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Field configuration for reusable input fields
+  const renderInputField = (
+    name: string,
+    placeholder: string,
+    type: string = "text",
+    required: boolean = true,
+    colSpan: number = 1
+  ) => (
+    <div className={`col-span-${colSpan}`}>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {placeholder} {required && "*"}
+      </label>
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={formData[name as keyof typeof formData]}
+        onChange={handleChange}
+        required={required}
+        className="w-full border border-orange-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+      />
+    </div>
+  );
+
+  const renderSelectField = (
+    name: string,
+    label: string,
+    options: OptionType[],
+    required: boolean = true,
+    colSpan: number = 1
+  ) => (
+    <div className={`col-span-${colSpan}`}>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label} {required && "*"}
+      </label>
+      <Select
+        options={options}
+        value={getSelectedOption(formData[name as keyof typeof formData], options)}
+        onChange={(selected) => handleSelectChange(name, selected)}
+        placeholder={`Select ${label}`}
+        className="text-sm"
+        isSearchable
+        isClearable={!required}
+        required={required}
+      />
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
@@ -34,148 +214,77 @@ const AdminCbtUserForm = ({ activeTab, closeModal }: any) => {
         <button
           onClick={closeModal}
           className="absolute top-3 right-3 text-gray-400 hover:text-orange-500"
+          type="button"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <h3 className="text-xl font-semibold text-orange-600 mb-4">
+        <h3 className="text-xl font-semibold text-orange-600 mb-6">
           {activeTab === "students" ? "Add New Student" : "Add New Teacher"}
         </h3>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-          <input
-            type="text"
-            name="firstname"
-            placeholder="First Name *"
-            onChange={handleChange}
-            required
-            className="w-full border border-orange-200 rounded-lg px-3 py-2"
-          />
-          <input
-            type="text"
-            name="lastname"
-            placeholder="Last Name *"
-            onChange={handleChange}
-            required
-            className="w-full border border-orange-200 rounded-lg px-3 py-2"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email *"
-            onChange={handleChange}
-            required
-            className="w-full border border-orange-200 rounded-lg px-3 py-2"
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            onChange={handleChange}
-            className="w-full border border-orange-200 rounded-lg px-3 py-2"
-          />
+          {/* Common Fields */}
+          {renderInputField("firstname", "First Name", "text", true, 1)}
+          {renderInputField("lastname", "Last Name", "text", true, 1)}
+
+          {/* Gender Select */}
+          <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Gender *
+            </label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="w-full border border-orange-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          {renderInputField("dateOfBirth", "Date of Birth", "date", true, 1)}
+          {renderInputField("homeAddress", "Home Address", "text", true, 2)}
 
           {activeTab === "students" && (
             <>
-              <input
-                type="date"
-                name="dob"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-                required
-              />
-
-              <select
-                name="gender"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-                required
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-
-              <select
-                name="class"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-                required
-              >
-                <option value="">Select Class</option>
-                <option value="Grade 10A">Grade 10A</option>
-                <option value="Grade 11B">Grade 11B</option>
-                <option value="Grade 12A">Grade 12A</option>
-              </select>
-
-              <select
-                name="section"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-              >
-                <option value="">Select Section</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-              </select>
-
-              <input
-                type="text"
-                name="guardianName"
-                placeholder="Guardian Name"
-                onChange={handleChange}
-                className="w-full md:col-span-2 border border-orange-200 rounded-lg px-3 py-2"
-              />
-
-              <input
-                type="email"
-                name="guardianEmail"
-                placeholder="Guardian Email"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-              />
-              <input
-                type="text"
-                name="guardianPhone"
-                placeholder="Guardian Phone"
-                onChange={handleChange}
-                className="w-full border border-orange-200 rounded-lg px-3 py-2"
-              />
+              {renderSelectField("currentTerm", "Current Term", termOptions, true, 1)}
+              {renderSelectField("sessionId", "Session", sessionOptions, true, 1)}
+              {renderSelectField("teacherId", "Assign Teacher", teacherOptions, false, 2)}
             </>
           )}
 
           {activeTab === "teachers" && (
-            <input
-              type="text"
-              name="subject"
-              placeholder="Subject *"
-              onChange={handleChange}
-              required
-              className="w-full md:col-span-2 border border-orange-200 rounded-lg px-3 py-2"
-            />
+            <>
+              {renderInputField("email", "Email Address", "email", true, 1)}
+              {renderInputField("username", "Username", "text", true, 1)}
+              {renderInputField("phone", "Phone Number", "tel", true, 1)}
+              {renderInputField("nationality", "Nationality", "text", true, 1)}
+              {renderInputField("stateOfOrigin", "State of Origin", "text", true, 1)}
+              {renderInputField("religion", "Religion", "text", true, 1)}
+              {renderInputField("employmentDate", "Employment Date", "date", true, 1)}
+            </>
           )}
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleChange}
-            className="w-full md:col-span-2 border border-orange-200 rounded-lg px-3 py-2"
-          />
-
-          <div className="flex justify-end space-x-3 w-full md:col-span-2">
+          <div className="flex justify-end space-x-3 w-full md:col-span-2 mt-6 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={closeModal}
-              className="px-4 py-2 border border-orange-300 text-orange-600 rounded-lg hover:bg-orange-100"
+              disabled={loading}
+              className="px-6 py-2 border border-orange-300 text-orange-600 rounded-lg hover:bg-orange-100 disabled:opacity-50 transition-colors"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold"
+              disabled={loading}
+              className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {activeTab === "students" ? "Add Student" : "Add Teacher"}
+              {loading ? "Adding..." : activeTab === "students" ? "Add Student" : "Add Teacher"}
             </button>
           </div>
         </form>

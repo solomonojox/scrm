@@ -10,6 +10,8 @@ export interface UserData {
 export interface AuthContextType {
     isAuthenticated: boolean;
     user: UserData | null;
+    cbtUser: UserData | null;
+    cbtLogin: (token: string) => void;
     login: (token: string) => void;
     logout: () => void;
 }
