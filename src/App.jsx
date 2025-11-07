@@ -82,7 +82,6 @@ import CbtLogin from "./pages/Cbt/CbtLogin";
 import { TeacherCbtLayout } from "./layouts/cbt/TeacherCbtLayout";
 import TeacherCbtDashboard from "./pages/Cbt/Teacher/dashboard/TeacherCbtDashboard";
 import TeacherCbtExam from "./pages/Cbt/Teacher/ManageQuestion/TeacherCbtExam";
-import RegisterSchool from "./pages/Cbt/RegisterSchool";
 import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
@@ -151,7 +150,13 @@ function App() {
       </Route>
 
       {/* All teachers routes here */}
-      <Route element={<ProtectedRoute><TeacherLayout /></ProtectedRoute>}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <TeacherLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/teacher/assignments" element={<TeacherAssignment />} />
@@ -214,13 +219,25 @@ function App() {
       <Route path="/cbt/registerschool" element={<RegisterSchool />} />
 
       {/* Admin CBT */}
-      <Route element={<ProtectedRoute2><AdminCbtLayout /></ProtectedRoute2>}>
+      <Route
+        element={
+          <ProtectedRoute2>
+            <AdminCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
         <Route path="/cbt/admin/dashboard" element={<AdminCbtDashboard />} />
         <Route path="/cbt/admin/userManagement" element={<AdminCbtUserManagement />} />
       </Route>
 
       {/* Student */}
-      <Route element={<ProtectedRoute2><StudentCbtLayout /></ProtectedRoute2>}>
+      <Route
+        element={
+          <ProtectedRoute2>
+            <StudentCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
         <Route path="/cbt/student/dashboard" element={<StudentCbtDashboard />} />
         <Route path="/cbt/student/exams" element={<StudentExamDashboard />} />
         <Route path="/cbt/student/exam/:id" element={<ExamInterface />} />
@@ -228,11 +245,17 @@ function App() {
       </Route>
 
       {/* Teacher */}
-      <Route element={<ProtectedRoute2><TeacherCbtLayout /></ProtectedRoute2>}>
+      <Route
+        element={
+          <ProtectedRoute2>
+            <TeacherCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
         <Route path="/cbt/teacher/dashboard" element={<TeacherCbtDashboard />} />
         <Route path="/cbt/teacher/exams" element={<TeacherCbtExam />} />
       </Route>
-      <Route path="/registerschool" element={<RegisterSchool />} />
+      {/* <Route path="/registerschool" element={<RegisterSchool />} /> */}
 
       {/* <Route
         element={
@@ -242,9 +265,9 @@ function App() {
         }
       >
       </Route> */}
-        <Route path="/super-admin/login" element={<SuperAdminLogin />} />
-        <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
-        <Route path="/super-admin/school-info" element={<SchoolInfoPage />} />
+      <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+      <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
+      <Route path="/super-admin/school-info" element={<SchoolInfoPage />} />
     </Routes>
   );
 }
