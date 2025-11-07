@@ -10,7 +10,7 @@ const CbtLogin = () => {
   const { cbtLogin } = useAuth();
   const navigate = useNavigate();
   const { notifySuccess, notifyError } = useContext(AppContext);
-  const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
+  const [schoolRegistrationNumber, setschoolRegistrationNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -142,7 +142,7 @@ const CbtLogin = () => {
                 type="text"
                 value={schoolRegistrationNumber}
                 onChange={(e) => {
-                  setSchoolRegistrationNumber(e.target.value);
+                  setschoolRegistrationNumber(e.target.value);
                   validateRegNumber(e.target.value);
                 }}
                 placeholder="Enter Number"

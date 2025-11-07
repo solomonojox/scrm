@@ -290,7 +290,8 @@ const NewAttendance: React.FC = () => {
       lastName: student.lastName,
       timeIn: student.time || getCurrentTime(),
       status: student.absent ? 0 : student.present ? 1 : 2, // 1=Present, 0=Absent, 2=Late
-      date: currentDate,
+      date: getInputDateValue(currentDate)
+
     }));
 
     try {
