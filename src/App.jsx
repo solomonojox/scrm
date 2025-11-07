@@ -63,7 +63,6 @@ import AccountSetup from "./pages/Guardian/account/AccountSetup";
 import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
 import TeacherResult from "./pages/Teachers/results/TeacherResult";
 import NewResult from "./pages/Teachers/results/NewResult";
-import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 import TeacherAssignment from "./pages/Teachers/assignment/TeacherAssignment";
 import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
@@ -85,6 +84,7 @@ import TeacherCbtExam from "./pages/Cbt/Teacher/ManageQuestion/TeacherCbtExam";
 import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
+import ViewReportCardExample from "./pages/Teachers/results/ViewReportCardExample";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -173,7 +173,7 @@ function App() {
 
         <Route path="/teacher/results" element={<TeacherResult />} />
         <Route path="/teacher/new-result" element={<NewResult />} />
-        <Route path="/teacher/report-card" element={<TeacherReportCard />} />
+        <Route path="/teacher/report-card" element={<ViewReportCardExample />} />
       </Route>
 
       {/* All Guardians routes here */}
