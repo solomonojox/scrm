@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 import { useAuth } from "../Context/Auth/useAuth";
 import logo from "../assets/looogo.png";
+import useTawkTo from "../Context/useTawkTo";
 
 const LoginPage = () => {
   const { login } = useAuth();
+  useTawkTo();
   const navigate = useNavigate();
   const { notifySuccess, notifyError } = useContext(AppContext);
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
@@ -109,8 +111,8 @@ const LoginPage = () => {
     } catch (err) {
       setError(
         err.response?.data.responseMessage ||
-          err?.message ||
-          "Login failed. Please check your credentials."
+        err?.message ||
+        "Login failed. Please check your credentials."
       );
       notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {

@@ -82,6 +82,12 @@ const ProtectedRoute2 = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
   return token ? children : <Navigate to="/StudentCbtLogin" />;
 };
+
+const ProtectedRoute3 = ({ children }) => {
+  const token = localStorage.getItem("scrmToken");
+  return token ? children : <Navigate to="/super-admin/login" />;
+};
+
 function App() {
   useEffect(() => {
     const token = localStorage.getItem("scrmToken");
@@ -206,8 +212,8 @@ function App() {
       >
       </Route> */}
         <Route path="/super-admin/login" element={<SuperAdminLogin />} />
-        <Route path="/super-admin/dashboard" element={<SuperAdminDashboard />} />
-        <Route path="/super-admin/school-info" element={<SchoolInfoPage />} />
+        <Route path="/super-admin/dashboard" element={<ProtectedRoute3><SuperAdminDashboard /></ProtectedRoute3>} />
+        <Route path="/super-admin/school-info" element={<ProtectedRoute3><SchoolInfoPage /></ProtectedRoute3>} />
     </Routes>
   );
 }
