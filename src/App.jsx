@@ -63,16 +63,28 @@ import AccountSetup from "./pages/Guardian/account/AccountSetup";
 import AdminSessionTerm from "./pages/Admin/sessionTerm/AdminSessionTerm";
 import TeacherResult from "./pages/Teachers/results/TeacherResult";
 import NewResult from "./pages/Teachers/results/NewResult";
-import TeacherReportCard from "./pages/Teachers/results/TeacherReportCard";
 import TeacherAssignment from "./pages/Teachers/assignment/TeacherAssignment";
 import { NoRoute } from "./pages/NoRoute";
 import { NotFound } from "./pages/NotFound";
 import StudentCbtLogin from "./pages/Cbt/Login page";
 import AdminCbtLogin from "./pages/Cbt/AdminCbt";
+import { AdminCbtLayout } from "./layouts/cbt/AdminCbtLayout";
+import AdminCbtDashboard from "./pages/Cbt/Admin/dashboard/AdminCbtDashboard";
+import AdminCbtUserManagement from "./pages/Cbt/Admin/userManagement/AdminCbtUserManagement";
+import { StudentCbtLayout } from "./layouts/cbt/StudentCbtLayout";
+import StudentCbtDashboard from "./pages/Cbt/Students/dashboard/StudentCbtDashboard";
+import StudentExamDashboard from "./pages/Cbt/Students/exam/StudentExamdashboard";
+import ExamInterface from "./pages/Cbt/Students/exam/ExamInterface";
+import ExamResultDetails from "./pages/Cbt/Students/exam/ExamResultDetails";
 import RegisterSchool from "./pages/Cbt/RegisterSchool";
+import CbtLogin from "./pages/Cbt/CbtLogin";
+import { TeacherCbtLayout } from "./layouts/cbt/TeacherCbtLayout";
+import TeacherCbtDashboard from "./pages/Cbt/Teacher/dashboard/TeacherCbtDashboard";
+import TeacherCbtExam from "./pages/Cbt/Teacher/ManageQuestion/TeacherCbtExam";
 import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
+import ViewReportCardExample from "./pages/Teachers/results/ViewReportCardExample";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -80,7 +92,7 @@ const ProtectedRoute = ({ children }) => {
 };
 const ProtectedRoute2 = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
-  return token ? children : <Navigate to="/StudentCbtLogin" />;
+  return token ? children : <Navigate to="/cbt/login" />;
 };
 
 const ProtectedRoute3 = ({ children }) => {
@@ -144,7 +156,13 @@ function App() {
       </Route>
 
       {/* All teachers routes here */}
-      <Route element={<TeacherLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <TeacherLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/teacher/assignments" element={<TeacherAssignment />} />
@@ -161,7 +179,7 @@ function App() {
 
         <Route path="/teacher/results" element={<TeacherResult />} />
         <Route path="/teacher/new-result" element={<NewResult />} />
-        <Route path="/teacher/report-card" element={<TeacherReportCard />} />
+        <Route path="/teacher/report-card" element={<ViewReportCardExample />} />
       </Route>
 
       {/* All Guardians routes here */}
@@ -172,7 +190,6 @@ function App() {
           </ProtectedRoute>
         }
       >
-        {/* <Route path="/guardian/dashboard" element={<Text />} /> */}
         <Route path="/guardian/dashboard" element={<GuardianDashboard />} />
         <Route path="/guardian/profile" element={<GuardianProfile />} />
         <Route path="/guardian/pupils" element={<MyPupils />} />
@@ -201,7 +218,50 @@ function App() {
       {/* All students routes here */}
       <Route path="/studentscbt" element={<StudentCbtLogin />} />
       <Route path="/admincbt" element={<AdminCbtLogin />} />
-      <Route path="/registerschool" element={<RegisterSchool />} />
+      {/* <Route path="/registerschool" element={<RegisterSchool />} /> */}
+
+      {/* CBT */}
+      <Route path="/cbt/login" element={<CbtLogin />} />
+      <Route path="/cbt/registerschool" element={<RegisterSchool />} />
+
+      {/* Admin CBT */}
+      <Route
+        element={
+          <ProtectedRoute2>
+            <AdminCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
+        <Route path="/cbt/admin/dashboard" element={<AdminCbtDashboard />} />
+        <Route path="/cbt/admin/userManagement" element={<AdminCbtUserManagement />} />
+      </Route>
+
+      {/* Student */}
+      <Route
+        element={
+          <ProtectedRoute2>
+            <StudentCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
+        <Route path="/cbt/student/dashboard" element={<StudentCbtDashboard />} />
+        <Route path="/cbt/student/exams" element={<StudentExamDashboard />} />
+        <Route path="/cbt/student/exam/:id" element={<ExamInterface />} />
+        <Route path="/cbt/student/exams/result" element={<ExamResultDetails />} />
+      </Route>
+
+      {/* Teacher */}
+      <Route
+        element={
+          <ProtectedRoute2>
+            <TeacherCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
+        <Route path="/cbt/teacher/dashboard" element={<TeacherCbtDashboard />} />
+        <Route path="/cbt/teacher/exams" element={<TeacherCbtExam />} />
+      </Route>
+      {/* <Route path="/registerschool" element={<RegisterSchool />} /> */}
 
       {/* <Route
         element={

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Search, Menu, ChevronDown, LogOut, User } from "lucide-react";
 import imageAssets from "../../../assets/imageAssets";
+import { useAuth } from "../../../Context/Auth/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -8,12 +10,20 @@ interface NavbarProps {
 }
 
 const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
+  const { cbtUser, logout } = useAuth()
+    const navigate = useNavigate();
+    const handleLogout = () => {
+      localStorage.removeItem("scrmToken");
+      logout();
+      navigate("/cbt/login");
+    };
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const handleProfileClick = () => {
     setShowProfileDropdown((prev) => !prev);
   };
+  
 
-  const userName = "John Doe";
+  
 
   return (
     <nav className="bg-white border-b border-gray-100 sticky top-0 z-20 shadow-sm">
@@ -60,12 +70,12 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
             >
               <div className="flex flex-col items-center space-x-1">
                 <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white">
-                  {userName
+                  {cbtUser?.role
                     .split(" ")
-                    .map((name) => name.charAt(0))
+                    .map((role) => role.charAt(0))
                     .join("")}
                 </div>
-                <span className="hidden md:block text-sm">School Admin</span>
+                <span className="hidden md:block text-sm">{ cbtUser?.role === 'SchoolAdmin' ? "School Admin" : cbtUser?.role}</span>
               </div>
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -76,20 +86,20 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
               }`}
             >
               <div className="py-2">
-                <a
+                {/* <a
                   href="#"
                   className="flex items-center px-4 py-2 text-gray-700 hover:text-orange-600"
                 >
-                  <User className="w-4 h-4 mr-2" />
+                  <cbtUser className="w-4 h-4 mr-2" />
                   <span>Profile</span>
-                </a>
-                <a
-                  href="#"
+                </a> */}
+                <button
+                  onClick={handleLogout}
                   className="flex items-center px-4 py-2 text-gray-700 hover:text-orange-600"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   <span>Logout</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
