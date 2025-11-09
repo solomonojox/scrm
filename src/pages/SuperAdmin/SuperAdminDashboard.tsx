@@ -2,8 +2,11 @@ import React from 'react'
 import SuperAdminHeader from './SuperAdminHeader'
 import SchoolList from './SchoolList'
 import SuperAdminDashboardCards from './SuperAdminDashboardCards'
+import { useAuth } from '../../Context/Auth/useAuth'
 
 const SuperAdminDashboard = () => {
+    const { user } = useAuth()
+    // console.log(user)
     return (
         <div>
             <div className="sticky top-0">
