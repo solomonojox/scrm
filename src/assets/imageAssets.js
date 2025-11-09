@@ -15,6 +15,17 @@ import profile from './profileImage.jpg'
 import reportLogo from './report-card-logo.png'
 import pupil from './pupil.jpg'
 
+import boy from './boyImage.png';
+import a from './a.png';
+import b from './b.png';
+import c from './c.png';
+import d from './d.png';
+import e from './e.png';
+import f from './f.png';
+import g from './g.png';
+import h from './h.png';
+import i from './i.png';
+
 
 const imageAssets = {
   loginImage,
@@ -32,8 +43,18 @@ const imageAssets = {
   log,
   pupil,
 
-  profile
+  profile,
 
+  boy,
+  a,
+  b,
+  c,
+  d,
+  e,
+  f,
+  g,
+  h,
+  i
 }
 
 export default imageAssets;

@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { GraduationCap, Loader } from 'lucide-react'
 import { superAdminService } from '../../Services/superAdmin';
+import { AppContext } from "../../Context/AppContext";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../Context/Auth/useAuth';
 
 const SuperAdminLogin = () => {
+    const navigate = useNavigate()
+    const { login } = useAuth();
+    const { notifySuccess, notifyError } = useContext(AppContext)
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -13,9 +19,13 @@ const SuperAdminLogin = () => {
         setLoading(true)
         try {
             const res = await superAdminService.adminLogin(userName, password);
-            console.log(res);
-        } catch (err) {
+            // console.log(res);
+            login(res.data);
+            notifySuccess(res.responseMessage || 'Successfully logged in');
+            navigate('/super-admin/dashboard')
+        } catch (err: any) {
             console.log(err);
+            notifyError(err.response.data.responseMessage || 'Error logging in');
         } finally {
             setLoading(false)
         }
@@ -44,7 +54,7 @@ const SuperAdminLogin = () => {
                         <input type={showPassword ? 'text' : 'password'} id='password' name='password' placeholder='Enter your password' className='w-full px-4 py-2 rounded-lg bg-gray-100 focus:border-blue-600 outline-none border' onChange={(e) => setPassword(e.target.value)} />
 
                         <div className="flex items-center mt-2">
-                            <input type="checkbox" className='mr-2' onChange={(e) => setShowPassword(e.target.checked)} />
+                            <input type="checkbox" className='mr-2 h-4 w-4' onChange={(e) => setShowPassword(e.target.checked)} />
                             <label htmlFor="showPassword">Show Password</label>
                         </div>
                     </div>
