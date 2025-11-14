@@ -71,13 +71,13 @@ const Landing = () => {
             {/* Login Button (Desktop) */}
             <div className="hidden md:flex items-center space-x-2">
               <button
-                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-xl hover:bg-orange-700 transition-colors duration-200"
+                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition-colors duration-200"
                 onClick={() => navigate("/login")}
               >
                 Login
               </button>
               <button
-                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-xl hover:bg-orange-700 transition-colors duration-200"
+                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition-colors duration-200"
                 onClick={() => navigate("/studentscbt")}
               >
                 CBT Exam

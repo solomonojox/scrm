@@ -27,7 +27,7 @@ const Header = () => {
               ))}
             </ul>
 
-            <div className="flex items-center">
+            <div className="flex items-center space-x-2">
               <Link
                 to="/login"
                 className="ml-8 bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition"
