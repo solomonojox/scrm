@@ -165,7 +165,8 @@ const ReportCard: React.FC = () => {
           <div className="bg-[#44A0B0] text-white rounded-[10px] mb-4 sm:mb-6 flex flex-col sm:flex-row">
             <div className="w-24 h-32 sm:w-[190px] sm:h-[190px] bg-gray-300 rounded-[10px] mb-3 sm:mb-0 sm:mr-4 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
               <img
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=150&fit=crop&crop=face"
+                // src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=150&fit=crop&crop=face"
+                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 alt="Student"
                 className="w-full h-full object-cover"
               />

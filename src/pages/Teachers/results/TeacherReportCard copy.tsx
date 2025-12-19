@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Printer, ArrowLeft } from "lucide-react";
-import { useAuth } from "../../../Context/Auth/useAuth";
-import { resultService } from "../../../Services/Results";
 
 /* ------------------------------------------------------------------ */
-/* ✅ Interfaces (Updated with subjectId) */
+/* ✅ Interfaces */
 /* ------------------------------------------------------------------ */
 
 interface RawSubject {
   subjectName: string;
-  subjectId?: string;       // Added for API payload
   ca: number;
-  cA2?: number;
+  cA2: number;
   examScore: number;
   totalScore: number;
   remarks: string;
 }
 
 interface Subject {
-  id: string;               // Unique identifier
   name: string;
   ca: number;
   exam: number;
@@ -51,8 +47,6 @@ interface StudentInfo {
   totalAverage?: number;
   teacherComment?: string;
   principalComment?: string;
-  sessionId?: string;
-  classroomId?: string;
 }
 
 interface AttendanceRecord {
@@ -90,10 +84,6 @@ interface TeacherReportCardProps {
   schoolAddress?: string;
   schoolLogo?: string;
   onBack?: () => void;
-  // Add these if you have real IDs available
-  schoolId?: string;
-  classroomId?: string;
-  fetchStudentResult: (student: any) => Promise<void>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -107,31 +97,20 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   behaviouralRatings,
   schoolLogo,
   onBack,
-  fetchStudentResult
 }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const { user } = useAuth();
+
   const safeStudent: StudentInfo = studentData ?? {};
-  // console.log(safeStudent)
 
-  /* Editing State */
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<{ ca: number; exam: number }>({
-    ca: 0,
-    exam: 0,
-  });
-  const [isSaving, setIsSaving] = useState(false);
-
-  /* Student Info */
+  /* ✅ Full name */
   const studentName =
-    `${safeStudent.studentName || ""} ${safeStudent.firstname || ""} ${safeStudent.lastname || ""}`
-      .trim() || safeStudent.name || "Student Name";
+    `${safeStudent.studentName || ""} `.trim() || safeStudent.name || "Student Name";
 
-  const studentId = safeStudent.studentNo || safeStudent.studentId || "N/A";
-  const className = safeStudent.classname || safeStudent.class || "N/A";
-  const session = safeStudent.sessionId || "N/A";
+  const studentId = safeStudent.studentNo || "N/A";
+  const className = safeStudent.classname || "N/A";
+  const session = safeStudent.session || safeStudent.currentSession || "N/A";
   const position = safeStudent.position || "N/A";
 
   const getTerm = () => {
@@ -142,7 +121,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   };
 
   const term = getTerm();
-  const sex = safeStudent.gender || safeStudent.sex || "N/A";
+  const sex = safeStudent.gender || "N/A";
   const attendance = safeStudent.attendance || "N/A";
   const assessment = safeStudent.assessment || "Results";
   const dateIssued = safeStudent.dateIssued || new Date().toLocaleDateString();
@@ -151,9 +130,8 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
     safeStudent.photo ||
     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
-  /* ✅ SUBJECT NORMALIZATION */
+  /* ✅ SUBJECT NORMALIZATION (IMPORTANT) */
   const normalizedSubjects: Subject[] = (safeStudent.subjects || []).map((s) => ({
-    id: s.subjectId || s.subjectName.toLowerCase().replace(/\s+/g, "-"),
     name: s.subjectName,
     ca: s.ca,
     exam: s.examScore,
@@ -161,12 +139,13 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
     grade: s.remarks || "",
   }));
 
-  /* Split into columns */
-  const midPoint = Math.ceil(normalizedSubjects.length / 2);
-  const leftSubjects = normalizedSubjects.slice(0, midPoint);
-  const rightSubjects = normalizedSubjects.slice(midPoint);
+  /* ✅ Split subject list into two for left/right columns */
+  const allSubjects = normalizedSubjects;
+  const midPoint = Math.ceil(allSubjects.length / 2);
+  const leftSubjects = allSubjects.slice(0, midPoint);
+  const rightSubjects = allSubjects.slice(midPoint);
 
-  /* Fallbacks */
+  /* ✅ Attendance fallback */
   const defaultAttendance: AttendanceRecord = {
     totalDays: 45,
     daysPresent: 43,
@@ -175,6 +154,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   };
   const attendance_record = attendanceRecord ?? defaultAttendance;
 
+  /* ✅ Behaviour fallback */
   const defaultBehavioural: BehaviouralRating = {
     punctuality: "Fair",
     classParticipation: "Good",
@@ -184,9 +164,9 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   };
   const behavioural_ratings = behaviouralRatings ?? defaultBehavioural;
 
-  const average = safeStudent.totalAverage?.toFixed(2) ?? "N/A";
+  const average = safeStudent.totalAverage;
 
-  /* Grade scale */
+  /* ✅ Grade scale */
   const gradeScale: GradeScale[] = [
     { grade: "A", description: "Excellent", score: "90-100" },
     { grade: "B", description: "Very Good", score: "80-89" },
@@ -197,44 +177,6 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   ];
 
   const handlePrint = () => window.print();
-
-  const startEdit = (subject: Subject) => {
-    setEditingId(subject.id);
-    setEditValues({ ca: subject.ca, exam: subject.exam });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditValues({ ca: 0, exam: 0 });
-  };
-
-  const saveEdit = async (subject: Subject) => {
-    setIsSaving(true);
-    try {
-      const payload = {
-        schoolId: user?.schoolId,
-        studentId: safeStudent.studentId,
-        classroomId: safeStudent.classroomId,
-        sessionId: session,
-        subjectId: subject.id,
-        term: safeStudent.term || "1",
-        ca: editValues.ca,
-        examScore: editValues.exam,
-      };
-
-      const res = await resultService.updateResult([payload]);
-      console.log(res)
-      fetchStudentResult({...safeStudent, currentTerm: safeStudent.term});
-      // console.log("Score update payload:", [payload]);
-
-      setEditingId(null);
-    } catch (error) {
-      console.error("Save failed:", error);
-      alert("Failed to save scores.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   return (
     <div className="font-[inter]">
@@ -263,7 +205,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
 
             {schoolLogo && (
               <div className="flex justify-center mb-2">
-                <img src={schoolLogo} alt="School Logo" className="w-[90px] h-[90px] rounded-full" />
+                <img src={schoolLogo} className="w-[90px] h-[90px] rounded-full" />
               </div>
             )}
 
@@ -275,7 +217,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
           {/* STUDENT INFO */}
           <div className="bg-[#44A0B0] text-white rounded-[10px] mb-6 flex flex-row p-4 gap-4">
             <div className="w-[190px] h-[190px] bg-gray-300 rounded-[10px] overflow-hidden">
-              <img src={photo} alt="Student" className="w-full h-full object-cover" />
+              <img src={photo} className="w-full h-full object-cover" />
             </div>
 
             <div className="flex-1 grid grid-cols-2 gap-4 text-sm">
@@ -292,29 +234,11 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
             </div>
           </div>
 
-          {/* SUBJECT TABLES */}
+          {/* ✅ SUBJECT TABLE */}
           <div className="mb-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <SubjectTable
-                subjects={leftSubjects}
-                editingId={editingId}
-                editValues={editValues}
-                setEditValues={setEditValues}
-                isSaving={isSaving}
-                startEdit={startEdit}
-                cancelEdit={cancelEdit}
-                saveEdit={saveEdit}
-              />
-              <SubjectTable
-                subjects={rightSubjects}
-                editingId={editingId}
-                editValues={editValues}
-                setEditValues={setEditValues}
-                isSaving={isSaving}
-                startEdit={startEdit}
-                cancelEdit={cancelEdit}
-                saveEdit={saveEdit}
-              />
+              <SubjectTable subjects={leftSubjects} />
+              <SubjectTable subjects={rightSubjects} />
             </div>
           </div>
 
@@ -383,112 +307,26 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
 export default TeacherReportCard;
 
 /* ------------------------------------------------------------------ */
-/* ✅ Updated Subject Table with Inline Editing */
+/* ✅ SUBJECT TABLE COMPONENT */
 /* ------------------------------------------------------------------ */
 
-interface SubjectTableProps {
-  subjects: Subject[];
-  editingId: string | null;
-  editValues: { ca: number; exam: number };
-  setEditValues: React.Dispatch<React.SetStateAction<{ ca: number; exam: number }>>;
-  isSaving: boolean;
-  startEdit: (subject: Subject) => void;
-  cancelEdit: () => void;
-  saveEdit: (subject: Subject) => void;
-}
-
-const SubjectTable = ({
-  subjects,
-  editingId,
-  editValues,
-  setEditValues,
-  isSaving,
-  startEdit,
-  cancelEdit,
-  saveEdit,
-}: SubjectTableProps) => (
-  <div className="grid grid-cols-5 border text-xs sm:text-sm">
+const SubjectTable = ({ subjects }: { subjects: Subject[] }) => (
+  <div className="grid grid-cols-5 border text-xs sm:text-sm truncate">
     <TableHeader label="Subject" />
     <TableHeader label="CA" />
     <TableHeader label="Exam" />
     <TableHeader label="Total" />
     <TableHeader label="Grade" />
 
-    {subjects.map((subject) => {
-      const isEditing = editingId === subject.id;
-
-      return (
-        <div key={subject.id} className="contents group">
-          {/* Subject Name */}
-          <Cell>{subject.name}</Cell>
-
-          {/* CA */}
-          {isEditing ? (
-            <Cell center>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={editValues.ca}
-                onChange={(e) => setEditValues({ ...editValues, ca: Number(e.target.value) || 0 })}
-                className="w-16 px-2 py-1 text-center border rounded focus:outline-none focus:border-blue-500"
-                autoFocus
-              />
-            </Cell>
-          ) : (
-            <Cell center>{subject.ca}</Cell>
-          )}
-
-          {/* Exam */}
-          {isEditing ? (
-            <Cell center>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                value={editValues.exam}
-                onChange={(e) => setEditValues({ ...editValues, exam: Number(e.target.value) || 0 })}
-                className="w-16 px-2 py-1 text-center border rounded focus:outline-none focus:border-blue-500"
-              />
-            </Cell>
-          ) : (
-            <Cell center>{subject.exam}</Cell>
-          )}
-
-          {/* Total & Grade */}
-          <Cell center>{subject.total}</Cell>
-          <Cell center>{subject.grade}</Cell>
-
-          {/* Action Buttons (full row span) */}
-          <div className="col-span-5 bg-gray-50 border-t px-4 py-2 flex justify-end gap-2 text-xs">
-            {isEditing ? (
-              <>
-                <button
-                  onClick={() => saveEdit(subject)}
-                  disabled={isSaving}
-                  className="px-4 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 transition"
-                >
-                  {isSaving ? "Saving..." : "Save"}
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  className="px-4 py-1.5 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => startEdit(subject)}
-                className="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                Edit Scores
-              </button>
-            )}
-          </div>
-        </div>
-      );
-    })}
+    {subjects.map((s, i) => (
+      <React.Fragment key={i}>
+        <Cell>{s.name}</Cell>
+        <Cell center>{s.ca}</Cell>
+        <Cell center>{s.exam}</Cell>
+        <Cell center>{s.total}</Cell>
+        <Cell center>{s.grade}</Cell>
+      </React.Fragment>
+    ))}
   </div>
 );
 
@@ -496,10 +334,8 @@ const TableHeader = ({ label }: { label: string }) => (
   <div className="bg-[#124A71] text-white py-2 text-center font-semibold border">{label}</div>
 );
 
-const Cell = ({ children, center }: { children: React.ReactNode; center?: boolean }) => (
-  <div
-    className={`p-2 bg-white border truncate ${center ? "text-center" : "text-left"}`}
-  >
+const Cell = ({ children, center }: { children: any; center?: boolean }) => (
+  <div className={`p-2 bg-white border truncate ${center ? "text-center" : "text-left"}`}>
     {children}
   </div>
 );

@@ -365,6 +365,7 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
           schoolName="Gold International Academy"
           schoolAddress="21, Woodgreen Road Lagos, Nigeria"
           onBack={handleCloseReportCard}
+          fetchStudentResult={fetchStudentResult}
         />
       ) : (
         <>
