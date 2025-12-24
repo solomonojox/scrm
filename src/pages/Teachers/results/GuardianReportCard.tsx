@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Printer, ArrowLeft } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 /* ------------------------------------------------------------------ */
 /* ✅ Interfaces */
@@ -90,8 +91,8 @@ interface TeacherReportCardProps {
 /* ✅ Main Component */
 /* ------------------------------------------------------------------ */
 
-const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
-  studentData,
+const GuardianReportCard: React.FC<TeacherReportCardProps> = ({
+  // studentData,
   school,
   attendanceRecord,
   behaviouralRatings,
@@ -101,15 +102,18 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const location = useLocation();
+  console.log("Location state:", location.state.result);
+  const studentData = location.state?.result;
 
   const safeStudent: StudentInfo = studentData ?? {};
 
   /* ✅ Full name */
   const studentName =
-    `${safeStudent.studentName || ""} `.trim() || safeStudent.name || "Student Name";
+    `${safeStudent.studentName?.toUpperCase() || ""} `.trim() || safeStudent.name || "Student Name";
 
   const studentId = safeStudent.studentNo || "N/A";
-  const className = safeStudent.classname || "N/A";
+  const className = safeStudent.classname?.toUpperCase() || "N/A";
   const session = safeStudent.session || safeStudent.currentSession || "N/A";
   const position = safeStudent.position || "N/A";
 
@@ -164,7 +168,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   };
   const behavioural_ratings = behaviouralRatings ?? defaultBehavioural;
 
-  const average = safeStudent.totalAverage;
+  const average = safeStudent.totalAverage?.toFixed(2) || "N/A";
 
   /* ✅ Grade scale */
   const gradeScale: GradeScale[] = [
@@ -183,10 +187,10 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
       {/* HEADER */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="bg-gray-200 px-6 py-4 flex justify-between items-center print:hidden">
-          {onBack && (
-            <ArrowLeft onClick={onBack} className="w-5 h-5 hover:text-gray-500 cursor-pointer" />
-          )}
-          <h1 className="text-2xl font-semibold">Report Card</h1>
+          <div className="flex gap-4 items-center cursor-pointer hover:text-gray-500" onClick={() => window.history.back()}>
+            <ArrowLeft className="w-5 h-5" />
+            <h1 className="text-2xl font-semibold">Go back</h1>
+          </div>
 
           <button
             onClick={handlePrint}
@@ -304,7 +308,7 @@ const TeacherReportCard: React.FC<TeacherReportCardProps> = ({
   );
 };
 
-export default TeacherReportCard;
+export default GuardianReportCard;
 
 /* ------------------------------------------------------------------ */
 /* ✅ SUBJECT TABLE COMPONENT */

@@ -85,6 +85,7 @@ import SuperAdminLogin from "./pages/SuperAdmin/SuperAdminLogin";
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
 import ViewReportCardExample from "./pages/Teachers/results/ViewReportCardExample";
+import GuardianReportCard from "./pages/Teachers/results/GuardianReportCard";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -205,8 +206,8 @@ function App() {
         <Route path="/guardian/loan-request-details" element={<LoanRequestDetails />} />
         <Route path="/guardian/loan-payment" element={<LoanPayment />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
-        <Route path="/guardian/report-card" element={<ReportCard />} />
-        <Route path="/guardian/report-card" element={<ReportCard />} />
+        {/* <Route path="/guardian/report-card" element={<ReportCard />} /> */}
+        <Route path="/guardian/report-card" element={<GuardianReportCard />} />
         <Route path="/guardian/result" element={<GuardianResult />} />
         <Route path="/guardian/message" element={<GuardianMessages />} />
         <Route path="/guardian/transactions" element={<TransactionDashboard />} />

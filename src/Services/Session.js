@@ -39,7 +39,7 @@ export const sessionService = {
       // console.log("session:", response.data);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllRegisteredSession error:", error);
+      // console.error("GetAllRegisteredSession error:", error);
       throw new Error(
         error?.response?.data?.responseMessage || "Failed to fetch sessions"
       );

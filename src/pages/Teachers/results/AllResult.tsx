@@ -121,8 +121,8 @@ const MobileCard: React.FC<MobileCardProps> = ({
                 {item?.currentTerm === 1
                   ? "First"
                   : item?.currentTerm === 2
-                  ? "Second"
-                  : "Third"}{" "}
+                    ? "Second"
+                    : "Third"}{" "}
                 Term
               </p>
             </div>
@@ -249,8 +249,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
           student.currentTerm
         );
 
-        const schoollInfoRes = await onboardingService.getSchoolById(fetchedSessions[0].schoolId) 
-  
+        const schoollInfoRes = await onboardingService.getSchoolById(fetchedSessions[0].schoolId)
+
         // console.log("School info:", schoollInfoRes)
 
         setSchoolData(schoollInfoRes)
@@ -289,6 +289,7 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
         alert("Failed to load student result. Please try again.");
       }
     },
+
     [fetchStudentResult]
   );
 
@@ -430,9 +431,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                       return (
                         <tr
                           key={item?.id ?? `${index}`}
-                          className={`border-b ${
-                            index % 2 === 0 ? "bg-white" : "bg-orange-50"
-                          } hover:bg-orange-100 transition-colors`}
+                          className={`border-b ${index % 2 === 0 ? "bg-white" : "bg-orange-50"
+                            } hover:bg-orange-100 transition-colors`}
                         >
                           <td className="px-4 py-3">
                             <input type="checkbox" className="w-4 h-4 rounded border-gray-300" />
@@ -452,8 +452,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                             {item?.currentTerm === 1
                               ? "First Term"
                               : item?.currentTerm === 2
-                              ? "Second Term"
-                              : "Third Term"}
+                                ? "Second Term"
+                                : "Third Term"}
                           </td>
 
                           <td className="text-sm px-4 py-3 text-gray-700">
@@ -547,11 +547,10 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${
-                    currentPage === 1
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === 1
                       ? "text-gray-400 bg-gray-100 cursor-not-allowed"
                       : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
-                  }`}
+                    }`}
                 >
                   Previous
                 </button>
@@ -572,11 +571,10 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`w-8 h-8 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${
-                        currentPage === pageNum
+                      className={`w-8 h-8 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === pageNum
                           ? "bg-gradient-to-br from-orange-500 to-[#EE7306] text-white shadow-lg scale-110"
                           : "text-[#EE7306] bg-white hover:bg-orange-100 border-2 border-orange-200"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>
@@ -586,11 +584,10 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                 <button
                   disabled={currentPage === totalPages || totalPages === 0}
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${
-                    currentPage === totalPages || totalPages === 0
+                  className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === totalPages || totalPages === 0
                       ? "text-gray-400 bg-gray-100 cursor-not-allowed"
                       : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
-                  }`}
+                    }`}
                 >
                   Next
                 </button>

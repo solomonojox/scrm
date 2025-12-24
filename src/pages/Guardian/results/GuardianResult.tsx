@@ -4,17 +4,23 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import ResultTable from "./ResultTable";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../Store/store";
+import { fetchGuardiansStudentFailure, fetchGuardiansStudentStart, fetchGuardiansStudentSuccess } from "../../../Store/Guardian/guardianStudentSlice";
+import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../../Store/sessionSlice";
+import { guardianStudentService } from "../../../Services/Guardian/guardianStudent";
+import { sessionService } from "../../../Services/Session";
 
 const GuardianResult: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   const { user } = useAuth();
-
-  // const dispatch = useDispatch<AppDispatch>();
-  // const fetchedRecord = useSelector((state: RootState) => state.getSchoolFee.listRecords);
-  // const fetchedLoading = useSelector((state: RootState) => state.getSchoolFee.loading);
-  // const error = useSelector((state: RootState) => state.getSchoolFee.error);
+  const dispatch = useDispatch<AppDispatch>();
+  const students: any = useSelector((state: RootState) => state.getGuardianStudents.listRecords);
+  const sessions: any = useSelector((state: RootState) => state.getSession.listRecords);
+  const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
+  const error = useSelector((state: RootState) => state.getGuardianStudents.error);
 
   const fetchedRecord = [
     {
@@ -137,7 +143,7 @@ const GuardianResult: React.FC = () => {
 
   // Filter students based on search and class filter
   const filteredRecords = useMemo(() => {
-    let filtered = fetchedRecord;
+    let filtered = students;
 
     // Apply class filter
     if (classFilter !== "all") {
@@ -170,34 +176,27 @@ const GuardianResult: React.FC = () => {
   };
 
   // // Fetch students
-  // useEffect(() => {
-  //   if (!fetchedLoading) {
-  //     fetchSchoolFee();
-  //   }
-  // }, [dispatch]);
+  useEffect(() => {
+    fetchPupils();
+  }, [dispatch, user]);
 
-  // const fetchSchoolFee = async () => {
-  //   dispatch(fetchSchoolFeeStart());
-  //   dispatch(fetchClassroomsStart());
-  //   dispatch(fetchSessionStart());
-  //   try {
-  //     const data = await schoolFeeService.getAllSchoolFeesBySchoolId(
-  //       localStorage.getItem("schoolId")
-  //     );
-  //     const classRoom = await classroomService.getAllClassrooms(localStorage.getItem("schoolId"));
-  //     const session = await sessionService.getAllRegisteredSessions(
-  //       localStorage.getItem("schoolId")
-  //     );
-
-  //     dispatch(fetchSchoolFeeSuccess(data));
-  //     dispatch(fetchClassroomsSuccess(classRoom));
-  //     dispatch(fetchSessionSuccess(session));
-  //   } catch (err) {
-  //     dispatch(fetchSchoolFeeFailure((err as Error).message));
-  //     dispatch(fetchClassroomsFailure((err as Error).message));
-  //     dispatch(fetchSessionFailure((err as Error).message));
-  //   }
-  // };
+  const fetchPupils = async () => {
+    dispatch(fetchGuardiansStudentStart());
+    dispatch(fetchSessionStart());
+    try {
+      if (user?.id) {
+        const response = await guardianStudentService.getAll(user?.id);
+        // console.log(response)
+        const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
+        dispatch(fetchGuardiansStudentSuccess(response));
+        dispatch(fetchSessionSuccess(session));
+      }
+    } catch (error) {
+      console.error('Error fetching pupils:', error);
+      dispatch(fetchGuardiansStudentFailure((error as Error).message));
+      dispatch(fetchSessionFailure((error as Error).message));
+    }
+  };
 
   return (
     <div className="">

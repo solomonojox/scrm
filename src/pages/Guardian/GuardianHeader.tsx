@@ -164,7 +164,7 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
             />
             <div className="text-center">
               <b className="text-[13px]">
-                {fetchedRecord?.firstname} {fetchedRecord?.lastname}
+              {fetchedRecord?.firstname} {fetchedRecord?.lastname}
               </b>
               <p className="text-[12px]">Guardian</p>
             </div>
