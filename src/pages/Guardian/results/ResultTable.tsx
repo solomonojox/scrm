@@ -57,6 +57,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  console.log(resultRecord)
 
   useEffect(() => {
     // Scroll to top when component mounts
@@ -93,10 +94,12 @@ const ResultTable: React.FC<StudentTableProps> = ({
   const [showReportCard, setShowReportCard] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchStudentSessionAndClass();
+    if(user){
+      fetchStudentSessionAndClass();
+    }
     // fetchStudentSessionAndClass(selectedClass);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   //Fetch students by classroom ID
   const fetchStudentSessionAndClass = async () => {
@@ -222,7 +225,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
         <p className="text-[17px] font-semibold text-gray-700 mb-4 sm:mb-0">
           Welcome back, {fetchedRecord?.firstname?.toUpperCase()} {fetchedRecord?.lastname?.toUpperCase()} View your children's results below
         </p>
-        <div className="gap-4 flex items-center sm:flex-wrap">
+        {/* <div className="gap-4 flex items-center sm:flex-wrap">
           <div className="relative">
             <button
               onClick={() => setShowFilterDropdown(!showFilterDropdown)}
@@ -268,7 +271,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Search and Filter Info */}
@@ -287,7 +290,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
 
       {/* Table */}
       <div className="bg-white shadow rounded-lg overflow-x-auto py-6 md:py-2 font-[inter]">
-        <h1 className="m-4 text-[18px] font-semibold text-gray-700">Result</h1>
+        <h1 className="m-4 text-[18px] font-semibold text-gray-700">Results</h1>
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-100 text-gray-700 sticky top-0 z-10">
             <tr>

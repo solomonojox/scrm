@@ -31,6 +31,7 @@ const Adminheader: React.FC<AdminHeaderProps> = ({ onToggleSidebar }) => {
         </div>
 
         <div className="rounded-lg py-2 px-3 flex items-center justify-center gap-4 border shadow">
+          <p className="text-xs">Active Term: {user?.currentTerm} - {user?.sessionId}</p>
           {/* School Reg Number */}
           <div className="flex items-center gap-1 lg:gap-2 text-xs">
             <p><span className="hidden lg-block">School</span> Reg. No - </p>

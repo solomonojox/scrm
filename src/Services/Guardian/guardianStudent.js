@@ -5,7 +5,7 @@ export const guardianStudentService = {
   getAll: async (id) => {
     try {
       const res = await api.get(`/api/Student/GetGuardianStudents/${id}`);
-      // console.log("GetAllGuardians success:", res.data);
+      console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
       console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);

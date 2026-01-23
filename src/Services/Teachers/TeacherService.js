@@ -45,6 +45,18 @@ export const teacherService = {
       throw error;
     }
   },
+
+  getTeacherStudentsByClassId: async (id) => {
+    try {
+      const res = await api.get(`/api/Student/GetTotalStudentCountByClassId/${id}`);
+      // console.log("success:", res.data);
+      return res.data.data;
+    } catch (error) {
+      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  },
+  
   getAllBySchoolId: async (id) => {
     try {
       const res = await api.get(`/api/Teacher/GetTeachersBySchool/${id}`);

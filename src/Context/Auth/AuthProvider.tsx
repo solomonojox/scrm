@@ -32,6 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           schoolReg: decoded.schoolReg || "",
           schoolName: decoded.schoolName || "",
           schoolId: decoded.schoolId || "",
+          currentTerm: decoded.term || "",
+          termId: decoded.termId || "",
+          sessionId: decoded.sessionId || "",
         };
 
         // restore both user types
@@ -60,6 +63,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       schoolReg: decoded.schoolReg || "",
       schoolName: decoded.schoolName || "",
       schoolId: decoded.schoolId || "",
+      currentTerm: decoded.term || "",
+      termId: decoded.termId || "",
+      sessionId: decoded.sessionId || "",
     });
 
     setIsAuthenticated(true);

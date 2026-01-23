@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TeacherType } from "../../Types/Teacher/teacherType";
 
 interface ClassroomTypes {
-  listRecords: TeacherType[];
+  listRecords: TeacherType;
   selectedTeacher: TeacherType | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ClassroomTypes = {
-  listRecords: [],
+  listRecords: {},
   selectedTeacher: null,
   loading: false,
   error: null,
@@ -23,7 +23,7 @@ export const Teacherlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    fetchTeacherSuccess: (state, action: PayloadAction<TeacherType[]>) => {
+    fetchTeacherSuccess: (state, action: PayloadAction<TeacherType>) => {
       state.loading = false;
       state.listRecords = action.payload;
     },

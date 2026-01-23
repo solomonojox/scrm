@@ -12,7 +12,11 @@ import {
 } from "../../../Store/Admin/classroomSlice";
 import { attendanceService } from "../../../Services/Attendance"; // 👈 add your attendance service
 
-const AttendanceList = (): React.JSX.Element => {
+interface Prop {
+  setCardData: (data: any) => void
+}
+
+const AttendanceList: React.FC<Prop> = ({ setCardData }): React.JSX.Element => {
   const [activeTab, setActiveTab] = useState("All Attendance");
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
@@ -25,7 +29,7 @@ const AttendanceList = (): React.JSX.Element => {
   // Fetch classrooms on mount
   useEffect(() => {
     fetchClassroom();
-  }, []);
+  }, [user]);
 
   const fetchClassroom = async () => {
     dispatch(fetchClassroomsStart());
@@ -55,9 +59,10 @@ const AttendanceList = (): React.JSX.Element => {
       const data = await attendanceService.getAttendanceByClassroomIdAndSchoolId(user?.schoolId, classroomIdToFetch);
 
       setAttendanceData(data);
+      setCardData(data)
     } catch (error) {
       console.error("Error fetching attendance:", error);
-    }finally{
+    } finally {
       setLoading(false)
     }
   };
@@ -92,11 +97,10 @@ const AttendanceList = (): React.JSX.Element => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1 rounded-full text-xs md:text-[14px] whitespace-nowrap ${
-                activeTab === tab
+              className={`px-4 py-1 rounded-full text-xs md:text-[14px] whitespace-nowrap ${activeTab === tab
                   ? "bg-white text-[#EE7306] font-semibold"
                   : "text-white/50 hover:bg-white/20"
-              }`}
+                }`}
             >
               {tab}
             </button>

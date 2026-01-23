@@ -62,7 +62,7 @@ export default function PupilProfile() {
             <div className="flex flex-col md:flex-row items-center space-x-4">
               <div className="w-[200px] h-[200px] md:w-[100px] md:h-[100px] rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
                 <img
-                  src={pupil?.imagePath || imageAssets.man}
+                  src={pupil?.imagePath || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
                   alt="Profile"
                   className="w-full h-full object-cover z-0"
                 />

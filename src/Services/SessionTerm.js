@@ -38,4 +38,13 @@ export const sessionTermService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch sessions");
     }
   },
+
+  setCurrentTerm: async (schoolId, sessionTermId) => {
+    try {
+      const response = await api.post(`/api/Session/SetActiveSessionTerm?schoolId=${schoolId}&sessionTermId=${sessionTermId}`);
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching current term:", error);
+    }
+  },
 };

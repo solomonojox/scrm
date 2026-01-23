@@ -21,7 +21,7 @@ import { BiMessageAlt } from "react-icons/bi";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
-import {fetchTeacherFailure,fetchTeacherStart,fetchTeacherSuccess} from "../../../Store/Teachers/teacherSlice";
+import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../../../Store/Teachers/teacherSlice";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
 import Calendar from "../../../components/Teachers/chart/Calendar";
 import GradeChart from "../../../components/Teachers/chart/GradeChart";
@@ -32,7 +32,7 @@ import AttendanceChart from "../../../components/Teachers/chart/AttendanceChart"
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
   // console.log("fetchedTeacherRecord", fetchedTeacherRecord);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
@@ -51,16 +51,21 @@ export default function TeacherDashboard() {
 
   // Fetch students
   useEffect(() => {
-    if (!fetchedLoading) {
+    if (user && !fetchedLoading) {
       fetchdashboardCardDetails();
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   const fetchdashboardCardDetails = async () => {
     dispatch(fetchTeacherStart());
 
     try {
       const teacherData = await teacherService.getById(user?.id);
+      // console.log(teacherData)
+      // if (teacherData !== null) {
+      //   const studentCount = await teacherService.getTeacherStudentsByClassId(teacherData?.classroomId);
+      //   console.log(studentCount)
+      // }
 
       dispatch(fetchTeacherSuccess(teacherData));
     } catch (err: any) {

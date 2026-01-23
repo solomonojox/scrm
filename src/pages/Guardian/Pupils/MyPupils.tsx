@@ -21,13 +21,16 @@ const MyPupils = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const students: any = useSelector((state: RootState) => state.getGuardianStudents.listRecords);
+    console.log(students)
     const sessions: any = useSelector((state: RootState) => state.getSession.listRecords);
     const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
     const error = useSelector((state: RootState) => state.getGuardianStudents.error);
 
     useEffect(() => {
-        fetchPupils();
-    }, [dispatch, user]);
+        if (user) {
+            fetchPupils();
+        }
+    }, [user]);
 
     const fetchPupils = async () => {
         dispatch(fetchGuardiansStudentStart());
@@ -35,6 +38,7 @@ const MyPupils = () => {
         try {
             if (user?.id) {
                 const response = await guardianStudentService.getAll(user?.id);
+                console.log('response')
                 const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
                 dispatch(fetchGuardiansStudentSuccess(response));
                 dispatch(fetchSessionSuccess(session));
@@ -102,14 +106,14 @@ const MyPupils = () => {
         }
     }
 
-    if (loading) {
-        return (
-            <div className="col-span-3 flex flex-col gap-2 items-center justify-center h-[80vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
-                <p>Loading student...</p>
-            </div>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <div className="col-span-3 flex flex-col gap-2 items-center justify-center h-[80vh]">
+    //             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+    //             <p>Loading student...</p>
+    //         </div>
+    //     );
+    // }
 
     if (error) {
         return <div className="flex justify-center items-center h-64 text-red-500">Error: {error}</div>;
@@ -135,13 +139,13 @@ const MyPupils = () => {
                         <span className="flex items-center">
                             <div className="h-8 w-8 rounded-full overflow-hidden mr-3">
                                 <img
-                                    src={selectedStudent.profilePicture || imageAssets.pupil}
+                                    src={selectedStudent?.profilePicture || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
                                     alt="Student"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
                             <span className="block truncate font-medium">
-                                {selectedStudent.firstname} {selectedStudent.lastname}
+                                {selectedStudent?.firstname} {selectedStudent?.lastname}
                             </span>
                         </span>
                         <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -168,7 +172,7 @@ const MyPupils = () => {
                                     <div className="flex items-center">
                                         <div className="h-6 w-6 rounded-full overflow-hidden flex-shrink-0 mr-3">
                                             <img
-                                                src={student.profilePicture || imageAssets.pupil}
+                                                src={student.profilePicture || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
                                                 alt="Student"
                                                 className="w-full h-full object-cover"
                                             />
@@ -197,7 +201,7 @@ const MyPupils = () => {
                 <div className="flex gap-4">
                     <div className="h-52 w-52 rounded-2xl overflow-hidden">
                         <img
-                            src={selectedStudent.profilePicture || imageAssets.pupil}
+                            src={selectedStudent?.profilePicture || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}
                             alt="Student"
                             className="w-full h-full object-cover"
                         />
@@ -205,12 +209,12 @@ const MyPupils = () => {
 
                     <div className="space-y-1">
                         <h1 className="text-2xl font-semibold">
-                            {selectedStudent.firstname} {selectedStudent.lastname}
+                            {selectedStudent?.firstname} {selectedStudent?.lastname}
                         </h1>
-                        <p className="text-gray-500">Class: {selectedStudent.classroom.name || 'JSS 1'}</p>
+                        <p className="text-gray-500">Class: {selectedStudent?.classroom.name || 'JSS 1'}</p>
                         <p className="text-gray-500">
                             Age: {(() => {
-                                const dob = new Date(selectedStudent.dateOfBirth);
+                                const dob = new Date(selectedStudent?.dateOfBirth);
                                 const today = new Date();
                                 let age = today.getFullYear() - dob.getFullYear();
                                 const m = today.getMonth() - dob.getMonth();
@@ -222,7 +226,7 @@ const MyPupils = () => {
                         </p>
 
                         <p className="text-gray-500">
-                            Current Status: {selectedStudent.attendanceStatus || 'Absent today'}
+                            Current Status: {selectedStudent?.attendanceStatus || 'Absent today'}
                         </p>
 
                         <button
@@ -277,10 +281,10 @@ const MyPupils = () => {
             <FeeModal
                 onClose={() => setOpenPaymentModal(false)}
                 open={openPaymentModal}
-                studentId={selectedStudent.studentId}
-                classroomId={selectedStudent.classroomId}
-                sessionId={selectedStudent.currentSession}
-                paymentTerm={selectedStudent.currentTerm}
+                studentId={selectedStudent?.studentId}
+                classroomId={selectedStudent?.classroomId}
+                sessionId={selectedStudent?.currentSession}
+                paymentTerm={selectedStudent?.currentTerm}
             />
         </div>
     );

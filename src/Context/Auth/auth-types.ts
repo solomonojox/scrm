@@ -4,7 +4,10 @@ export interface UserData {
   role: string;
   schoolReg: string;
   schoolName: string;
-  schoolId: string
+  schoolId: string;
+  currentTerm?: string;
+  termId?: string;
+  sessionId?: string;
 }
 
 export interface AuthContextType {

@@ -147,7 +147,10 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
         </div>
 
         {/* Desktop nav items */}
-        <div className="hidden lg:flex items-center gap-6 ml-auto">
+        <div className="hidden lg:flex items-center gap-3 ml-auto">
+          <p className="text-xs bg-orange-50 p-2 rounded-lg">
+            <span className="text-xs">Active Term: {user?.currentTerm} - {user?.sessionId}</span>
+          </p>
           <div className="flex items-center gap-3">
             <p className="cursor-pointer">{icons.notificationBell}</p>
             <p className="cursor-pointer">{icons.message}</p>
@@ -164,7 +167,7 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
             />
             <div className="text-center">
               <b className="text-[13px]">
-              {fetchedRecord?.firstname} {fetchedRecord?.lastname}
+                {fetchedRecord?.firstname} {fetchedRecord?.lastname}
               </b>
               <p className="text-[12px]">Guardian</p>
             </div>

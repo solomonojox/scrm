@@ -1,5 +1,5 @@
-import React from "react";
-import { FaEye, FaEdit, FaTrash, FaRegBell, FaSearch, FaFilter, FaSync } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaEye, FaEdit, FaTrash, FaRegBell, FaSearch, FaFilter, FaSync, FaSpinner } from "react-icons/fa";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { BiMessageAlt } from "react-icons/bi";
 import * as XLSX from 'xlsx';
@@ -9,6 +9,9 @@ import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { SessionTerm } from "../../../Types/sessionTermType";
+import axios from "axios";
+import { sessionTermService } from "../../../Services/SessionTerm";
+import { toast } from "react-toastify";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -79,7 +82,7 @@ const SessionTermTable: React.FC<SessionTermTableProps> = ({
             session.schoolId || '',
             session.startDate || '',
             session.endDate || '',
-            
+
         ]);
 
         doc.text(title, 14, 15);
@@ -93,6 +96,21 @@ const SessionTermTable: React.FC<SessionTermTableProps> = ({
 
         doc.save("term.pdf");
     };
+
+    const [loading, setLoading] = useState(false);
+
+    const setCurrentTerm = async (sessionTermId: string) => {
+        setLoading(true)
+        try {
+            const response = await sessionTermService.setCurrentTerm(user?.schoolId, sessionTermId);
+            console.log(response);
+            toast.success("Successful!");
+        } catch (error) {
+            console.error("Error fetching current term:", error);
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <>
@@ -132,7 +150,7 @@ const SessionTermTable: React.FC<SessionTermTableProps> = ({
                 <p className="text-sm text-gray-600 mb-4 sm:mb-0">
                     Home <span className="text-orange-500 font-semibold">: All Terms</span>
                 </p>
-                <div className="gap-4 flex items-center sm:flex-wrap">
+                <div className="gap-2 flex items-center sm:flex-wrap">
                     <div className="relative">
                         <button
                             onClick={() => setShowReligionFilter(!showReligionFilter)}
@@ -277,10 +295,12 @@ const SessionTermTable: React.FC<SessionTermTableProps> = ({
                                             Edit
                                             <FaEdit />
                                         </span>
-                                        {/* <FaTrash
-                                            className="cursor-pointer text-red-600 hover:text-red-800"
-                                            onClick={() => onDelete(s.sessionId)}
-                                        /> */}
+                                        <button
+                                            onClick={() => setCurrentTerm(s?.sessionTermId)}
+                                            className="bg-orange-500 text-white px-2 py-1 rounded-lg shadow hover:bg-orange-600 w-full sm:w-auto"
+                                        >
+                                            {loading ? (<FaSpinner className="animate-spin" />) : "Set Current Term"}
+                                        </button>
                                     </td>
                                 </tr>
                             ))

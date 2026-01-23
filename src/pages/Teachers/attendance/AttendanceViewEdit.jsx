@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import {
   Calendar,
@@ -179,7 +180,7 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
               <Eye className="w-4 h-4 mr-1" />
               View
             </button>
-            <button
+            {/* <button
               onClick={() => setIsEditMode(true)}
               className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all ${
                 isEditMode
@@ -189,7 +190,7 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
             >
               <Edit3Icon className="w-4 h-4 mr-1" />
               Edit
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -361,15 +362,15 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
                     {isEditMode ? (
                       <input
                         type="checkbox"
-                        checked={student.status === 0}
+                        checked={student.status === 1}
                         onChange={() =>
-                          handleStatusChange(index, "status", student.status === 0 ? null : 0)
+                          handleStatusChange(index, "status", student.status === 1 ? null : 0)
                         }
                         className="w-5 h-5 cursor-pointer accent-green-500"
                       />
                     ) : (
                       <div className="flex justify-center">
-                        {student.status === 0 && <Check className="text-green-500" size={20} />}
+                        {student.status === 1 && <Check className="text-green-500" size={20} />}
                       </div>
                     )}
                   </td>
@@ -377,15 +378,15 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
                     {isEditMode ? (
                       <input
                         type="checkbox"
-                        checked={student.status === 1}
+                        checked={student.status === 0}
                         onChange={() =>
-                          handleStatusChange(index, "status", student.status === 1 ? null : 1)
+                          handleStatusChange(index, "status", student.status === 0 ? null : 0)
                         }
                         className="w-5 h-5 cursor-pointer accent-red-500"
                       />
                     ) : (
                       <div className="flex justify-center">
-                        {student.status === 1 && <X className="text-red-500" size={20} />}
+                        {student.status === 0 && <X className="text-red-500" size={20} />}
                       </div>
                     )}
                   </td>
@@ -432,12 +433,12 @@ const AttendanceViewEdit = ({ attendanceItem, onClose, onSave, mode = "view" }) 
                   </button>
                 </>
               )}
-              <button
+              {/* <button
                 onClick={handleSave}
                 className="px-4 py-2 bg-[#EE7306] text-white rounded-lg hover:bg-[#D66305] transition-colors text-sm font-medium shadow-sm"
               >
                 Save Changes
-              </button>
+              </button> */}
             </div>
           </div>
 

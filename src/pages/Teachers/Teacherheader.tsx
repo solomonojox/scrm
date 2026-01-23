@@ -1,7 +1,10 @@
 import { Menu } from "lucide-react";
 import imageAssets from "../../assets/imageAssets";
+import { useAuth } from "../../Context/Auth/useAuth";
 
 const Teacherheader = ({ onMenuClick }: { onMenuClick: () => void }) => {
+  const { user } = useAuth();
+  
   return (
     <div className="fixed top-0 left-0 w-full z-30 bg-white shadow-md">
       <header className="flex items-center justify-between px-6 h-[70px] border-b border-gray-200">
@@ -11,7 +14,7 @@ const Teacherheader = ({ onMenuClick }: { onMenuClick: () => void }) => {
 
         <div className="rounded-lg py-2 px-3 flex items-center justify-center gap-4 border shadow">
           <p className="text-xs">
-            Term: <span>First (2024/2025)</span>
+            <span className="text-xs">Active Term: {user?.currentTerm} - {user?.sessionId}</span>
           </p>
         </div>
 
