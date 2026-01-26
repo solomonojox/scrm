@@ -207,7 +207,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
               <th className="p-3 min-w-[80px]">Session</th>
               <th className="p-3 min-w-[80px]">Amount</th>
               <th className="p-3 min-w-[80px]">Class Name</th>
-              <th className="p-3 min-w-[120px]">Actions</th>
+              {/* <th className="p-3 min-w-[120px]">Actions</th> */}
             </tr>
           </thead>
           <tbody>
@@ -245,7 +245,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                   <td className="p-3">{student.sessionId}</td>
                   <td className="p-3">{student.amount}</td>
                   <td className="p-3">{student.classroomName}</td>
-                  <td
+                  {/* <td
                     className="p-3 cursor-pointer hover:text-orange-500"
                     onClick={() => {
                       setEditData(student);
@@ -255,7 +255,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                     <span className="flex items-center gap-2">
                       Edit <FaEdit />
                     </span>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             )}

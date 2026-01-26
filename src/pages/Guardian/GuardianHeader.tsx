@@ -28,9 +28,9 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
   const error = useSelector((state: RootState) => state.getGuardian.error);
   // console.log(fetchedRecord)
 
-  if (user && fetchedRecord.accountStatus === 0) {
-    navigate('/guardian/account-setup')
-  }
+  // if (user && fetchedRecord.accountStatus === 0) {
+  //   navigate('/guardian/account-setup')
+  // }
 
   const icons = {
     message: (

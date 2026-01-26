@@ -76,6 +76,18 @@ export const paymentService = {
     }
   },
 
+  getStudentTermFee: async (classId, sessionId, termId) => {
+    try {
+      const response = await api.get(
+        `/api/SchoolFee/GetClassFeeForTerm?classId=${classId}&sessionId=${sessionId}&termId=${termId}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log("GetStudentTermFee error:", error);
+      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch term fee");
+    }
+  },
+
   payStudentSchoolFee: async (data) => {
     try {
       const response = await api.post(`/api/Payment/StudentSchoolFeePayment`, data);

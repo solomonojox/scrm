@@ -5,6 +5,7 @@ import Select from "react-select";
 import { RootState } from "../../../Store/store";
 import { useSelector } from "react-redux";
 import { schoolFeeService } from "../../../Services/Schfee";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 interface StudentFormProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ interface OptionType {
 }
 
 const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, editData }) => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -104,6 +106,7 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
       schoolId: localStorage.getItem("schoolId"),
       classroomId: formData.classroomId,
       sessionId: formData.sessionId,
+      termId: user?.termId,
       amount: formData.amount,
       className: formData.className,
     };
@@ -228,8 +231,8 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
                     ? "Updating..."
                     : "Saving..."
                   : editData
-                  ? "Update"
-                  : "Submit"}
+                    ? "Update"
+                    : "Submit"}
               </button>
             </div>
           </form>

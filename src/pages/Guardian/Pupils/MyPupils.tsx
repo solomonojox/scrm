@@ -21,7 +21,7 @@ const MyPupils = () => {
 
     const dispatch = useDispatch<AppDispatch>();
     const students: any = useSelector((state: RootState) => state.getGuardianStudents.listRecords);
-    console.log(students)
+    // console.log(students)
     const sessions: any = useSelector((state: RootState) => state.getSession.listRecords);
     const loading = useSelector((state: RootState) => state.getGuardianStudents.loading);
     const error = useSelector((state: RootState) => state.getGuardianStudents.error);
@@ -61,11 +61,12 @@ const MyPupils = () => {
 
     const selectedStudent = students[selectedIndex];
 
-    // console.log(selectedStudent)
+    console.log(selectedStudent)
 
     const [payments, setPayments] = useState<any>({});
     const [classSessionFee, setClassSessionFee] = useState<number>(0);
     const [studentBalance, setStudentBalance] = useState<any>({});
+    const [studentTermFee, setStudentTermFee] = useState<number>(0);
     const [openPaymentModal, setOpenPaymentModal] = useState(false);
 
     useEffect(() => {
@@ -99,6 +100,9 @@ const MyPupils = () => {
         try {
             if (selectedStudent) {
                 const studentBalance = await paymentService.getStudentPaymentBalanceForSessiozn(selectedStudent?.studentId, selectedStudent?.currentSession);
+                const studentFees = await paymentService.getStudentTermFee(selectedStudent?.classroomId, selectedStudent?.currentSession, user?.termId);
+
+                setStudentTermFee(studentFees);
                 setStudentBalance(studentBalance);
             }
         } catch (error) {
@@ -241,7 +245,7 @@ const MyPupils = () => {
                 <div className="p-4 space-y-4 shadow-lg rounded-lg">
                     <div className="space-y-1">
                         <h1 className="text-lg font-semibold">Fee Balance/Payment Status</h1>
-                        <p className="text-gray-700">Session School Fees: N{studentBalance?.totalFees?.toLocaleString() || '0.00'}</p>
+                        <p className="text-gray-700">Session School Fees: N{studentTermFee?.toLocaleString() || '0.00'}</p>
                         <p className="text-green-500">Amount Paid: N{studentBalance?.totalPaid}</p>
                         <p className="text-gray-500">Balance: N{studentBalance?.balance?.toLocaleString() || '0.00'}</p>
                     </div>

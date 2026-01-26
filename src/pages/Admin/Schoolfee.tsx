@@ -105,7 +105,7 @@ export default function SchoolFeesPage() {
     if (!selectedFee?.id) return;
 
     try {
-      await schoolFeeService.updateSchoolFee(selectedFee.id, formData);
+      await schoolFeeService.update(selectedFee.id, formData);
       await fetchSchoolFee();
       closeModal();
     } catch (err) {
@@ -113,15 +113,15 @@ export default function SchoolFeesPage() {
     }
   };
 
-  const handleDeleteFee = async (id: string) => {
-    if (!window.confirm('Delete this fee?')) return;
-    try {
-      await schoolFeeService.deleteSchoolFee(id);
-      await fetchSchoolFee();
-    } catch (err) {
-      console.error('Delete failed:', err);
-    }
-  };
+  // const handleDeleteFee = async (id: string) => {
+  //   if (!window.confirm('Delete this fee?')) return;
+  //   try {
+  //     await schoolFeeService.deleteSchoolFee(id);
+  //     await fetchSchoolFee();
+  //   } catch (err) {
+  //     console.error('Delete failed:', err);
+  //   }
+  // };
 
   const isReadOnly = modalMode === 'view';
 
@@ -185,7 +185,7 @@ export default function SchoolFeesPage() {
                         <i className="fas fa-edit" />
                       </button>
                       <button
-                        onClick={() => fee.id && handleDeleteFee(fee.id)}
+                        // onClick={() => fee.id && handleDeleteFee(fee.id)}
                         className="text-red-600 hover:text-red-700 text-sm"
                       >
                         <i className="fas fa-trash-alt" />
