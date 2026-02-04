@@ -39,7 +39,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
 
   // Get data from Redux store
   const guardians = useSelector((state: RootState) => state.getGuardian.listRecords || []);
-  const teachers = useSelector((state: RootState) => state.getTeacher.listRecords || []);
+  const teachers = useSelector((state: RootState) => (Array.isArray(state.getTeacher.listRecords) ? state.getTeacher.listRecords : []));
   const sessions = useSelector((state: RootState) => state.getSession.listRecords || []);
   const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords || []);
 
@@ -89,7 +89,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
     label: `${guardian.firstname} ${guardian.lastname} (${guardian.phone})`,
   }));
 
-  const teacherOptions: OptionType[] = teachers.map((teacher) => ({
+  const teacherOptions: OptionType[] = teachers.map((teacher: any) => ({
     value: String(teacher.teacherId),
     label: `${teacher.firstname} ${teacher.lastname} (${teacher.phone})`,
   }));

@@ -86,6 +86,7 @@ import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
 import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
 import ViewReportCardExample from "./pages/Teachers/results/ViewReportCardExample";
 import GuardianReportCard from "./pages/Teachers/results/GuardianReportCard";
+import ManualFeeRecord from "./pages/Admin/schoolFee/ManualFeeRecord";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -153,7 +154,8 @@ function App() {
         <Route path="/admin/news" element={<AdminNews />} />
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
-        <Route path="/admin/payroll" element={<Payroll />} />
+        {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
+        <Route path="/admin/payment-record" element={<ManualFeeRecord />} />
       </Route>
 
       {/* All teachers routes here */}

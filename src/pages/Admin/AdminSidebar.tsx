@@ -127,11 +127,12 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Operations
           </h3>
-          <SidebarButton icon={<CoinsIcon />} label="Payroll" to="/admin/payroll" onClose={onClose} />
+          {/* <SidebarButton icon={<CoinsIcon />} label="Payroll" to="/admin/payroll" onClose={onClose} /> */}
           <SidebarButton icon={<MessageCircleDashed />} label="Messages" to="/admin/messages" onClose={onClose} />
           <SidebarButton icon={<FaNewspaper />} label="News" to="/admin/news" onClose={onClose} />
           <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/admin/events" onClose={onClose} />
           <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" to="/admin/schoolfee" onClose={onClose} />
+          <SidebarButton icon={<CoinsIcon />} label="Record payment" to="/admin/payment-record" onClose={onClose} />
         </div>
 
         <div className="mt-auto pt-4 border-t border-gray-100">

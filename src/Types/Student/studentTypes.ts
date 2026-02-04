@@ -11,4 +11,10 @@ export interface StudentType {
     currentTerm: 0;
     sessionId: string;
     classroomId: string;
+    address: string;
+    gender: string | null;
+    guardianName: string;
+    guardianPhone: string;
+    guardianEmail: string;
+    classroomName: string;
 }

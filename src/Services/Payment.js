@@ -96,5 +96,26 @@ export const paymentService = {
       console.error("AddStudentSchoolFee error:", error);
       throw (error?.response?.data?.responseMessage || "Failed to add school fee");
     }
-  }
+  },
+
+  payStudentSchoolFeeManually: async (data) => {
+    try {
+      const response = await api.post(`/api/Payment/ManualStudentSchoolFeePayment`, data);
+      return response.data;
+    } catch (error) {
+      console.error("AddStudentSchoolFee error:", error);
+      throw (error?.response?.data?.responseMessage || "Failed to add school fee");
+    }
+  },
+
+  generateInvoince: async (data) => {
+    try {
+      const response = await api.post(`/api/SchoolInvoice/generate`, data);
+      // console.log(response.headers["content-disposition"]);
+      return response.data;
+    } catch (error) {
+      console.error("AddStudentSchoolFee error:", error);
+      throw (error?.response?.data?.responseMessage || "Failed to add school fee");
+    }
+  },
 };
