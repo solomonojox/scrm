@@ -290,8 +290,8 @@ const NewAttendance: React.FC = () => {
       lastName: student.lastName,
       timeIn: student.time || getCurrentTime(),
       status: student.absent ? 0 : student.present ? 1 : 2, // 1=Present, 0=Absent, 2=Late
-      date: getInputDateValue(currentDate)
-
+      date: getInputDateValue(currentDate),
+      termId: user?.termId
     }));
 
     try {
@@ -383,7 +383,7 @@ const NewAttendance: React.FC = () => {
                   className="w-full px-3 sm:px-4 py-2 bg-orange-500 text-white border-none outline-none rounded-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <option value="">Select Class</option>
-                  {fetchedRecord.map((cls, index) => (
+                  {fetchedRecord.map((cls: any, index: number) => (
                     <option key={index} value={cls.classroomId}>
                       {cls.name}
                     </option>

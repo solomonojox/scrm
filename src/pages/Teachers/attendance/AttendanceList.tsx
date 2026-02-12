@@ -56,7 +56,7 @@ const AttendanceList: React.FC<Prop> = ({ setCardData }): React.JSX.Element => {
   const fetchAttendance = async () => {
     setLoading(true)
     try {
-      const data = await attendanceService.getAttendanceByClassroomIdAndSchoolId(user?.schoolId, classroomIdToFetch);
+      const data = await attendanceService.getAttendanceByClassroomIdAndSchoolId(user?.schoolId, classroomIdToFetch, user?.termId);
 
       setAttendanceData(data);
       setCardData(data)

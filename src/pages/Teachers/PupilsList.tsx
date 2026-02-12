@@ -170,6 +170,12 @@ export default function PupilsList({ classrooms }: any) {
                       minHeight: 36,
                       borderRadius: 6,
                     }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused ? 'gray' : '#F07A00',
+                      // or for different states:
+                      // backgroundColor: state.isSelected ? '#selectedColor' : state.isFocused ? '#hoverColor' : '#defaultColor',
+                    }),
                   }}
                 />
               </Box>

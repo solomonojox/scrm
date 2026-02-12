@@ -138,7 +138,7 @@ const ResultTable: React.FC<StudentTableProps> = ({
           student.studentId || student.id,
           student.classroomId,
           fetchedSessions[0].sessionKey,
-          student.currentTerm
+          user?.termId
         );
 
         const schoollInfoRes = await onboardingService.getSchoolById(fetchedSessions[0].schoolId)

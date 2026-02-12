@@ -13,6 +13,7 @@ import {
 import TeacherReportCard from "./TeacherReportCard";
 import { resultService } from "../../../Services/Results";
 import { onboardingService } from "../../../Services/Auth/onboarding";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 interface MobileCardProps {
   item: any;
@@ -188,6 +189,7 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
   students,
   fetchedSessions,
 }) => {
+  const { user } = useAuth();
   // UI state
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -246,7 +248,7 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
           student.studentId || student.id,
           student.classroomId,
           fetchedSessions[0].sessionKey,
-          student.currentTerm
+          user?.termId
         );
 
         const schoollInfoRes = await onboardingService.getSchoolById(fetchedSessions[0].schoolId)
@@ -548,8 +550,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === 1
-                      ? "text-gray-400 bg-gray-100 cursor-not-allowed"
-                      : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
+                    ? "text-gray-400 bg-gray-100 cursor-not-allowed"
+                    : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
                     }`}
                 >
                   Previous
@@ -572,8 +574,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
                       className={`w-8 h-8 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === pageNum
-                          ? "bg-gradient-to-br from-orange-500 to-[#EE7306] text-white shadow-lg scale-110"
-                          : "text-[#EE7306] bg-white hover:bg-orange-100 border-2 border-orange-200"
+                        ? "bg-gradient-to-br from-orange-500 to-[#EE7306] text-white shadow-lg scale-110"
+                        : "text-[#EE7306] bg-white hover:bg-orange-100 border-2 border-orange-200"
                         }`}
                     >
                       {pageNum}
@@ -585,8 +587,8 @@ const AllResult: React.FC<{ students: any[]; fetchedSessions: any[] }> = ({
                   disabled={currentPage === totalPages || totalPages === 0}
                   onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   className={`px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 shadow-md ${currentPage === totalPages || totalPages === 0
-                      ? "text-gray-400 bg-gray-100 cursor-not-allowed"
-                      : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
+                    ? "text-gray-400 bg-gray-100 cursor-not-allowed"
+                    : "bg-gradient-to-r from-orange-500 to-[#EE7306] text-white hover:from-[#EE7306] hover:to-orange-700 hover:shadow-lg"
                     }`}
                 >
                   Next

@@ -56,17 +56,17 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
           teacherId: editData.teacherId
             ? String(editData.teacherId)
             : editData.teacher?.teacherId
-            ? String(editData.teacher.teacherId)
-            : "",
+              ? String(editData.teacher.teacherId)
+              : "",
           currentTerm: editData.currentTerm ? String(editData.currentTerm) : "1",
           sessionId:
             editData.sessionId
               ? String(editData.sessionId)
               : editData.currentSession
-              ? String(editData.currentSession)
-              : editData.session?.sessionId
-              ? String(editData.session.sessionId)
-              : "",
+                ? String(editData.currentSession)
+                : editData.session?.sessionId
+                  ? String(editData.session.sessionId)
+                  : "",
           classroomId: editData.classroomId ? String(editData.classroomId) : "",
           gender: editData.gender || "",
         });
@@ -111,9 +111,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
   ];
 
   const genderOptions: OptionType[] = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "others", label: "Others" },
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" }
   ];
 
   const getSelectedOption = (value: string, options: OptionType[]) => {
@@ -136,6 +135,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
     }));
   };
 
+  const [file, setFile] = useState<File | null>(null);
+  console.log(file)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -144,6 +145,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
         return;
       }
       setImagePreview(URL.createObjectURL(file));
+      setFile(file);
     }
   };
 
@@ -228,6 +230,20 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
     }
   };
 
+  const handleUploadImage = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file!);
+
+      const res = await studentService.uploadPhoto(editData.studentId, formData);
+      toast.success(res.responseMessage || "Image uploaded successfully!");
+    } catch (err: any) {
+      const msg = err.response?.data?.responseMessage || "Image upload failed";
+      setFormError(msg);
+      toast.error(msg);
+    }
+  }
+
   if (!isDataReady && editData) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
@@ -251,23 +267,30 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
           </h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
               {/* Image Upload */}
-              <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-                {imagePreview ? (
-                  <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
-                    +
-                  </span>
-                )}
-              </label>
+              {editData && (
+                <>
+                  <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
+                        +
+                      </span>
+                    )}
+                  </label>
+                  {file && (
+                    <button type="button" className="absolute bg-primary hover:bg-amber-700 px-2 py-1 rounded-lg text-white top-12 right-1/2 translate-x-3/2" onClick={handleUploadImage}>Upload</button>
+                  )}
+                </>
+              )}
 
               {/* First name */}
               <div className="col-span-1">
@@ -432,8 +455,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                     ? "Updating..."
                     : "Saving..."
                   : editData
-                  ? "Update"
-                  : "Submit"}
+                    ? "Update"
+                    : "Submit"}
               </button>
             </div>
           </form>

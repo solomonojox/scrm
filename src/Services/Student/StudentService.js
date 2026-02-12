@@ -45,4 +45,15 @@ export const studentService = {
       throw error;
     }
   },
+
+  uploadPhoto: async (id, data) => {
+    try {
+      const res = await api.post(`/api/Student/UploadImage/${id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+      console.log("UploadStudentPhoto success:", res.data);
+      return res.data;
+    } catch (error) {
+      console.error("UploadStudentPhoto error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  }
 };
