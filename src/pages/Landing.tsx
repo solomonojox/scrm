@@ -78,7 +78,7 @@ const Landing = () => {
               </button>
               <button
                 className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition-colors duration-200"
-                onClick={() => navigate("/studentscbt")}
+                onClick={() => navigate("/cbt")}
               >
                 CBT Exam
               </button>
@@ -139,7 +139,7 @@ const Landing = () => {
                 <button
                   className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-xl hover:bg-orange-700 transition-colors duration-200"
                   onClick={() => {
-                    navigate("/studentscbt");
+                    navigate("/cbt");
                     setIsMenuOpen(false);
                   }}
                 >

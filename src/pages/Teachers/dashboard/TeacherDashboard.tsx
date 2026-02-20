@@ -21,7 +21,7 @@ import { BiMessageAlt } from "react-icons/bi";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
-import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../../../Store/Teachers/teacherSlice";
+import { fetchSingleTeacherSuccess, fetchTeacherFailure, fetchTeacherStart } from "../../../Store/Teachers/teacherSlice";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
 import Calendar from "../../../components/Teachers/chart/Calendar";
 import GradeChart from "../../../components/Teachers/chart/GradeChart";
@@ -32,7 +32,7 @@ import AttendanceChart from "../../../components/Teachers/chart/AttendanceChart"
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.singleList);
   // console.log("fetchedTeacherRecord", fetchedTeacherRecord);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
@@ -67,7 +67,7 @@ export default function TeacherDashboard() {
       //   console.log(studentCount)
       // }
 
-      dispatch(fetchTeacherSuccess(teacherData));
+      dispatch(fetchSingleTeacherSuccess(teacherData));
     } catch (err: any) {
       dispatch(fetchTeacherFailure(err.message));
     }

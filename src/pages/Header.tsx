@@ -35,7 +35,7 @@ const Header = () => {
                 Login
               </Link>
               <Link
-                to="/studentscbt"
+                to="/cbt"
                 className="mr-8 bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition"
               >
                 Cbt Exam

@@ -436,7 +436,7 @@ function UpcomingClasses() {
     try {
       const data = await paymentService.getPaymentsBySchoolId(localStorage.getItem('schoolId'));
       dispatch(fetchPaymentSuccess(data));
-    } catch (err) {
+    } catch (err: any) {
       dispatch(fetchPaymentFailure(err.message));
     }
   };

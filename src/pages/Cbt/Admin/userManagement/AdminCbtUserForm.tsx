@@ -78,14 +78,20 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
     { value: "3", label: "Third Term" },
   ];
 
+  const sessionOptions = [
+    { value: "2023/2024", label: "2023/2024" },
+    { value: "2024/2025", label: "2024/2025" },
+    { value: "2025/2026", label: "2025/2026" },
+  ]
+
   // Session options
-  const sessionOptions: OptionType[] = sessions.map((session: any) => ({
-    value: String(session.sessionId || session.id),
-    label: session.name || `Session ${session.sessionId || session.id}`,
-  }));
+  // const sessionOptions: OptionType[] = sessions.map((session: any) => ({
+  //   value: String(session.sessionId || session.id),
+  //   label: session.name || `Session ${session.sessionId || session.id}`,
+  // }));
 
   // Teacher options for student assignment
-  const teacherOptions: OptionType[] = teachers.map((teacher) => ({
+  const teacherOptions: OptionType[] = teachers?.map((teacher) => ({
     value: String(teacher.teacherId),
     label: `${teacher.firstname} ${teacher.lastname} (${teacher.phone})`,
   }));

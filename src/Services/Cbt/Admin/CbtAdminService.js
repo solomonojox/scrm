@@ -49,4 +49,15 @@ export const cbtAdminService = {
       throw error;
     }
   },
+
+  getAllSchoolSessions: async (id) => {
+    try {
+      const res = await cbtApi.get(`/api/School/GetAllSchools/${id}`);
+      // console.log("GetAllStudents success:", res.data);
+      return res.data.data;
+    } catch (error) {
+      console.error("GetAllStudents error:", error?.response?.data?.message || error.message);
+      throw error;
+    }
+  },
 };

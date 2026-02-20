@@ -1,7 +1,26 @@
 import React, { useState } from "react";
+import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
+import { useAuth } from "../../Context/Auth/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const EducatLogin = () => {
+  const navigate = useNavigate();
+  const { cbtLogin } = useAuth();
   const [activeTab, setActiveTab] = useState("student");
+  const [schoolId, setSchoolId] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ schoolId: string; email: string; password: string }>({
+    schoolId: "",
+    email: "",
+    password: "",
+  });
+  const [touched, setTouched] = useState<{ schoolId: boolean; email: boolean; password: boolean }>({
+    schoolId: false,
+    email: false,
+    password: false,
+  });
 
   const tabs = [
     { id: "student", label: "Student" },
@@ -9,14 +28,118 @@ const EducatLogin = () => {
     { id: "admin", label: "School Admin" },
   ];
 
-  // ✅ Simple navigation (no router)
-  const handleLogin = () => {
-    if (activeTab === "admin") {
-      window.location.href = "/admincbt";
-    } else if (activeTab === "teacher") {
-      window.location.href = "/teacherDashBoard";
-    } else {
-      window.location.href = "/studentcbt";
+  const validateField = (field: string, value: string) => {
+    switch (field) {
+      case "schoolId":
+        if (!value.trim()) {
+          return "School ID is required";
+        } else if (value.trim().length < 5) {
+          return "School ID must be at least 5 characters";
+        }
+        return "";
+
+      case "email":
+        if (!value.trim()) {
+          return "Email is required";
+        } else if (!/\S+@\S+\.\S+/.test(value)) {
+          return "Please enter a valid email address";
+        }
+        return "";
+
+      case "password":
+        if (!value) {
+          return "Password is required";
+        } else if (value.length < 6) {
+          return "Password must be at least 6 characters";
+        }
+        return "";
+
+      default:
+        return "";
+    }
+  };
+
+  const validateAll = () => {
+    const newErrors = {
+      schoolId: validateField("schoolId", schoolId),
+      email: validateField("email", email),
+      password: validateField("password", password),
+    };
+
+    setErrors(newErrors);
+
+    // Mark all fields as touched
+    setTouched({
+      schoolId: true,
+      email: true,
+      password: true,
+    });
+
+    // Return true if no errors
+    return !Object.values(newErrors).some(error => error !== "");
+  };
+
+  const handleBlur = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+
+    // Validate the specific field on blur
+    let errorMessage = "";
+    switch (field) {
+      case "schoolId":
+        errorMessage = validateField("schoolId", schoolId);
+        setErrors(prev => ({ ...prev, schoolId: errorMessage }));
+        break;
+      case "email":
+        errorMessage = validateField("email", email);
+        setErrors(prev => ({ ...prev, email: errorMessage }));
+        break;
+      case "password":
+        errorMessage = validateField("password", password);
+        setErrors(prev => ({ ...prev, password: errorMessage }));
+        break;
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    // Update the field value
+    switch (field) {
+      case "schoolId":
+        setSchoolId(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+    }
+
+    // Clear error for this field when user starts typing
+    if (errors[field as keyof typeof errors]) {
+      setErrors(prev => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  const handleLogin = async () => {
+    const isValid = validateAll();
+    if (isValid) {
+      setLoading(true);
+      
+      try {
+        if (activeTab === "admin") {
+          const response = await cbtAuthService.login({ email, password, schoolRegistrationNumber: schoolId });
+          cbtLogin(response.data);
+          navigate('/cbt/admin/dashboard')
+        } else if (activeTab === "teacher") {
+          window.location.href = "/teacherDashBoard";
+        } else {
+          window.location.href = "/studentcbt";
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -27,12 +150,19 @@ const EducatLogin = () => {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-6 py-2 rounded-full font-medium transition-all ${
-              activeTab === tab.id
-                ? "bg-orange-500 text-white shadow-md"
-                : "text-gray-600 hover:text-orange-500"
-            }`}
+            onClick={() => {
+              setActiveTab(tab.id);
+              // Clear all fields and errors when switching tabs
+              setSchoolId("");
+              setEmail("");
+              setPassword("");
+              setErrors({ schoolId: "", email: "", password: "" });
+              setTouched({ schoolId: false, email: false, password: false });
+            }}
+            className={`px-6 py-2 rounded-full font-medium transition-all ${activeTab === tab.id
+              ? "bg-orange-500 text-white shadow-md"
+              : "text-gray-600 hover:text-orange-500"
+              }`}
           >
             {tab.label}
           </button>
@@ -40,7 +170,7 @@ const EducatLogin = () => {
       </div>
 
       {/* Login Card */}
-      <div className="bg-white w-[800px] shadow-lg rounded-2xl p-4 border border-orange-100">
+      <div className="bg-white w-[800px] shadow-lg rounded-2xl p-8 border border-orange-100">
         <h2 className="text-2xl font-bold text-orange-600 mb-2 capitalize">
           {activeTab} Login
         </h2>
@@ -56,8 +186,17 @@ const EducatLogin = () => {
           <input
             type="text"
             placeholder="e.g., SCH-2024-001"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+            value={schoolId}
+            onChange={(e) => handleChange("schoolId", e.target.value)}
+            onBlur={() => handleBlur("schoolId")}
+            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.schoolId && errors.schoolId
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200"
+              }`}
           />
+          {touched.schoolId && errors.schoolId && (
+            <p className="text-red-500 text-sm mt-1">{errors.schoolId}</p>
+          )}
         </div>
 
         {/* Email */}
@@ -68,8 +207,17 @@ const EducatLogin = () => {
           <input
             type="email"
             placeholder="student@school.edu"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+            value={email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            onBlur={() => handleBlur("email")}
+            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.email && errors.email
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200"
+              }`}
           />
+          {touched.email && errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Password */}
@@ -78,11 +226,20 @@ const EducatLogin = () => {
           <input
             type="password"
             placeholder="Enter your password"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none"
+            value={password}
+            onChange={(e) => handleChange("password", e.target.value)}
+            onBlur={() => handleBlur("password")}
+            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.password && errors.password
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200"
+              }`}
           />
+          {touched.password && errors.password && (
+            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          )}
         </div>
 
-        {/* ✅ Login Button */}
+        {/* Login Button */}
         <button
           onClick={handleLogin}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition"
@@ -95,7 +252,7 @@ const EducatLogin = () => {
         </p>
       </div>
 
-      {/* ✅ Footer with working Register School link */}
+      {/* Footer with working Register School link */}
       <p className="mt-6 text-gray-600 text-sm">
         School not registered yet?{" "}
         <a

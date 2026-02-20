@@ -118,18 +118,16 @@ const AdminCbtUserManagement = () => {
             <div className="bg-orange-100 rounded-full flex p-1">
               <button
                 onClick={() => setActiveTab("students")}
-                className={`px-4 py-1 rounded-full text-sm font-medium ${
-                  activeTab === "students" ? "bg-orange-500 text-white" : "text-gray-700"
-                }`}
+                className={`px-4 py-1 rounded-full text-sm font-medium ${activeTab === "students" ? "bg-orange-500 text-white" : "text-gray-700"
+                  }`}
               >
                 Students
               </button>
 
               <button
                 onClick={() => setActiveTab("teachers")}
-                className={`px-4 py-1 rounded-full text-sm font-medium ${
-                  activeTab === "teachers" ? "bg-orange-500 text-white" : "text-gray-700"
-                }`}
+                className={`px-4 py-1 rounded-full text-sm font-medium ${activeTab === "teachers" ? "bg-orange-500 text-white" : "text-gray-700"
+                  }`}
               >
                 Teachers
               </button>

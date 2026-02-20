@@ -10,10 +10,10 @@ export const attendanceService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
     }
   },
-  getAttendanceByClassroomIdAndSchoolId: async (schoolId, classroomId) => {
+  getAttendanceByClassroomIdAndSchoolId: async (schoolId, classroomId, termId) => {
     try {
       const response = await api.get(
-        `/api/Attendance/GetClassAttendanceSummary/${schoolId}/${classroomId}`
+        `/api/Attendance/GetClassAttendanceSummary/${schoolId}/${classroomId}/${termId}`
       );
       return response.data.data; 
     } catch (error) {

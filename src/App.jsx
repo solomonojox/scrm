@@ -219,7 +219,7 @@ function App() {
       <Route path="/payment" element={<StudentFeePaymentTable />} />
 
       {/* All students routes here */}
-      <Route path="/studentscbt" element={<StudentCbtLogin />} />
+      <Route path="/cbt" element={<StudentCbtLogin />} />
       <Route path="/admincbt" element={<AdminCbtLogin />} />
       {/* <Route path="/registerschool" element={<RegisterSchool />} /> */}
 
