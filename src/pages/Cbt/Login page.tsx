@@ -242,9 +242,9 @@ const EducatLogin = () => {
         {/* Login Button */}
         <button
           onClick={handleLogin}
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg transition"
+          className={`w-full ${loading ? 'bg-gray-400' : 'bg-orange-500 hover:bg-orange-600'} text-white font-semibold py-2 rounded-lg transition`}
         >
-          Login as {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+          {loading ? "Logging in..." : `Login as ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
         </button>
 
         <p className="text-center text-sm text-gray-500 mt-4">

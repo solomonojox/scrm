@@ -24,6 +24,7 @@ const AdminCbtUserManagement = () => {
 
   // New Logic
   const { cbtUser } = useAuth();
+  console.log("CBT User in AdminCbtUserManagement:", cbtUser);
   const dispatch = useDispatch<AppDispatch>();
 
   const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
@@ -37,10 +38,10 @@ const AdminCbtUserManagement = () => {
 
   // Fetch students & teachers on mount
   useEffect(() => {
-    if (!fetchedStudentLoading) {
+    if (!fetchedStudentLoading && cbtUser?.schoolId) {
       fetchStudents();
     }
-  }, []);
+  }, [cbtUser?.schoolId]);
 
   // Reset pagination when switching tabs
   useEffect(() => {
