@@ -87,6 +87,7 @@ import SchoolInfoPage from "./pages/SuperAdmin/SchoolInfoPage";
 import ViewReportCardExample from "./pages/Teachers/results/ViewReportCardExample";
 import GuardianReportCard from "./pages/Teachers/results/GuardianReportCard";
 import ManualFeeRecord from "./pages/Admin/schoolFee/ManualFeeRecord";
+import TeacherCbtSubject from "./pages/Cbt/Teacher/subject/TeacherCbtSubject";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -262,6 +263,7 @@ function App() {
         }
       >
         <Route path="/cbt/teacher/dashboard" element={<TeacherCbtDashboard />} />
+        <Route path="/cbt/teacher/subject" element={<TeacherCbtSubject />} />
         <Route path="/cbt/teacher/exams" element={<TeacherCbtExam />} />
       </Route>
       {/* <Route path="/registerschool" element={<RegisterSchool />} /> */}
