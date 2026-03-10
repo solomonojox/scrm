@@ -337,10 +337,10 @@ const TeacherCbtExam: React.FC = () => {
       case "edit":
         return (
           <CreateExamForm
-            initialData={selectedExam}
-            onSave={handleSaveExam}
-            onCancel={handleBackToList}
-            onAddQuestion={() => handleAddQuestion(selectedExam || undefined)}
+            // initialData={selectedExam}
+            // onSave={handleSaveExam}
+            // onCancel={handleBackToList}
+            // onAddQuestion={() => handleAddQuestion(selectedExam || undefined)}
           />
         );
 
@@ -355,14 +355,14 @@ const TeacherCbtExam: React.FC = () => {
       default:
         return (
           <ExamManagement
-            exams={exams}
-            onCreateExam={handleCreateExam}
-            onEditExam={handleEditExam}
-            onDeleteExam={handleDeleteExam}
-            onDuplicateExam={handleDuplicateExam}
-            onAddQuestion={handleAddQuestion}
-            onViewDetails={handleViewExamDetails}
-            onPublishExam={handlePublishExam}
+            // exams={exams}
+            // onCreateExam={handleCreateExam}
+            // onEditExam={handleEditExam}
+            // onDeleteExam={handleDeleteExam}
+            // onDuplicateExam={handleDuplicateExam}
+            // onAddQuestion={handleAddQuestion}
+            // onViewDetails={handleViewExamDetails}
+            // onPublishExam={handlePublishExam}
           />
         );
     }

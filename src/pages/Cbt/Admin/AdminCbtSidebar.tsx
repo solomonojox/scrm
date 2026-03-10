@@ -41,6 +41,7 @@ const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
         link: "/cbt/teacher/dashboard",
         icon: <LayoutDashboardIcon />,
       },
+      { id: "subject", label: "Subject", link: "/cbt/teacher/subject", icon: <BookAudio /> },
       {
         id: "questions",
         label: "Manage Questions",
@@ -85,7 +86,7 @@ const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
                   key={tab.id}
                   to={tab.link}
                   className={`flex items-center p-2 rounded-md hover:bg-orange-100 ${
-                    isActive ? "bg-orange-50 text-gray-600" : ""
+                    isActive ? "bg-orange-50 text-gray-600 text-md" : "text-sm"
                   }`}
                 >
                   {tab.icon}
