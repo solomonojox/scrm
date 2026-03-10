@@ -39,9 +39,9 @@ const SessionTermForm: React.FC<SessionTermFormProps> = ({ onClose, onSessionAdd
   };
 
   const termNameOptions = [
-    { value: "First term", label: "First Term" },
-    { value: "Second term", label: "Second Term" },
-    { value: "Third term", label: "Third Term" },
+    { value: "First Term", label: "First Term" },
+    { value: "Second Term", label: "Second Term" },
+    { value: "Third Term", label: "Third Term" },
   ];
 
   // Prefill form when editing
