@@ -6,6 +6,14 @@ import Select from "react-select";
 import Header from "../Header";
 import Footer from "../Footer";
 import { onboardingService } from "../../Services/Auth/onboarding";
+import { AppDispatch, RootState } from "../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchNappsChapterFailure,
+  fetchNappsChapterStart,
+  fetchNappsChapterSuccess,
+} from "../../Store/nappsChapterSlice";
+import { nappsChapterService } from "../../Services/NappsChapter";
 
 const formFields = [
   { label: "School Name", name: "schoolName", type: "text", placeholder: "Enter Name" },
@@ -17,7 +25,7 @@ const formFields = [
   { label: "Owner Name", name: "ownerName", type: "text", placeholder: "Enter Name" },
   { label: "Owner Phone Number", name: "ownerPhone", type: "tel", placeholder: "Enter Number" },
   { label: "Owner Email", name: "ownerEmail", type: "email", placeholder: "Enter Email" },
-  { label: "Password", name: "password", type: "password", placeholder: "Enter Password" }
+  { label: "Password", name: "password", type: "password", placeholder: "Enter Password" },
 ];
 
 const schoolTypes = ["Primary", "Secondary", "College"];
@@ -25,10 +33,41 @@ const schoolTypes = ["Primary", "Secondary", "College"];
 // Country options for React Select
 const countryOptions = [
   { value: 1, label: "Nigeria" },
-  { value: 2, label: "Ghana" }
+  { value: 2, label: "Ghana" },
 ];
 
 const AddSchoolForm = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const fetchedRecord = useSelector((state: RootState) => state.getNappsChapter.listRecords);
+  const fetchedLoading = useSelector((state: RootState) => state.getNappsChapter.loading);
+  const fetchedError = useSelector((state: RootState) => state.getNappsChapter.error);
+
+  console.log("Fetched Record", fetchedRecord);
+
+  useEffect(() => {
+    if (!fetchedLoading) {
+      fetchNappsChapter();
+    }
+  }, [dispatch]);
+
+  const fetchNappsChapter = async () => {
+    dispatch(fetchNappsChapterStart());
+    try {
+      const data = await nappsChapterService.getAllNappsChapters();
+      dispatch(fetchNappsChapterSuccess(data));
+    } catch (err) {
+      dispatch(fetchNappsChapterFailure((err as Error).message));
+    }
+  };
+
+  // Build napps options from fetched records
+  const nappsOptions = Array.isArray(fetchedRecord)
+    ? fetchedRecord.map((chapter: any) => ({
+        value: chapter.id,
+        label: chapter.state.toUpperCase(),
+      }))
+    : [];
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState<any>({
     schoolName: "",
@@ -40,11 +79,12 @@ const AddSchoolForm = () => {
     countryId: 0,
     state: "",
     city: "",
+    nappsChapterId: "",
     ownerName: "",
     ownerPhone: "",
     ownerEmail: "",
     password: "",
-    hasAgreedToTerms: false
+    hasAgreedToTerms: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -58,7 +98,7 @@ const AddSchoolForm = () => {
     const { name, value, type, checked } = e.target;
     setFormData((prev: any) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -67,7 +107,14 @@ const AddSchoolForm = () => {
     setFormData((prev: any) => ({
       ...prev,
       countryId: selectedOption.value,
-      country: selectedOption.label
+      country: selectedOption.label,
+    }));
+  };
+
+  const handleNappsChapterChange = (selectedOption: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      nappsChapterId: selectedOption ? selectedOption.value : "",
     }));
   };
 
@@ -80,23 +127,46 @@ const AddSchoolForm = () => {
     try {
       const res = await onboardingService.addSchool(formData);
       console.log(res.schoolId);
-      const id = res.schoolId
+      const id = res.schoolId;
       // console.log(id);
       if (id) {
         localStorage.setItem("schoolIdOnRegistration", id);
-        localStorage.setItem("continueRegistration", 'upload-license');
+        localStorage.setItem("continueRegistration", "upload-license");
         setSchoolRegNumber(res.registrationNumber);
         setSuccessModal(true);
       }
       setSuccess("School registered successfully!");
-
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
       const msg = err.response?.data?.responseMessage || err.message;
       setError(msg);
     } finally {
       setLoading(false);
     }
+  };
+
+  const selectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      borderColor: state.isFocused ? "#fb923c" : "#fb923c",
+      borderRadius: "6px",
+      fontSize: "13px",
+      minHeight: "42px",
+      boxShadow: state.isFocused ? "0 0 0 1px #fb923c" : "none",
+      "&:hover": {
+        borderColor: "#fb923c",
+      },
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      fontSize: "13px",
+      backgroundColor: state.isSelected
+        ? "#fb923c"
+        : state.isFocused
+          ? "#fed7aa"
+          : "white",
+      color: state.isSelected ? "white" : "black",
+    }),
   };
 
   const [isContinueRegistration, setIsContinueRegistration] = useState(false);
@@ -125,7 +195,10 @@ const AddSchoolForm = () => {
             </button>
 
             <button
-              onClick={() => { setIsContinueRegistration(false); localStorage.removeItem("continueRegistration") }}
+              onClick={() => {
+                setIsContinueRegistration(false);
+                localStorage.removeItem("continueRegistration");
+              }}
               className="bg-green-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded"
             >
               New Registration
@@ -170,18 +243,6 @@ const AddSchoolForm = () => {
               <p className="hover:underline">Upload School License</p>
               <p className="hover:underline">Add Account details</p>
               <p className="hover:underline">Add School Admin</p>
-              {/* <Link to="/add-school-form" className="underline">
-                Add School
-              </Link>
-              <Link to="/upload-license" className="hover:underline">
-                Upload School License
-              </Link>
-              <Link to="/account-registration" className="hover:underline">
-                Add Account details
-              </Link>
-              <Link to="/add-admin" className="hover:underline">
-                Add School Admin
-              </Link> */}
             </div>
           </section>
 
@@ -213,34 +274,56 @@ const AddSchoolForm = () => {
                 id="country"
                 name="country"
                 options={countryOptions}
-                value={countryOptions.find(option => option.value === formData.countryId)}
+                value={countryOptions.find((option) => option.value === formData.countryId)}
                 onChange={handleCountryChange}
                 placeholder="Select Country"
                 className="text-[13px]"
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    borderColor: state.isFocused ? '#fb923c' : '#fb923c',
-                    borderRadius: '6px',
-                    fontSize: '13px',
-                    minHeight: '42px',
-                    boxShadow: state.isFocused ? '0 0 0 1px #fb923c' : 'none',
-                    '&:hover': {
-                      borderColor: '#fb923c'
-                    }
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    fontSize: '13px',
-                    backgroundColor: state.isSelected ? '#fb923c' : state.isFocused ? '#fed7aa' : 'white',
-                    color: state.isSelected ? 'white' : 'black'
-                  })
-                }}
+                styles={selectStyles}
                 required
               />
             </div>
 
-            {formFields.slice(4).map(({ label, name, type, placeholder }) => (
+            {/* State and City fields */}
+            {formFields.slice(4, 6).map(({ label, name, type, placeholder }) => (
+              <div key={name}>
+                <label htmlFor={name} className="block text-[13px] text-gray-700 mb-1">
+                  {label}
+                </label>
+                <input
+                  id={name}
+                  name={name}
+                  type={type}
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  className="w-full border border-orange-400 rounded-md px-3 py-2 text-[13px] placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-orange-400"
+                  required
+                />
+              </div>
+            ))}
+
+            {/* Napps Chapter Dropdown — optional, after City */}
+            <div>
+              <label htmlFor="nappsChapter" className="block text-[13px] text-gray-700 mb-1">
+                Napps Chapter{" "}
+                <span className="text-gray-400 text-[11px] font-normal">(Optional)</span>
+              </label>
+              <Select
+                id="nappsChapter"
+                name="nappsChapter"
+                options={nappsOptions}
+                value={nappsOptions.find((option) => option.value === formData.nappsChapterId) || null}
+                onChange={handleNappsChapterChange}
+                placeholder={fetchedLoading ? "Loading chapters..." : "Select Napps Chapter"}
+                className="text-[13px]"
+                styles={selectStyles}
+                isClearable
+                isLoading={fetchedLoading}
+              />
+            </div>
+
+            {/* Remaining fields after City (Owner Name, Owner Phone, Owner Email, Password) */}
+            {formFields.slice(6).map(({ label, name, type, placeholder }) => (
               <div key={name}>
                 <label htmlFor={name} className="block text-[13px] text-gray-700 mb-1">
                   {label}
@@ -305,9 +388,10 @@ const AddSchoolForm = () => {
               type="submit"
               disabled={loading || !formData.hasAgreedToTerms}
               className={`w-full font-semibold py-2 px-4 rounded-md text-sm transition 
-                ${loading || !formData.hasAgreedToTerms
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-orange-500 hover:bg-orange-600 text-white"
+                ${
+                  loading || !formData.hasAgreedToTerms
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-orange-500 hover:bg-orange-600 text-white"
                 }`}
             >
               {loading ? "Saving..." : "Save"}
@@ -336,7 +420,8 @@ const AddSchoolForm = () => {
 
               {/* Message */}
               <p className="mt-2 text-gray-700">
-                Your school has been registered successfully. Please copy the School Registration Number below and click
+                Your school has been registered successfully. Please copy the School Registration
+                Number below and click
                 <strong className="font-medium"> Continue </strong>
                 to upload the license.
               </p>

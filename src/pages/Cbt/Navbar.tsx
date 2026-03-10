@@ -14,13 +14,15 @@ const Navbar = () => {
 
           <div className="flex items-center space-x-3">
             <div className="flex flex-col items-center">
-              <img
-                src={imageAssets.logo}
-                alt="EduCat logo"
-                width={96}
-                height={44}
-                className="block"
-              />
+              <Link to="/">
+                <img
+                  src={imageAssets.logo}
+                  alt="EduCat logo"
+                  width={96}
+                  height={44}
+                  className="block"
+                />
+              </Link>
               <p className="text-xs text-gray-500">Computer Based Testing System</p>
             </div>
             <div>{/* <h1 className="text-xl font-bold text-orange-600">Educat CBT</h1> */}</div>
