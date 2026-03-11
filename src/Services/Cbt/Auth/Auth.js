@@ -24,7 +24,7 @@ export const cbtAuthService = {
       const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
       return response.data.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to login");
+      throw error;
     }
   },
 };

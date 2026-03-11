@@ -142,10 +142,10 @@ const TeacherCbtExam: React.FC = () => {
           prev.map((exam) =>
             exam.id === selectedExam.id
               ? {
-                  ...exam,
-                  ...examData,
-                  updatedAt: timestamp,
-                }
+                ...exam,
+                ...examData,
+                updatedAt: timestamp,
+              }
               : exam
           )
         );

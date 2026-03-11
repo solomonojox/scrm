@@ -94,7 +94,7 @@ const ProtectedRoute = ({ children }) => {
 };
 const ProtectedRoute2 = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
-  return token ? children : <Navigate to="/cbt/login" />;
+  return token ? children : <Navigate to="/cbt" />;
 };
 
 const ProtectedRoute3 = ({ children }) => {

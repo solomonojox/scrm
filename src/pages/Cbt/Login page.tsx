@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
 import { useAuth } from "../../Context/Auth/useAuth";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 
 const EducatLogin = () => {
   const navigate = useNavigate();
@@ -120,23 +122,40 @@ const EducatLogin = () => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
     const isValid = validateAll();
     if (isValid) {
       setLoading(true);
-      
+
       try {
         if (activeTab === "admin") {
           const response = await cbtAuthService.login({ email, password, schoolRegistrationNumber: schoolId });
+
           cbtLogin(response.data);
-          navigate('/cbt/admin/dashboard')
+          const decoded = jwtDecode<Partial<any>>(response.data);
+          if (decoded.role !== 'SchoolAdmin') {
+            toast.error("Unauthorized: Only Admins can access this portal");
+          }
+          if (decoded.role === 'SchoolAdmin') {
+            navigate('/cbt/admin/dashboard')
+          }
         } else if (activeTab === "teacher") {
-          window.location.href = "/teacherDashBoard";
+          const response = await cbtAuthService.login({ email, password, schoolRegistrationNumber: schoolId });
+          cbtLogin(response.data);
+          const decoded = jwtDecode<Partial<any>>(response.data);
+          if (decoded.role !== 'Teacher') {
+            toast.error("Unauthorized: Only Teachers can access this portal");
+          }
+          if (decoded.role === 'Teacher') {
+            navigate('/cbt/teacher/dashboard')
+          }
         } else {
           window.location.href = "/studentcbt";
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        // console.log(error);
+        toast.error(error.response?.data?.responseMessage || "Login failed. Please check your credentials.");
       } finally {
         setLoading(false);
       }
@@ -178,74 +197,77 @@ const EducatLogin = () => {
           Enter your school registration number, email and password to access your exams.
         </p>
 
-        {/* Registration Number */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            School Registration Number
-          </label>
-          <input
-            type="text"
-            placeholder="e.g., SCH-2024-001"
-            value={schoolId}
-            onChange={(e) => handleChange("schoolId", e.target.value)}
-            onBlur={() => handleBlur("schoolId")}
-            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.schoolId && errors.schoolId
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200"
-              }`}
-          />
-          {touched.schoolId && errors.schoolId && (
-            <p className="text-red-500 text-sm mt-1">{errors.schoolId}</p>
-          )}
-        </div>
+        <form action="submit" onSubmit={handleLogin}>
+          {/* Registration Number */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              School Registration Number
+            </label>
+            <input
+              type="text"
+              placeholder="e.g., SCH-2024-001"
+              value={schoolId}
+              onChange={(e) => handleChange("schoolId", e.target.value)}
+              onBlur={() => handleBlur("schoolId")}
+              className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.schoolId && errors.schoolId
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200"
+                }`}
+            />
+            {touched.schoolId && errors.schoolId && (
+              <p className="text-red-500 text-sm mt-1">{errors.schoolId}</p>
+            )}
+          </div>
 
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">
-            Email Address
-          </label>
-          <input
-            type="email"
-            placeholder="student@school.edu"
-            value={email}
-            onChange={(e) => handleChange("email", e.target.value)}
-            onBlur={() => handleBlur("email")}
-            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.email && errors.email
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200"
-              }`}
-          />
-          {touched.email && errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-          )}
-        </div>
+          {/* Email */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              placeholder="student@school.edu"
+              value={email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              onBlur={() => handleBlur("email")}
+              className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.email && errors.email
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200"
+                }`}
+            />
+            {touched.email && errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
+          </div>
 
-        {/* Password */}
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-1">Password</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => handleChange("password", e.target.value)}
-            onBlur={() => handleBlur("password")}
-            className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.password && errors.password
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200"
-              }`}
-          />
-          {touched.password && errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-          )}
-        </div>
+          {/* Password */}
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-1">Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => handleChange("password", e.target.value)}
+              onBlur={() => handleBlur("password")}
+              className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.password && errors.password
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200"
+                }`}
+            />
+            {touched.password && errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
+          </div>
 
-        {/* Login Button */}
-        <button
-          onClick={handleLogin}
-          className={`w-full ${loading ? 'bg-gray-400' : 'bg-orange-500 hover:bg-orange-600'} text-white font-semibold py-2 rounded-lg transition`}
-        >
-          {loading ? "Logging in..." : `Login as ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
-        </button>
+          {/* Login Button */}
+          <button
+            className={`w-full ${loading ? 'bg-gray-400' : 'bg-orange-500 hover:bg-orange-600'} text-white font-semibold py-2 rounded-lg transition`}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : `Login as ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
+          </button>
+        </form>
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Demo: Use any school registration number, email and password

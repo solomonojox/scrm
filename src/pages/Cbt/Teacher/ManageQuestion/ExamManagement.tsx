@@ -37,7 +37,18 @@ interface Exam {
 type SortField = "title" | "subject" | "class" | "date" | "completed" | "averageScore";
 type SortOrder = "asc" | "desc";
 
-const ExamManagement: React.FC = () => {
+interface Props {
+  exams: any[];
+  onCreateExam: () => void;
+  onEditExam: (exam: any) => void;
+  onDeleteExam: (exam: any) => void;
+  onDuplicateExam: (exam: any) => void;
+  onAddQuestion: (exam: any) => void;
+  onViewDetails: (exam: any) => void;
+  onPublishExam: (exam: any) => void;
+}
+
+const ExamManagement: React.FC<Props> = () => {
   const [exams] = useState<Exam[]>([
     {
       id: "1",
@@ -369,11 +380,10 @@ const ExamManagement: React.FC = () => {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center px-4 py-2 border rounded-lg font-medium text-sm transition-colors ${
-                showFilters
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "bg-white text-gray-700 border-orange-200 hover:bg-orange-50"
-              }`}
+              className={`flex items-center px-4 py-2 border rounded-lg font-medium text-sm transition-colors ${showFilters
+                ? "bg-orange-500 text-white border-orange-500"
+                : "bg-white text-gray-700 border-orange-200 hover:bg-orange-50"
+                }`}
             >
               <Filter className="w-4 h-4 mr-2" />
               Filters
@@ -655,11 +665,10 @@ const ExamManagement: React.FC = () => {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                        currentPage === pageNum
-                          ? "bg-orange-500 text-white"
-                          : "border border-orange-200 text-gray-700 hover:bg-orange-50"
-                      }`}
+                      className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${currentPage === pageNum
+                        ? "bg-orange-500 text-white"
+                        : "border border-orange-200 text-gray-700 hover:bg-orange-50"
+                        }`}
                     >
                       {pageNum}
                     </button>

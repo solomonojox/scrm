@@ -10,7 +10,14 @@ interface Question {
   points: number;
 }
 
-const CreateExamForm: React.FC = () => {
+interface Exam {
+  initialData: any;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  onAddQuestion: () => void;
+}
+
+const CreateExamForm: React.FC<Exam> = () => {
   const [examData, setExamData] = useState({
     title: "",
     class: "",
@@ -310,11 +317,10 @@ const CreateExamForm: React.FC = () => {
                               {q.options.map((opt, i) => (
                                 <div key={i} className="flex items-center">
                                   <span
-                                    className={`${
-                                      opt === q.correctAnswer
+                                    className={`${opt === q.correctAnswer
                                         ? "text-green-600 font-semibold"
                                         : "text-gray-600"
-                                    }`}
+                                      }`}
                                   >
                                     {String.fromCharCode(65 + i)}. {opt}
                                     {opt === q.correctAnswer && " ✓"}
