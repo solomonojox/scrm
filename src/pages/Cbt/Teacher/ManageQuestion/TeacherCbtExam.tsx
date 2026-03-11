@@ -355,14 +355,14 @@ const TeacherCbtExam: React.FC = () => {
       default:
         return (
           <ExamManagement
-            // exams={exams}
-            // onCreateExam={handleCreateExam}
-            // onEditExam={handleEditExam}
-            // onDeleteExam={handleDeleteExam}
-            // onDuplicateExam={handleDuplicateExam}
-            // onAddQuestion={handleAddQuestion}
-            // onViewDetails={handleViewExamDetails}
-            // onPublishExam={handlePublishExam}
+            exams={exams}
+            onCreateExam={handleCreateExam}
+            onEditExam={handleEditExam}
+            onDeleteExam={handleDeleteExam}
+            onDuplicateExam={handleDuplicateExam}
+            onAddQuestion={handleAddQuestion}
+            onViewDetails={handleViewExamDetails}
+            onPublishExam={handlePublishExam}
           />
         );
     }
