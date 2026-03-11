@@ -31,6 +31,21 @@ export const superAdminService = {
         return res.data;
     },
 
+    getAllNapps: async () => {
+        const res = await api.get(`/api/NappsChapter/GetAllNappsChapters`);
+        return res.data;
+    },
+
+    getNappsById: async (id) => {
+        const res = await api.get(`/api/NappsChapter/GetAllNappsChapterById?Id=${id}`);
+        return res.data;
+    },
+
+    createNapp: async (data) => {
+        const res = await api.post(`/api/NappsChapter/AddNappsChapter`, data);
+        return res.data;
+    },
+
     changeSchoolStatus: async (data) => {
         const res = await api.post(`/api/School/ApproveSchool`, data);
         return res.data;
