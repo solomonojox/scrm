@@ -1,9 +1,9 @@
 import { School } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import { superAdminService } from '../../Services/superAdmin';
-import { useAuth } from '../../Context/Auth/useAuth';
+import { superAdminService } from '../../../Services/superAdmin';
+import { useAuth } from '../../../Context/Auth/useAuth';
 
-const SuperAdminDashboardCards = () => {
+const SuperAdminNappsDashboardCards = () => {
     const { user } = useAuth();
     const [totalSchools, setTotalSchools] = useState<number>(0);
     const [totalActiveSchools, setTotalActiveSchools] = useState<number>(0);
@@ -65,4 +65,4 @@ const SuperAdminDashboardCards = () => {
     )
 }
 
-export default SuperAdminDashboardCards
+export default SuperAdminNappsDashboardCards

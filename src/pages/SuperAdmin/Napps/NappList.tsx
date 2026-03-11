@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Search, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { superAdminService } from '../../Services/superAdmin';
-import { useAuth } from '../../Context/Auth/useAuth';
-import { AppContext } from '../../Context/AppContext';
+import { superAdminService } from '../../../Services/superAdmin';
+import { useAuth } from '../../../Context/Auth/useAuth';
+import { AppContext } from '../../../Context/AppContext';
+import AddNappsForm from './AddNappsForm';
 
 type SchoolStatus = 'Active' | 'Inactive';
 
@@ -40,53 +41,55 @@ const initialSchools: School[] = [
 
 type FilterType = 'All' | 'Active' | 'Inactive';
 
-export default function SchoolList() {
+export default function NappList() {
     const navigate = useNavigate()
     const { showOverlay, hideOverlay } = useContext(AppContext);
     const [schools, setSchools] = useState<School[]>(initialSchools);
     const [filter, setFilter] = useState<any>('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [openForm, setOpenForm] = useState(false);
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const { user } = useAuth();
-    const [allSchools, setAllSchools] = useState<any[]>([]);
-    const getAllSchools = async () => {
+    const [allNapps, setAllNapps] = useState<any[]>([]);
+    const getAllNapps = async () => {
         showOverlay();
         try {
-            const res = await superAdminService.getAllSchools();
-            const schoolsData = res.data;
+            const res = await superAdminService.getAllNapps();
+            const data = res.data;
+            setAllNapps(data);
 
             // Fetch total students for each school concurrently
-            const enrichedSchools = await Promise.all(
-                schoolsData.map(async (school: any) => {
-                    try {
-                        const studentsRes = await superAdminService.getAllStudents(school.schoolId);
-                        const teachersRes = await superAdminService.getAllTeachers(school.schoolId);
-                        const guardiansRes = await superAdminService.getAllGuardians(school.schoolId);
-                        const totalStudents = Array.isArray(studentsRes.data) ? studentsRes.data.length : 0;
-                        const totalTeachers = Array.isArray(teachersRes.data) ? studentsRes.data.length : 0;
-                        const totalGuardians = Array.isArray(guardiansRes.data) ? studentsRes.data.length : 0;
+            // const enrichedSchools = await Promise.all(
+            //     schoolsData.map(async (school: any) => {
+            //         try {
+            //             const studentsRes = await superAdminService.getAllStudents(school.schoolId);
+            //             const teachersRes = await superAdminService.getAllTeachers(school.schoolId);
+            //             const guardiansRes = await superAdminService.getAllGuardians(school.schoolId);
+            //             const totalStudents = Array.isArray(studentsRes.data) ? studentsRes.data.length : 0;
+            //             const totalTeachers = Array.isArray(teachersRes.data) ? studentsRes.data.length : 0;
+            //             const totalGuardians = Array.isArray(guardiansRes.data) ? studentsRes.data.length : 0;
 
-                        return {
-                            ...school,
-                            totalStudents,
-                            totalTeachers,
-                            totalGuardians
-                        };
-                    } catch (error) {
-                        console.error(`Error fetching students for ${school.schoolName}:`, error);
-                        return {
-                            ...school,
-                            totalStudents: 0,
-                        };
-                    }
-                })
-            );
+            //             return {
+            //                 ...school,
+            //                 totalStudents,
+            //                 totalTeachers,
+            //                 totalGuardians
+            //             };
+            //         } catch (error) {
+            //             console.error(`Error fetching students for ${school.schoolName}:`, error);
+            //             return {
+            //                 ...school,
+            //                 totalStudents: 0,
+            //             };
+            //         }
+            //     })
+            // );
 
-            setAllSchools(enrichedSchools);
+            // setAllSchools(enrichedSchools);
             // Reset to first page when data changes
             setCurrentPage(1);
         } catch (error) {
@@ -98,7 +101,7 @@ export default function SchoolList() {
 
     useEffect(() => {
         if (user) {
-            getAllSchools();
+            getAllNapps();
         }
     }, [user])
 
@@ -114,7 +117,7 @@ export default function SchoolList() {
         console.log(schoolId);
         try {
             const res = await superAdminService.changeSchoolStatus({ schoolId: schoolId, approvalStatus: 1, approvedBy: user?.id });
-            getAllSchools();
+            getAllNapps();
         } catch (error) {
             console.log(error);
         }
@@ -123,7 +126,7 @@ export default function SchoolList() {
     const deactivateSchool = async (schoolId: string) => {
         try {
             const res = await superAdminService.changeSchoolStatus({ schoolId: schoolId, approvalStatus: 2, approvedBy: user?.id });
-            getAllSchools();
+            getAllNapps();
         } catch (error) {
             console.log(error);
         }
@@ -138,10 +141,10 @@ export default function SchoolList() {
     };
 
     // Filter schools based on search and filter criteria
-    const filteredSchools = allSchools.filter(school => {
-        const matchesFilter = filter === 'All' || school.approvalStatus === filter;
-        const matchesSearch = school.schoolName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            school.address.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredSchools = allNapps.filter(napp => {
+        const matchesFilter = filter === 'All' || napp.isActive === filter;
+        const matchesSearch = napp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            napp.state.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 
@@ -188,8 +191,8 @@ export default function SchoolList() {
             <div>
                 {/* Header */}
                 <div className="mb-6">
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Registered Schools</h1>
-                    <p className="text-gray-600">Manage all schools and their activation status</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">NAPPS Chapters</h1>
+                    <p className="text-gray-600">Manage all NAPPS chapters and their details</p>
                 </div>
 
                 {/* Controls Bar */}
@@ -200,7 +203,7 @@ export default function SchoolList() {
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
                                 type="text"
-                                placeholder="Search schools by name or location..."
+                                placeholder="Search NAPPS by name or location..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
@@ -221,30 +224,33 @@ export default function SchoolList() {
                             >
                                 All
                             </button>
+
                             <button
                                 onClick={() => {
-                                    setFilter(1);
+                                    setFilter(true);
                                     setCurrentPage(1);
                                 }}
-                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 1
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === true
                                     ? 'bg-black text-white'
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 Active
                             </button>
+
                             <button
                                 onClick={() => {
-                                    setFilter(2);
+                                    setFilter(false);
                                     setCurrentPage(1);
                                 }}
-                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === 2
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === false
                                     ? 'bg-black text-white'
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 Inactive
                             </button>
+                            <button className={`px-4 py-2 rounded-lg font-medium transition-colors bg-black text-white`} onClick={() => setOpenForm(true)}>+ Add Chapter</button>
                         </div>
                     </div>
                 </div>
@@ -252,11 +258,11 @@ export default function SchoolList() {
                 {/* Items per page selector */}
                 <div className="flex justify-between items-center mb-4">
                     <div className="text-sm text-gray-600">
-                        Showing {startIndex + 1} to {endIndex} of {totalItems} schools
+                        Showing {startIndex + 1} to {endIndex} of {totalItems} napps
                     </div>
                     <div className="flex items-center gap-2">
                         <label htmlFor="itemsPerPage" className="text-sm text-gray-600 whitespace-nowrap">
-                            Schools per page:
+                            Napps per page:
                         </label>
                         <select
                             id="itemsPerPage"
@@ -278,42 +284,44 @@ export default function SchoolList() {
                         <table className="w-full min-w-max">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">School Name</th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Location</th>
+                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Name</th>
+                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">State</th>
+                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Email</th>
+                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Phone</th>
                                     <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Status</th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Students</th>
                                     <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Registered</th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Activate/Deactivate</th>
-                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Actions</th>
+                                    {/* <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Activate/Deactivate</th>
+                                    <th className="text-left py-4 px-6 text-sm font-semibold text-gray-700 whitespace-nowrap">Actions</th> */}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {currentSchools.length > 0 ? (
-                                    currentSchools.map((school) => (
-                                        <tr key={school.schoolId} className="hover:bg-gray-50 transition-colors">
-                                            <td className="py-4 px-6 text-gray-900 font-medium whitespace-nowrap">{school.schoolName}</td>
-                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap">{school.address}</td>
+                                    currentSchools.map((napp) => (
+                                        <tr key={napp.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="py-4 px-6 text-gray-900 font-medium whitespace-nowrap uppercase">{napp.name}</td>
+                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap uppercase">{napp.state}</td>
+                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap">{napp.contactEmail}</td>
+                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap">{napp.contactPhone}</td>
                                             <td className="py-4 px-6 whitespace-nowrap">
-                                                <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${school.approvalStatus === 1
+                                                <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${napp.isActive === true
                                                     ? 'bg-green-100 text-green-700'
                                                     : 'bg-red-100 text-red-700'
                                                     }`}>
-                                                    {school.approvalStatus === 1 ? 'Active' : 'Inactive'}
+                                                    {napp.isActive ? 'Active' : 'Inactive'}
                                                 </span>
                                             </td>
-                                            <td className="py-4 px-6 text-gray-900 whitespace-nowrap">{school.totalStudents}</td>
-                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap">{school?.approvalDate?.split('T')[0]}</td>
-                                            <td className="py-4 px-6 whitespace-nowrap">
-                                                {school.approvalStatus === 1 ? (
+                                            <td className="py-4 px-6 text-gray-600 whitespace-nowrap">{napp?.createdDate?.split('T')[0]}</td>
+                                            {/* <td className="py-4 px-6 whitespace-nowrap">
+                                                {napp.approvalStatus === 1 ? (
                                                     <button
-                                                        onClick={() => deactivateSchool(school.schoolId)}
+                                                        onClick={() => deactivateSchool(napp.schoolId)}
                                                         className={`px-4 py-2 rounded-lg font-medium transition-colors bg-red-600 text-white hover:bg-red-700`}
                                                     >
                                                         Deactivate
                                                     </button>
                                                 ) : (
                                                     <button
-                                                        onClick={() => activateSchool(school.schoolId)}
+                                                        onClick={() => activateSchool(napp.schoolId)}
                                                         className={`px-4 py-2 rounded-lg font-medium transition-colors bg-black text-white hover:bg-gray-800`}
                                                     >
                                                         Activate
@@ -321,9 +329,9 @@ export default function SchoolList() {
                                                 )}
                                             </td>
                                             <td className="py-4 px-6 whitespace-nowrap">
-                                                {school.approvalStatus === 1 ? (
+                                                {napp.approvalStatus === 1 ? (
                                                     <button
-                                                        onClick={() => navigate('/super-admin/school-info', { state: { school } })}
+                                                        onClick={() => navigate('/super-admin/school-info', { state: { napp } })}
                                                         className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors"
                                                     >
                                                         <Eye className="w-5 h-5" />
@@ -335,13 +343,13 @@ export default function SchoolList() {
                                                         <span>Not Available</span>
                                                     </div>
                                                 )}
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
                                         <td colSpan={7} className="text-center py-12">
-                                            <p className="text-gray-500 text-lg">No schools found matching your criteria.</p>
+                                            <p className="text-gray-500 text-lg">No NAPP found matching your criteria.</p>
                                         </td>
                                     </tr>
                                 )}
@@ -399,6 +407,12 @@ export default function SchoolList() {
                     </div>
                 )}
             </div>
+
+            <AddNappsForm
+                open={openForm}
+                onClose={() => setOpenForm(false)}
+                refetch={getAllNapps}
+            />
         </div>
     );
 }
