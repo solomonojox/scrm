@@ -38,7 +38,12 @@ export const superAdminService = {
 
     getNappsById: async (id) => {
         const res = await api.get(`/api/NappsChapter/GetAllNappsChapterById?Id=${id}`);
-        return res.data;
+        return res.data.data;
+    },
+
+    getNappsDashboardStat: async () => {
+        const res = await api.get(`/api/NappsChapter/GetNappsStatistics`);
+        return res.data.data;
     },
 
     createNapp: async (data) => {

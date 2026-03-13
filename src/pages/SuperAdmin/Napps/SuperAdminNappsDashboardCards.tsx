@@ -5,24 +5,16 @@ import { useAuth } from '../../../Context/Auth/useAuth';
 
 const SuperAdminNappsDashboardCards = () => {
     const { user } = useAuth();
-    const [totalSchools, setTotalSchools] = useState<number>(0);
-    const [totalActiveSchools, setTotalActiveSchools] = useState<number>(0);
-    const [totalInActiveSchools, setTotalInActiveSchools] = useState<number>(0);
-    const [totalStudents, setTotalStudents] = useState<number>(0);
-    const [allSchools, setAllSchools] = useState<any[]>([]);
+    const [dashboardData, setDashboardData] = useState({
+        totalChapters: 0,
+        activeChapters: 0,
+        inactiveChapters: 0,
+        totalSchools: 0
+    });
     const getAllSchools = async () => {
         try {
-            const res = await superAdminService.getAllSchools();
-            setTotalSchools(res.data.length);
-            setAllSchools(res.data);
-
-            const totalStudents = await superAdminService.getTotalStudents();
-            setTotalStudents(totalStudents.data);
-
-            const activeSchools = res.data.filter((school: any) => school.approvalStatus === 1);
-            const inActiveSchools = res.data.filter((school: any) => school.approvalStatus !== 1);
-            setTotalActiveSchools(activeSchools.length);
-            setTotalInActiveSchools(inActiveSchools.length);
+            const res = await superAdminService.getNappsDashboardStat();
+            setDashboardData(res)
         } catch (error) {
             console.log(error);
         }
@@ -35,10 +27,10 @@ const SuperAdminNappsDashboardCards = () => {
     }, [user])
 
     const cardItems = [
-        { label: 'Total Schools', value: totalSchools, icon: <School />, color: 'text-blue-600 bg-blue-100' },
-        { label: 'Active Schools', value: totalActiveSchools, icon: <School />, color: 'text-green-600 bg-green-100' },
-        { label: 'Inactive Schools', value: totalInActiveSchools, icon: <School />, color: 'text-red-600 bg-red-100' },
-        { label: 'Total Students', value: totalStudents, icon: <School />, color: 'text-purple-600 bg-purple-100' },
+        { label: 'Total Chapters', value: dashboardData?.totalChapters, icon: <School />, color: 'text-blue-600 bg-blue-100' },
+        { label: 'Active Chapters', value: dashboardData?.activeChapters, icon: <School />, color: 'text-green-600 bg-green-100' },
+        { label: 'Inactive Chapters', value: dashboardData?.inactiveChapters, icon: <School />, color: 'text-red-600 bg-red-100' },
+        { label: 'Total Schools', value: dashboardData?.totalSchools, icon: <School />, color: 'text-purple-600 bg-purple-100' },
     ]
 
     const formatAmount = (amt: number) =>
