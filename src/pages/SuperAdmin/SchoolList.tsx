@@ -67,8 +67,8 @@ export default function SchoolList() {
                         const teachersRes = await superAdminService.getAllTeachers(school.schoolId);
                         const guardiansRes = await superAdminService.getAllGuardians(school.schoolId);
                         const totalStudents = Array.isArray(studentsRes.data) ? studentsRes.data.length : 0;
-                        const totalTeachers = Array.isArray(teachersRes.data) ? studentsRes.data.length : 0;
-                        const totalGuardians = Array.isArray(guardiansRes.data) ? studentsRes.data.length : 0;
+                        const totalTeachers = Array.isArray(teachersRes.data) ? teachersRes.data.length : 0;
+                        const totalGuardians = Array.isArray(guardiansRes.data) ? guardiansRes.data.length : 0;
 
                         return {
                             ...school,
