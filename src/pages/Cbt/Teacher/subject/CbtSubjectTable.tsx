@@ -193,7 +193,7 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-orange-50 border-b border-orange-200 text-gray-700 sticky top-0 z-10">
             <tr>
-              <th className="p-3 min-w-[50px]">
+              <th className="p-3 min-w-12.5">
                 <input
                   type="checkbox"
                   checked={selectAll}
@@ -202,10 +202,10 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
                 />
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              <th className="p-3 min-w-[120px]">Subject Id</th>
-              <th className="p-3 min-w-[150px]">Subject Name</th>
-              <th className="p-3 min-w-[150px]">Description</th>
-              <th className="p-3 min-w-[150px]">Action</th>
+              <th className="p-3 min-w-30">Subject Id</th>
+              <th className="p-3 min-w-37.5">Subject Name</th>
+              <th className="p-3 min-w-37.5">Description</th>
+              <th className="p-3 min-w-37.5">Action</th>
             </tr>
           </thead>
           <tbody>
