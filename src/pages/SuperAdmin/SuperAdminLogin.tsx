@@ -32,7 +32,7 @@ const SuperAdminLogin = () => {
     };
 
     return (
-        <div className='bg-blue-50 h-[100dvh] w-full mx-auto flex justify-center items-center p-2'>
+        <div className='bg-blue-50 h-dvh w-full mx-auto flex justify-center items-center p-2'>
             <div className="rounded-2xl p-4 lg:px-8 flex flex-col items-center justify-center w-full md:w-xl border bg-white">
                 <div className="rounded-xl bg-blue-600 p-2 flex items-center justify-center">
                     <GraduationCap className='text-white' size={40} />
