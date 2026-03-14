@@ -15,7 +15,7 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
     const handleLogout = () => {
       localStorage.removeItem("scrmToken");
       logout();
-      navigate("/cbt");
+      navigate("/cbt/login");
     };
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const handleProfileClick = () => {
