@@ -8,40 +8,28 @@ import {
   fetchCbtSubjectStart,
   fetchCbtSubjectSuccess,
 } from "../../../../Store/cbt/cbtSlice";
-import { teacherSubjectService } from "../../../../Services/Teachers/subject/TeacherSubjectService";
-import { cbtTeacherExamService } from "../../../../Services/Cbt/Teacher/cbtTeacherExamService";
 import { classroomService } from "../../../../Services/Classroom";
 import { toast } from "react-toastify";
 import AddQuestion from "../../../../components/Cbt/teacher/AddQuestion";
 import AddExam from "../../../../components/Cbt/teacher/AddExam";
 import AddClassModal from "../../../../components/Cbt/teacher/AddClassModal";
+import { AllExamQuestionType } from "../../../../Types/Cbt/cbtTypes";
+import { teacherSubjectService } from "../../../../Services/Teachers/subject/TeacherSubjectService";
+import { cbtTeacherExamService } from "../../../../Services/Cbt/Teacher/cbtTeacherExamService";
 
-
-// ─── Types ─────────────────────────────────────────────────────────────────────
 interface OptionType {
   value: string | number | undefined;
   label: string;
 }
 
-interface CreatedExam {
-  id: string;
-  subjectId: string;
-  examType: string;
-  title: string;
-  schoolId: string;
-  classLevel: string | null;
-  term: string;
-  academicSession: string;
-  durationMinutes: number;
-  examDate: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 type ActiveTab = "exam" | "questions";
 
-// ─── Component ─────────────────────────────────────────────────────────────────
-const CreateExamForm: React.FC = () => {
+interface Props {
+  exam: AllExamQuestionType;
+  onDone: () => void;
+}
+
+const EditExamForm: React.FC<Props> = ({ exam, onDone }) => {
   const { cbtUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -52,36 +40,30 @@ const CreateExamForm: React.FC = () => {
     (state: RootState) => state.getCbtSubject.loading
   );
 
-  // ─── Tab state ──────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>("exam");
-  const [createdExam, setCreatedExam] = useState<CreatedExam | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-
-  // ─── Modal state ────────────────────────────────────────────────────────────
+  const [examUpdated, setExamUpdated] = useState(false);
   const [showAddClassModal, setShowAddClassModal] = useState(false);
   const [newClassName, setNewClassName] = useState("");
-
-  // ─── Exam form state ─────────────────────────────────────────────────────────
-  const [examData, setExamData] = useState<any>({
-    title: "",
-    class: "",
-    classLabel: "",
-    subject: "",
-    subjectId: "",
-    duration: 0,
-    scheduledDate: "",
-    passingScore: 50,
-    instructions: "",
-    examType: "",
-    term: "",
-    academicSession: "",
-    schoolId: cbtUser?.schoolId ?? "",
-  });
-
-  // ─── Questions state ─────────────────────────────────────────────────────────
   const [questions, setQuestions] = useState<any[]>([]);
 
-  // ─── Subjects ────────────────────────────────────────────────────────────────
+  // Pre-fill all fields from the selected exam
+  const [examData, setExamData] = useState<any>({
+    title: exam.title,
+    class: exam.classLevel ?? "",
+    classLabel: exam.classLevel ?? "",
+    subject: exam.subjectName,
+    subjectId: exam.subjectId,
+    duration: exam.durationMinutes,
+    scheduledDate: exam.examDate ?? "",
+    passingScore: 50,
+    instructions: "",
+    examType: exam.examType,
+    term: exam.term,
+    academicSession: exam.academicSession,
+    schoolId: exam.schoolId ?? cbtUser?.schoolId ?? "",
+  });
+
   useEffect(() => {
     if (!subjectFetchedLoading) fetchCbtSubjects();
   }, [dispatch]);
@@ -101,7 +83,6 @@ const CreateExamForm: React.FC = () => {
     label: sub.name ?? `${sub.subjectName} - Description (${sub.description})`,
   }));
 
-  // ─── Handlers: Exam form ─────────────────────────────────────────────────────
   const handleExamChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -120,7 +101,6 @@ const CreateExamForm: React.FC = () => {
     }));
   };
 
-  // ─── Handlers: Class modal ───────────────────────────────────────────────────
   const handleAddClass = async () => {
     if (!newClassName.trim()) return;
     try {
@@ -132,48 +112,36 @@ const CreateExamForm: React.FC = () => {
       setNewClassName("");
       setShowAddClassModal(false);
     } catch (err) {
-      console.error("Failed to add class:", err);
       toast.error("Failed to add class. Please try again.");
     }
   };
 
-  // ─── Step 1: Create exam ─────────────────────────────────────────────────────
-  const handleCreateExam = async () => {
+  const handleUpdateExam = async () => {
     setIsSaving(true);
     try {
-      const response = await cbtTeacherExamService.createExam(examData);
-      // console.log("Create exam response:", response);
-
+      const response = await cbtTeacherExamService.updateExam(exam.id, examData);
       if (response.status === true) {
-        toast.success("Exam created successfully!");
-        setCreatedExam(response);
-        setTimeout(() => setActiveTab("questions"), 1000);
+        toast.success("Exam updated successfully!");
+        setExamUpdated(true);
+        setTimeout(() => setActiveTab("questions"), 800);
       }
     } catch (err: any) {
-      toast.error(err?.message ?? "An error occurred while creating the exam.");
+      toast.error(err?.message ?? "An error occurred while updating the exam.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // ─── Step 2: Submit questions ─────────────────────────────────────────────────
   const handleSubmitQuestions = async () => {
     if (questions.length === 0) {
       toast.error("Please add at least one question");
       return;
     }
-    if (!createdExam) {
-      toast.error("Exam ID is missing. Please re-create the exam.");
-      return;
-    }
-
     setIsSaving(true);
     try {
-      const quizSubjectId = createdExam.subjectId ?? examData.subjectId;
-
       const mappedQuestions = questions.map((q) => ({
         quizType: "GENERAL",
-        quizSubjectId,
+        quizSubjectId: exam.subjectId,
         questionText: q.text,
         options: q.options
           .filter((opt: string) => opt.trim() !== "")
@@ -185,33 +153,13 @@ const CreateExamForm: React.FC = () => {
 
       const res = await cbtTeacherExamService.addExamQuestion({
         questions: mappedQuestions,
-        examId: createdExam.id,
+        examId: exam.id,
       });
 
       if (res.status === true) {
         toast.success("Questions saved successfully!");
-        // set all states back to initial state
-        setExamData({
-          title: "",
-          subject: "",
-          subjectId: "",
-          class: "",
-          classLabel: "",
-          duration: 0,
-          scheduledDate: "",
-          passingScore: 0,
-          instructions: "",
-          examType: "",
-          term: "",
-          academicSession: "",
-          schoolId: "",
-        });
-        setQuestions([]);
-        setCreatedExam(null);
-        // fallback to exam tab after saving questions
-        setTimeout(() => setActiveTab("exam"), 1000);
+        onDone();
       }
-      console.log("Questions response:", res);
     } catch (err: any) {
       toast.error(err?.message ?? "An error occurred while saving questions.");
     } finally {
@@ -219,10 +167,8 @@ const CreateExamForm: React.FC = () => {
     }
   };
 
-  // ─── Render ──────────────────────────────────────────────────────────────────
   return (
     <div className="font-sans">
-      {/* Class Modal */}
       <AddClassModal
         isOpen={showAddClassModal}
         newClassName={newClassName}
@@ -235,7 +181,7 @@ const CreateExamForm: React.FC = () => {
       />
 
       <div className="bg-white shadow-sm border border-orange-100 rounded-xl overflow-hidden">
-        {/* ── Tabs ── */}
+        {/* Tabs */}
         <div className="flex border-b border-orange-100">
           <button
             onClick={() => setActiveTab("exam")}
@@ -247,23 +193,19 @@ const CreateExamForm: React.FC = () => {
           >
             <FileText className="w-4 h-4" />
             <span>Exam Details</span>
-            {createdExam && (
+            {examUpdated && (
               <span className="ml-1 w-2 h-2 rounded-full bg-green-500 inline-block" />
             )}
           </button>
 
           <button
-            onClick={() => createdExam && setActiveTab("questions")}
-            disabled={!createdExam}
+            onClick={() => setActiveTab("questions")}
             className={`relative flex items-center space-x-2 px-6 py-4 text-sm font-semibold transition-colors ${
-              activeTab === "questions" && createdExam
+              activeTab === "questions"
                 ? "text-orange-600 border-b-2 border-orange-500 bg-orange-50"
-                : createdExam
-                ? "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                : "text-gray-300 cursor-not-allowed"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
           >
-            
             <HelpCircle className="w-4 h-4" />
             <span>Questions</span>
             {questions.length > 0 && (
@@ -271,15 +213,9 @@ const CreateExamForm: React.FC = () => {
                 {questions.length}
               </span>
             )}
-            {!createdExam && (
-              <span className="ml-1.5 text-xs text-gray-300 font-normal">
-                (create exam first)
-              </span>
-            )}
           </button>
 
-          {/* Save Questions CTA */}
-          {activeTab === "questions" && createdExam && (
+          {activeTab === "questions" && (
             <div className="ml-auto flex items-center px-6">
               <button
                 onClick={handleSubmitQuestions}
@@ -293,12 +229,12 @@ const CreateExamForm: React.FC = () => {
           )}
         </div>
 
-        {/* ── Tab Panels ── */}
+        {/* Tab Panels */}
         <div className="p-6">
           {activeTab === "exam" && (
             <AddExam
               examData={examData}
-              createdExam={createdExam}
+              createdExam={exam as any}
               isSaving={isSaving}
               subjects={subjects}
               subjectFetchedLoading={subjectFetchedLoading}
@@ -306,12 +242,12 @@ const CreateExamForm: React.FC = () => {
               onSelectChange={handleSelectChange}
               onSubjectChange={handleSubjectChange}
               onOpenAddClassModal={() => setShowAddClassModal(true)}
-              onCreateExam={handleCreateExam}
+              onCreateExam={handleUpdateExam}
               onGoToQuestions={() => setActiveTab("questions")}
             />
           )}
 
-          {activeTab === "questions" && createdExam && (
+          {activeTab === "questions" && (
             <AddQuestion
               questions={questions}
               onQuestionsChange={setQuestions}
@@ -323,4 +259,4 @@ const CreateExamForm: React.FC = () => {
   );
 };
 
-export default CreateExamForm;
+export default EditExamForm;

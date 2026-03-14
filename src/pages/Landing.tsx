@@ -185,7 +185,7 @@ const Landing = () => {
       </div>
 
       {/* What You Get From Us */}
-      <section className="relative bg-gradient-to-b bg-gray-200">
+      <section className="relative bg-linear-to-b bg-gray-200">
         <div className="pt-1 mt-[-37.4px] pb-8 text-center px-4">
           <h2 className="font-extrabold text-4xl mb-4 text-gray-900">What You Get From Us</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
@@ -216,7 +216,7 @@ const Landing = () => {
             {allSlides.map((item, idx) => (
               <div
                 key={idx}
-                className="relative w-64 flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-300"
+                className="relative w-64 shrink-0 rounded-2xl overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow duration-300"
               >
                 <div className="overflow-hidden rounded-2xl">
                   <img
@@ -310,7 +310,7 @@ const Landing = () => {
       {/* Statistics & Impact */}
       <section className="bg-gray-200 py-8" id="statistics">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="max-w-[720px] mx-auto border-4 rounded-md text-center p-4 mb-8">
+          <div className="max-w-180 mx-auto border-4 rounded-md text-center p-4 mb-8">
             <h2 className="font-extrabold text-2xl">Statistics & Impact</h2>
             <p className="text-sm mt-1">Real numbers from real schools using EduCat(SCRM)</p>
           </div>
@@ -374,7 +374,7 @@ const Landing = () => {
           </div>
 
           {/* Real Map */}
-          <div className="w-full md:w-1/2 h-[400px] shadow-xl rounded-2xl overflow-hidden">
+          <div className="w-full md:w-1/2 h-100 shadow-xl rounded-2xl overflow-hidden">
             <iframe
               title="Company Location"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3168.989316413396!2d-122.0842491846921!3d37.42199997982444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fb0cb35e9c1ef%3A0x3c1154c7e6b1ab88!2sGoogleplex!5e0!3m2!1sen!2sus!4v1618350594953!5m2!1sen!2sus"
