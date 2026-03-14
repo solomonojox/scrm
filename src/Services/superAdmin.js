@@ -21,13 +21,18 @@ export const superAdminService = {
         return res.data;
     },
 
+    getTotalStudentsBySchool: async (id) => {
+        const res = await api.get(`/api/Student/GetStudentCountBySchool?schoolId=${id}`);
+        return res.data;
+    },
+
     getAllTeachers: async (id) => {
-        const res = await api.get(`/api/Teacher/GetTeachersBySchool/${id}`);
+        const res = await api.get(`/api/Teacher/GetTeachersCountBySchool?schoolId=${id}`);
         return res.data;
     },
 
     getAllGuardians: async (id) => {
-        const res = await api.get(`/api/Guardian/GetGuardiansBySchool?schoolId=${id}`);
+        const res = await api.get(`/api/Guardian/GetGuardianCountBySchool?schoolId=${id}`);
         return res.data;
     },
 
