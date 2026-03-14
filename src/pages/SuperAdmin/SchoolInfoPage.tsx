@@ -1,16 +1,48 @@
 import { GraduationCap, MoveLeft, Shield, UserCog, Users } from 'lucide-react'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import SuperAdminHeader from './SuperAdminHeader'
 import { useLocation } from 'react-router-dom';
+import { superAdminService } from '../../Services/superAdmin';
+import { AppContext } from '../../Context/AppContext';
 
 const SchoolInfoPage = () => {
     const location = useLocation();
-    const { school } = location.state
+    const { school, schoolId } = location.state
+    const { showOverlay, hideOverlay } = useContext(AppContext);
+    const [schoolInfo, setSchoolInfo] = useState({
+        totalStudents: 0,
+        totalTeachers: 0,
+        totalGuardians: 0
+    })
+
+    useEffect(() => {
+        fetchData();
+    }, [schoolId]);
+
+    const fetchData = async () => {
+        showOverlay()
+        try {
+            const studentRes = await superAdminService.getTotalStudentsBySchool(schoolId);
+            const teachersRes = await superAdminService.getAllTeachers(schoolId);
+            const guardiansRes = await superAdminService.getAllGuardians(schoolId);
+
+            setSchoolInfo({
+                totalStudents: studentRes.data || 0,
+                totalTeachers: teachersRes.data || 0,
+                totalGuardians: guardiansRes.data || 0
+            })
+        } catch (error) {
+            console.log(error);
+        } finally {
+            hideOverlay()
+        }
+    }
+
     const cardItems = [
-        { label: 'Students', value: school.totalStudents, icon: <GraduationCap />, color: 'text-blue-600 bg-blue-100' },
-        { label: 'Teachers', value: school.totalTeachers, icon: <Users />, color: 'text-green-600 bg-green-100' },
+        { label: 'Students', value: schoolInfo.totalStudents, icon: <GraduationCap />, color: 'text-blue-600 bg-blue-100' },
+        { label: 'Teachers', value: schoolInfo.totalTeachers, icon: <Users />, color: 'text-green-600 bg-green-100' },
         // { label: 'School Admins', value: 3, icon: <Shield />, color: 'text-purple-600 bg-purple-100' },
-        { label: 'Guardians', value: school.totalGuardians, icon: <UserCog />, color: 'text-orange-600 bg-orange-100' },
+        { label: 'Guardians', value: schoolInfo.totalGuardians, icon: <UserCog />, color: 'text-orange-600 bg-orange-100' },
         // { label: 'Total Accounts', value: 868, icon: <Users />, color: 'text-white bg-blue-800' },
     ]
 

@@ -64,17 +64,16 @@ export default function SchoolList() {
                 schoolsData.map(async (school: any) => {
                     try {
                         const studentsRes = await superAdminService.getAllStudents(school.schoolId);
-                        const teachersRes = await superAdminService.getAllTeachers(school.schoolId);
-                        const guardiansRes = await superAdminService.getAllGuardians(school.schoolId);
+                        
                         const totalStudents = Array.isArray(studentsRes.data) ? studentsRes.data.length : 0;
-                        const totalTeachers = Array.isArray(teachersRes.data) ? teachersRes.data.length : 0;
-                        const totalGuardians = Array.isArray(guardiansRes.data) ? guardiansRes.data.length : 0;
+                        // const totalTeachers = Array.isArray(teachersRes.data) ? teachersRes.data.length : 0;
+                        // const totalGuardians = Array.isArray(guardiansRes.data) ? guardiansRes.data.length : 0;
 
                         return {
                             ...school,
                             totalStudents,
-                            totalTeachers,
-                            totalGuardians
+                            // totalTeachers,
+                            // totalGuardians
                         };
                     } catch (error) {
                         console.error(`Error fetching students for ${school.schoolName}:`, error);
@@ -323,7 +322,7 @@ export default function SchoolList() {
                                             <td className="py-4 px-6 whitespace-nowrap">
                                                 {school.approvalStatus === 1 ? (
                                                     <button
-                                                        onClick={() => navigate('/super-admin/school-info', { state: { school } })}
+                                                        onClick={() => navigate('/super-admin/school-info', { state: { school, schoolId: school.schoolId } })}
                                                         className="flex items-center gap-2 text-gray-700 hover:text-gray-900 transition-colors"
                                                     >
                                                         <Eye className="w-5 h-5" />
