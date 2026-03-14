@@ -21,6 +21,9 @@ import guardianLoanAccountSlice from "./Guardian/loanAccountSlice"
 import guardianTransactionsSlice from "./Guardian/transactionSlice"
 import CbtSubjectSlice from "./cbt/cbtSlice"
 import nappsChapterSlice from "./nappsChapterSlice";
+import AllExamQuestionSlice from "./cbt/allExamQuestionSlice";
+
+
 
 export const rootReducer = combineReducers({
   getGuardian: guardianSlice,
@@ -43,4 +46,5 @@ export const rootReducer = combineReducers({
   getSubject: subjectSlice,
   getCbtSubject: CbtSubjectSlice,
   getNappsChapter: nappsChapterSlice,
+  getAllExamQuestion: AllExamQuestionSlice,
 });
