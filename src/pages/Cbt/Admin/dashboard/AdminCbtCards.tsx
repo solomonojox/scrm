@@ -1,5 +1,19 @@
 import { User2, Users2Icon } from "lucide-react";
-import React from "react";
+import { cbtAdminService } from "../../../../Services/Cbt/Admin/CbtAdminService";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import { useAuth } from "../../../../Context/Auth/useAuth";
+import {
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+  fetchStudentsFailure,
+} from "../../../../Store/Student/studentSlice";
+import {
+  fetchTeacherStart,
+  fetchTeacherSuccess,
+  fetchTeacherFailure,
+} from "../../../../Store/Teachers/teacherSlice";
+import { useEffect } from "react";
 
 const cardData = [
   {
@@ -26,6 +40,37 @@ const cardData = [
 ];
 
 const AdminCbtCards = () => {
+  const { cbtUser } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
+
+  // Fetch students & teachers on mount
+  useEffect(() => {
+    if (!fetchedStudentLoading && cbtUser?.schoolId) {
+      fetchStudents();
+    }
+  }, [cbtUser?.schoolId]);
+
+  const fetchStudents = async () => {
+    dispatch(fetchStudentsStart());
+    dispatch(fetchTeacherStart());
+
+    try {
+      const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
+      const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
+
+      dispatch(fetchStudentsSuccess(data?.data));
+      dispatch(fetchTeacherSuccess(teachers?.data));
+    } catch (err) {
+      const msg = (err as Error).message;
+      dispatch(fetchStudentsFailure(msg));
+      dispatch(fetchTeacherFailure(msg));
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full ">
       {cardData.map(({ id, title, value, icon: Icon, borderColor }) => (
@@ -36,7 +81,13 @@ const AdminCbtCards = () => {
           <div className="flex justify-between w-full">
             <div className="flex flex-col space-y-2">
               <h2 className="text-md font-semibold">{title}</h2>
-              <p className="text-2xl font-bold">{value}</p>
+              <p className="text-2xl font-bold">
+                {title === "Total Users"
+                  ? `${fetchedStudentRecord.length + fetchedTeacherRecord.length}`
+                  : title === "Total Teachers"
+                    ? fetchedTeacherRecord.length
+                    : fetchedStudentRecord.length}
+              </p>
             </div>
             <div className="mt-4">
               <Icon className={`w-8 h-8 text-${borderColor}`} />

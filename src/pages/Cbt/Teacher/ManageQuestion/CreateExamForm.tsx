@@ -16,7 +16,6 @@ import AddQuestion from "../../../../components/Cbt/teacher/AddQuestion";
 import AddExam from "../../../../components/Cbt/teacher/AddExam";
 import AddClassModal from "../../../../components/Cbt/teacher/AddClassModal";
 
-
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface OptionType {
   value: string | number | undefined;
@@ -45,12 +44,8 @@ const CreateExamForm: React.FC = () => {
   const { cbtUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
 
-  const subjectFetchedRecord = useSelector(
-    (state: RootState) => state.getCbtSubject.listRecords
-  );
-  const subjectFetchedLoading = useSelector(
-    (state: RootState) => state.getCbtSubject.loading
-  );
+  const subjectFetchedRecord = useSelector((state: RootState) => state.getCbtSubject.listRecords);
+  const subjectFetchedLoading = useSelector((state: RootState) => state.getCbtSubject.loading);
 
   // ─── Tab state ──────────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<ActiveTab>("exam");
@@ -103,7 +98,7 @@ const CreateExamForm: React.FC = () => {
 
   // ─── Handlers: Exam form ─────────────────────────────────────────────────────
   const handleExamChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     setExamData((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -146,8 +141,12 @@ const CreateExamForm: React.FC = () => {
 
       if (response.status === true) {
         toast.success("Exam created successfully!");
-        setCreatedExam(response);
-        setTimeout(() => setActiveTab("questions"), 1000);
+
+        setTimeout(() => {
+          setCreatedExam(response);
+          setActiveTab("questions");
+
+        }, 1000);
       }
     } catch (err: any) {
       toast.error(err?.message ?? "An error occurred while creating the exam.");
@@ -191,25 +190,31 @@ const CreateExamForm: React.FC = () => {
       if (res.status === true) {
         toast.success("Questions saved successfully!");
         // set all states back to initial state
-        setExamData({
-          title: "",
-          subject: "",
-          subjectId: "",
-          class: "",
-          classLabel: "",
-          duration: 0,
-          scheduledDate: "",
-          passingScore: 0,
-          instructions: "",
-          examType: "",
-          term: "",
-          academicSession: "",
-          schoolId: "",
-        });
-        setQuestions([]);
-        setCreatedExam(null);
+
         // fallback to exam tab after saving questions
-        setTimeout(() => setActiveTab("exam"), 1000);
+        setTimeout(() => {
+          setExamData({
+            title: "",
+            subject: "",
+            subjectId: "",
+            class: "",
+            classLabel: "",
+            duration: 0,
+            scheduledDate: "",
+            passingScore: 0,
+            instructions: "",
+            examType: "",
+            term: "",
+            academicSession: "",
+            schoolId: "",
+          });
+          setQuestions([]);
+          setCreatedExam(null);
+          // setActiveTab("exam");
+
+          // reload the page to reset all states and show the new exam in the list
+          window.location.reload();
+        }, 1000);
       }
       console.log("Questions response:", res);
     } catch (err: any) {
@@ -259,11 +264,10 @@ const CreateExamForm: React.FC = () => {
               activeTab === "questions" && createdExam
                 ? "text-orange-600 border-b-2 border-orange-500 bg-orange-50"
                 : createdExam
-                ? "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                : "text-gray-300 cursor-not-allowed"
+                  ? "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  : "text-gray-300 cursor-not-allowed"
             }`}
           >
-            
             <HelpCircle className="w-4 h-4" />
             <span>Questions</span>
             {questions.length > 0 && (
@@ -272,9 +276,7 @@ const CreateExamForm: React.FC = () => {
               </span>
             )}
             {!createdExam && (
-              <span className="ml-1.5 text-xs text-gray-300 font-normal">
-                (create exam first)
-              </span>
+              <span className="ml-1.5 text-xs text-gray-300 font-normal">(create exam first)</span>
             )}
           </button>
 
@@ -312,10 +314,7 @@ const CreateExamForm: React.FC = () => {
           )}
 
           {activeTab === "questions" && createdExam && (
-            <AddQuestion
-              questions={questions}
-              onQuestionsChange={setQuestions}
-            />
+            <AddQuestion questions={questions} onQuestionsChange={setQuestions} />
           )}
         </div>
       </div>

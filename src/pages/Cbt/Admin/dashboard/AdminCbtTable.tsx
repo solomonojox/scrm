@@ -1,5 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { cbtAdminService } from "../../../../Services/Cbt/Admin/CbtAdminService";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import { useAuth } from "../../../../Context/Auth/useAuth";
+import {
+  fetchStudentsStart,
+  fetchStudentsSuccess,
+  fetchStudentsFailure,
+} from "../../../../Store/Student/studentSlice";
+import {
+  fetchTeacherStart,
+  fetchTeacherSuccess,
+  fetchTeacherFailure,
+} from "../../../../Store/Teachers/teacherSlice";
 
 interface Student {
   name: string;
@@ -20,25 +34,40 @@ const AdminCbtTable = () => {
   const [activeTab, setActiveTab] = useState<"students" | "teachers">("students");
 
   const tabs = [
-    { id: "students", label: "Students" },
     { id: "teachers", label: "Teachers" },
+    { id: "students", label: "Students" },
   ];
 
-  const students: Student[] = [
-    { name: "John Smith", email: "john@school.edu", class: "Grade 12A", status: "active" },
-    { name: "Emma Johnson", email: "emma@school.edu", class: "Grade 11B", status: "active" },
-    { name: "Michael Brown", email: "michael@school.edu", class: "Grade 12A", status: "active" },
-  ];
+  const { cbtUser } = useAuth();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const teachers: Teacher[] = [
-    {
-      name: "Dr. Sarah Wilson",
-      email: "sarah@school.edu",
-      subject: "Mathematics",
-      status: "active",
-    },
-    { name: "Prof. James Lee", email: "james@school.edu", subject: "Physics", status: "active" },
-  ];
+  const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
+  const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
+  const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
+
+  // Fetch students & teachers on mount
+  useEffect(() => {
+    if (!fetchedStudentLoading && cbtUser?.schoolId) {
+      fetchStudents();
+    }
+  }, [cbtUser?.schoolId]);
+
+  const fetchStudents = async () => {
+    dispatch(fetchStudentsStart());
+    dispatch(fetchTeacherStart());
+
+    try {
+      const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
+      const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
+
+      dispatch(fetchStudentsSuccess(data?.data));
+      dispatch(fetchTeacherSuccess(teachers?.data));
+    } catch (err) {
+      const msg = (err as Error).message;
+      dispatch(fetchStudentsFailure(msg));
+      dispatch(fetchTeacherFailure(msg));
+    }
+  };
 
   return (
     <div className="border shadow-md rounded-lg">
@@ -68,17 +97,17 @@ const AdminCbtTable = () => {
             <tr className="bg-gray-100 text-left">
               <th className="p-3 text-sm">Name</th>
               <th className="p-3 text-sm">Email</th>
-              <th className="p-3 text-sm">Class</th>
-              <th className="p-3 text-sm">Status</th>
+              {/* <th className="p-3 text-sm">Class</th> */}
+              {/* <th className="p-3 text-sm">Status</th> */}
             </tr>
           </thead>
           <tbody>
-            {students.map((student, index) => (
+            {fetchedStudentRecord.map((student, index) => (
               <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-3 text-sm">{student.name}</td>
-                <td className="p-3 text-sm">{student.email}</td>
-                <td className="p-3 text-sm">{student.class}</td>
-                <td className="p-3 text-sm capitalize">{student.status}</td>
+                <td className="p-3 text-sm">{student.firstname} {student.lastname}</td>
+                {/* <td className="p-3 text-sm">{student.email}</td> */}
+                {/* <td className="p-3 text-sm">{student.class}</td> */}
+                {/* <td className="p-3 text-sm capitalize">{student.status}</td> */}
               </tr>
             ))}
           </tbody>
@@ -92,17 +121,17 @@ const AdminCbtTable = () => {
             <tr className="bg-gray-100 text-left">
               <th className="p-3 text-sm">Name</th>
               <th className="p-3 text-sm">Email</th>
-              <th className="p-3 text-sm">Subject</th>
-              <th className="p-3 text-sm">Status</th>
+              <th className="p-3 text-sm">Phone Number</th>
+              {/* <th className="p-3 text-sm">Status</th> */}
             </tr>
           </thead>
           <tbody>
-            {teachers.map((teacher, index) => (
+            {fetchedTeacherRecord.map((teacher, index) => (
               <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-3 text-sm">{teacher.name}</td>
+                <td className="p-3 text-sm">{teacher.firstname} {teacher.lastname}</td>
                 <td className="p-3 text-sm">{teacher.email}</td>
-                <td className="p-3 text-sm">{teacher.subject}</td>
-                <td className="p-3 text-sm capitalize">{teacher.status}</td>
+                <td className="p-3 text-sm">{teacher.phone}</td>
+                {/* <td className="p-3 text-sm capitalize">{teacher.status}</td> */}
               </tr>
             ))}
           </tbody>
