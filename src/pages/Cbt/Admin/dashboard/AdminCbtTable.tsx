@@ -36,7 +36,7 @@ const AdminCbtTable = () => {
   const tabs = [
     { id: "teachers", label: "Teachers" },
     { id: "students", label: "Students" },
-  ];
+  ]
 
   const { cbtUser } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
