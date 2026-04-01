@@ -1,25 +1,37 @@
-// layouts/Cbt.tsx
+// layouts/StudentCbtLayout.tsx
+
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import AdminCbtSidebar from "../../pages/Cbt/Admin/AdminCbtSidebar";
-import AdminCbtNavbar from "../../pages/Cbt/Admin/AdminCbtNavbar";
+import StudentCbtSidebar from "../../pages/Cbt/Students/StudentCbtSidebar";
+import StudentCbtTopNav from "../../pages/Cbt/Students/StudentCbtTopNav";
 
-export const StudentCbtLayout = ({ children }: { children: React.ReactNode }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+
+export default function StudentCbtLayout() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  
+
   return (
-    <div className="">
-      <AdminCbtNavbar
-        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        isSidebarOpen={isSidebarOpen}
+    <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+
+      <StudentCbtSidebar
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
       />
 
-      <div className="">
-        <AdminCbtSidebar isSidebarOpen={isSidebarOpen} />
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <StudentCbtTopNav
+          setCollapsed={setCollapsed}
+          setMobileOpen={setMobileOpen}
+        />
 
-        <div className="lg:ml-64 py-3">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
-};
+}
