@@ -109,7 +109,7 @@ const ExamResultDetails = () => {
         </div>
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-700 p-8 text-white">
+        <div className="bg-linear-to-r from-blue-600 to-purple-700 p-8 text-white">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold mb-2">Exam Results</h1>
@@ -227,7 +227,7 @@ const ExamResultDetails = () => {
                     className="border border-gray-200 rounded-lg p-6 hover:border-gray-300 transition-colors"
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0 ${
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold shrink-0 ${
                         question.isCorrect ? 'bg-green-500' : 'bg-red-500'
                       }`}>
                         {index + 1}
