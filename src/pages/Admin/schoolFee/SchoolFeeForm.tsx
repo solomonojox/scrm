@@ -23,27 +23,26 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [classroomId, setClassroomId] = useState("");
   const [formData, setFormData] = useState({
     amount: 0,
-    // currentTerm: 0,
+    termId: "",
     sessionId: "",
-    classroomId: "",
     className: "",
   });
 
   // Get data from Redux store
   const sessions = useSelector((state: RootState) => state.getSession.listRecords);
   const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords);
-  // console.log(classrooms);
+  const sessionTerms = useSelector((state: RootState) => state.getSessionTerm.listRecords);
 
   // Set initial form data when editData changes
   useEffect(() => {
     if (editData) {
       setFormData({
         amount: editData.amount || "",
-        // currentTerm: editData.currentTerm || 0,
+        termId: editData.termId || "",
         sessionId: editData.sessionId || "",
-        classroomId: editData.classroomId || "",
         className: editData.className || "",
       });
     }
@@ -56,10 +55,11 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
     label: session.sessionId,
   }));
 
-  const classroomOptions: OptionType[] = classrooms.map((classroom) => ({
-    value: classroom.classroomId,
-    label: `${classroom.name} (Capacity: ${classroom.capacity})`,
+  const sessionTermOptions: OptionType[] = sessionTerms.map((term) => ({
+    value: term.sessionTermId,
+    label: `${term.term}`,
   }));
+
 
   const classroomNameOptions: OptionType[] = classrooms.map((classroom) => ({
     value: classroom.name,
@@ -86,6 +86,14 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
   };
 
   const handleSelectChange = (name: string, selectedOption: OptionType | null) => {
+    if (name === "className") {
+      // Find the full classroom object to get both name and id
+      const selectedClassroom = classrooms.find(
+        (classroom) => classroom.name === selectedOption?.value,
+      );
+      setClassroomId(selectedClassroom?.classroomId || "");
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: selectedOption ? selectedOption.value : "",
@@ -104,9 +112,9 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
 
     const payload = {
       schoolId: localStorage.getItem("schoolId"),
-      classroomId: formData.classroomId,
+      classroomId: classroomId,
       sessionId: formData.sessionId,
-      termId: user?.termId,
+      termId: formData.termId,
       amount: formData.amount,
       className: formData.className,
     };
@@ -114,19 +122,18 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
     try {
       if (editData) {
         await schoolFeeService.update(editData.studentId, payload);
-        toast.success("Student updated successfully!");
+        toast.success("School fee updated successfully!");
       } else {
         const res = await schoolFeeService.addSchoolFee(payload);
-        toast.success("Student added successfully!");
+        toast.success("School fee added successfully!");
       }
 
       onSubmitSuccess();
       if (!editData) {
         setFormData({
           amount: 0,
-          // currentTerm: 0,
+          termId: "",
           sessionId: "",
-          classroomId: "",
           className: "",
         });
       }
@@ -192,12 +199,12 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
             </div>
 
             <div className="col-span-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Classroom</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Term</label>
               <Select
-                options={classroomOptions}
-                value={getSelectedOption(formData.classroomId, classroomOptions)}
-                onChange={(selected) => handleSelectChange("classroomId", selected)}
-                placeholder="Select Classroom"
+                options={sessionTermOptions}
+                value={getSelectedOption(formData.termId, sessionTermOptions)}
+                onChange={(selected) => handleSelectChange("termId", selected)}
+                placeholder="Select Term"
                 className="text-sm"
               />
             </div>

@@ -1,5 +1,5 @@
 // src/components/Student/SchoolFeeTable.tsx
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaEdit, FaFilter, FaSync } from "react-icons/fa";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import * as XLSX from "xlsx";
@@ -8,6 +8,10 @@ import "jspdf-autotable";
 import autoTable from "jspdf-autotable";
 import asset from "../../../assets/imageAssets";
 import { schoolFee } from "../../../Types/Admin/schoolFeeType";
+import { AppDispatch, RootState } from "../../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSessionTermFailure, fetchSessionTermStart, fetchSessionTermSuccess } from "../../../Store/sessionTermSlice";
+import { sessionTermService } from "../../../Services/SessionTerm";
 
 interface StudentTableProps {
   schoolFee: schoolFee[];
@@ -37,6 +41,30 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+   const dispatch = useDispatch<AppDispatch>();
+  const fetchedSessionTermRecord = useSelector((state: RootState) => state.getSessionTerm.listRecords);
+  const fetchedSessionTermLoading = useSelector((state: RootState) => state.getSessionTerm.loading);
+
+   useEffect(() => {
+     if (!fetchedSessionTermLoading) {
+       fetchSession();
+     }
+   }, [dispatch]);
+ 
+   const fetchSession = async () => {
+     dispatch(fetchSessionTermStart());
+     try {
+       const data = await sessionTermService.getAllRegisteredSessionTerm(localStorage.getItem('schoolId'));
+       dispatch(fetchSessionTermSuccess(data));
+     } catch (err) {
+       dispatch(fetchSessionTermFailure((err as Error).message));
+     }
+   };
+
+  const TermName = (termId: string) => {
+    const term = fetchedSessionTermRecord.find((t) => t.sessionTermId === termId);
+    return term ? term.term : "N/A";
+  }
 
   // console.log(schoolFee)
   const toggleSelectAll = () => {
@@ -195,7 +223,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
             <tr>
-              <th className="p-3 min-w-[50px]">
+              <th className="p-3 min-w-12.5">
                 <input
                   type="checkbox"
                   checked={selectAll}
@@ -203,10 +231,11 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                   className="cursor-pointer w-4 h-4"
                 />
               </th>
-              <th className="p-3 min-w-[80px]">Photo</th>
-              <th className="p-3 min-w-[80px]">Session</th>
-              <th className="p-3 min-w-[80px]">Amount</th>
-              <th className="p-3 min-w-[80px]">Class Name</th>
+              <th className="p-3 min-w-20">Photo</th>
+              <th className="p-3 min-w-20">Amount</th>
+              <th className="p-3 min-w-20">Session</th>
+              <th className="p-3 min-w-20">Term</th>
+              <th className="p-3 min-w-20">Class Name</th>
               {/* <th className="p-3 min-w-[120px]">Actions</th> */}
             </tr>
           </thead>
@@ -242,8 +271,9 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                       className="w-10 h-10 rounded-full"
                     />
                   </td>
-                  <td className="p-3">{student.sessionId}</td>
                   <td className="p-3">{student.amount}</td>
+                  <td className="p-3">{student.sessionId}</td>
+                  <td className="p-3">{TermName(student.termId)}</td>
                   <td className="p-3">{student.classroomName}</td>
                   {/* <td
                     className="p-3 cursor-pointer hover:text-orange-500"
