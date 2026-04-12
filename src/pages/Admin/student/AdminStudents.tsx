@@ -1,7 +1,5 @@
-// src/pages/Student/Student.tsx
 import React, { useState, useEffect, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import {
@@ -23,40 +21,40 @@ import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../
 import { sessionService } from "../../../Services/Session";
 import { fetchSessionFailure, fetchSessionStart, fetchSessionSuccess } from "../../../Store/sessionSlice";
 import { useAuth } from "../../../Context/Auth/useAuth";
-// import { StudentType } from "../../../Types/Student/studentTypes";
+import AdminStudentDetails from "./AdminStudentDetails";
 
 const AdminStudents: React.FC = () => {
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getStudent.loading);
-  const error = useSelector((state: RootState) => state.getStudent.error);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [classFilter, setClassFilter] = useState<'all' | number>('all');
   const [editData, setEditData] = useState<any>(null);
+  const [viewData, setViewData] = useState<any>(null);   // ← new
+
   const recordsPerPage = 5;
 
-  // Filter students based on search and class filter
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;
 
-    // Apply class filter
     if (classFilter !== 'all') {
       filtered = filtered.filter((student: any) =>
         student.enteredClass === classFilter
       );
     }
 
-    // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((student: any) =>
         student.firstname?.toLowerCase().includes(query) ||
         student.lastname?.toLowerCase().includes(query) ||
-        student.homeAddress?.toLowerCase().includes(query) ||
+        student.address?.toLowerCase().includes(query) ||
+        student.classroomName?.toLowerCase().includes(query) ||
+        student.guardianName?.toLowerCase().includes(query) ||
         student.guardianId?.toLowerCase().includes(query)
       );
     }
@@ -64,21 +62,15 @@ const AdminStudents: React.FC = () => {
     return filtered;
   }, [fetchedRecord, searchQuery, classFilter]);
 
-  // Pagination logic
   const indexOfLast = currentPage * recordsPerPage;
   const indexOfFirst = indexOfLast - recordsPerPage;
   const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page: number) => setCurrentPage(page);
 
-  // Fetch students
   useEffect(() => {
-    if (!fetchedLoading) {
-      fetchStudents();
-    }
+    if (!fetchedLoading) fetchStudents();
   }, [dispatch]);
 
   const fetchStudents = async () => {
@@ -88,11 +80,11 @@ const AdminStudents: React.FC = () => {
     dispatch(fetchTeacherStart());
     dispatch(fetchSessionStart());
     try {
-      const data = await studentService.getAll(localStorage.getItem('schoolId'));
-      const classRoom = await classroomService.getAllClassrooms(localStorage.getItem('schoolId'));
-      const guardian = await guardianService.getAll(localStorage.getItem('schoolId'));
-      const teachers = await teacherService.getAll(localStorage.getItem('schoolId'));
-      const session = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
+      const data        = await studentService.getAll(localStorage.getItem('schoolId'));
+      const classRoom   = await classroomService.getAllClassrooms(localStorage.getItem('schoolId'));
+      const guardian    = await guardianService.getAll(localStorage.getItem('schoolId'));
+      const teachers    = await teacherService.getAll(localStorage.getItem('schoolId'));
+      const session     = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
       dispatch(fetchStudentsSuccess(data));
       dispatch(fetchClassroomsSuccess(classRoom));
       dispatch(fetchGuardiansSuccess(guardian));
@@ -107,20 +99,29 @@ const AdminStudents: React.FC = () => {
     }
   };
 
-  const handleAddStudent = () => {
-    setIsModalOpen(true);
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this student?")) return;
+    try {
+      await studentService.delete(id);
+      await fetchStudents();
+      toast.success("Deleted!");
+    } catch {
+      toast.error("Delete failed");
+    }
   };
 
-  const handleFormSubmitSuccess = () => {
-    setIsModalOpen(false);
-    fetchStudents();
+  const handleEditFromDetails = (student: any) => {
+    setEditData(student);
+    setViewData(null);
+    setIsModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:py-6 md:py-8">
       <ToastContainer />
       <div className="max-w-full mx-auto">
-        {/* Header */}
+
+        {/* Header — always visible */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
           <div className="w-full sm:w-auto mb-4 sm:mb-0">
             <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
@@ -151,25 +152,37 @@ const AdminStudents: React.FC = () => {
           </div>
         </div>
 
-        {/* Table Component */}
-        <StudentTable
-          students={currentRecords}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-          onAddStudent={handleAddStudent}
-          searchQuery={searchQuery}
-          classFilter={classFilter}
-          onClassFilterChange={setClassFilter}
-          onRefresh={fetchStudents}
-          setEditData={setEditData}
-        />
+        {/* Detail view or table */}
+        {viewData ? (
+          <AdminStudentDetails
+            student={viewData}
+            onBack={() => setViewData(null)}
+            onEdit={handleEditFromDetails}
+            onDelete={async (id: any) => {
+              await handleDelete(id);
+              setViewData(null);
+            }}
+          />
+        ) : (
+          <StudentTable
+            students={currentRecords}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            onAddStudent={() => setIsModalOpen(true)}
+            searchQuery={searchQuery}
+            classFilter={classFilter}
+            onClassFilterChange={setClassFilter}
+            onRefresh={fetchStudents}
+            setEditData={setEditData}
+            onViewStudent={setViewData}   // ← pass down to table
+          />
+        )}
 
-        {/* Form Modal */}
         {isModalOpen && (
           <StudentForm
             onClose={() => { setIsModalOpen(false); setEditData(null); }}
-            onSubmitSuccess={handleFormSubmitSuccess}
+            onSubmitSuccess={() => { setIsModalOpen(false); fetchStudents(); }}
             editData={editData}
           />
         )}

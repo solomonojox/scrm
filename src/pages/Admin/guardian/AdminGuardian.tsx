@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import {
@@ -10,8 +9,9 @@ import {
 } from "../../../Store/Guardian/guardianSlice";
 import { guardianService } from "../../../Services/Guardian/guardian";
 import GuardianTable from "./GuardianTable";
-import GuardianForm from "./GuardianForm";
+import GuardianForm from "./GuardianForm";;   // ← new import
 import { Guardian } from "../../../Types/Guardian/guardianTypes";
+import AdminGuardianDetails from "./AdminGuardianDetails";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -20,7 +20,7 @@ const AdminGuardian: React.FC = () => {
   const fetchedRecord = useSelector((state: RootState) => state.getGuardian.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getGuardian.loading);
   const error = useSelector((state: RootState) => state.getGuardian.error);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -28,33 +28,31 @@ const AdminGuardian: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  const [editData, setEditData] = useState<any>(null);
-  
+  const [editData, setEditData] = useState<Guardian | null>(null);
+  const [viewData, setViewData] = useState<Guardian | null>(null);  // ← new
+
   const recordsPerPage = 5;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;
-
     if (religionFilter !== 'all') {
-      filtered = filtered.filter((guardian: Guardian) =>
-        guardian.religion?.toLowerCase() === religionFilter
+      filtered = filtered.filter((g: Guardian) =>
+        g.religion?.toLowerCase() === religionFilter
       );
     }
-
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((guardian: Guardian) =>
-        guardian.firstname?.toLowerCase().includes(query) ||
-        guardian.lastname?.toLowerCase().includes(query) ||
-        guardian.phone?.toLowerCase().includes(query) ||
-        guardian.email?.toLowerCase().includes(query) ||
-        guardian.nationality?.toLowerCase().includes(query) ||
-        guardian.stateOfOrigin?.toLowerCase().includes(query) ||
-        guardian.religion?.toLowerCase().includes(query) ||
-        guardian.homeAddress?.toLowerCase().includes(query)
+      filtered = filtered.filter((g: Guardian) =>
+        g.firstname?.toLowerCase().includes(query) ||
+        g.lastname?.toLowerCase().includes(query) ||
+        g.phone?.toLowerCase().includes(query) ||
+        g.email?.toLowerCase().includes(query) ||
+        g.nationality?.toLowerCase().includes(query) ||
+        g.stateOfOrigin?.toLowerCase().includes(query) ||
+        g.religion?.toLowerCase().includes(query) ||
+        g.homeAddress?.toLowerCase().includes(query)
       );
     }
-
     return filtered;
   }, [fetchedRecord, searchQuery, religionFilter]);
 
@@ -64,9 +62,7 @@ const AdminGuardian: React.FC = () => {
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   useEffect(() => {
-    if (!fetchedLoading) {
-      fetchGuardian();
-    }
+    if (!fetchedLoading) fetchGuardian();
   }, [dispatch]);
 
   const fetchGuardian = async () => {
@@ -86,20 +82,15 @@ const AdminGuardian: React.FC = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectAll) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(currentRecords.map((g) => g.guardianId));
-    }
+    if (selectAll) setSelectedIds([]);
+    else setSelectedIds(currentRecords.map((g) => g.guardianId));
     setSelectAll(!selectAll);
   };
 
   const toggleCheckbox = (id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((sid) => sid !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+    );
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,40 +111,62 @@ const AdminGuardian: React.FC = () => {
       await guardianService.delete(id);
       await fetchGuardian();
       toast.success("Deleted!");
-    } catch (error) {
+    } catch {
       toast.error("Delete failed");
     }
+  };
+
+  // ← open edit from details view
+  const handleEditFromDetails = (guardian: Guardian) => {
+    setEditData(guardian);
+    setViewData(null);
+    setIsModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:py-6 md:py-8">
       <ToastContainer />
       <div className="max-w-full mx-auto">
-        <GuardianTable
-          records={currentRecords}
-          totalRecords={filteredRecords.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          searchQuery={searchQuery}
-          headerSearchQuery={headerSearchQuery}
-          religionFilter={religionFilter}
-          selectedIds={selectedIds}
-          selectAll={selectAll}
-          onPageChange={handlePageChange}
-          onSearchChange={handleSearchChange}
-          onHeaderSearchChange={handleHeaderSearchChange}
-          onReligionFilterChange={setReligionFilter}
-          onToggleSelectAll={toggleSelectAll}
-          onToggleCheckbox={toggleCheckbox}
-          onDelete={handleDelete}
-          onAddGuardian={() => setIsModalOpen(true)}
-          onRefresh={fetchGuardian}
-          setEditData={setEditData}
-        />
+
+        {/* ← show details panel when a guardian is selected for viewing */}
+        {viewData ? (
+          <AdminGuardianDetails
+            guardian={viewData}
+            onBack={() => setViewData(null)}
+            onEdit={handleEditFromDetails}
+            onDelete={async (id: any) => {
+              await handleDelete(id);
+              setViewData(null);
+            }}
+          />
+        ) : (
+          <GuardianTable
+            records={currentRecords}
+            totalRecords={filteredRecords.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            searchQuery={searchQuery}
+            headerSearchQuery={headerSearchQuery}
+            religionFilter={religionFilter}
+            selectedIds={selectedIds}
+            selectAll={selectAll}
+            onPageChange={handlePageChange}
+            onSearchChange={handleSearchChange}
+            onHeaderSearchChange={handleHeaderSearchChange}
+            onReligionFilterChange={setReligionFilter}
+            onToggleSelectAll={toggleSelectAll}
+            onToggleCheckbox={toggleCheckbox}
+            onDelete={handleDelete}
+            onAddGuardian={() => setIsModalOpen(true)}
+            onRefresh={fetchGuardian}
+            setEditData={setEditData}
+            onViewGuardian={setViewData}   // ← pass down to table
+          />
+        )}
 
         {isModalOpen && (
           <GuardianForm
-            onClose={() => {setIsModalOpen(false); setEditData(null)}}
+            onClose={() => { setIsModalOpen(false); setEditData(null); }}
             onGuardianAdded={fetchGuardian}
             editData={editData}
           />

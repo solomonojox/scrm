@@ -20,6 +20,7 @@ interface StudentTableProps {
     onClassFilterChange: (filter: 'all' | number) => void;
     onRefresh: () => void;
     setEditData: (data: any) => void;
+    onViewStudent: (student: StudentType) => void;
 }
 
 const StudentTable: React.FC<StudentTableProps> = ({
@@ -32,7 +33,8 @@ const StudentTable: React.FC<StudentTableProps> = ({
     classFilter,
     onClassFilterChange,
     onRefresh,
-    setEditData
+    setEditData,
+    onViewStudent
 }) => {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -188,7 +190,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                 <table className="w-full text-sm text-left whitespace-nowrap">
                     <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
                         <tr>
-                            <th className="p-3 min-w-[50px]">
+                            <th className="p-3 min-w-12.5">
                                 <input
                                     type="checkbox"
                                     checked={selectAll}
@@ -196,15 +198,15 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                     className="cursor-pointer w-4 h-4"
                                 />
                             </th>
-                            <th className="p-3 min-w-[80px]">Photo</th>
-                            <th className="p-3 min-w-[120px]">First Name</th>
-                            <th className="p-3 min-w-[120px]">Last Name</th>
-                            <th className="p-3 min-w-[80px]">Class</th>
-                            <th className="p-3 min-w-[80px]">Gender</th>
-                            <th className="p-3 min-w-[100px]">Date of Birth</th>
-                            <th className="p-3 min-w-[200px]">Address</th>
-                            <th className="p-3 min-w-[120px]">Guardian</th>
-                            <th className="p-3 min-w-[120px]">Actions</th>
+                            <th className="p-3 min-w-20">Photo</th>
+                            <th className="p-3 min-w-30">First Name</th>
+                            <th className="p-3 min-w-30">Last Name</th>
+                            <th className="p-3 min-w-20">Class</th>
+                            <th className="p-3 min-w-20">Gender</th>
+                            <th className="p-3 min-w-25">Date of Birth</th>
+                            <th className="p-3 min-w-50">Address</th>
+                            <th className="p-3 min-w-30">Guardian</th>
+                            <th className="p-3 min-w-30">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,11 +248,15 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                     </td>
                                     <td className="p-3">{student?.address}</td>
                                     <td className="p-3">{student?.guardianName}</td>
-                                    <td className="p-3 ">
+                                    <td className="flex px-3 py-5 gap-4">
                                         {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
-                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(student); onAddStudent(); }}>
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-100" onClick={() => { setEditData(student); onAddStudent(); }}>
                                             Edit
                                             <FaEdit />
+                                        </span>
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-100" onClick={() => onViewStudent(student)}>
+                                            View
+                                            <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
                                         </span>
                                         {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
                                     </td>

@@ -3,6 +3,7 @@ export interface schoolFee {
   schoolId: string;
   classroomId: string;
   sessionId: string;
+  termId: string;
   amount: number;
   classroomName: string;
   classroom: null | object;

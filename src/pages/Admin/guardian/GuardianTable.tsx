@@ -32,6 +32,7 @@ interface GuardianTableProps {
     onAddGuardian: () => void;
     onRefresh: () => void;
     setEditData: (data: any) => void;
+    onViewGuardian: (guardian: Guardian) => void;
 }
 
 const GuardianTable: React.FC<GuardianTableProps> = ({
@@ -54,6 +55,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
     onAddGuardian,
     onRefresh,
     setEditData,
+    onViewGuardian,
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
@@ -237,7 +239,7 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                 <table className="w-full text-sm text-left whitespace-nowrap">
                     <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
                         <tr>
-                            <th className="p-3 min-w-[50px]">
+                            <th className="p-3 min-w-12.5">
                                 <input
                                     type="checkbox"
                                     checked={selectAll}
@@ -245,15 +247,15 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     className="cursor-pointer w-4 h-4"
                                 />
                             </th>
-                            <th className="p-3 min-w-[80px]">Photo</th>
-                            <th className="p-3 min-w-[120px]">First Name</th>
-                            <th className="p-3 min-w-[120px]">Last Name</th>
-                            <th className="p-3 min-w-[120px]">Phone</th>
-                            <th className="p-3 min-w-[200px]">Address</th>
-                            <th className="p-3 min-w-[120px]">Nationality</th>
-                            <th className="p-3 min-w-[120px]">State</th>
-                            <th className="p-3 min-w-[120px]">Religion</th>
-                            {/* <th className="p-3 min-w-[120px]">Actions</th> */}
+                            <th className="p-3 min-w-20">Photo</th>
+                            <th className="p-3 min-w-30">First Name</th>
+                            <th className="p-3 min-w-30">Last Name</th>
+                            <th className="p-3 min-w-30">Phone</th>
+                            <th className="p-3 min-w-50">Address</th>
+                            <th className="p-3 min-w-30">Nationality</th>
+                            <th className="p-3 min-w-30">State</th>
+                            <th className="p-3 min-w-30">Religion</th>
+                            <th className="p-3 min-w-30">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -295,7 +297,10 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{g.stateOfOrigin}</td>
                                     <td className="p-3">{g.religion}</td>
                                     <td className="p-3 ">
-                                        {/* <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" /> */}
+                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => onViewGuardian(g)}>
+                                            View
+                                            <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
+                                        </span>
                                         {/* <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
                                             Edit
                                             <FaEdit />

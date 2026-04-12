@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
-import { guardianService } from "../../../Services/Guardian/guardian";
+import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../../../Store/Teachers/teacherSlice";
+import { teacherService } from "../../../Services/Teachers/TeacherService";
 import TeacherForm from "./TeacherForm";
 import TeacherTable from "./TeacherTable";
 import { TeacherType } from "../../../Types/Teacher/teacherType";
-import { fetchTeacherFailure, fetchTeacherStart, fetchTeacherSuccess } from "../../../Store/Teachers/teacherSlice";
-import { teacherService } from "../../../Services/Teachers/TeacherService";
+import AdminTeacherDetails from "./AdminTeacherDetails";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -25,7 +24,8 @@ const AdminTeacher: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<TeacherType | null>(null);
+  const [viewData, setViewData] = useState<TeacherType | null>(null);  // ← new
 
   const recordsPerPage = 5;
 
@@ -33,22 +33,22 @@ const AdminTeacher: React.FC = () => {
     let filtered = fetchedRecord;
 
     if (religionFilter !== 'all') {
-      filtered = filtered.filter((guardian: TeacherType) =>
-        guardian.religion?.toLowerCase() === religionFilter
+      filtered = filtered.filter((t: TeacherType) =>
+        t.religion?.toLowerCase() === religionFilter
       );
     }
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((guardian: TeacherType) =>
-        guardian.firstname?.toLowerCase().includes(query) ||
-        guardian.lastname?.toLowerCase().includes(query) ||
-        guardian.phone?.toLowerCase().includes(query) ||
-        guardian.email?.toLowerCase().includes(query) ||
-        guardian.nationality?.toLowerCase().includes(query) ||
-        guardian.stateOfOrigin?.toLowerCase().includes(query) ||
-        guardian.religion?.toLowerCase().includes(query) ||
-        guardian.homeAddress?.toLowerCase().includes(query)
+      filtered = filtered.filter((t: TeacherType) =>
+        t.firstname?.toLowerCase().includes(query) ||
+        t.lastname?.toLowerCase().includes(query) ||
+        t.phone?.toLowerCase().includes(query) ||
+        t.email?.toLowerCase().includes(query) ||
+        t.nationality?.toLowerCase().includes(query) ||
+        t.stateOfOrigin?.toLowerCase().includes(query) ||
+        t.religion?.toLowerCase().includes(query) ||
+        t.homeAddress?.toLowerCase().includes(query)
       );
     }
 
@@ -61,9 +61,7 @@ const AdminTeacher: React.FC = () => {
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
   useEffect(() => {
-    if (!fetchedLoading) {
-      fetchTeacher();
-    }
+    if (!fetchedLoading) fetchTeacher();
   }, [dispatch]);
 
   const fetchTeacher = async () => {
@@ -83,20 +81,15 @@ const AdminTeacher: React.FC = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectAll) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(currentRecords.map((g: any) => g.teacherId));
-    }
+    if (selectAll) setSelectedIds([]);
+    else setSelectedIds(currentRecords.map((t: TeacherType) => t.teacherId?? ""));
     setSelectAll(!selectAll);
   };
 
   const toggleCheckbox = (id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((sid) => sid !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
+    setSelectedIds(prev =>
+      prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
+    );
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,37 +110,57 @@ const AdminTeacher: React.FC = () => {
       await teacherService.delete(id);
       await fetchTeacher();
       toast.success("Deleted!");
-    } catch (error) {
+    } catch {
       toast.error("Delete failed");
     }
+  };
+
+  const handleEditFromDetails = (teacher: TeacherType) => {
+    setEditData(teacher);
+    setViewData(null);
+    setIsModalOpen(true);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:py-6 md:py-8">
       <ToastContainer />
       <div className="max-w-full mx-auto">
-        <TeacherTable
-          records={currentRecords}
-          totalRecords={filteredRecords.length}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          searchQuery={searchQuery}
-          headerSearchQuery={headerSearchQuery}
-          religionFilter={religionFilter}
-          selectedIds={selectedIds}
-          selectAll={selectAll}
-          onPageChange={handlePageChange}
-          onSearchChange={handleSearchChange}
-          onHeaderSearchChange={handleHeaderSearchChange}
-          onReligionFilterChange={setReligionFilter}
-          onToggleSelectAll={toggleSelectAll}
-          onToggleCheckbox={toggleCheckbox}
-          onDelete={handleDelete}
-          onAddGuardian={() => setIsModalOpen(true)}
-          onRefresh={fetchTeacher}
-          setEditData={setEditData}
-          onAddStudent={() => { setIsModalOpen(true); }}
-        />
+
+        {viewData ? (
+          <AdminTeacherDetails
+            teacher={viewData}
+            onBack={() => setViewData(null)}
+            onEdit={handleEditFromDetails}
+            onDelete={async (id) => {
+              await handleDelete(id);
+              setViewData(null);
+            }}
+          />
+        ) : (
+          <TeacherTable
+            records={currentRecords}
+            totalRecords={filteredRecords.length}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            searchQuery={searchQuery}
+            headerSearchQuery={headerSearchQuery}
+            religionFilter={religionFilter}
+            selectedIds={selectedIds}
+            selectAll={selectAll}
+            onPageChange={handlePageChange}
+            onSearchChange={handleSearchChange}
+            onHeaderSearchChange={handleHeaderSearchChange}
+            onReligionFilterChange={setReligionFilter}
+            onToggleSelectAll={toggleSelectAll}
+            onToggleCheckbox={toggleCheckbox}
+            onDelete={handleDelete}
+            onAddGuardian={() => setIsModalOpen(true)}
+            onRefresh={fetchTeacher}
+            setEditData={setEditData}
+            onAddStudent={() => setIsModalOpen(true)}
+            onViewTeacher={setViewData}   // ← pass down to table
+          />
+        )}
 
         {isModalOpen && (
           <TeacherForm

@@ -34,6 +34,7 @@ interface GuardianTableProps {
     onRefresh: () => void
     setEditData: (data: any) => void
     onAddStudent: () => void
+    onViewTeacher: (teacher: TeacherType) => void
 }
 
 const TeacherTable: React.FC<GuardianTableProps> = ({
@@ -56,7 +57,8 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
     onAddGuardian,
     onRefresh,
     setEditData,
-    onAddStudent
+    onAddStudent,
+    onViewTeacher
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
@@ -238,7 +240,7 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                 <table className="w-full text-sm text-left whitespace-nowrap">
                     <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
                         <tr>
-                            <th className="p-3 min-w-[50px]">
+                            <th className="p-3 min-w-12.5">
                                 <input
                                     type="checkbox"
                                     checked={selectAll}
@@ -246,17 +248,17 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     className="cursor-pointer w-4 h-4"
                                 />
                             </th>
-                            {/* <th className="p-3 min-w-[120px]">School Id</th> */}
-                            <th className="p-3 min-w-[80px]">Photo</th>
-                            <th className="p-3 min-w-[120px]">First Name</th>
-                            <th className="p-3 min-w-[120px]">Last Name</th>
-                            <th className="p-3 min-w-[120px]">Phone Number</th>
-                            <th className="p-3 min-w-[200px]">Address</th>
-                            <th className="p-3 min-w-[120px]">Nationality</th>
-                            <th className="p-3 min-w-[120px]">State of Origin</th>
-                            <th className="p-3 min-w-[120px]">Religion</th>
-                            <th className="p-3 min-w-[120px]">Employment Date</th>
-                            <th className="p-3 min-w-[120px]">Actions</th>
+                            {/* <th className="p-3 min-w-30">School Id</th> */}
+                            <th className="p-3 min-w-20">Photo</th>
+                            <th className="p-3 min-w-30">First Name</th>
+                            <th className="p-3 min-w-30">Last Name</th>
+                            <th className="p-3 min-w-30">Phone Number</th>
+                            <th className="p-3 min-w-50">Address</th>
+                            <th className="p-3 min-w-30">Nationality</th>
+                            <th className="p-3 min-w-30">State of Origin</th>
+                            <th className="p-3 min-w-30">Religion</th>
+                            <th className="p-3 min-w-30">Employment Date</th>
+                            <th className="p-3 min-w-30">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -298,13 +300,17 @@ const TeacherTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{t.stateOfOrigin}</td>
                                     <td className="p-3">{t.religion}</td>
                                     <td className="p-3">{formatDate(t?.employmentDate)}</td>
-                                    <td className="p-3 gap-3">
+                                    <td className="flex px-3 py-5 gap-4">
                                         <span
-                                            className="flex items-center cursor-pointer hover:text-orange-500 gap-1"
+                                            className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-100"
                                             onClick={() => { setEditData(t); onAddStudent(); }}>
                                             Edit
                                             <FaEdit />
+                                        </span><span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-100" onClick={() => onViewTeacher(t)}>
+                                            View
+                                            <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
                                         </span>
+                                        
                                     </td>
                                 </tr>
                             ))
