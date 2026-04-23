@@ -59,15 +59,7 @@ const Guardian = ({ nextStep }) => {
       notifySuccess && notifySuccess('School registered successfully.');
 
       // Assuming response shape { data: { data: { schoolId: ... }, ... } }
-      const registeredSchoolId = res?.data?.data?.schoolId;
-      const regNumber = res?.data?.data?.registrationNumber;
-      if (registeredSchoolId) {
-        localStorage.setItem('schoolId', registeredSchoolId);
-      }
-     if(regNumber){
-      localStorage.setItem('regNumber', regNumber)
-      alert('School registered successfully. Your Registration Number is: ' + regNumber);
-     };
+    
       notifySuccess?.('School registered successfully.');
      
       nextStep?.();
