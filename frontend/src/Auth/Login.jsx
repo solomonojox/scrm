@@ -10,12 +10,12 @@ const Login = () => {
     <div>
       <div className="bg-white h-screen flex flex-col md:flex-row px-6 py-3">
         {/* Left Sidebar */}
-        <div className="hidden md:block md:bg-[whitesmoke] md:h-full md:w-[400px] md:fixed md:py-10 md:px-10 md:rounded-md md:shadow-md">
+        <div className="hidden md:block md:bg-[whitesmoke] md:h-full md:w-100 md:fixed md:py-10 md:px-10 md:rounded-md md:shadow-md">
           <div>
             <p className="text-3xl font-bold capitalize">SCRM</p>
           </div>
           <div className="mt-10 flex items-center space-x-3">
-            <div className="bg-white px-4 py-2 flex items-center text-2xl w-[55px] h-[50px] rounded-md border">
+            <div className="bg-white px-4 py-2 flex items-center text-2xl w-13.75 h-12.5 rounded-md border">
               <FaUser />
             </div>
             <Link to={"/"}>
@@ -25,7 +25,7 @@ const Login = () => {
             </Link>
           </div>
           <div className="mt-10 flex items-center space-x-3">
-            <div className="bg-white px-4 py-2 flex items-center text-2xl w-[55px] h-[50px] rounded-md border">
+            <div className="bg-white px-4 py-2 flex items-center text-2xl w-13.75 h-12.5 rounded-md border">
               <MdEmail />
             </div>
             <Link to={"/student"}>
@@ -35,7 +35,7 @@ const Login = () => {
             </Link>
           </div>
           <div className="mt-10 flex items-center space-x-3">
-            <div className="bg-white px-4 py-2 flex items-center text-2xl w-[55px] h-[50px] rounded-md border">
+            <div className="bg-white px-4 py-2 flex items-center text-2xl w-13.75 h-12.5 rounded-md border">
               <IoIosRocket />
             </div>
             <Link to={"/welcome"}>
@@ -45,7 +45,7 @@ const Login = () => {
               </div>
             </Link>
           </div>
-          <div className="mt-[200px] flex items-center">
+          <div className="mt-50 flex items-center">
             <div className="flex space-x-2 items-center">
               <FaArrowLeft className="text-xl" />
               <p className="font-bold text-lg">Back to home</p>
@@ -57,7 +57,7 @@ const Login = () => {
         </div>
 
         {/* Right Content (Form Section) */}
-        <div className="bg-white md:h-screen w-full md:w-[500px] py-10 md:ml-[500px] px-6 md:px-10 flex flex-col items-center">
+        <div className="bg-white md:h-screen w-full md:w-125 py-10 md:ml-125 px-6 md:px-10 flex flex-col items-center">
           <div className="text-4xl font-bold text-center">
             <p>Register a Student</p>
             <p className="font-normal text-lg ml-2 text-gray-700">Provide your email and choose a password.</p>
@@ -128,9 +128,9 @@ const Login = () => {
                 placeholder="Enter your phone number"
               />
               <Link to={"/student"}>
-              <button className="px-10 py-2 text-white w-full max-w-md bg-green-800 rounded-md mt-2 text-xl font-bold hover:bg-green-700 shadow-md mb-2">
-                Continue
-              </button>
+                <button className="px-10 py-2 text-white w-full max-w-md bg-green-800 rounded-md mt-2 text-xl font-bold hover:bg-green-700 shadow-md mb-2">
+                  Continue
+                </button>
               </Link>
             </form>
           </div>

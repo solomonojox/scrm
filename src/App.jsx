@@ -93,6 +93,13 @@ import StudentCbtExamInterfacePage from "./pages/Cbt/Students/exam/StudentCbtExa
 import StudentCbtResultsPage from "./pages/Cbt/Students/result/StudentCbtResultspage";
 import StudentCbtPerformancePage from "./pages/Cbt/Students/performance/StudentCbtPerformancepage";
 import StudentCbtSettingsPage from "./pages/Cbt/Students/settings/StudentCbtSettingspage";
+import { NappsAdminLayout } from "./layouts/NappsAdminLayout";
+import NappsLogin from "./pages/napps/NappsLogin";
+import NappsDashboard from "./pages/napps/super-admin/NappsSuperAdminDashboard";
+import NappsSuperChapters from "./pages/napps/super-admin/NappsSuperAdminChapters";
+import NappsSuperAdminSchool from "./pages/napps/super-admin/NappsSuperAdminSchool";
+import NappsSuperAdminChapterAdmins from "./pages/napps/super-admin/NappsSuperAdminChapterAdmins";
+import PrivacyPolicy from "./pages/Privacy";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -130,6 +137,7 @@ function App() {
     <Routes>
       {/* All Auth/Onboarding routes here */}
       <Route path="/" element={<Landing />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
       {/* 404 - catch all unmatched routes */}
       <Route path="*" element={<NotFound />} />
 
@@ -248,10 +256,10 @@ function App() {
       {/* Student */}
       <Route
         element={
-            // <ProtectedRoute2>
-              
-            // </ProtectedRoute2>
-            <StudentCbtLayout />
+          // <ProtectedRoute2>
+
+          // </ProtectedRoute2>
+          <StudentCbtLayout />
         }
       >
         <Route path="/cbt/student/dashboard" element={<StudentCbtDashboard />} />
@@ -284,9 +292,23 @@ function App() {
         }
       >
       </Route> */}
-        <Route path="/super-admin/login" element={<SuperAdminLogin />} />
-        <Route path="/super-admin/dashboard" element={<ProtectedRoute3><SuperAdminDashboard /></ProtectedRoute3>} />
-        <Route path="/super-admin/school-info" element={<ProtectedRoute3><SchoolInfoPage /></ProtectedRoute3>} />
+      <Route
+        element={
+          // <ProtectedRoute2>
+          // </ProtectedRoute2>
+            <NappsAdminLayout />
+        }
+      >
+        <Route path="/napps/super-admin/dashboard" element={<NappsDashboard />} />
+        <Route path="/napps/super-admin/chapters" element={<NappsSuperChapters />} />
+        <Route path="/napps/super-admin/schools" element={<NappsSuperAdminSchool />} />
+        <Route path="/napps/super-admin/chapter-admins" element={<NappsSuperAdminChapterAdmins />} />
+      </Route>
+
+      <Route path="/napps/login" element={<NappsLogin />} />
+      <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+      <Route path="/super-admin/dashboard" element={<ProtectedRoute3><SuperAdminDashboard /></ProtectedRoute3>} />
+      <Route path="/super-admin/school-info" element={<ProtectedRoute3><SchoolInfoPage /></ProtectedRoute3>} />
     </Routes>
   );
 }

@@ -5,7 +5,7 @@ import useTawkTo from '../Context/useTawkTo';
 
 import imageAssets from '../assets/imageAssets';
 
-const {logo, boy, a, b, c, d, e, f, g, h, i} = imageAssets
+const { logo, boy, a, b, c, d, e, f, g, h, i } = imageAssets
 
 
 const slides = [
@@ -56,6 +56,7 @@ const Landing = () => {
                 { name: "Features", link: "#features" },
                 { name: "Statistics", link: "#statistics" },
                 { name: "Contact", link: "#contact" },
+                { name: "Privacy", link: "/privacy" },
               ].map((item, index) => (
                 <li key={index}>
                   <a
@@ -71,16 +72,22 @@ const Landing = () => {
             {/* Login Button (Desktop) */}
             <div className="hidden md:flex items-center space-x-2">
               <button
-                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition-colors duration-200"
+                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-800 transition-colors duration-200"
                 onClick={() => navigate("/login")}
               >
                 Login
               </button>
               <button
-                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-700 transition-colors duration-200"
+                className="bg-orange-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-orange-800 transition-colors duration-200"
                 onClick={() => navigate("/cbt/login")}
               >
                 CBT Exam
+              </button>
+              <button
+                className="bg-purple-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-purple-800 transition-colors duration-200"
+                onClick={() => navigate("/napps/login")}
+              >
+                NAPPS
               </button>
             </div>
 
@@ -112,6 +119,7 @@ const Landing = () => {
                 { name: "Features", link: "#features" },
                 { name: "Statistics", link: "#statistics" },
                 { name: "Contact", link: "#contact" },
+                { name: "Privacy", link: "/privacy" },
 
               ].map((item, index) => (
                 <li key={index}>
@@ -144,6 +152,14 @@ const Landing = () => {
                   }}
                 >
                   CBT Exam
+                </button>
+              </li>
+              <li>
+                <button
+                  className="bg-purple-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-purple-800 transition-colors duration-200"
+                  onClick={() => navigate("/napps/login")}
+                >
+                  NAPPS
                 </button>
               </li>
             </ul>
