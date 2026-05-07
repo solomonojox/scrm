@@ -8,7 +8,7 @@ export const studentService = {
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllStudents error:", error?.response?.data?.message || error.message);
+      console.error("GetAllStudents error:", error);
       throw error;
     }
   },

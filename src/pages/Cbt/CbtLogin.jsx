@@ -85,20 +85,24 @@ const CbtLogin = () => {
 
     try {
       const data = {
-        schoolRegistrationNumber,
+        schoolRegNumber: schoolRegistrationNumber,
         email,
         password,
       };
       const response = await cbtAuthService.login(data);
-      cbtLogin(response.data);
-      
+      // console.log("Login response:", response.data);
+      cbtLogin(response.data?.token);
+
       setSuccessMessage("Login successful!");
       notifySuccess("Login successful!");
-      
 
+      const decoded = jwtDecode(response?.data?.token);
+      // console.log("Decoded JWT:", decoded); 
 
-      const decoded = jwtDecode(response.data);
-      const role = decoded?.role;
+      const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+      const role = decoded[roleClaim];
+
+      // console.log("Extracted role:", role); // Check what this prints
 
       if (role === "SchoolAdmin") {
         navigate("/cbt/admin/dashboard");
@@ -106,12 +110,14 @@ const CbtLogin = () => {
         navigate("/cbt/student/dashboard");
       } else if (role === "Teacher") {
         navigate("/cbt/teacher/dashboard");
+      } else {
+        console.log("No matching role found, role was:", role);
       }
     } catch (err) {
       setError(
         err.response?.data.responseMessage ||
           err?.message ||
-          "Login failed. Please check your credentials."
+          "Login failed. Please check your credentials.",
       );
       notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {
