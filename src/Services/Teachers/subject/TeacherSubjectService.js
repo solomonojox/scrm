@@ -6,7 +6,7 @@ import cbtApi from "../../Cbt/cbtApi";
 export const teacherSubjectService = {
   getAll: async () => {
     try {
-      const res = await cbtApi.get(`/api/Subject`);
+      const res = await cbtApi.get(`api/Subject`);
       // console.log("GetAllSubjects success:", res.data.data);
       return res.data.data;
     } catch (error) {

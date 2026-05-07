@@ -93,12 +93,13 @@ const LoginPage = () => {
         password,
       };
       const response = await loginService.staffLogin(data);
-      login(response.data);
+      console.log("Login response:", response.data);
+      login(response.data.accessToken, response.data.refreshToken);
 
       setSuccessMessage("Login successful!");
       notifySuccess("Login successful!");
 
-      const decoded = jwtDecode(response.data);
+      const decoded = jwtDecode(response.data.accessToken);
       const role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
       if (role === "SchoolAdmin") {
@@ -131,17 +132,17 @@ const LoginPage = () => {
 
       {/* Logo at Top Right on large screens */}
       <div className="hidden lg:block absolute top-6 left-6">
-        <img src={logo} alt="EduCat logo" className="h-[50px]" />
+        <img src={logo} alt="EduCat logo" className="h-12.5" />
       </div>
 
       {/* Logo at Top Center on small screens */}
       <div className="lg:hidden flex justify-center absolute top-[2vh] md:top-[10vh] left-0 right-0">
-        <img src={logo} alt="EduCat logo" className="h-[50px]" />
+        <img src={logo} alt="EduCat logo" className="h-12.5" />
       </div>
 
       {/* Login Form Section */}
       <div className="h-screen w-full flex items-center justify-center lg:justify-end lg:pr-[10%]">
-        <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-[539px] max-w-md">
+        <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-134.75 max-w-md">
           <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
           <p className="text-center text-gray-600 mb-6">Please Login</p>
 

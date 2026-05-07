@@ -14,6 +14,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token) {
       try {
         const decoded = jwtDecode<Partial<any>>(token);
+        console.log("Decoded JWT on mount:", decoded);
 
         //For NORMAL LOGIN (Microsoft claims)
         const userData = {
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           schoolId: decoded.schoolId || "",
           currentTerm: decoded.term || "",
           termId: decoded.termId || "",
-          sessionId: decoded.sessionId || "",
+          // sessionId: decoded.sessionId || "",
         };
 
         // restore both user types
@@ -51,8 +52,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   //NORMAL LOGIN
-  const login = (token: string) => {
+  const login = (token: string, refreshToken?: string) => {
     localStorage.setItem("scrmToken", token);
+
+    if (refreshToken) {
+      localStorage.setItem("scrmRefreshToken", refreshToken);
+    }
+
     const decoded = jwtDecode<Partial<any>>(token);
     localStorage.setItem("schoolId", decoded.schoolId);
 
@@ -65,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       schoolId: decoded.schoolId || "",
       currentTerm: decoded.term || "",
       termId: decoded.termId || "",
-      sessionId: decoded.sessionId || "",
+      // sessionId: decoded.sessionId || "",
     });
 
     setIsAuthenticated(true);
