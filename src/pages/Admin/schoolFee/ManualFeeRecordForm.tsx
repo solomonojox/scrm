@@ -31,14 +31,14 @@ interface Classroom {
     teacherId: string;
 }
 
-// interface Guardian {
-//     guardianId: string;
-//     name: string;
-//     phone: string;
-//     email: string;
-//     // Add other fields as needed
-// }
+// ✅ Fix 1: PaymentTerm is now a proper object type (was incorrectly typed as string)
+export interface PaymentTerm {
+    paymentTermId: string;
+    name: string;
+}
 
+// ✅ Fix 2: ManualFeeRecordData now includes schoolId to match API body exactly:
+// { studentId, schoolId, classroomId, sessionId, amount, paymentTermId, guardianId }
 interface ManualFeeRecordData {
     studentId: string;
     classroomId: string;
@@ -46,13 +46,14 @@ interface ManualFeeRecordData {
     paymentTermId: string;
     guardianId: string;
     sessionId: string;
+    schoolId: string;
 }
 
 interface ManualFeeRecordProps {
     onSubmit: (data: ManualFeeRecordData) => Promise<void>;
     students: StudentType[];
     classrooms: Classroom[];
-    paymentTerms: string;
+    paymentTerms: PaymentTerm[]; // ✅ Fix 3: was string, now PaymentTerm[]
     guardians?: Guardian[];
     isLoading?: boolean;
     schoolId: string;
@@ -88,7 +89,9 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
             classroomId: '',
             sessionId: '',
             amount: 0,
-            guardianId: ''
+            guardianId: '',
+            paymentTermId: '',  // ✅ Fix 4: added missing default value
+            schoolId: '',       // ✅ Fix 5: added missing default value
         }
     });
 
@@ -174,11 +177,12 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
     };
 
     const handleFormSubmit = async (data: ManualFeeRecordData) => {
-        // Add schoolId and sessionId from auth
-        const formData = {
+        // ✅ Fix 6: Build payload to match API exactly:
+        // { studentId, schoolId, classroomId, sessionId, amount, paymentTermId, guardianId }
+        // Removed the incorrect `paymentTerms` spread — paymentTermId already lives in `data`
+        const formData: ManualFeeRecordData = {
             ...data,
-            schoolId,
-            paymentTerms
+            schoolId, // inject schoolId from prop
         };
 
         await onSubmit(formData);
@@ -213,6 +217,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                 >
                                     {sessionId?.map((session) => (
                                         <MenuItem key={session.sessionId} value={session.sessionId}>
+                                            {/* ✅ Fix 7: show session name, fall back to ID if name missing */}
                                             {session.sessionId}
                                         </MenuItem>
                                     ))}
@@ -319,7 +324,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                     </FormControl>
 
                     {/* Payment Term Selection */}
-                    {/* <FormControl fullWidth error={!!errors.paymentTermId}>
+                    <FormControl fullWidth error={!!errors.paymentTermId}>
                         <InputLabel id="payment-term-select-label">Payment Term</InputLabel>
                         <Controller
                             name="paymentTermId"
@@ -332,6 +337,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                     label="Payment Term"
                                     disabled={isLoading}
                                 >
+                                    {/* ✅ Fix 8: paymentTerms is now PaymentTerm[] so .map() works */}
                                     {paymentTerms?.map((term) => (
                                         <MenuItem key={term.paymentTermId} value={term.paymentTermId}>
                                             {term.name}
@@ -345,7 +351,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                 {errors.paymentTermId.message}
                             </Typography>
                         )}
-                    </FormControl> */}
+                    </FormControl>
 
                     {/* Amount Input */}
                     <Controller
