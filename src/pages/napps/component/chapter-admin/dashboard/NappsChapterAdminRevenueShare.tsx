@@ -3,9 +3,9 @@ import React from 'react'
 
 const NappsChapterAdminRevenueShare = () => {
     return (
-        <div className='rounded-xl border border-green-600 bg-green-50 p-6 space-y-4'>
+        <div className='rounded-xl border border-orange-600 bg-orange-50 p-6 space-y-4'>
             <div className="flex gap-4 items-center">
-                <DollarSign className='bg-green-600 p-2 rounded-xl text-white' size={40} />
+                <DollarSign className='bg-orange-600 p-2 rounded-xl text-white' size={40} />
                 <div>
                     <p className="text-xl font-semibold">Chapter Revenue Share</p>
                     <p className="text sm text-gray-500">Your chapter receives 20% of expected revenue</p>

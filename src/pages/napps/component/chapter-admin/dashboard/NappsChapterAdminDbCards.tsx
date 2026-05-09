@@ -13,7 +13,7 @@ const NappsChapterAdminDbCards = () => {
             label: 'Total Schools',
             value: 950,
             icon: TrendingUp,
-            color: 'bg-green-100 text-green-700'
+            color: 'bg-orange-100 text-orange-700'
         },
         {
             label: 'Expected Revenue (Per Term)',
@@ -25,7 +25,7 @@ const NappsChapterAdminDbCards = () => {
             label: 'Your Share (20%)',
             value: '95K',
             icon: DollarSign,
-            color: 'bg-green-100 text-green-700'
+            color: 'bg-orange-100 text-orange-700'
         },
     ]
     return (

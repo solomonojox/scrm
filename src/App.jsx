@@ -102,6 +102,9 @@ import NappsSuperAdminChapterAdmins from "./pages/napps/super-admin/NappsSuperAd
 import PrivacyPolicy from "./pages/Privacy";
 import NappsChapterAdminDashboard from "./pages/napps/chapter-admin/NappsChapterAdminDashboard";
 import { NappsChapterAdminLayout } from "./layouts/NappsChapterAdminLayout";
+import NappsChapterAdminSchool from "./pages/napps/chapter-admin/NappsChapterAdminSchool";
+import NappsChapterAdminRevenue from "./pages/napps/chapter-admin/NappsChapterAdminRevenue";
+import NappsChapterMessages from "./pages/napps/chapter-admin/NappsChapterMessages";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -298,7 +301,7 @@ function App() {
         element={
           // <ProtectedRoute2>
           // </ProtectedRoute2>
-            <NappsAdminLayout />
+          <NappsAdminLayout />
         }
       >
         <Route path="/napps/super-admin/dashboard" element={<NappsDashboard />} />
@@ -311,13 +314,13 @@ function App() {
         element={
           // <ProtectedRoute2>
           // </ProtectedRoute2>
-            <NappsChapterAdminLayout />
+          <NappsChapterAdminLayout />
         }
       >
         <Route path="/napps/chapter-admin/dashboard" element={<NappsChapterAdminDashboard />} />
-        <Route path="/napps/chapter-admin/chapters" element={<NappsSuperChapters />} />
-        <Route path="/napps/chapter-admin/schools" element={<NappsSuperAdminSchool />} />
-        <Route path="/napps/chapter-admin/chapter-admins" element={<NappsSuperAdminChapterAdmins />} />
+        <Route path="/napps/chapter-admin/schools" element={<NappsChapterAdminSchool />} />
+        <Route path="/napps/chapter-admin/revenue" element={<NappsChapterAdminRevenue />} />
+        <Route path="/napps/chapter-admin/messages" element={<NappsChapterMessages />} />
       </Route>
 
       <Route path="/napps/login" element={<NappsLogin />} />

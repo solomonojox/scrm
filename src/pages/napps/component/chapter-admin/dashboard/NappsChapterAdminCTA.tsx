@@ -19,10 +19,10 @@ const NappsChapterAdminCTA = () => {
                 </div>
             </div>
 
-            <div className="rounded-xl p-4 shadow-md w-full space-y-4 bg-linear-to-r from-blue-600 to-purple-600">
+            <div className="rounded-xl p-4 shadow-md w-full space-y-4 bg-linear-to-r from-orange-600 to-orange-400">
                 <p className="text-xl font-bold text-white">Need Help?</p>
                 <p className='text-white'>Contact EduCat support for assistance with chapter management.</p>
-                <button className='text-blue-600 text-xl font-medium p-3 rounded-xl bg-white w-full'>Contact Support</button>
+                <button className='text-orange-600 text-xl font-medium p-3 rounded-xl bg-white w-full'>Contact Support</button>
             </div>
         </div>
     )
