@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import NappsSidebar from "../pages/napps/component/NappsSidebar";
 
-export const NappsAdminLayout = ({ children }: { children: React.ReactNode }) => {
+export const NappsChapterAdminLayout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <div className="">
@@ -14,7 +14,7 @@ export const NappsAdminLayout = ({ children }: { children: React.ReactNode }) =>
 
       <div>
         <div className="fixed top-0">
-          <NappsSidebar variant="super-admin"/>
+          <NappsSidebar variant="chapter-admin"/>
         </div>
 
         <div className=" lg:ml-64 px-6 py-3">
