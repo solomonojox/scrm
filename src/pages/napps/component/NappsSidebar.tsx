@@ -110,7 +110,7 @@ const S = {
         width: 44,
         height: 44,
         borderRadius: 12,
-        background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
+        // background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -173,10 +173,10 @@ const S = {
 
     footer: {
         borderTop: "1px solid #EAECF0",
-        padding: "16px 12px",
+        padding: "4px 12px",
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        // gap: 1,
     } satisfies CSSProperties,
 
     userCard: {
@@ -193,7 +193,7 @@ const S = {
         width: 36,
         height: 36,
         borderRadius: "50%",
-        background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
+        // background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -238,7 +238,7 @@ function navItemStyle(isActive: boolean): CSSProperties {
         borderRadius: 8,
         cursor: "pointer",
         background: isActive ? "#EEF2FF" : "transparent",
-        color: isActive ? "#4338CA" : "#344054",
+        color: isActive ? "#f97316" : "#344054",
         fontWeight: isActive ? 600 : 400,
         fontSize: 14.5,
         userSelect: "none",
@@ -252,7 +252,7 @@ function navItemStyle(isActive: boolean): CSSProperties {
 
 function navIconStyle(isActive: boolean): CSSProperties {
     return {
-        color: isActive ? "#4338CA" : "#667085",
+        color: isActive ? "#f97316" : "#667085",
         flexShrink: 0,
         transition: "color 0.15s ease",
     };
@@ -267,7 +267,7 @@ function activeIndicatorStyle(): CSSProperties {
         width: 3,
         height: 20,
         borderRadius: "0 3px 3px 0",
-        background: "#4F46E5",
+        background: "#f97316",
     };
 }
 
@@ -330,13 +330,13 @@ export default function NappsSidebar({
 
             {/* Logo */}
             <div style={S.logoSection}>
-                <div style={S.logoIcon}>
+                <div style={S.logoIcon} className="bg-orange-500">
                     <GraduationCap size={22} color="#fff" strokeWidth={2} />
                 </div>
                 <div style={S.logoText}>
                     <span style={S.logoTitle}>EduCat NAPPS</span>
                     <span style={S.logoSubtitle}>Management System</span>
-                    <span style={S.variantBadge(variant)}>
+                    <span style={S.variantBadge(variant)} >
                         {variant === "super-admin" ? "Super Admin" : "Chapter Admin"}
                     </span>
                 </div>
@@ -353,6 +353,7 @@ export default function NappsSidebar({
                         <button
                             key={id}
                             style={navItemStyle(isActive)}
+                            className="text-orange-500"
                             onClick={() => handleNav(item)}
                             onMouseEnter={(e) => handleMouseEnter(e, isActive)}
                             onMouseLeave={(e) => handleMouseLeave(e, isActive)}
@@ -370,7 +371,7 @@ export default function NappsSidebar({
             <div style={S.footer}>
                 {/* User card */}
                 <div style={S.userCard}>
-                    <div style={S.avatarCircle}>{initials}</div>
+                    <div style={S.avatarCircle} className="bg-orange-500">{initials}</div>
                     <div style={S.userDetails}>
                         <div style={S.userName}>{resolvedUser.name}</div>
                         <div style={S.userEmail}>{resolvedUser.email}</div>
