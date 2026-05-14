@@ -14,6 +14,7 @@ import {
   fetchTeacherFailure,
 } from "../../../../Store/Teachers/teacherSlice";
 import { useEffect } from "react";
+import { cbtStudentService } from "../../../../Services/Cbt/student/cbtStudentService";
 
 const cardData = [
   {
@@ -59,7 +60,7 @@ const AdminCbtCards = () => {
     dispatch(fetchTeacherStart());
 
     try {
-      const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
+      const data = await cbtStudentService.getAllBySchoolId(cbtUser?.schoolId);
       const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
 
       dispatch(fetchStudentsSuccess(data?.data));

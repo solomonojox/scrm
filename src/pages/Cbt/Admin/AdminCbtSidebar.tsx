@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../../Context/Auth/useAuth";
+import { use, useEffect } from "react";
 
 type Role = "Student" | "Teacher" | "SchoolAdmin";
 
@@ -21,6 +22,10 @@ interface MenuItem {
 const AdminCbtSidebar = ({ isSidebarOpen }: { isSidebarOpen: boolean }) => {
   const location = useLocation();
   const { cbtUser } = useAuth();
+
+  useEffect(() => {
+    
+  }, [cbtUser]);
 
   const menuByRole: Record<Role, MenuItem[]> = {
     Student: [

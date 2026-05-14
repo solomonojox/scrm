@@ -30,7 +30,7 @@ export const cbtAdminService = {
 
   getAllStudents: async (id) => {
     try {
-      const res = await cbtApi.get(`/api/Student/GetStudentsBySchool?schoolId=${id}`);
+      const res = await cbtApi.get(`/api/Student/school/${id}`);
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const cbtAdminService = {
 
   getAllTeachers: async (id) => {
     try {
-      const res = await cbtApi.get(`/api/Teacher/GetTeachersBySchool/${id}`);
+      const res = await cbtApi.get(`/api/Teacher/school/${id}`);
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {

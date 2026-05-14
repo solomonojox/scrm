@@ -10,10 +10,19 @@ export interface UserData {
   sessionId?: string;
 }
 
+export interface CbtUserData {
+  id?: string;
+  email: string;
+  role: string;
+  schoolReg: string;
+  schoolName: string;
+  schoolId: string;
+}
+
 export interface AuthContextType {
     isAuthenticated: boolean;
     user: UserData | null;
-    cbtUser: UserData | null;
+    cbtUser: CbtUserData | null;
     cbtLogin: (token: string) => void;
     login: (token: string) => void;
     logout: () => void;

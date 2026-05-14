@@ -97,12 +97,9 @@ const CbtLogin = () => {
       notifySuccess("Login successful!");
 
       const decoded = jwtDecode(response?.data?.token);
-      // console.log("Decoded JWT:", decoded); 
 
       const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
       const role = decoded[roleClaim];
-
-      // console.log("Extracted role:", role); // Check what this prints
 
       if (role === "SchoolAdmin") {
         navigate("/cbt/admin/dashboard");
@@ -111,7 +108,7 @@ const CbtLogin = () => {
       } else if (role === "Teacher") {
         navigate("/cbt/teacher/dashboard");
       } else {
-        console.log("No matching role found, role was:", role);
+        navigate("/cbt/login");
       }
     } catch (err) {
       setError(
