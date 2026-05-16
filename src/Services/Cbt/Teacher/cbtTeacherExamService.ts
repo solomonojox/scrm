@@ -56,7 +56,8 @@ export const cbtTeacherExamService = {
   getExamQuestions: async (examId: string): Promise<ExamQuestion[]> => {
     try {
       const response = await cbtApi.get(`/api/QuizQuestion/GetByExamId?examId=${examId}`);
-      return response.data?.data?.result ?? response.data?.data ?? [];
+      // console.log(response)
+      return response.data ?? response.data?.data ?? [];
     } catch (error: any) {
       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch exam questions");
     }

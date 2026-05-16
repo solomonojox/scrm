@@ -32,6 +32,7 @@ const ViewExamDetails: React.FC<Props> = ({ exam }) => {
       setLoadingQuestions(true);
       try {
         const data = await cbtTeacherExamService.getExamQuestions(exam.id);
+        console.log(data)
         setQuestions(data);
       } catch {
         // silently fail — questions section will show empty state
@@ -215,7 +216,7 @@ const ViewExamDetails: React.FC<Props> = ({ exam }) => {
                         Options
                       </p>
                       <ul className="space-y-2">
-                        {q.options.map((opt) => (
+                        {q?.answerOptions?.map((opt) => (
                           <li
                             key={opt.id}
                             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm border ${
