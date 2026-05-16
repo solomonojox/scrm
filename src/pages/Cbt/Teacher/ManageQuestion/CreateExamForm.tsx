@@ -62,7 +62,7 @@ const CreateExamForm: React.FC = () => {
     class: "",
     classLabel: "",
     subject: "",
-    subjectId: "",
+    // subjectId: "",
     duration: 0,
     scheduledDate: "",
     passingScore: 50,

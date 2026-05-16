@@ -1,4 +1,4 @@
-import { student } from "../../../constants/StudentCbtConstant";
+// import { student } from "../../../constants/StudentCbtConstant";
 import cbtApi from "../cbtApi";
 
 export const cbtAuthService = {
@@ -21,29 +21,29 @@ export const cbtAuthService = {
   },
 
   login: async (eventsData) => {
-    try {
-      const response = await cbtApi.post(`/api/CbtLogin`, eventsData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await cbtApi.post(`/api/CbtLogin`, eventsData);
+    return response.data;
+    // try {
+    // } catch (error) {
+    //   throw error;
+    // }
   },
 
   studentCbtLogin: async (eventsData) => {
-    try {
-      const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
-      return response.data.data;
-    } catch (error) {
-      throw error;
-    }
-    },
+    const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
+    return response.data.data;
+    // try {
+    // } catch (error) {
+    //   throw error;
+    // }
+  },
 
-    teacherCbtLogin: async (eventsData) => {
-      try {
-        const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
-        return response.data.data;
-      } catch (error) {
-        throw error;
-      }
-      },
+  teacherCbtLogin: async (eventsData) => {
+    const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
+    return response.data.data;
+    // try {
+    // } catch (error) {
+    //   throw error;
+    // }
+  },
 };

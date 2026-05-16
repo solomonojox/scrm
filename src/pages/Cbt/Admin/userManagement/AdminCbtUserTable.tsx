@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Edit, Trash2 } from "lucide-react";
+import { cbtAdminService } from "../../../../Services/Cbt/Admin/CbtAdminService";
+import { FaSpinner } from "react-icons/fa";
 
 interface AdminCbtUserTableProps {
   activeTab: "students" | "teachers";
@@ -7,6 +9,8 @@ interface AdminCbtUserTableProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  deleteUser: (userId: string) => void;
+  loading: boolean
 }
 
 const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
@@ -15,7 +19,10 @@ const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
   currentPage,
   totalPages,
   onPageChange,
+  deleteUser,
+  loading
 }) => {
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
@@ -50,7 +57,7 @@ const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
                 <button className="text-orange-500 hover:text-orange-600">
                   <Edit className="w-4 h-4" />
                 </button>
-                <button className="text-red-500 hover:text-red-600">
+                <button className="text-red-500 hover:text-red-600" onClick={() => deleteUser(user.teacherId)}>
                   <Trash2 className="w-4 h-4" />
                 </button>
               </td>
@@ -90,6 +97,12 @@ const AdminCbtUserTable: React.FC<AdminCbtUserTableProps> = ({
           Next
         </button>
       </div>
+
+      {loading && <div className="top-0 left-0 fixed z-50 w-full h-screen bg-black/20 flex flex-col justify-center items-center">
+        <FaSpinner className="animate-spin " size={25} />
+        <p>Loading</p>
+      </div>
+      }
     </div>
   );
 };

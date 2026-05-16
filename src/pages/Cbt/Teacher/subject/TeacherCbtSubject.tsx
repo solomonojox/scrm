@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import CbtSubjectTable from "./CbtSubjectTable";
 import CbtSubjectForm from "./CbtSubjectForm";
@@ -34,7 +34,7 @@ const TeacherCbtSubject: React.FC = () => {
 
     if (religionFilter !== 'all') {
       filtered = filtered.filter((cbtSubject: CbtSubjectType) =>
-        cbtSubject.subjectId?.toLowerCase() === religionFilter
+        cbtSubject.id?.toLowerCase() === religionFilter
       );
     }
 
@@ -80,7 +80,7 @@ const TeacherCbtSubject: React.FC = () => {
     if (selectAll) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(currentRecords.map((g: CbtSubjectType) => g.subjectId));
+      setSelectedIds(currentRecords.map((g: CbtSubjectType) => g.id));
     }
     setSelectAll(!selectAll);
   };

@@ -13,7 +13,7 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick }) => {
   const { cbtUser, logout } = useAuth()
     const navigate = useNavigate();
     const handleLogout = () => {
-      localStorage.removeItem("scrmToken");
+      localStorage.removeItem("cbtToken");
       logout();
       navigate("/cbt/login");
     };

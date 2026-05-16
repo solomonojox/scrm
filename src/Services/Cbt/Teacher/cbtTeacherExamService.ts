@@ -10,7 +10,7 @@ import cbtApi from "../cbtApi";
 export const cbtTeacherExamService = {
   createExam: async (examData: any) => {
     try {
-      const response = await cbtApi.post(`/api/Examination/Create`, examData);
+      const response = await cbtApi.post(`/api/Examination`, examData);
       return response.data;
     } catch (error: any) {
       throw new Error(error?.response?.data?.responseMessage || "Failed to create exam");
@@ -28,7 +28,7 @@ export const cbtTeacherExamService = {
 
   addExamQuestion: async (examData: any) => {
     try {
-      const response = await cbtApi.post(`/api/QuizQuestion/BulkCreate/bulk`, examData);
+      const response = await cbtApi.post(`/api/QuizQuestion/bulk`, examData);
       return response.data;
     } catch (error: any) {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add exam questions");

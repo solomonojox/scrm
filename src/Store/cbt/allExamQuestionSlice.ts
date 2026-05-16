@@ -32,7 +32,7 @@ const allExamQuestionSlice = createSlice({
     // UPDATED: payload is now the full paginated response
     fetchAllExamQuestionSuccess(state, action: PayloadAction<PaginatedExamResponse>) {
       state.loading = false;
-      state.listRecords = action.payload.result;
+      state.listRecords = action.payload;
       state.pageNumber = action.payload.pageNumber;
       state.pageSize = action.payload.pageSize;
       state.totalRecords = action.payload.totalRecords;

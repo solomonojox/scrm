@@ -12,7 +12,7 @@ export const cbtAdminService = {
 
   addStudent: async (eventsData) => {
     try {
-      const response = await cbtApi.post(`/api/Student/AddStudent`, eventsData);
+      const response = await cbtApi.post(`/api/Student`, eventsData);
       return response.data;
     } catch (error) {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
@@ -20,17 +20,13 @@ export const cbtAdminService = {
   },
 
   addTeacher: async (eventsData) => {
-    try {
-      const response = await cbtApi.post(`/api/Teacher/AddTeacher`, eventsData);
-      return response.data;
-    } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
-    }
+    const response = await cbtApi.post(`/api/Teacher`, eventsData);
+    return response.data;
   },
 
   getAllStudents: async (id) => {
     try {
-      const res = await cbtApi.get(`/api/Student/GetStudentsBySchool?schoolId=${id}`);
+      const res = await cbtApi.get(`/api/Student/school/${id}`);
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {
@@ -41,7 +37,7 @@ export const cbtAdminService = {
 
   getAllTeachers: async (id) => {
     try {
-      const res = await cbtApi.get(`/api/Teacher/GetTeachersBySchool/${id}`);
+      const res = await cbtApi.get(`/api/Teacher/school/${id}`);
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {
@@ -60,4 +56,9 @@ export const cbtAdminService = {
       throw error;
     }
   },
+
+  deleteTeacher: async (id) => {
+    const res = await cbtApi.delete(`/api/Teacher/${id}`)
+    return res.data.data
+  }
 };
