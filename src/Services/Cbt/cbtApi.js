@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const cbtApi = axios.create({
-  baseURL: "https://d52n02nk-7015.uks1.devtunnels.ms",
-  // baseURL: "https://educatquizapi.onrender.com",
+  // baseURL: "https://d52n02nk-7015.uks1.devtunnels.ms",
+  baseURL: "https://educatquizapi.onrender.com",
 });
 
 // Attach token to every request

@@ -165,11 +165,11 @@ const CbtLogin = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
-                  validateEmail(e.target.value);
+                  // validateEmail(e.target.value);
                 }}
                 placeholder="Enter Email"
                 className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                onBlur={() => validateEmail(email)}
+                // onBlur={() => validateEmail(email)}
               />
               {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
             </div>

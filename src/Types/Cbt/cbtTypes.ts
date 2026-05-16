@@ -29,7 +29,7 @@ export interface ExamQuestion {
   questionText: string;
   quizType: string;
   quizSubjectId: string;
-  options: {
+  answerOptions: {
     id: string;
     text: string;
     isCorrect: boolean;

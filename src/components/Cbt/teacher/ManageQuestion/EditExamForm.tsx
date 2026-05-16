@@ -153,7 +153,7 @@ const EditExamForm: React.FC<Props> = ({ exam, onDone }) => {
 
       const res = await cbtTeacherExamService.addExamQuestion({
         questions: mappedQuestions,
-        examId: exam.id,
+        examinationId: exam.id,
       });
 
       if (res.status === true) {
