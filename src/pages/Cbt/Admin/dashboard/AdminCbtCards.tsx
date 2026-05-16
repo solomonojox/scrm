@@ -41,36 +41,8 @@ const cardData = [
 ];
 
 const AdminCbtCards = () => {
-  const { cbtUser } = useAuth();
-  const dispatch = useDispatch<AppDispatch>();
-
   const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
-  const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
-
-  // Fetch students & teachers on mount
-  useEffect(() => {
-    if (!fetchedStudentLoading && cbtUser?.schoolId) {
-      fetchStudents();
-    }
-  }, [cbtUser?.schoolId]);
-
-  const fetchStudents = async () => {
-    dispatch(fetchStudentsStart());
-    dispatch(fetchTeacherStart());
-
-    try {
-      const data = await cbtStudentService.getAllBySchoolId(cbtUser?.schoolId);
-      const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
-
-      dispatch(fetchStudentsSuccess(data?.data));
-      dispatch(fetchTeacherSuccess(teachers?.data));
-    } catch (err) {
-      const msg = (err as Error).message;
-      dispatch(fetchStudentsFailure(msg));
-      dispatch(fetchTeacherFailure(msg));
-    }
-  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full ">
@@ -84,10 +56,10 @@ const AdminCbtCards = () => {
               <h2 className="text-md font-semibold">{title}</h2>
               <p className="text-2xl font-bold">
                 {title === "Total Users"
-                  ? `${fetchedStudentRecord.length + fetchedTeacherRecord.length}`
+                  ? `${fetchedStudentRecord?.length + fetchedTeacherRecord?.length}`
                   : title === "Total Teachers"
-                    ? fetchedTeacherRecord.length
-                    : fetchedStudentRecord.length}
+                    ? fetchedTeacherRecord?.length
+                    : fetchedStudentRecord?.length}
               </p>
             </div>
             <div className="mt-4">

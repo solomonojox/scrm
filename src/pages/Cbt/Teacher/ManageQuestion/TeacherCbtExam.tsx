@@ -28,6 +28,8 @@ const TeacherCbtExam: React.FC = () => {
   const fetchedLoading = useSelector((state: RootState) => state.getAllExamQuestion.loading);
   const error = useSelector((state: RootState) => state.getAllExamQuestion.error);
 
+  console.log(listRecords)
+
   const [currentView, setCurrentView] = useState<ViewMode>("list");
   const [selectedExam, setSelectedExam] = useState<AllExamQuestionType | null>(null);
 
@@ -42,6 +44,7 @@ const TeacherCbtExam: React.FC = () => {
       dispatch(fetchAllExamQuestionStart());
       try {
         const data = await cbtTeacherExamService.getExams(params);
+        console.log(data)
         dispatch(fetchAllExamQuestionSuccess(data));
       } catch (err) {
         dispatch(fetchAllExamQuestionFailure((err as Error).message));

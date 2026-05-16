@@ -56,14 +56,31 @@ const AdminCbtUserManagement = () => {
       const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
       const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
 
-      dispatch(fetchStudentsSuccess(data?.data));
-      dispatch(fetchTeacherSuccess(teachers?.data));
+      dispatch(fetchStudentsSuccess(data));
+      dispatch(fetchTeacherSuccess(teachers));
     } catch (err) {
       const msg = (err as Error).message;
       dispatch(fetchStudentsFailure(msg));
       dispatch(fetchTeacherFailure(msg));
     }
   };
+
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const deleteUser = async (userId: string) => {
+    setLoading(true)
+    if (activeTab === 'teachers') {
+      try {
+        const res = await cbtAdminService.deleteTeacher(userId)
+        console.log(res)
+        fetchStudents()
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }
 
   // Filter based on active tab
   const filteredRecords = useMemo(() => {
@@ -163,13 +180,15 @@ const AdminCbtUserManagement = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
+            deleteUser={deleteUser}
+            loading={loading}
           />
         )}
       </div>
 
       {/* Modal */}
       {showModal && (
-        <AdminCbtUserForm activeTab={activeTab} closeModal={() => setShowModal(false)} />
+        <AdminCbtUserForm activeTab={activeTab} closeModal={() => setShowModal(false)} onSuccess={fetchStudents} />
       )}
     </div>
   );

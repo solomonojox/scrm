@@ -2,7 +2,7 @@
 import { combineReducers } from "@reduxjs/toolkit";
 
 import guardianSlice from './Guardian/guardianSlice'
-import studentSlice from './Student/studentSlice'
+import Studentslice from './Student/studentSlice'
 import schoolFeeSlice from './schoolFeeSlice'
 import sessionSlice from './sessionSlice'
 import sessionTermSlice from './sessionTermSlice'
@@ -32,7 +32,7 @@ export const rootReducer = combineReducers({
   getSchoolFee: schoolFeeSlice,
   getSession: sessionSlice,
   getSessionTerm: sessionTermSlice,
-  getStudent: studentSlice,
+  getStudent: Studentslice,
   getTeacher: teacherSlice,
   getNews: NewsSlice,
   getEvents: EventSlice,

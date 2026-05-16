@@ -10,7 +10,7 @@ interface CbtSubjectFormProps {
 }
 
 const CbtSubjectForm: React.FC<CbtSubjectFormProps> = ({ onClose, onSessionAdded, editData }) => {
-  const { user } = useAuth();
+  const { cbtUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [formData, setFormData] = useState({
@@ -40,18 +40,19 @@ const CbtSubjectForm: React.FC<CbtSubjectFormProps> = ({ onClose, onSessionAdded
     setFormError("");
 
     const payload = {
-      teacherId: user?.id,
+      teacherId: cbtUser?.id,
+      schoolId: cbtUser?.schoolId,
       subjectName: formData.subjectName,
       description: formData.description,
     };
 
     try {
       if (editData) {
-        await teacherSubjectService.update(editData.subjectId, payload);
+        await teacherSubjectService.update(editData.id, payload);
         toast.success("Subject updated successfully!");
         onSessionAdded();
         setTimeout(() => {
-          onClose(); 
+          onClose();
           setFormData({ subjectName: "", description: "" });
         }, 2000);
       } else {

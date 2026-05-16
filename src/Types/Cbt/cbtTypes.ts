@@ -1,5 +1,5 @@
 export interface CbtSubjectType {
-  subjectId: string;
+  id: string;
   subjectName: string;
   description: string;
   teacherId: string;

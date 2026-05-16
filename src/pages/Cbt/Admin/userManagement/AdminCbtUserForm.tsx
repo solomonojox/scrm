@@ -28,7 +28,7 @@ interface AdminCbtUserFormProps {
 
 const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserFormProps) => {
   const { cbtUser } = useAuth();
-   const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstname: "",
@@ -47,6 +47,7 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
     // Student specific
     currentTerm: "",
     sessionId: "",
+    password: ""
   });
 
   const sessions = useSelector((state: RootState) => state.getSession.listRecords || []);
@@ -54,7 +55,7 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
   const teachers = useSelector((state: RootState) => state.getTeacher.listRecords || []) as Teacher[];
 
   useEffect(() => {
-    if(!fetchedLoading){
+    if (!fetchedLoading) {
       fetchSession();
     };
   }, []);
@@ -73,9 +74,9 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
 
   // Term options
   const termOptions: OptionType[] = [
-    { value: "1", label: "First Term" },
-    { value: "2", label: "Second Term" },
-    { value: "3", label: "Third Term" },
+    { value: "First Term", label: "First Term" },
+    { value: "Second Term", label: "Second Term" },
+    { value: "Third Term", label: "Third Term" },
   ];
 
   const sessionOptions = [
@@ -126,8 +127,9 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
           dateOfBirth: formData.dateOfBirth,
           homeAddress: formData.homeAddress,
           teacherId: formData.teacherId || "",
-          currentTerm: formData.currentTerm ? parseInt(formData.currentTerm) : 0,
+          currentTerm: formData.currentTerm || "",
           sessionId: formData.sessionId || "",
+          password: formData.password || ""
         };
 
         await cbtAdminService.addStudent(studentPayload);
@@ -146,6 +148,7 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
           employmentDate: formData.employmentDate,
           email: formData.email,
           username: formData.username,
+          password: formData.password || ""
         };
 
         await cbtAdminService.addTeacher(teacherPayload);
@@ -158,9 +161,18 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
       }
 
       closeModal();
-    } catch (error) {
-      console.error("Error adding user:", error);
-      alert(`Failed to add ${activeTab === "students" ? "student" : "teacher"}. Please try again.`);
+    } catch (error: any) {
+      const validationErrors = error?.response?.data?.errors;
+      console.log(validationErrors)
+
+      if (validationErrors) {
+        // Flatten and extract all error messages from the error object
+        const allErrors = Object.values(validationErrors as Record<string, string[]>).flat();
+        // console.log(allErrors[0]); // Show only the first error, or loop through if needed
+        alert(allErrors[0]);
+      } else {
+        alert(`Failed to add ${activeTab === "students" ? "student" : "teacher"}. Please try again.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -259,6 +271,7 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
             <>
               {renderSelectField("currentTerm", "Current Term", termOptions, true, 1)}
               {renderSelectField("sessionId", "Session", sessionOptions, true, 1)}
+              {renderInputField("password", "Password", "text", true, 2)}
               {renderSelectField("teacherId", "Assign Teacher", teacherOptions, false, 2)}
             </>
           )}
@@ -272,6 +285,7 @@ const AdminCbtUserForm = ({ activeTab, closeModal, onSuccess }: AdminCbtUserForm
               {renderInputField("stateOfOrigin", "State of Origin", "text", true, 1)}
               {renderInputField("religion", "Religion", "text", true, 1)}
               {renderInputField("employmentDate", "Employment Date", "date", true, 1)}
+              {renderInputField("password", "Password", "text", true, 1)}
             </>
           )}
 

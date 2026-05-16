@@ -12,7 +12,7 @@ export const cbtAdminService = {
 
   addStudent: async (eventsData) => {
     try {
-      const response = await cbtApi.post(`/api/Student/AddStudent`, eventsData);
+      const response = await cbtApi.post(`/api/Student`, eventsData);
       return response.data;
     } catch (error) {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
@@ -20,12 +20,8 @@ export const cbtAdminService = {
   },
 
   addTeacher: async (eventsData) => {
-    try {
-      const response = await cbtApi.post(`/api/Teacher/AddTeacher`, eventsData);
-      return response.data;
-    } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
-    }
+    const response = await cbtApi.post(`/api/Teacher`, eventsData);
+    return response.data;
   },
 
   getAllStudents: async (id) => {
@@ -60,4 +56,9 @@ export const cbtAdminService = {
       throw error;
     }
   },
+
+  deleteTeacher: async (id) => {
+    const res = await cbtApi.delete(`/api/Teacher/${id}`)
+    return res.data.data
+  }
 };

@@ -54,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const decoded = jwtDecode<Partial<any>>(cbtToken);
         const cbtUserData = {
+          id: decoded.sub || "",
           email: decoded.email || "",
           role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "",
           schoolReg: decoded.schoolReg || "",
@@ -104,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("schoolId", decoded.schoolId);
 
     setCbtUser({
-      // id: decoded.userId || "",
+      id: decoded.sub || "",
       email: decoded.email || "",
       role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "",
       schoolReg: decoded.schoolReg || "",

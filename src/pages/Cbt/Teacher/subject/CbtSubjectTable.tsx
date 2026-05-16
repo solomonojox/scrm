@@ -70,7 +70,7 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
 
     const data = records.map((cbtSubject) => [
       cbtSubject.description,
-      cbtSubject.subjectId,
+      cbtSubject.id,
       cbtSubject.subjectName,
       cbtSubject.teacherId,
     ]);
@@ -202,7 +202,7 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
                 />
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              <th className="p-3 min-w-30">Subject Id</th>
+              {/* <th className="p-3 min-w-30">Subject Id</th> */}
               <th className="p-3 min-w-37.5">Subject Name</th>
               <th className="p-3 min-w-37.5">Description</th>
               <th className="p-3 min-w-37.5">Action</th>
@@ -224,12 +224,12 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
                   <td className="p-3">
                     <input
                       type="checkbox"
-                      checked={selectedIds.includes(s.subjectId)}
-                      onChange={() => onToggleCheckbox(s.subjectId)}
+                      checked={selectedIds.includes(s.id)}
+                      onChange={() => onToggleCheckbox(s.id)}
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
-                  <td className="p-3">{s.subjectId}</td>
+                  {/* <td className="p-3">{s.id}</td> */}
                   <td className="p-3">{s.subjectName}</td>
                   <td className="p-3">{s.description}</td>
                   <td className="p-3 flex gap-3">
@@ -245,7 +245,7 @@ const CbtSubjectTable: React.FC<cbtSubjectTableProps> = ({
                     </span>
                     <FaTrash
                       className="cursor-pointer text-red-600 hover:text-red-800"
-                      onClick={() => onDelete(s.subjectId)}
+                      onClick={() => onDelete(s.id)}
                     />
                   </td>
                 </tr>

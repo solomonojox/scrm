@@ -43,31 +43,32 @@ const AdminCbtTable = () => {
 
   const fetchedStudentRecord = useSelector((state: RootState) => state.getStudent.listRecords);
   const fetchedTeacherRecord = useSelector((state: RootState) => state.getTeacher.listRecords);
-  const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
+  console.log(fetchedStudentRecord)
+  // const fetchedStudentLoading = useSelector((state: RootState) => state.getStudent.loading);
 
   // Fetch students & teachers on mount
-  useEffect(() => {
-    if (!fetchedStudentLoading && cbtUser?.schoolId) {
-      fetchStudents();
-    }
-  }, [cbtUser?.schoolId]);
+  // useEffect(() => {
+  //   if (!fetchedStudentLoading && cbtUser?.schoolId) {
+  //     fetchStudents();
+  //   }
+  // }, [cbtUser?.schoolId]);
 
-  const fetchStudents = async () => {
-    dispatch(fetchStudentsStart());
-    dispatch(fetchTeacherStart());
+  // const fetchStudents = async () => {
+  //   dispatch(fetchStudentsStart());
+  //   dispatch(fetchTeacherStart());
 
-    try {
-      const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
-      const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
+  //   try {
+  //     const data = await cbtAdminService.getAllStudents(cbtUser?.schoolId);
+  //     const teachers = await cbtAdminService.getAllTeachers(cbtUser?.schoolId);
 
-      dispatch(fetchStudentsSuccess(data?.data));
-      dispatch(fetchTeacherSuccess(teachers?.data));
-    } catch (err) {
-      const msg = (err as Error).message;
-      dispatch(fetchStudentsFailure(msg));
-      dispatch(fetchTeacherFailure(msg));
-    }
-  };
+  //     dispatch(fetchStudentsSuccess(data?.data));
+  //     dispatch(fetchTeacherSuccess(teachers?.data));
+  //   } catch (err) {
+  //     const msg = (err as Error).message;
+  //     dispatch(fetchStudentsFailure(msg));
+  //     dispatch(fetchTeacherFailure(msg));
+  //   }
+  // };
 
   return (
     <div className="border shadow-md rounded-lg">

@@ -46,10 +46,10 @@ const ExamManagement: React.FC<Props> = ({
 
   // Derive unique filter options from current page data
   // (or you can hardcode known values for exam types / terms)
-  const subjects = useMemo(() => Array.from(new Set(exams.map((e) => e.subjectName))).sort(), [exams]);
-  const examTypes = useMemo(() => Array.from(new Set(exams.map((e) => e.examType))).sort(), [exams]);
-  const terms = useMemo(() => Array.from(new Set(exams.map((e) => e.term))).sort(), [exams]);
-  const statuses = useMemo(() => Array.from(new Set(exams.map((e) => e.status))).sort(), [exams]);
+  const subjects = useMemo(() => Array.from(new Set(exams?.map((e) => e.subjectName)))?.sort(), [exams]);
+  const examTypes = useMemo(() => Array.from(new Set(exams?.map((e) => e.examType)))?.sort(), [exams]);
+  const terms = useMemo(() => Array.from(new Set(exams?.map((e) => e.term)))?.sort(), [exams]);
+  const statuses = useMemo(() => Array.from(new Set(exams?.map((e) => e.status)))?.sort(), [exams]);
 
   const pushFilters = useCallback(
     (overrides: Partial<ExamFilterParams>) => {
@@ -153,9 +153,9 @@ const ExamManagement: React.FC<Props> = ({
 
   const stats = useMemo(() => ({
     total: totalRecords,
-    draft: exams.filter((e) => e.status.toUpperCase() === "DRAFT").length,
-    active: exams.filter((e) => e.status.toUpperCase() === "ACTIVE").length,
-    completed: exams.filter((e) => e.status.toUpperCase() === "COMPLETED").length,
+    draft: exams?.filter((e) => e.status.toUpperCase() === "DRAFT").length,
+    active: exams?.filter((e) => e.status.toUpperCase() === "ACTIVE").length,
+    completed: exams?.filter((e) => e.status.toUpperCase() === "COMPLETED").length,
   }), [exams, totalRecords]);
 
   return (
@@ -166,7 +166,7 @@ const ExamManagement: React.FC<Props> = ({
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Exam Management</h2>
             <p className="text-gray-500 text-sm mt-1">
-              Showing {exams.length} of {totalRecords} exams
+              Showing {exams?.length} of {totalRecords} exams
               <span className="ml-1 text-orange-500">(Page {currentPage} of {totalPages})</span>
             </p>
           </div>
@@ -271,7 +271,7 @@ const ExamManagement: React.FC<Props> = ({
                 <tr>
                   <td colSpan={13} className="text-center py-12 text-gray-400">Loading…</td>
                 </tr>
-              ) : exams.length === 0 ? (
+              ) : exams?.length === 0 ? (
                 <tr>
                   <td colSpan={13} className="text-center py-12 text-gray-500">
                     <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
@@ -280,7 +280,7 @@ const ExamManagement: React.FC<Props> = ({
                   </td>
                 </tr>
               ) : (
-                exams.map((exam) => (
+                exams?.map((exam) => (
                   <tr key={exam.id} className="hover:bg-orange-50 transition-colors border-b border-orange-100">
                     <td className="p-3 max-w-48"><div className="font-medium text-gray-800 truncate">{exam.title}</div></td>
                     <td className="p-3 text-gray-700 whitespace-nowrap">{exam.subjectName}</td>
