@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { student } from "../../../constants/StudentCbtConstant";
 import Icon from "../../../components/Cbt/student/UI/Icon";
+import { useAuth } from "../../../Context/Auth/useAuth";
 
 interface StudentCbtTopNavProps {
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +24,7 @@ const StudentCbtTopNav: React.FC<StudentCbtTopNavProps> = ({
   setCollapsed,
   setMobileOpen,
 }) => {
+  const { cbtUser } = useAuth()
   const navigate = useNavigate();
   const location = useLocation();
   const [profileMenuOpen, setProfileMenuOpen] = React.useState(false);
@@ -30,10 +32,10 @@ const StudentCbtTopNav: React.FC<StudentCbtTopNavProps> = ({
   const title =
     pageNames[location.pathname] ?? "Student Portal";
 
-    const handleOpenProfileMenu = () => {
-     // Implement profile menu logic here (e.g., open a dropdown with options like logouts and settings)
-        setProfileMenuOpen((open) => !open);
-    }
+  const handleOpenProfileMenu = () => {
+    // Implement profile menu logic here (e.g., open a dropdown with options like logouts and settings)
+    setProfileMenuOpen((open) => !open);
+  }
 
   return (
     <header className="bg-white border-b border-gray-100 px-4 md:px-6 py-4 flex items-center justify-between shrink-0 z-10">
@@ -88,7 +90,7 @@ const StudentCbtTopNav: React.FC<StudentCbtTopNavProps> = ({
           </div>
 
           <span className="text-sm font-semibold text-gray-800 hidden sm:block">
-            {student.name.split(" ")[0]}
+            {cbtUser?.email}
           </span>
         </button>
 

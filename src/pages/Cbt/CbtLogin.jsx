@@ -64,7 +64,7 @@ const CbtLogin = () => {
 
   // Combined form validity: use error states and field values
   const isFormValid =
-    !emailError &&
+    // !emailError &&
     !passwordError &&
     !regNumberError &&
     email &&
@@ -74,10 +74,10 @@ const CbtLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     // Validate all fields before submit
-    const validEmail = validateEmail(email);
+    // const validEmail = validateEmail(email);
     const validPassword = validatePassword(password);
     const validRegNumber = validateRegNumber(schoolRegistrationNumber);
-    if (!validEmail || !validPassword || !validRegNumber) return;
+    if (!validPassword || !validRegNumber) return;
 
     setLoading(true);
     setError(null);
@@ -161,7 +161,7 @@ const CbtLogin = () => {
               </label>
               <input
                 id="email"
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);

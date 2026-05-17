@@ -34,7 +34,7 @@ const TeacherCbtExam: React.FC = () => {
   // Backend filter state lives here so it can be passed to ExamManagement
   const [filters, setFilters] = useState<ExamFilterParams>({
     pageNumber: 1,
-    pageSize: 10,
+    pageSize: 100,
   });
 
   const fetchExams = useCallback(

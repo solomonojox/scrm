@@ -58,5 +58,16 @@ export const cbtStudentService = {
     //   // console.error("UploadStudentPhoto error:", error?.response?.data?.message || error.message);
     //   throw error;
     // }
+  },
+
+  startExam: async (studentId, examId) => {
+    const res = await cbtApi.post(`/api/CbtStudent/start/${studentId}/${examId}`)
+
+    return res.data
+  },
+
+  getExamByExamId: async (examinationId) => {
+    const res = await cbtApi.get(`/api/ExaminationQuestion/examination/${examinationId}`)
+    return res.data
   }
 };
