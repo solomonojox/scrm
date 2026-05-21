@@ -105,6 +105,10 @@ import { NappsChapterAdminLayout } from "./layouts/NappsChapterAdminLayout";
 import NappsChapterAdminSchool from "./pages/napps/chapter-admin/NappsChapterAdminSchool";
 import NappsChapterAdminRevenue from "./pages/napps/chapter-admin/NappsChapterAdminRevenue";
 import NappsChapterMessages from "./pages/napps/chapter-admin/NappsChapterMessages";
+import AdminCbtExaminersPage from "./pages/Cbt/Admin/examiner/AdminCbtExaminersPage";
+import AdminCbtExaminationsPage from "./pages/Cbt/Admin/examination/AdminCbtExaminationsPage";
+import AdminCbtStudentsPage from "./pages/Cbt/Admin/student/AdminCbtStudentPage";
+import AdminCbtTeachersPage from "./pages/Cbt/Admin/Teacher/AdminCbtTeachersPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -255,6 +259,10 @@ function App() {
         }
       >
         <Route path="/cbt/admin/dashboard" element={<AdminCbtDashboard />} />
+        <Route path="/cbt/admin/examiners" element={<AdminCbtExaminersPage />} />
+        <Route path="/cbt/admin/teachers" element={<AdminCbtTeachersPage />} />
+        <Route path="/cbt/admin/students" element={<AdminCbtStudentsPage />} />
+        <Route path="/cbt/admin/examinations" element={<AdminCbtExaminationsPage />} />
         <Route path="/cbt/admin/userManagement" element={<AdminCbtUserManagement />} />
       </Route>
 
