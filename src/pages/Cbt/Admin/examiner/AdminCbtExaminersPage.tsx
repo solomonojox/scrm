@@ -1,18 +1,19 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
-import {
-  Badge,
-  Btn,
-  ConfirmDialog,
-  Modal,
-} from "../../../../components/ui/CbtSharedComponents";
-
+import { Badge, Btn, ConfirmDialog, Modal } from "../../../../components/ui/CbtSharedComponents";
 import { Icons } from "../../../../assets/icons/Icon";
-
 import AdminCbtExaminersTable from "./AdminCbtExaminersTable";
 import AdminCbtExaminersForm from "./AdminCbtExaminersForm";
 import { useAuth } from "../../../../Context/Auth/useAuth";
 import { AdminCbtExaminerService } from "../../../../Services/Cbt/Admin/examiner/AdminCbtExaminerService";
+import { AppContext } from "../../../../Context/AppContext";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAdminCbtExaminerFailure,
+  fetchAdminCbtExaminerStart,
+  fetchAdminCbtExaminerSuccess,
+} from "../../../../Store/cbt/examiner/adminCbtExaminerSlice";
 
 export interface Examiner {
   id?: string;
@@ -39,46 +40,67 @@ const initialFormState: ExaminerForm = {
 
 export default function AdminCbtExaminersPage() {
   const { cbtUser } = useAuth();
-
-  const [examiners, setExaminers] = useState<Examiner[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { notifySuccess, notifyError } = useContext(AppContext);
+  
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState<ExaminerForm>(initialFormState);
   const [editing, setEditing] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [fetching, setFetching] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const fetchedAdminCbtExaminerRecord = useSelector(
+    (state: RootState) => state.getAdminCbtExaminers.listRecords,
+  );
+  const fetchedAdminCbtExaminerLoading = useSelector(
+    (state: RootState) => state.getAdminCbtExaminers.loading,
+  );
+ 
 
+  // Fetch examiners on mount or when schoolId changes
   useEffect(() => {
-    const fetchExaminers = async () => {
-      if (!cbtUser?.schoolId) return;
-
-      setFetching(true);
-      try {
-        const data = await AdminCbtExaminerService.getBySchool(cbtUser.schoolId);
-        setExaminers(data);
-      } catch (err) {
-        console.error("Failed to fetch examiners:", err);
-      } finally {
-        setFetching(false);
-      }
-    };
-
-    fetchExaminers();
+    if (cbtUser?.schoolId) {
+      fetchExaminers();
+    }
   }, [cbtUser?.schoolId]);
 
-  const filtered = useMemo(() => {
-    return examiners.filter((e) =>
-      `${e.fullname} ${e.email} ${e.schoolId} ${e.isActive}`
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
-  }, [examiners, search]);
+  const fetchExaminers = async () => {
+    if (!cbtUser?.schoolId) return;
+    setLoading(true);
+    dispatch(fetchAdminCbtExaminerStart());
+    
+    try {
+      const examiners = await AdminCbtExaminerService.getBySchool(cbtUser.schoolId);
+      dispatch(fetchAdminCbtExaminerSuccess(examiners));
+    } catch (err) {
+      const msg = (err as Error).message;
+      dispatch(fetchAdminCbtExaminerFailure(msg));
+      notifyError(`Failed to fetch examiners: ${msg}`);
+    }finally {
+      setLoading(false);
+    }
+  };
 
-  const openAdd = () => {
+  const resetForm = () => {
     setForm({ ...initialFormState, schoolId: cbtUser?.schoolId ?? "" });
     setEditing(null);
+  };
+
+  const filtered = useMemo(() => {
+    const searchTerm = search.toLowerCase();
+    return fetchedAdminCbtExaminerRecord.filter((e) =>
+      e.fullname.toLowerCase().includes(searchTerm) ||
+      e.email.toLowerCase().includes(searchTerm) ||
+      e.schoolId.toLowerCase().includes(searchTerm) ||
+      (e.isActive ? "active" : "inactive").includes(searchTerm)
+    );
+  }, [fetchedAdminCbtExaminerRecord, search]);
+
+  const openAdd = () => {
+    resetForm();
     setModal(true);
   };
 
@@ -86,7 +108,7 @@ export default function AdminCbtExaminersPage() {
     setForm({
       fullname: examiner.fullname,
       email: examiner.email,
-      password: "",
+      password: "", // Password field will be optional in edit mode
       schoolId: examiner.schoolId,
     });
     setEditing(examiner.id ?? null);
@@ -94,31 +116,42 @@ export default function AdminCbtExaminersPage() {
   };
 
   const save = async () => {
+    if (!form.fullname.trim() || !form.email.trim()) {
+      notifyError("Please fill in all required fields");
+      return;
+    }
+
+    if (!editing && !form.password.trim()) {
+      notifyError("Password is required for new examiners");
+      return;
+    }
+
     setSubmitting(true);
+    
     try {
       if (editing) {
-        const updated = await AdminCbtExaminerService.update(editing, {
-          fullname: form.fullname,
-          email: form.email,
+        await AdminCbtExaminerService.update(editing, {
+          fullname: form.fullname.trim(),
+          email: form.email.trim(),
         });
-        setExaminers((prev) =>
-          prev.map((e) => (e.id === editing ? { ...e, ...updated } : e))
-        );
+        notifySuccess("Examiner updated successfully.");
       } else {
-        const created = await AdminCbtExaminerService.create({
-          fullname: form.fullname,
-          email: form.email,
+        await AdminCbtExaminerService.create({
+          fullname: form.fullname.trim(),
+          email: form.email.trim(),
           password: form.password,
           schoolId: cbtUser?.schoolId ?? "",
         });
-        setExaminers((prev) => [...prev, created]);
+        notifySuccess("Examiner created successfully.");
       }
-
+      
+      await fetchExaminers(); // Ensure fresh data after operation
       setModal(false);
-      setForm({ ...initialFormState, schoolId: cbtUser?.schoolId ?? "" });
-      setEditing(null);
+      resetForm();
     } catch (err) {
       console.error("Examiner save failed:", err);
+      const errorMessage = (err as Error).message;
+      notifyError(`Failed to ${editing ? 'update' : 'create'} examiner: ${errorMessage}`);
     } finally {
       setSubmitting(false);
     }
@@ -128,14 +161,31 @@ export default function AdminCbtExaminersPage() {
     if (!deleteTarget) return;
 
     setDeleting(true);
+    
     try {
       await AdminCbtExaminerService.delete(deleteTarget);
-      setExaminers((prev) => prev.filter((e) => e.id !== deleteTarget));
+      await fetchExaminers(); // Refresh the list
       setDeleteTarget(null);
+      notifySuccess("Examiner deleted successfully.");
     } catch (err) {
       console.error("Delete failed:", err);
+      const errorMessage = (err as Error).message;
+      notifyError(`Failed to delete examiner: ${errorMessage}`);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    if (!submitting) {
+      setModal(false);
+      resetForm();
+    }
+  };
+
+  const handleDeleteDialogClose = () => {
+    if (!deleting) {
+      setDeleteTarget(null);
     }
   };
 
@@ -145,12 +195,14 @@ export default function AdminCbtExaminersPage() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-black text-gray-900">Examiners</h1>
-          <p className="mt-0.5 text-sm text-gray-500">
-            Manage exam supervisors & examiners
-          </p>
+          <p className="mt-0.5 text-sm text-gray-500">Manage exam supervisors & examiners</p>
         </div>
 
-        <Btn onClick={openAdd} disabled={fetching}>
+        <Btn 
+          onClick={openAdd} 
+          disabled={fetchedAdminCbtExaminerLoading}
+          aria-label="Add new examiner"
+        >
           <Icons.Plus />
           Add Examiner
         </Btn>
@@ -158,7 +210,7 @@ export default function AdminCbtExaminersPage() {
 
       {/* Search & Table */}
       <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex gap-3 border-b border-gray-100 p-4">
+        <div className="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center">
           <div className="relative flex-1">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
               <Icons.Search />
@@ -166,39 +218,42 @@ export default function AdminCbtExaminersPage() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search examiners..."
+              placeholder="Search examiners by name, email, or school..."
               className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              aria-label="Search examiners"
             />
           </div>
 
-          <Badge color="orange">{filtered.length} examiners</Badge>
+          <Badge color="orange" className="whitespace-nowrap">
+            {filtered.length} / {fetchedAdminCbtExaminerRecord.length} examiners
+          </Badge>
         </div>
 
         <AdminCbtExaminersTable
           examiners={filtered as (Examiner & { id: string })[]}
           onEdit={openEdit}
           onDelete={(id) => setDeleteTarget(id)}
-          fetching={fetching}
+          fetching={loading}
         />
       </div>
 
-      {/* Modal */}
+      {/* Add/Edit Modal */}
       <Modal
         open={modal}
-        onClose={() => !submitting && setModal(false)}
+        onClose={handleModalClose}
         title={editing ? "Edit Examiner" : "Add New Examiner"}
       >
         <AdminCbtExaminersForm
           form={form}
           setForm={setForm}
           editing={editing}
-          onCancel={() => setModal(false)}
+          onCancel={handleModalClose}
           onSubmit={save}
           submitting={submitting}
         />
       </Modal>
 
-      {/* Delete Dialog */}
+      {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={!!deleteTarget}
         onClose={() => !deleting && setDeleteTarget(null)}

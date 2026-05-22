@@ -54,7 +54,6 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick, isSidebarOpen }) =
     // Implement theme switching logic here
   };
 
-  console.log("CBT User in Navbar:", cbtUser); // Debugging line
 
   // Get user initials
   const getUserInitials = () => {
@@ -74,11 +73,11 @@ const AdminCbtNavbar: React.FC<NavbarProps> = ({ onMenuClick, isSidebarOpen }) =
     }
   };
 
-  const notifications = [
-    { id: 1, title: "New exam scheduled", time: "5 min ago", read: false },
-    { id: 2, title: "Student submitted exam", time: "1 hour ago", read: false },
-    { id: 3, title: "System update completed", time: "3 hours ago", read: true },
-  ];
+  // const notifications = [
+  //   { id: 1, title: "New exam scheduled", time: "5 min ago", read: false },
+  //   { id: 2, title: "Student submitted exam", time: "1 hour ago", read: false },
+  //   { id: 3, title: "System update completed", time: "3 hours ago", read: true },
+  // ];
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
