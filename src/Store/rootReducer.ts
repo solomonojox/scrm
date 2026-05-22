@@ -23,6 +23,9 @@ import guardianTransactionsSlice from "./Guardian/transactionSlice"
 import CbtSubjectSlice from "./cbt/cbtSlice"
 import nappsChapterSlice from "./nappsChapterSlice";
 import AllExamQuestionSlice from "./cbt/allExamQuestionSlice";
+import AdminCbtStudentslice from "./cbt/admin/student/adminCbtStudentSlice";
+import AdminCbtTeacherslice from "./cbt/admin/teacher/adminCbtTeacherSlice";
+import AdminCbtExaminerslice from "./cbt/examiner/adminCbtExaminerSlice";
 
 
 
@@ -49,4 +52,7 @@ export const rootReducer = combineReducers({
   getCbtSubject: CbtSubjectSlice,
   getNappsChapter: nappsChapterSlice,
   getAllExamQuestion: AllExamQuestionSlice,
+  getAdminCbtStudents: AdminCbtStudentslice,
+  getAdminCbtTeachers: AdminCbtTeacherslice,
+  getAdminCbtExaminers: AdminCbtExaminerslice,
 });
