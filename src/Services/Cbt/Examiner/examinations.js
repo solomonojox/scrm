@@ -67,8 +67,19 @@ export const ExaminerExamService = {
 
   },
 
+  getStudents: async (schoolId) => {
+    const response = await cbtApi.get(`/api/Student/school/${schoolId}`)
+    return response.data.data
+
+  },
+
   assignTeachersToExam: async (data) => {
     const response = await cbtApi.post(`${API}/teacher-assignments`, data);
     return response.data
-  }
+  },
+
+  assignStudentsToExam: async (data) => {
+    const response = await cbtApi.post(`${API}/student-assignments/bulk`, data);
+    return response.data
+  },
 };

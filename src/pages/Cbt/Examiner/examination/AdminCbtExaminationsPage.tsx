@@ -9,6 +9,8 @@ import { AdminCbtExaminerService } from "../../../../Services/Cbt/Admin/examiner
 import { AppContext } from "../../../../Context/AppContext";
 import { ExaminerExamService } from "../../../../Services/Cbt/Examiner/examinations";
 import { toast } from "react-toastify";
+import AssignTeachers from "./modals/AssignTeachers";
+import AssignStudents from "./modals/AssignStudents";
 
 export type ExamType = "WAEC" | "NECO" | "JAMB" | "GCE" | "INTERNAL";
 export type ExamTerm = "FIRST" | "SECOND" | "THIRD";
@@ -40,6 +42,7 @@ export interface Examination {
   examinerId?: string | null;
   questions: unknown[];
   assignedTeachers?: assignedTeachers[]
+  assignedStudents?: Student[]
 }
 
 type assignedTeachers = {
@@ -69,6 +72,20 @@ export type ExaminationForm = {
   passingScore: string;
   instructions: string;
 };
+
+export interface Student {
+  studentId: string;
+  studentNo: string;
+  firstname: string;
+  lastname: string;
+  gender: string;
+  dateOfBirth: string;
+  homeAddress: string;
+  admissionSession: string;
+  currentTerm: string;
+  imagePath: string;
+  schoolId: string;
+}
 
 export const initialExaminationForm: ExaminationForm = {
   title: "",
@@ -104,11 +121,16 @@ export default function ExaminarCbtExaminationsPage() {
 
   // Assign Teacher modal
   const [assignModal, setAssignModal] = useState(false);
+  const [assignStudentModal, setAssignStudentModal] = useState(false);
   const [assignTarget, setAssignTarget] = useState<Examination | null>(null);
   const [teachers, setTeachers] = useState<Examiner[]>([]);
-  const [fetchingExaminers, setFetchingExaminers] = useState(false);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [fetchingTeachers, setFetchingTeachers] = useState(false);
+  const [fetchingStudents, setFetchingStudents] = useState(false);
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [assigning, setAssigning] = useState(false);
+  console.log(selectedStudents)
 
   // Inline action loading states keyed by exam id
   const [togglingPublish, setTogglingPublish] = useState<string | null>(null);
@@ -153,26 +175,45 @@ export default function ExaminarCbtExaminationsPage() {
   }, [cbtUser?.schoolId]);
 
   /* ── Fetch examiners for assign modal ── */
-  const openAssignModal = async (exam: Examination) => {
+  const openAssignModal = async (exam: Examination, type: "teacher" | "student") => {
     setAssignTarget(exam);
 
     const preSelectedIds = exam.assignedTeachers?.map(t => t.teacherId) || [];
     setSelectedTeachers(preSelectedIds);
 
-    setAssignModal(true);
-    setFetchingExaminers(true);
-    try {
-      const data = await ExaminerExamService.getTeachers(cbtUser?.schoolId ?? "");
-      setTeachers(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setFetchingExaminers(false);
+    if (type === "teacher") {
+      setAssignModal(true);
+      setFetchingTeachers(true);
+      try {
+        const data = await ExaminerExamService.getTeachers(cbtUser?.schoolId ?? "");
+        setTeachers(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetchingTeachers(false);
+      }
+    } else if (type === "student") {
+      setAssignStudentModal(true);
+      setFetchingStudents(true);
+      try {
+        const data = await ExaminerExamService.getStudents(cbtUser?.schoolId ?? "");
+        setStudents(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetchingStudents(false);
+      }
     }
   };
 
   const toggleTeacherSelection = (id: string) => {
     setSelectedTeachers((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+    );
+  };
+
+  const toggleStudentSelection = (id: string) => {
+    setSelectedStudents((prev) =>
       prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
     );
   };
@@ -198,11 +239,42 @@ export default function ExaminarCbtExaminationsPage() {
       setAssignModal(false);
       setAssignTarget(null);
       setSelectedTeachers([]);
-      toast.success(`${selectedTeachers.length} examiner(s) assigned successfully`);
+      toast.success(`${selectedTeachers.length} teacher(s) assigned successfully`);
       fetchExaminations(1)
     } catch (err) {
       console.error(err);
       toast.error("Failed to assign teachers");
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const assignmentStudents = async () => {
+    if (!assignTarget) return;
+    setAssigning(true);
+    try {
+      // Assign multiple selected examiners
+      const payload = {
+        examinationId: assignTarget.id,
+        studentIds: selectedStudents,
+      }
+      console.log(payload)
+      await ExaminerExamService.assignStudentsToExam(payload);
+
+      // Update the examination with the first selected teacher (or null if none)
+      setExaminations((prev) =>
+        prev.map((e) =>
+          e.id === assignTarget.id ? { ...e, examinerId: selectedTeachers[0] ?? null } : e,
+        ),
+      );
+      setAssignStudentModal(false);
+      setAssignTarget(null);
+      setSelectedStudents([]);
+      toast.success(`${selectedTeachers.length} student(s) assigned successfully`);
+      fetchExaminations(1)
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to assign students");
     } finally {
       setAssigning(false);
     }
@@ -509,104 +581,29 @@ export default function ExaminarCbtExaminationsPage() {
       </Modal>
 
       {/* Assign teachers modal - Multiple Selection */}
-      <Modal
-        open={assignModal}
-        onClose={() => !assigning && setAssignModal(false)}
-        title={`Assign Teachers — ${assignTarget?.title ?? ""}`}
-      >
-        <div className="space-y-4">
-          {fetchingExaminers ? (
-            <div className="flex flex-col items-center gap-3 py-10">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
-              <p className="text-sm text-gray-400">Loading examiners…</p>
-            </div>
-          ) : teachers.length === 0 ? (
-            <p className="py-8 text-center text-sm text-gray-400">
-              No examiners found for this school.
-            </p>
-          ) : (
-            <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
-              {teachers.map((teacher) => {
-                const isAlreadyAssigned = assignTarget?.assignedTeachers?.some(t => t.teacherId === teacher.teacherId) || false;
-                const selected = selectedTeachers.includes(teacher.teacherId);
-                const initials = teacher.firstname
-                  ?.split(" ")
-                  ?.map((n) => n[0])
-                  ?.slice(0, 2)
-                  ?.join("");
-                const hue =
-                  teacher?.firstname?.split("")?.reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
-                return (
-                  <button
-                    key={teacher.teacherId}
-                    onClick={() => !isAlreadyAssigned && toggleTeacherSelection(teacher.teacherId)}
-                    className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${selected
-                      ? "border-orange-300 bg-orange-50 ring-2 ring-orange-200"
-                      : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
-                      } ${isAlreadyAssigned ? "opacity-60 cursor-not-allowed" : ""}`}
-                  >
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xs font-black text-white"
-                      style={{ background: `hsl(${hue},65%,52%)` }}
-                    >
-                      {initials}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-900">{teacher.firstname} {teacher.lastname}</p>
-                      <p className="text-xs text-gray-400">{teacher.email}</p>
-                      {isAlreadyAssigned && (
-                        <p className="text-xs text-orange-500 mt-0.5">Already assigned</p>
-                      )}
-                    </div>
-                    <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${selected ? "border-orange-500 bg-orange-500" : "border-gray-300"
-                        }`}
-                    >
-                      {selected && (
-                        <svg
-                          className="h-3 w-3 text-white"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={3}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+      <AssignTeachers
+        assignModal={assignModal}
+        assigning={assigning}
+        setAssignModal={setAssignModal}
+        toggleSelection={toggleTeacherSelection}
+        assignTarget={assignTarget}
+        fetchingTeachers={fetchingTeachers}
+        teachers={teachers}
+        selectedTeachers={selectedTeachers}
+        saveAssignment={saveAssignment}
+      />
 
-          {selectedTeachers.length > 0 && (
-            <p className="text-xs font-medium text-orange-600">
-              {selectedTeachers.length} examiner{selectedTeachers.length > 1 ? "s" : ""} selected
-            </p>
-          )}
-
-          <div className="h-px bg-gray-100" />
-          <div className="flex gap-3">
-            <Btn
-              variant="outline"
-              onClick={() => setAssignModal(false)}
-              disabled={assigning}
-              className="flex-1"
-            >
-              Cancel
-            </Btn>
-            <Btn
-              onClick={saveAssignment}
-              disabled={assigning || selectedTeachers.length === 0}
-              loading={assigning}
-              className="flex-1"
-            >
-              {assigning ? "Assigning…" : `Assign ${selectedTeachers.length > 0 ? selectedTeachers.length : ""} Examiner${selectedTeachers.length !== 1 ? "s" : ""}`}
-            </Btn>
-          </div>
-        </div>
-      </Modal>
+      <AssignStudents
+        assignModal={assignStudentModal}
+        assigning={assigning}
+        setAssignModal={setAssignStudentModal}
+        toggleSelection={toggleStudentSelection}
+        assignTarget={assignTarget}
+        fetchingStudents={fetchingStudents}
+        students={students}
+        selectedStudents={selectedStudents}
+        saveAssignment={assignmentStudents}
+      />
 
       {/* Delete dialog */}
       <ConfirmDialog

@@ -1,12 +1,13 @@
 import { Btn, Badge } from "../../../../components/ui/CbtSharedComponents";
 import { Icons } from "../../../../assets/icons/Icon";
 import { Examination, ExamStatus, ExamType } from "./AdminCbtExaminationsPage";
+import { Users, Users2 } from "lucide-react";
 
 interface Props {
   examinations: Examination[];
   onEdit: (exam: Examination) => void;
   onDelete: (id: string) => void;
-  onAssign: (exam: Examination) => void;
+  onAssign: (exam: Examination, type: "teacher" | "student") => void;
   onTogglePublish: (exam: Examination) => void;
   onToggleActivate: (exam: Examination) => void;
   togglingPublish: string | null;
@@ -179,11 +180,21 @@ export default function AdminCbtExaminationTable({
                     <Btn
                       size="sm"
                       variant="ghost"
-                      onClick={() => onAssign(exam)}
+                      onClick={() => onAssign(exam, 'teacher')}
                       title="Assign teacher"
                       className="text-blue-800 hover:text-blue-600"
                     >
-                      <Icons.Users />
+                      <Users2 className="text-blue-800 hover:text-blue-600"/>
+                    </Btn>
+
+                    <Btn
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onAssign(exam, 'student')}
+                      title="Assign students"
+                      className="text-blue-800 hover:text-blue-600"
+                    >
+                      <Users className="text-pink-800 hover:text-pink-600" />
                     </Btn>
 
                     {/* View */}
