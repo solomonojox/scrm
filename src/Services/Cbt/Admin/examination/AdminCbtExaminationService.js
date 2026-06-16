@@ -26,7 +26,7 @@ export const AdminCbtExaminationService = {
    */
   getBySchool: async (schoolId, pageNumber = 1, pageSize = 10) => {
     try {
-      const response = await cbtApi.get(API, {
+      const response = await cbtApi.get(`/api/CbtAdmin/school/${schoolId}`, {
         params: { schoolId, pageNumber, pageSize },
       });
       return response.data;

@@ -7,14 +7,17 @@ import { useAuth } from "../../../../Context/Auth/useAuth";
 import { AdminCbtExaminationService } from "../../../../Services/Cbt/Admin/examination/AdminCbtExaminationService";
 import { AdminCbtExaminerService } from "../../../../Services/Cbt/Admin/examiner/AdminCbtExaminerService";
 import { AppContext } from "../../../../Context/AppContext";
+import { ExaminerExamService } from "../../../../Services/Cbt/Examiner/examinations";
+import { toast } from "react-toastify";
 
 export type ExamType = "WAEC" | "NECO" | "JAMB" | "GCE" | "INTERNAL";
 export type ExamTerm = "FIRST" | "SECOND" | "THIRD";
 export type ExamStatus = "DRAFT" | "SCHEDULED" | "ACTIVE" | "COMPLETED";
 
 export interface Examiner {
-  id: string;
-  fullname: string;
+  teacherId: string;
+  firstname: string;
+  lastname: string;
   email: string;
   isActive?: boolean;
 }
@@ -36,6 +39,22 @@ export interface Examination {
   instructions?: string | null;
   examinerId?: string | null;
   questions: unknown[];
+  assignedTeachers?: assignedTeachers[]
+}
+
+type assignedTeachers = {
+  id: string;
+  examinationId: string;
+  examinationTitle: string;
+  teacherId: string;
+  teacherName: string;
+  teacherEmail: string;
+  assignedByExaminerId: string;
+  examinerName: string;
+  status: number;
+  notes: string;
+  createdAt: string;
+  respondedAt: string;
 }
 
 export type ExaminationForm = {
@@ -64,7 +83,7 @@ export const initialExaminationForm: ExaminationForm = {
   instructions: "",
 };
 
-export default function AdminCbtExaminationsPage() {
+export default function ExaminarCbtExaminationsPage() {
   const { cbtUser } = useAuth();
   const { notifySuccess, notifyError } = useContext(AppContext);
   const [examinations, setExaminations] = useState<Examination[]>([]);
@@ -83,12 +102,12 @@ export default function AdminCbtExaminationsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Assign examiner modal
+  // Assign Teacher modal
   const [assignModal, setAssignModal] = useState(false);
   const [assignTarget, setAssignTarget] = useState<Examination | null>(null);
-  const [examiners, setExaminers] = useState<Examiner[]>([]);
+  const [teachers, setTeachers] = useState<Examiner[]>([]);
   const [fetchingExaminers, setFetchingExaminers] = useState(false);
-  const [selectedExaminers, setSelectedExaminers] = useState<string[]>([]);
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [assigning, setAssigning] = useState(false);
 
   // Inline action loading states keyed by exam id
@@ -100,14 +119,8 @@ export default function AdminCbtExaminationsPage() {
     if (!cbtUser?.schoolId) return;
     setFetching(true);
     try {
-      const res = await AdminCbtExaminationService.getBySchool(cbtUser.schoolId, page, 10);
-      setExaminations(res.data);
-      setPagination({
-        pageNumber: res.pageNumber,
-        pageSize: res.pageSize,
-        totalCount: res.totalCount,
-        totalPages: res.totalPages,
-      });
+      const res = await ExaminerExamService.getMyExams();
+      setExaminations(res);
     } catch (err) {
       console.error(err);
     } finally {
@@ -115,19 +128,42 @@ export default function AdminCbtExaminationsPage() {
     }
   };
 
+  const [subjects, setSubjects] = useState<{
+    id: string;
+    subjectName: string;
+    description: string;
+    teacherId: string;
+    schoolId: string;
+  }[]>([])
+
+  const fetchSubjects = async () => {
+    try {
+      if (cbtUser?.schoolId) {
+        const res = await ExaminerExamService.getSubjects(cbtUser?.schoolId)
+        setSubjects(res)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     fetchExaminations(1);
+    fetchSubjects()
   }, [cbtUser?.schoolId]);
 
   /* ── Fetch examiners for assign modal ── */
   const openAssignModal = async (exam: Examination) => {
     setAssignTarget(exam);
-    setSelectedExaminers(exam.examinerId ? [exam.examinerId] : []);
+
+    const preSelectedIds = exam.assignedTeachers?.map(t => t.teacherId) || [];
+    setSelectedTeachers(preSelectedIds);
+
     setAssignModal(true);
     setFetchingExaminers(true);
     try {
-      const data = await AdminCbtExaminerService.getBySchool(cbtUser?.schoolId ?? "");
-      setExaminers(data);
+      const data = await ExaminerExamService.getTeachers(cbtUser?.schoolId ?? "");
+      setTeachers(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -135,9 +171,9 @@ export default function AdminCbtExaminationsPage() {
     }
   };
 
-  const toggleExaminerSelection = (id: string) => {
-    setSelectedExaminers((prev) =>
-      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
+  const toggleTeacherSelection = (id: string) => {
+    setSelectedTeachers((prev) =>
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
     );
   };
 
@@ -145,19 +181,28 @@ export default function AdminCbtExaminationsPage() {
     if (!assignTarget) return;
     setAssigning(true);
     try {
-      // Assign each selected examiner — adjust to your API shape
-      for (const examinerId of selectedExaminers) {
-        await AdminCbtExaminationService;
+      // Assign multiple selected examiners
+      const payload = {
+        examinationId: assignTarget.id,
+        teacherIds: selectedTeachers,
+        notes: ''
       }
+      await ExaminerExamService.assignTeachersToExam(payload);
+
+      // Update the examination with the first selected teacher (or null if none)
       setExaminations((prev) =>
         prev.map((e) =>
-          e.id === assignTarget.id ? { ...e, examinerId: selectedExaminers[0] ?? null } : e,
+          e.id === assignTarget.id ? { ...e, examinerId: selectedTeachers[0] ?? null } : e,
         ),
       );
       setAssignModal(false);
       setAssignTarget(null);
+      setSelectedTeachers([]);
+      toast.success(`${selectedTeachers.length} examiner(s) assigned successfully`);
+      fetchExaminations(1)
     } catch (err) {
       console.error(err);
+      toast.error("Failed to assign teachers");
     } finally {
       setAssigning(false);
     }
@@ -168,15 +213,20 @@ export default function AdminCbtExaminationsPage() {
     setTogglingPublish(exam.id);
     try {
       if (exam.isPublished) {
-        await AdminCbtExaminationService;
+        const res = await ExaminerExamService.unPublishExam(exam.id);
+        toast.success('Unpublished Successfully')
       } else {
-        await AdminCbtExaminationService;
+        const res = await ExaminerExamService.publishExam(exam.id);
+        console.log(res.responseMessage)
+        if (res.responseCode === "400") {
+          toast.info(res.responseMessage)
+        } else
+          toast.success('Published Successfully')
       }
-      setExaminations((prev) =>
-        prev.map((e) => (e.id === exam.id ? { ...e, isPublished: !e.isPublished } : e)),
-      );
+
+      fetchExaminations(1)
     } catch (err) {
-      console.error(err);
+      console.log(err);
     } finally {
       setTogglingPublish(null);
     }
@@ -197,6 +247,8 @@ export default function AdminCbtExaminationsPage() {
           prev.map((e) => (e.id === exam.id ? { ...e, status: "ACTIVE" } : e)),
         );
       }
+
+      fetchExaminations(1)
     } catch (err) {
       console.error(err);
     } finally {
@@ -253,15 +305,16 @@ export default function AdminCbtExaminationsPage() {
         instructions: form.instructions,
         schoolId: cbtUser?.schoolId ?? "",
       };
+
       if (editing) {
-       const res = await AdminCbtExaminationService.update(editing, payload);
+        const res = await ExaminerExamService.update(editing, payload);
         await fetchExaminations(pagination.pageNumber);
 
-       if (res) {
+        if (res) {
           notifySuccess("Examination updated and is now active.");
         }
       } else {
-        await AdminCbtExaminationService.create(payload);
+        await ExaminerExamService.create(payload);
         await fetchExaminations(1);
       }
       setModal(false);
@@ -278,10 +331,9 @@ export default function AdminCbtExaminationsPage() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      await AdminCbtExaminationService.delete(deleteTarget);
+      await ExaminerExamService.delete(deleteTarget);
       notifySuccess("Examination deleted successfully.");
-      setExaminations((prev) => prev.filter((e) => e.id !== deleteTarget));
-      setPagination((p) => ({ ...p, totalCount: p.totalCount - 1 }));
+      fetchExaminations(1)
       setDeleteTarget(null);
     } catch (err) {
       console.error(err);
@@ -289,6 +341,13 @@ export default function AdminCbtExaminationsPage() {
       setDeleting(false);
     }
   };
+
+  const assignedTeacherIds = assignTarget?.assignedTeachers?.map(t => t.teacherId) || [];
+
+  // Filter teachers to only show unassigned ones
+  const unassignedTeachers = teachers.filter(teacher =>
+    !assignedTeacherIds.includes(teacher.teacherId)
+  );
 
   return (
     <div className="min-h-screen font-sans">
@@ -445,14 +504,15 @@ export default function AdminCbtExaminationsPage() {
           onCancel={() => setModal(false)}
           onSubmit={save}
           submitting={submitting}
+          subjects={subjects}
         />
       </Modal>
 
-      {/* Assign Examiner modal */}
+      {/* Assign teachers modal - Multiple Selection */}
       <Modal
         open={assignModal}
         onClose={() => !assigning && setAssignModal(false)}
-        title={`Assign Examiners — ${assignTarget?.title ?? ""}`}
+        title={`Assign Teachers — ${assignTarget?.title ?? ""}`}
       >
         <div className="space-y-4">
           {fetchingExaminers ? (
@@ -460,30 +520,30 @@ export default function AdminCbtExaminationsPage() {
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
               <p className="text-sm text-gray-400">Loading examiners…</p>
             </div>
-          ) : examiners.length === 0 ? (
+          ) : teachers.length === 0 ? (
             <p className="py-8 text-center text-sm text-gray-400">
               No examiners found for this school.
             </p>
           ) : (
             <div className="max-h-72 space-y-2 overflow-y-auto pr-1">
-              {examiners.map((examiner) => {
-                const selected = selectedExaminers.includes(examiner.id);
-                const initials = examiner.fullname
-                  .split(" ")
-                  .map((n) => n[0])
-                  .slice(0, 2)
-                  .join("");
+              {teachers.map((teacher) => {
+                const isAlreadyAssigned = assignTarget?.assignedTeachers?.some(t => t.teacherId === teacher.teacherId) || false;
+                const selected = selectedTeachers.includes(teacher.teacherId);
+                const initials = teacher.firstname
+                  ?.split(" ")
+                  ?.map((n) => n[0])
+                  ?.slice(0, 2)
+                  ?.join("");
                 const hue =
-                  examiner.fullname.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+                  teacher?.firstname?.split("")?.reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
                 return (
                   <button
-                    key={examiner.id}
-                    onClick={() => toggleExaminerSelection(examiner.id)}
-                    className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
-                      selected
-                        ? "border-orange-300 bg-orange-50 ring-2 ring-orange-200"
-                        : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
-                    }`}
+                    key={teacher.teacherId}
+                    onClick={() => !isAlreadyAssigned && toggleTeacherSelection(teacher.teacherId)}
+                    className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${selected
+                      ? "border-orange-300 bg-orange-50 ring-2 ring-orange-200"
+                      : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+                      } ${isAlreadyAssigned ? "opacity-60 cursor-not-allowed" : ""}`}
                   >
                     <div
                       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-xs font-black text-white"
@@ -492,13 +552,15 @@ export default function AdminCbtExaminationsPage() {
                       {initials}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-900">{examiner.fullname}</p>
-                      <p className="text-xs text-gray-400">{examiner.email}</p>
+                      <p className="text-sm font-semibold text-gray-900">{teacher.firstname} {teacher.lastname}</p>
+                      <p className="text-xs text-gray-400">{teacher.email}</p>
+                      {isAlreadyAssigned && (
+                        <p className="text-xs text-orange-500 mt-0.5">Already assigned</p>
+                      )}
                     </div>
                     <div
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
-                        selected ? "border-orange-500 bg-orange-500" : "border-gray-300"
-                      }`}
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${selected ? "border-orange-500 bg-orange-500" : "border-gray-300"
+                        }`}
                     >
                       {selected && (
                         <svg
@@ -518,9 +580,9 @@ export default function AdminCbtExaminationsPage() {
             </div>
           )}
 
-          {selectedExaminers.length > 0 && (
+          {selectedTeachers.length > 0 && (
             <p className="text-xs font-medium text-orange-600">
-              {selectedExaminers.length} examiner{selectedExaminers.length > 1 ? "s" : ""} selected
+              {selectedTeachers.length} examiner{selectedTeachers.length > 1 ? "s" : ""} selected
             </p>
           )}
 
@@ -536,11 +598,11 @@ export default function AdminCbtExaminationsPage() {
             </Btn>
             <Btn
               onClick={saveAssignment}
-              disabled={assigning || selectedExaminers.length === 0}
+              disabled={assigning || selectedTeachers.length === 0}
               loading={assigning}
               className="flex-1"
             >
-              {assigning ? "Assigning…" : "Assign Selected"}
+              {assigning ? "Assigning…" : `Assign ${selectedTeachers.length > 0 ? selectedTeachers.length : ""} Examiner${selectedTeachers.length !== 1 ? "s" : ""}`}
             </Btn>
           </div>
         </div>

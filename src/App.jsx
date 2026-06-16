@@ -106,9 +106,11 @@ import NappsChapterAdminSchool from "./pages/napps/chapter-admin/NappsChapterAdm
 import NappsChapterAdminRevenue from "./pages/napps/chapter-admin/NappsChapterAdminRevenue";
 import NappsChapterMessages from "./pages/napps/chapter-admin/NappsChapterMessages";
 import AdminCbtExaminersPage from "./pages/Cbt/Admin/examiner/AdminCbtExaminersPage";
-import AdminCbtExaminationsPage from "./pages/Cbt/Admin/examination/AdminCbtExaminationsPage";
+import AdminCbtExaminationsPage from "./pages/Cbt/Examiner/examination/AdminCbtExaminationsPage";
 import AdminCbtStudentsPage from "./pages/Cbt/Admin/student/AdminCbtStudentPage";
 import AdminCbtTeachersPage from "./pages/Cbt/Admin/Teacher/AdminCbtTeachersPage";
+import ExaminarDashboard from "./pages/Cbt/Examiner/dashboard/ExaminarDashboard";
+import ExaminarCbtExaminationsPage from "./pages/Cbt/Examiner/examination/AdminCbtExaminationsPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -262,8 +264,20 @@ function App() {
         <Route path="/cbt/admin/examiners" element={<AdminCbtExaminersPage />} />
         <Route path="/cbt/admin/teachers" element={<AdminCbtTeachersPage />} />
         <Route path="/cbt/admin/students" element={<AdminCbtStudentsPage />} />
-        <Route path="/cbt/admin/examinations" element={<AdminCbtExaminationsPage />} />
+        {/* <Route path="/cbt/admin/examinations" element={<AdminCbtExaminationsPage />} /> */}
         <Route path="/cbt/admin/userManagement" element={<AdminCbtUserManagement />} />
+      </Route>
+
+      {/* Examiner */}
+      <Route
+        element={
+          <ProtectedRoute2>
+            <AdminCbtLayout />
+          </ProtectedRoute2>
+        }
+      >
+        <Route path="/cbt/examiner/dashboard" element={<ExaminarDashboard />} />
+        <Route path="/cbt/examiner/examinations" element={<ExaminarCbtExaminationsPage />} />
       </Route>
 
       {/* Student */}

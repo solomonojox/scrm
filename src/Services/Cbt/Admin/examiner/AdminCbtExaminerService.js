@@ -20,6 +20,7 @@ export const AdminCbtExaminerService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
     }
   },
+
   getBySchool: async (schoolId) => {
     try {
       const response = await cbtApi.get(`${API}/school/${schoolId}`);
@@ -46,6 +47,4 @@ export const AdminCbtExaminerService = {
       throw new Error(error?.response?.data?.responseMessage || "Failed to delete examiner");
     }
   },
-
-
 };

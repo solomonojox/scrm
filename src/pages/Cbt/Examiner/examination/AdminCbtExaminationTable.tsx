@@ -15,18 +15,18 @@ interface Props {
 }
 
 const statusConfig: Record<ExamStatus, { label: string; color: "gray" | "blue" | "green" | "red" | "orange" }> = {
-  DRAFT:     { label: "Draft",     color: "gray"   },
-  SCHEDULED: { label: "Scheduled", color: "blue"   },
-  ACTIVE:    { label: "Active",    color: "green"  },
+  DRAFT: { label: "Draft", color: "gray" },
+  SCHEDULED: { label: "Scheduled", color: "blue" },
+  ACTIVE: { label: "Active", color: "green" },
   COMPLETED: { label: "Completed", color: "orange" },
 };
 
 const examTypeColors: Record<ExamType, string> = {
   INTERNAL: "bg-purple-100 text-purple-700",
-  WAEC:     "bg-blue-100 text-blue-700",
-  NECO:     "bg-teal-100 text-teal-700",
-  JAMB:     "bg-amber-100 text-amber-700",
-  GCE:      "bg-pink-100 text-pink-700",
+  WAEC: "bg-blue-100 text-blue-700",
+  NECO: "bg-teal-100 text-teal-700",
+  JAMB: "bg-amber-100 text-amber-700",
+  GCE: "bg-pink-100 text-pink-700",
 };
 
 /* Publish toggle switch */
@@ -36,14 +36,12 @@ function PublishSwitch({ published, loading, onToggle }: { published: boolean; l
       onClick={onToggle}
       disabled={loading}
       title={published ? "Unpublish" : "Publish"}
-      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${
-        published ? "bg-orange-500" : "bg-gray-200"
-      }`}
+      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${published ? "bg-orange-500" : "bg-gray-200"}
+      `}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200 ${
-          published ? "translate-x-4" : "translate-x-0.5"
-        }`}
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform duration-200 ${published ? "translate-x-4" : "translate-x-0.5"
+          }`}
       />
       {loading && (
         <span className="absolute inset-0 flex items-center justify-center">
@@ -92,7 +90,7 @@ export default function AdminCbtExaminationTable({
 
         <tbody className="divide-y divide-gray-50">
           {examinations.map((exam) => {
-            const status   = statusConfig[exam.status] ?? { label: exam.status, color: "gray" as const };
+            const status = statusConfig[exam.status] ?? { label: exam.status, color: "gray" as const };
             const isActive = exam.status === "ACTIVE";
             const canActivate = ["SCHEDULED", "ACTIVE", "DRAFT"].includes(exam.status);
 
@@ -130,7 +128,7 @@ export default function AdminCbtExaminationTable({
                 {/* Question count */}
                 <td className="px-4 py-4">
                   <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-orange-100 px-2 text-xs font-bold text-orange-700">
-                    {exam.questions.length}
+                    {exam?.questions?.length}
                   </span>
                 </td>
 
@@ -182,7 +180,7 @@ export default function AdminCbtExaminationTable({
                       size="sm"
                       variant="ghost"
                       onClick={() => onAssign(exam)}
-                      title="Assign examiner"
+                      title="Assign teacher"
                       className="text-blue-800 hover:text-blue-600"
                     >
                       <Icons.Users />

@@ -1,6 +1,7 @@
 import React from "react";
 import { Btn, Input, Select } from "../../../../components/ui/CbtSharedComponents";
 import { ExaminationForm, ExamType, ExamTerm } from "./AdminCbtExaminationsPage";
+// import Select from 'react-select'
 
 interface Props {
   form: ExaminationForm;
@@ -9,10 +10,17 @@ interface Props {
   onCancel: () => void;
   onSubmit: () => void;
   submitting: boolean;
+  subjects: {
+    id: string;
+    subjectName: string;
+    description: string;
+    teacherId: string;
+    schoolId: string;
+  }[]
 }
 
-const EXAM_TYPES: ExamType[]  = ["INTERNAL", "WAEC", "NECO", "JAMB", "GCE"];
-const EXAM_TERMS: ExamTerm[]  = ["FIRST", "SECOND", "THIRD"];
+const EXAM_TYPES: ExamType[] = ["INTERNAL", "WAEC", "NECO", "JAMB", "GCE"];
+const EXAM_TERMS: ExamTerm[] = ["FIRST", "SECOND", "THIRD"];
 
 export default function AdminCbtExaminationForm({
   form,
@@ -21,6 +29,7 @@ export default function AdminCbtExaminationForm({
   onCancel,
   onSubmit,
   submitting,
+  subjects,
 }: Props) {
   const set = (key: keyof ExaminationForm) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -76,14 +85,28 @@ export default function AdminCbtExaminationForm({
 
       {/* Subject ID + Class Level */}
       <div className="grid grid-cols-2 gap-4">
-        <Input
+        {/* <Input
           label="Subject ID"
           required
           value={form.subjectId}
           disabled={submitting}
           onChange={set("subjectId")}
           placeholder="Subject UUID"
-        />
+        /> */}
+        <Select
+          label="Subject ID"
+          required
+          value={form.subjectId}
+          disabled={submitting}
+          onChange={set("subjectId")}
+        >
+          <option value="">Select subject</option>
+          {subjects.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.subjectName}
+            </option>
+          ))}
+        </Select>
 
         <Input
           label="Class Level"

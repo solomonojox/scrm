@@ -103,6 +103,8 @@ const CbtLogin = () => {
 
       if (role === "SchoolAdmin") {
         navigate("/cbt/admin/dashboard");
+      } else if (role === "Examiner") {
+        navigate("/cbt/examiner/dashboard");
       } else if (role === "Student") {
         navigate("/cbt/student/dashboard");
       } else if (role === "Teacher") {
@@ -113,14 +115,15 @@ const CbtLogin = () => {
     } catch (err) {
       setError(
         err.response?.data.responseMessage ||
-          err?.message ||
-          "Login failed. Please check your credentials.",
+        err?.message ||
+        "Login failed. Please check your credentials.",
       );
       notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -169,7 +172,7 @@ const CbtLogin = () => {
                 }}
                 placeholder="Enter Email"
                 className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                // onBlur={() => validateEmail(email)}
+              // onBlur={() => validateEmail(email)}
               />
               {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
             </div>

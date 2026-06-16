@@ -25,7 +25,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { Icons } from "../../../assets/icons/Icon";
 
-type Role = "Student" | "Teacher" | "SchoolAdmin";
+type Role = "Student" | "Teacher" | "SchoolAdmin" | "Examiner";
 
 interface MenuItem {
   id: string;
@@ -86,6 +86,33 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
         link: "/cbt/student/results",
         icon: <Award size={20} />,
       },
+    ],
+
+    Examiner: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        link: "/cbt/examiner/dashboard",
+        icon: <LayoutDashboardIcon size={20} />,
+      },
+      // {
+      //   id: "subjects",
+      //   label: "My Subjects",
+      //   link: "/cbt/examiner/subject",
+      //   icon: <BookOpen size={20} />,
+      // },
+      {
+        id: "examinations",
+        label: "Examinations",
+        link: "/cbt/examiner/examinations",
+        icon: <Icons.Exam />,
+      },
+      // {
+      //   id: "results",
+      //   label: "Results",
+      //   link: "/cbt/examiner/results",
+      //   icon: <Award size={20} />,
+      // },
     ],
 
     Teacher: [
@@ -173,7 +200,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
     <>
       {/* Desktop Sidebar */}
       <aside className={`hidden lg:flex fixed left-0 top-0 h-full bg-white border-r border-gray-200 shadow-lg z-20 flex-col transition-all duration-300 ${isSidebarOpen ? 'w-56 mt-3' : 'w-20 mt-20'}`}>
-        
+
         {/* Toggle Button Header - No Logo */}
         <div className={`h-16 flex items-center ${isSidebarOpen ? 'px-4 justify-end' : 'justify-center'} border-b border-gray-200`}>
           {isSidebarOpen ? (
@@ -235,7 +262,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
                       />
                     )}
                   </Link>
-                  
+
                   {/* Submenu Items */}
                   {isSidebarOpen && hasSubItems && isExpanded && (
                     <div className="ml-9 mt-1 space-y-1">
@@ -278,7 +305,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-40">
-          <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
+          <div className="absolute inset-0 bg-black/50 bg-opacity-50" onClick={onClose} />
           <aside className="absolute left-0 top-0 h-full w-72 bg-white shadow-xl z-50 animate-slideInRight">
             {/* Mobile Header with Close Button */}
             <div className="flex items-center justify-end p-4 border-b border-gray-200">
@@ -286,7 +313,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
                 <X size={20} className="text-gray-500" />
               </button>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto py-4">
               <nav className="space-y-1 px-3">
                 {tabs.map((tab) => {
@@ -323,7 +350,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
                           />
                         )}
                       </Link>
-                      
+
                       {hasSubItems && isExpanded && (
                         <div className="ml-9 mt-1 space-y-1">
                           {tab.subItems?.map((subItem) => (
@@ -348,7 +375,7 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
                 })}
               </nav>
             </div>
-            
+
             <div className="border-t border-gray-200 p-3">
               <button
                 onClick={handleLogout}
