@@ -93,7 +93,7 @@ const LoginPage = () => {
         password,
       };
       const response = await loginService.staffLogin(data);
-      console.log("Login response:", response.data);
+      // console.log("Login response:", response.data);
       login(response.data.accessToken, response.data.refreshToken);
 
       setSuccessMessage("Login successful!");
@@ -115,6 +115,7 @@ const LoginPage = () => {
         err?.message ||
         "Login failed. Please check your credentials."
       );
+      console.log(err.response)
       notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
     } finally {
       setLoading(false);
