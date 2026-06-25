@@ -130,7 +130,7 @@ export default function ExaminarCbtExaminationsPage() {
   const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [assigning, setAssigning] = useState(false);
-  console.log(selectedStudents)
+  // console.log(selectedStudents)
 
   // Inline action loading states keyed by exam id
   const [togglingPublish, setTogglingPublish] = useState<string | null>(null);

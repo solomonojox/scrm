@@ -123,6 +123,12 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
         icon: <LayoutDashboardIcon size={20} />,
       },
       {
+        id: "exam-request",
+        label: "Exam Request",
+        link: "/cbt/teacher/exam-assignment",
+        icon: <Icons.Exam />,
+      },
+      {
         id: "subjects",
         label: "My Subjects",
         link: "/cbt/teacher/subject",
