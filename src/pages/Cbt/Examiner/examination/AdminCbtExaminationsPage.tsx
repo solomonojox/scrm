@@ -11,6 +11,7 @@ import { ExaminerExamService } from "../../../../Services/Cbt/Examiner/examinati
 import { toast } from "react-toastify";
 import AssignTeachers from "./modals/AssignTeachers";
 import AssignStudents from "./modals/AssignStudents";
+import ExamQuestionsModal, { ExamQuestion } from "./modals/ExamQuestionsModal";
 
 export type ExamType = "WAEC" | "NECO" | "JAMB" | "GCE" | "INTERNAL";
 export type ExamTerm = "FIRST" | "SECOND" | "THIRD";
@@ -41,8 +42,8 @@ export interface Examination {
   instructions?: string | null;
   examinerId?: string | null;
   questions: unknown[];
-  assignedTeachers?: assignedTeachers[]
-  assignedStudents?: Student[]
+  assignedTeachers?: assignedTeachers[];
+  assignedStudents?: Student[];
 }
 
 type assignedTeachers = {
@@ -58,7 +59,7 @@ type assignedTeachers = {
   notes: string;
   createdAt: string;
   respondedAt: string;
-}
+};
 
 export type ExaminationForm = {
   title: string;
@@ -136,6 +137,14 @@ export default function ExaminarCbtExaminationsPage() {
   const [togglingPublish, setTogglingPublish] = useState<string | null>(null);
   const [togglingActivate, setTogglingActivate] = useState<string | null>(null);
 
+  // Question review modal
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewExam, setReviewExam] = useState<Examination | null>(null);
+  const [questions, setQuestions] = useState<ExamQuestion[]>([]);
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [decliningId, setDecliningId] = useState<string | null>(null);
+
   /* ── Fetch examinations ── */
   const fetchExaminations = async (page = 1) => {
     if (!cbtUser?.schoolId) return;
@@ -150,35 +159,37 @@ export default function ExaminarCbtExaminationsPage() {
     }
   };
 
-  const [subjects, setSubjects] = useState<{
-    id: string;
-    subjectName: string;
-    description: string;
-    teacherId: string;
-    schoolId: string;
-  }[]>([])
+  const [subjects, setSubjects] = useState<
+    {
+      id: string;
+      subjectName: string;
+      description: string;
+      teacherId: string;
+      schoolId: string;
+    }[]
+  >([]);
 
   const fetchSubjects = async () => {
     try {
       if (cbtUser?.schoolId) {
-        const res = await ExaminerExamService.getSubjects(cbtUser?.schoolId)
-        setSubjects(res)
+        const res = await ExaminerExamService.getSubjects(cbtUser?.schoolId);
+        setSubjects(res);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchExaminations(1);
-    fetchSubjects()
+    fetchSubjects();
   }, [cbtUser?.schoolId]);
 
   /* ── Fetch examiners for assign modal ── */
   const openAssignModal = async (exam: Examination, type: "teacher" | "student") => {
     setAssignTarget(exam);
 
-    const preSelectedIds = exam.assignedTeachers?.map(t => t.teacherId) || [];
+    const preSelectedIds = exam.assignedTeachers?.map((t) => t.teacherId) || [];
     setSelectedTeachers(preSelectedIds);
 
     if (type === "teacher") {
@@ -208,13 +219,13 @@ export default function ExaminarCbtExaminationsPage() {
 
   const toggleTeacherSelection = (id: string) => {
     setSelectedTeachers((prev) =>
-      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
     );
   };
 
   const toggleStudentSelection = (id: string) => {
     setSelectedStudents((prev) =>
-      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id],
     );
   };
 
@@ -226,8 +237,8 @@ export default function ExaminarCbtExaminationsPage() {
       const payload = {
         examinationId: assignTarget.id,
         teacherIds: selectedTeachers,
-        notes: ''
-      }
+        notes: "",
+      };
       await ExaminerExamService.assignTeachersToExam(payload);
 
       // Update the examination with the first selected teacher (or null if none)
@@ -240,7 +251,7 @@ export default function ExaminarCbtExaminationsPage() {
       setAssignTarget(null);
       setSelectedTeachers([]);
       toast.success(`${selectedTeachers.length} teacher(s) assigned successfully`);
-      fetchExaminations(1)
+      fetchExaminations(1);
     } catch (err) {
       console.error(err);
       toast.error("Failed to assign teachers");
@@ -257,8 +268,8 @@ export default function ExaminarCbtExaminationsPage() {
       const payload = {
         examinationId: assignTarget.id,
         studentIds: selectedStudents,
-      }
-      console.log(payload)
+      };
+      console.log(payload);
       await ExaminerExamService.assignStudentsToExam(payload);
 
       // Update the examination with the first selected teacher (or null if none)
@@ -271,7 +282,7 @@ export default function ExaminarCbtExaminationsPage() {
       setAssignTarget(null);
       setSelectedStudents([]);
       toast.success(`${selectedTeachers.length} student(s) assigned successfully`);
-      fetchExaminations(1)
+      fetchExaminations(1);
     } catch (err) {
       console.error(err);
       toast.error("Failed to assign students");
@@ -286,17 +297,16 @@ export default function ExaminarCbtExaminationsPage() {
     try {
       if (exam.isPublished) {
         const res = await ExaminerExamService.unPublishExam(exam.id);
-        toast.success('Unpublished Successfully')
+        toast.success("Unpublished Successfully");
       } else {
         const res = await ExaminerExamService.publishExam(exam.id);
-        console.log(res.responseMessage)
+        console.log(res.responseMessage);
         if (res.responseCode === "400") {
-          toast.info(res.responseMessage)
-        } else
-          toast.success('Published Successfully')
+          toast.info(res.responseMessage);
+        } else toast.success("Published Successfully");
       }
 
-      fetchExaminations(1)
+      fetchExaminations(1);
     } catch (err) {
       console.log(err);
     } finally {
@@ -320,7 +330,7 @@ export default function ExaminarCbtExaminationsPage() {
         );
       }
 
-      fetchExaminations(1)
+      fetchExaminations(1);
     } catch (err) {
       console.error(err);
     } finally {
@@ -405,7 +415,7 @@ export default function ExaminarCbtExaminationsPage() {
     try {
       await ExaminerExamService.delete(deleteTarget);
       notifySuccess("Examination deleted successfully.");
-      fetchExaminations(1)
+      fetchExaminations(1);
       setDeleteTarget(null);
     } catch (err) {
       console.error(err);
@@ -414,12 +424,81 @@ export default function ExaminarCbtExaminationsPage() {
     }
   };
 
-  const assignedTeacherIds = assignTarget?.assignedTeachers?.map(t => t.teacherId) || [];
+  const assignedTeacherIds = assignTarget?.assignedTeachers?.map((t) => t.teacherId) || [];
 
   // Filter teachers to only show unassigned ones
-  const unassignedTeachers = teachers.filter(teacher =>
-    !assignedTeacherIds.includes(teacher.teacherId)
+  const unassignedTeachers = teachers.filter(
+    (teacher) => !assignedTeacherIds.includes(teacher.teacherId),
   );
+
+  // Handle review
+  /* ── Question review ── */
+  const handleReviewQuestions = async (exam: Examination) => {
+    setReviewExam(exam);
+    setReviewModalOpen(true);
+    setLoadingQuestions(true);
+    try {
+      const res = await ExaminerExamService.getExamQuestionsByExamId(exam.id);;
+      setQuestions(res?.data ?? res ?? []);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load questions");
+      setQuestions([]);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
+
+  const closeReviewModal = () => {
+    setReviewModalOpen(false);
+    setReviewExam(null);
+    setQuestions([]);
+  };
+
+  const handleApproveQuestion = async (questionId: string, rejectionReason: string) => {
+    setApprovingId(questionId);
+    try {
+      const res = await ExaminerExamService.reviewQuestion(questionId, {
+        approve: true,
+        rejectionReason,
+      });
+      
+      // setQuestions((prev) =>
+      //   prev.map((q) =>
+      //     q.id === questionId ? { ...q, approvalStatus: ApprovalStatus.APPROVED } : q,
+      //   ),
+      // );
+      toast.success("Question approved");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to approve question");
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
+  const handleDeclineQuestion = async (questionId: string, rejectionReason: string) => {
+    setDecliningId(questionId);
+    try {
+      await ExaminerExamService.reviewQuestion(questionId, {
+        approve: false,
+        rejectionReason,
+      });
+      // setQuestions((prev) =>
+      //   prev.map((q) =>
+      //     q.id === questionId
+      //       ? { ...q, approvalStatus: ApprovalStatus.REJECTED, rejectionReason }
+      //       : q,
+      //   ),
+      // );
+      toast.success("Question declined");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to decline question");
+    } finally {
+      setDecliningId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen font-sans">
@@ -532,6 +611,7 @@ export default function ExaminarCbtExaminationsPage() {
             togglingPublish={togglingPublish}
             togglingActivate={togglingActivate}
             fetching={fetching}
+            onReviewQuestions={handleReviewQuestions}
           />
 
           {pagination.totalPages > 1 && (
@@ -603,6 +683,29 @@ export default function ExaminarCbtExaminationsPage() {
         students={students}
         selectedStudents={selectedStudents}
         saveAssignment={assignmentStudents}
+      />
+
+      {/* Question review modal */}
+      <ExamQuestionsModal
+        exam={reviewExam}
+        questions={questions}
+        open={reviewModalOpen}
+        onClose={closeReviewModal}
+        onApproveAll={async (questionIds: string[]) => {
+          for (const id of questionIds) {
+            // approve each question sequentially
+            // eslint-disable-next-line no-await-in-loop
+            await handleApproveQuestion(id, "");
+          }
+        }}
+        onDeclineSelected={async (questionIds: string[], rejectionReason: string) => {
+          for (const id of questionIds) {
+            // decline each question sequentially
+            // eslint-disable-next-line no-await-in-loop
+            await handleDeclineQuestion(id, rejectionReason);
+          }
+        }}
+        loading={loadingQuestions}
       />
 
       {/* Delete dialog */}

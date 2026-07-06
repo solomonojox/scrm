@@ -88,7 +88,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
         className={`
         custom-scrollbar
         fixed
-        top-[70px]
+        top-17.5
         left-0
         w-64
         h-[calc(100vh-70px)]
