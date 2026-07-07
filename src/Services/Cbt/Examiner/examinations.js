@@ -82,4 +82,17 @@ export const ExaminerExamService = {
     const response = await cbtApi.post(`${API}/student-assignments/bulk`, data);
     return response.data
   },
+
+  getExamQuestionsByExamId: async (examinationId) => {
+    const response = await cbtApi.get(`${API}/exams/${examinationId}/questions`);
+    return response.data
+  },
+
+  reviewQuestion: async (questionId, payload) => {
+    const response = await cbtApi.patch(`${API}/questions/${questionId}/review`, payload);
+    return response.data;
+  }
+
+  // reviewQuestion: (questionId, payload ) =>
+  // cbtApi.patch(`/ExaminerExam/questions/${questionId}/review`, payload),
 };

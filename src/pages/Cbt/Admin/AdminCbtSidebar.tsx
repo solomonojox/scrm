@@ -159,12 +159,12 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
         link: "/cbt/admin/dashboard",
         icon: <LayoutDashboardIcon size={20} />,
       },
-      {
-        id: "examinations",
-        label: "Examinations",
-        link: "/cbt/admin/examinations",
-        icon: <Icons.Exam />,
-      },
+      // {
+      //   id: "examinations",
+      //   label: "Examinations",
+      //   link: "/cbt/admin/examinations",
+      //   icon: <Icons.Exam />,
+      // },
       {
         id: "examiners",
         label: "Examiners",
@@ -196,7 +196,15 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
     ],
   };
 
-  const tabs = menuByRole[cbtUser?.role as Role] || [];
+  // const tabs = menuByRole[cbtUser?.role as Role] || [];st
+
+  const studentUser = {
+    id: "student",
+    name: "Student",
+    role: "Student"
+  }
+
+  const tabs = menuByRole[cbtUser?.role as Role] || menuByRole[studentUser.role as Role] || [];
 
   const isActiveLink = (link: string) => {
     return location.pathname === link || location.pathname.startsWith(link + '/');
