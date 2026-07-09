@@ -30,7 +30,7 @@ export const cbtAuthService = {
   },
 
   studentCbtLogin: async (eventsData) => {
-    const response = await cbtApi.post(`/api/CbtLogin/authenticate`, eventsData);
+    const response = await cbtApi.post(`/api/CbtLogin/student`, eventsData);
     return response.data.data;
     // try {
     // } catch (error) {

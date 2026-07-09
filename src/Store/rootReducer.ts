@@ -26,6 +26,10 @@ import AllExamQuestionSlice from "./cbt/allExamQuestionSlice";
 import AdminCbtStudentslice from "./cbt/admin/student/adminCbtStudentSlice";
 import AdminCbtTeacherslice from "./cbt/admin/teacher/adminCbtTeacherSlice";
 import AdminCbtExaminerslice from "./cbt/examiner/adminCbtExaminerSlice";
+import StudentDashboardSlice from "./cbt/student/studentDashboardSlice";
+import StudentExamResultSlice from "./cbt/student/studentExamResultSlice";
+import StudentCatalogSlice from "./cbt/student/studentCatalogSlice";
+import StudentPerformanceSlice from "./cbt/student/studentPerformanceSlice";
 
 
 
@@ -55,4 +59,8 @@ export const rootReducer = combineReducers({
   getAdminCbtStudents: AdminCbtStudentslice,
   getAdminCbtTeachers: AdminCbtTeacherslice,
   getAdminCbtExaminers: AdminCbtExaminerslice,
+  getStudentDashboard: StudentDashboardSlice,
+  getStudentExamResult: StudentExamResultSlice,
+  getStudentCatalog: StudentCatalogSlice,
+  getStudentPerformance: StudentPerformanceSlice,
 });
