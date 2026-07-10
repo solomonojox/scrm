@@ -236,7 +236,7 @@ const StudentCbtDashboard = () => {
               availableExams.map((exam: any, i: number) => (
                 <div
                   key={exam.examId}
-                  onClick={() => navigate(`/cbt/student/exam/${exam.examId}`)}
+                  onClick={() => navigate(`/cbt/student/exams`)}
                   className={`flex items-center gap-4 p-3 rounded-xl cursor-pointer ${
                     i === 0 ? "bg-orange-50 border border-orange-100" : "hover:bg-gray-50"
                   } transition-colors`}

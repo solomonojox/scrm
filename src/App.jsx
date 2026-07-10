@@ -294,7 +294,7 @@ function App() {
       >
         <Route path="/cbt/student/dashboard" element={<StudentCbtDashboard />} />
         <Route path="/cbt/student/exams" element={<StudentCbtExamsPage />} />
-        <Route path="/cbt/student/exam/:id" element={<StudentCbtExamInterfacePage />} />
+        <Route path="/cbt/student/exam/:examId" element={<StudentCbtExamInterfacePage />} />
         <Route path="/cbt/student/results" element={<StudentCbtResultsPage />} />
         <Route path="/cbt/student/performance" element={<StudentCbtPerformancePage />} />
         <Route path="/cbt/student/settings" element={<StudentCbtSettingsPage />} />

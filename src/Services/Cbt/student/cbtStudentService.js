@@ -65,13 +65,13 @@ export const cbtStudentService = {
   },
 
   startExam: async (studentId, examId) => {
-    const res = await cbtApi.post(`/api/ExamStudent/startExam/${examId}/${studentId}`);
+    const res = await cbtApi.post(`/api/CbtStudent/start/${studentId}/${examId}`);
     // console.log("StartExam success:", res.data);
     return res.data.data;
   },
 
   submitExam: async (payload) => {
-    const res = await cbtApi.post(`/api/ExamStudent/submitExam`, payload);
+    const res = await cbtApi.post(`/api/CbtStudent/submit`, payload);
     // console.log("SubmitExam success:", res.data);
     return res.data.data;
   },

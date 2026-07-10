@@ -18,13 +18,13 @@ const navItems: { id: Page; label: string; path: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", path: "/cbt/student/dashboard", icon: "dashboard" },
   { id: "exams", label: "Take Exam", path: "/cbt/student/exams", icon: "exam" },
   { id: "results", label: "Results", path: "/cbt/student/results", icon: "results" },
-  {
-    id: "performance",
-    label: "Performance",
-    path: "/cbt/student/performance",
-    icon: "performance",
-  },
-  { id: "settings", label: "Settings", path: "/cbt/student/settings", icon: "settings" },
+  // {
+  //   id: "performance",
+  //   label: "Performance",
+  //   path: "/cbt/student/performance",
+  //   icon: "performance",
+  // },
+  // { id: "settings", label: "Settings", path: "/cbt/student/settings", icon: "settings" },
 ];
 
 // Helper function to get initials from name
