@@ -1,131 +1,78 @@
-import React, { useState } from "react";
-import CompletedExam from "./CompletedExam";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-type ExamStatus = "upcoming" | "active" | "completed";
-
-interface Exam {
-  id: number;
-  title: string;
-  subject: string;
-  teacher: string;
-  questions: number;
-  duration: number;
-  date: string;
-  dueDate: string;
-  status: ExamStatus;
-  instructions: string;
-  availableDate?: string;
-}
+import CompletedExam from "./CompletedExam";
+import { useAuth } from "../../../../Context/Auth/useAuth";
+import { cbtStudentService } from "../../../../Services/Cbt/student/cbtStudentService";
+import { AppDispatch, RootState } from "../../../../Store/store";
+import {
+  fetchStudentCatalogFailure,
+  fetchStudentCatalogStart,
+  fetchStudentCatalogSuccess,
+} from "../../../../Store/cbt/student/studentCatalogSlice";
 
 const StudentExamDashboard = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { cbtUser } = useAuth();
   const [activeTab, setActiveTab] = useState<"available" | "completed">("available");
 
-  const availableExams: Exam[] = [
-    {
-      id: 1,
-      title: "Mathematics Final Exam",
-      subject: "Mathematics",
-      teacher: "Dr. Sarah Johnson",
-      questions: 50,
-      duration: 90,
-      date: "2025-11-15",
-      dueDate: "2025-11-15 23:59",
-      status: "upcoming",
-      instructions: "Calculators are allowed. Show all working.",
-      availableDate: "2025-11-15",
-    },
-    {
-      id: 2,
-      title: "Physics Mid-term Test",
-      subject: "Physics",
-      teacher: "Prof. Michael Chen",
-      questions: 30,
-      duration: 60,
-      date: "2025-10-28",
-      dueDate: "2025-10-28 16:00",
-      status: "active",
-      instructions: "Answer all questions. Time limit strictly enforced.",
-    },
-  ];
+  const catalogExams = useSelector((state: RootState) => state.getStudentCatalog.listRecords);
+  const catalogError = useSelector((state: RootState) => state.getStudentCatalog.error);
 
-  const completedExams: Exam[] = [
-    {
-      id: 3,
-      title: "Chemistry Quiz",
-      subject: "Chemistry",
-      teacher: "Dr. Emily Watson",
-      questions: 20,
-      duration: 30,
-      date: "2025-10-20",
-      dueDate: "2025-10-20 14:00",
-      status: "completed",
-      instructions: "Basic chemistry principles.",
-    },
-    {
-      id: 4,
-      title: "Biology Mid-term",
-      subject: "Biology",
-      teacher: "Prof. James Wilson",
-      questions: 40,
-      duration: 75,
-      date: "2025-10-18",
-      dueDate: "2025-10-18 15:30",
-      status: "completed",
-      instructions: "Cell biology and genetics.",
-    },
-    {
-      id: 5,
-      title: "Computer Science Test",
-      subject: "Computer Science",
-      teacher: "Dr. Lisa Zhang",
-      questions: 25,
-      duration: 45,
-      date: "2025-10-15",
-      dueDate: "2025-10-15 11:00",
-      status: "completed",
-      instructions: "Programming fundamentals.",
-    },
-  ];
+  useEffect(() => {
+    if (!cbtUser?.id) return;
 
-  const getStatusBadge = (status: ExamStatus) => {
-    const styles = {
-      upcoming: "bg-blue-100 text-blue-700 border-blue-200",
-      active: "bg-green-100 text-green-700 border-green-200",
-      completed: "bg-gray-100 text-gray-600 border-gray-200",
+    const fetchCatalog = async () => {
+      dispatch(fetchStudentCatalogStart());
+      try {
+        const response = await cbtStudentService.getStudentCatalog(cbtUser.id);
+        dispatch(fetchStudentCatalogSuccess(response?.data ?? response ?? []));
+      } catch (err: any) {
+        dispatch(fetchStudentCatalogFailure(err?.message ?? "Unable to load exams."));
+      }
     };
 
-    return (
-      <span className={`px-3 py-1 rounded-full text-sm font-medium border ${styles[status]}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
+    fetchCatalog();
+  }, [cbtUser?.id, dispatch]);
+
+  const availableExams = catalogExams.filter((e) => !e.alreadyTaken);
+  const completedCount = catalogExams.filter((e) => e.alreadyTaken).length;
+
+  const formatSchedule = (scheduledAt: string | null) => {
+    if (!scheduledAt) {
+      return {
+        date: "Not Scheduled",
+        time: "--",
+      };
+    }
+
+    const d = new Date(scheduledAt);
+
+    return {
+      date: d.toLocaleDateString(),
+      time: d.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
   };
 
-  const getActionButton = (exam: Exam) => {
-    if (exam.status === "active") {
-      return (
-        <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-          Start Exam
-        </button>
-      );
-    } else if (exam.status === "upcoming") {
-      return (
-        <button
-          disabled
-          className="w-full bg-gray-100 text-gray-400 py-3 rounded-lg font-semibold cursor-not-allowed"
-        >
-          Available on {exam.availableDate}
-        </button>
-      );
-    } else {
-      return (
-        <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors">
-          View Results
-        </button>
-      );
-    }
+  const isExamStartable = (exam: any) => {
+    // No questions
+    if (exam.totalQuestions <= 0) return false;
+
+    // Not scheduled
+    if (!exam.scheduledAt) return false;
+
+    // Scheduled in the future
+    return new Date(exam.scheduledAt).getTime() <= Date.now();
+  };
+
+  const handleStartExam = (examId: string) => {
+    // Navigating here is enough — StudentCbtExamInterfacePage itself calls
+    // POST /api/CbtStudent/start/{studentId}/{examId} on mount to begin the session.
+    navigate(`/cbt/student/exam/${examId}`);
   };
 
   return (
@@ -136,6 +83,12 @@ const StudentExamDashboard = () => {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Exams Dashboard</h1>
           <p className="text-gray-600">Manage and take your exams</p>
         </div>
+
+        {catalogError && (
+          <div className="mb-6 p-4 rounded-lg border border-red-100 bg-red-50 text-sm text-red-600">
+            {catalogError}
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-sm border border-gray-200 mb-8">
@@ -157,89 +110,114 @@ const StudentExamDashboard = () => {
                 : "text-gray-600 hover:text-gray-800"
             }`}
           >
-            Completed ({completedExams.length})
+            Completed ({completedCount})
           </button>
         </div>
 
         {/* Exams Grid */}
         <div className="grid gap-6">
           {activeTab === "available" &&
-            availableExams.map((exam) => (
-              <div
-                key={exam.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div className="p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                    {/* Left Section */}
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
-                        <h2 className="text-xl font-bold text-gray-800">{exam.title}</h2>
-                        {getStatusBadge(exam.status)}
-                      </div>
+            (availableExams.length === 0 ? (
+              <p className="text-center text-gray-400 py-10">No exams available right now.</p>
+            ) : (
+              availableExams.map((exam) => {
+                const schedule = formatSchedule(exam.scheduledAt);
+                const startable = isExamStartable(exam);
 
-                      <div className="flex items-center text-gray-600 mb-4">
-                        <span className="font-semibold">{exam.subject}</span>
-                        <span className="mx-2">•</span>
-                        <span>{exam.teacher}</span>
-                      </div>
-
-                      {/* Exam Details Grid */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                        <div className="text-center p-3 bg-gray-50 rounded-lg">
-                          <div className="text-2xl font-bold text-gray-800">{exam.questions}</div>
-                          <div className="text-sm text-gray-600">Questions</div>
-                        </div>
-                        <div className="text-center p-3 bg-gray-50 rounded-lg">
-                          <div className="text-2xl font-bold text-gray-800">{exam.duration}</div>
-                          <div className="text-sm text-gray-600">Minutes</div>
-                        </div>
-                        <div className="text-center p-3 bg-gray-50 rounded-lg">
-                          <div className="text-lg font-bold text-gray-800">{exam.date}</div>
-                          <div className="text-sm text-gray-600">Date</div>
-                        </div>
-                        <div className="text-center p-3 bg-gray-50 rounded-lg">
-                          <div className="text-sm font-bold text-gray-800">
-                            {exam.dueDate.split(" ")[1]}
+                return (
+                  <div
+                    key={exam.examId}
+                    className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                  >
+                    <div className="p-6">
+                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                        {/* Left Section */}
+                        <div className="flex-1">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                            <h2 className="text-xl font-bold text-gray-800 capitalize">
+                              {exam.subjectName}
+                            </h2>
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-medium border ${
+                                startable
+                                  ? "bg-green-100 text-green-700 border-green-200"
+                                  : "bg-red-100 text-red-700 border-red-200"
+                              }`}
+                            >
+                              {startable ? "Available" : "Unavailable"}
+                            </span>
                           </div>
-                          <div className="text-sm text-gray-600">Due</div>
+
+                          <div className="flex items-center text-gray-600 mb-4">
+                            <span className="font-semibold">{exam.description}</span>
+                          </div>
+
+                          {/* Exam Details Grid */}
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                              <div className="text-2xl font-bold text-gray-800">
+                                {exam.totalQuestions}
+                              </div>
+                              <div className="text-sm text-gray-600">Questions</div>
+                            </div>
+                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                              <div className="text-2xl font-bold text-gray-800">
+                                {exam.durationMinutes}
+                              </div>
+                              <div className="text-sm text-gray-600">Minutes</div>
+                            </div>
+                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                              <div className="text-lg font-bold text-gray-800">{schedule.date}</div>
+                              <div className="text-sm text-gray-600">Date</div>
+                            </div>
+                            <div className="text-center p-3 bg-gray-50 rounded-lg">
+                              <div className="text-sm font-bold text-gray-800">{schedule.time}</div>
+                              <div className="text-sm text-gray-600">Time</div>
+                            </div>
+                          </div>
+
+                          {!startable && (
+                            <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2 inline-block">
+                              {!exam.scheduledAt
+                                ? "This exam has not been scheduled yet."
+                                : exam.totalQuestions <= 0
+                                  ? "This exam has no questions yet."
+                                  : `This exam opens on ${schedule.date} at ${schedule.time}.`}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Right Section - Action Button */}
+                        <div className="lg:w-48 flex items-start">
+                          {startable ? (
+                            <button
+                              onClick={() => handleStartExam(exam.examId)}
+                              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                            >
+                              Start Exam
+                            </button>
+                          ) : (
+                            <button
+                              disabled
+                              className="w-full bg-gray-200 text-gray-400 py-3 rounded-lg font-semibold cursor-not-allowed"
+                            >
+                              {!exam.scheduledAt
+                                ? "Not Scheduled"
+                                : exam.totalQuestions <= 0
+                                  ? "No Questions"
+                                  : "Not Yet Available"}
+                            </button>
+                          )}
                         </div>
                       </div>
-
-                      {/* Instructions */}
-                      <div className="mb-4">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Instructions:</h3>
-                        <p className="text-gray-600 bg-gray-50 border border-gray-100 rounded-lg p-3">
-                          {exam.instructions}
-                        </p>
-                      </div>
-
-                      {/* Available Date for Upcoming Exams */}
-                      {exam.status === "upcoming" && exam.availableDate && (
-                        <div className="flex items-center text-blue-600 bg-blue-50 border border-blue-100 rounded-lg p-3">
-                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                          Available on {exam.availableDate}
-                        </div>
-                      )}
                     </div>
-
-                    {/* Right Section - Action Button */}
-                    <button onClick={()=> navigate('/cbt/student/exam/:id')} className="lg:w-48">{getActionButton(exam)}</button>
                   </div>
-                </div>
-              </div>
+                );
+              })
             ))}
         </div>
 
-        {
-            activeTab === 'completed' && <CompletedExam />
-        }
+        {activeTab === "completed" && <CompletedExam />}
       </div>
     </div>
   );

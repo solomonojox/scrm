@@ -20,43 +20,59 @@ export const cbtStudentService = {
     const res = await cbtApi.post("/api/Student/AddStudent", data);
     // console.log("AddStudentStudent success:", res.data);
     return res.data.data;
-    // try {
-    // } catch (error) {
-    //   // console.error("AddStudentStudent error:", error?.response?.data?.message || error.message);
-    //   throw error;
-    // }
   },
 
   update: async (id, data) => {
     const res = await cbtApi.put(`/api/Student/UpdateStudent/${id}`, data);
     // console.log("UpdateStudent success:", res.data);
     return res.data.data;
-    // try {
-    // } catch (error) {
-    //   // console.error("UpdateStudent error:", error?.response?.data?.message || error.message);
-    //   throw error;
-    // }
   },
 
   delete: async (id) => {
     const res = await cbtApi.delete(`/api/Student/${id}`);
     // console.log("DeleteStudent success:", res.data);
     return res.data;
-    // try {
-    // } catch (error) {
-    //   // console.error("DeleteStudent error:", error?.response?.data?.message || error.message);
-    //   throw error;
-    // }
   },
 
   uploadPhoto: async (id, data) => {
     const res = await cbtApi.post(`/api/Student/UploadImage/${id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
     // console.log("UploadStudentPhoto success:", res.data);
     return res.data;
-    // try {
-    // } catch (error) {
-    //   // console.error("UploadStudentPhoto error:", error?.response?.data?.message || error.message);
-    //   throw error;
-    // }
-  }
+  },
+
+  getStudentDashboard: async (id) => {
+    const res = await cbtApi.get(`/api/ExamStudent/dashboard/${id}`);
+    // console.log("GetStudentDashboard success:", res.data);
+    return res.data.data;
+  },
+
+  getStudentCatalog: async (id) => {
+    const res = await cbtApi.get(`/api/ExamStudent/catalog/${id}`);
+    // console.log("GetStudentCatalog success:", res.data);
+    return res.data.data;
+  },
+
+  getStudentPerformance: async (id) => {
+    const res = await cbtApi.get(`/api/ExamStudent/performance/${id}`);
+    // console.log("GetStudentPerformance success:", res.data);
+    return res.data.data;
+  },
+
+  getStudentExamResults: async (id) => {
+    const res = await cbtApi.get(`/api/ExamStudent/results/${id}`);
+    // console.log("GetStudentPerformance success:", res.data);
+    return res.data.data;
+  },
+
+  startExam: async (studentId, examId) => {
+    const res = await cbtApi.post(`/api/CbtStudent/start/${studentId}/${examId}`);
+    // console.log("StartExam success:", res.data);
+    return res.data.data;
+  },
+
+  submitExam: async (payload) => {
+    const res = await cbtApi.post(`/api/CbtStudent/submit`, payload);
+    // console.log("SubmitExam success:", res.data);
+    return res.data.data;
+  },
 };

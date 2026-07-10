@@ -33,7 +33,7 @@ const ExamInterface = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-700 p-6 text-white">
+        <div className="bg-liner-to-r from-blue-600 to-purple-700 p-6 text-white">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Physics Mid-term Test</h1>
           <div className="flex flex-wrap items-center gap-4 text-sm md:text-base">
             <span className="bg-white/20 px-3 py-1 rounded-full">Physics</span>
@@ -83,7 +83,7 @@ const ExamInterface = () => {
                         onChange={(e) => setSelectedAnswer(e.target.value)}
                         className="hidden"
                       />
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex items-center justify-center">
+                      <span className="shrink-0 w-6 h-6 rounded-full border-2 border-gray-300 mr-3 flex items-center justify-center">
                         {selectedAnswer === option && (
                           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                         )}
