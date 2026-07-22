@@ -27,6 +27,7 @@ const TeacherCbtExam: React.FC = () => {
   const totalPages = useSelector((state: RootState) => state.getAllExamQuestion.totalPages);
   const fetchedLoading = useSelector((state: RootState) => state.getAllExamQuestion.loading);
   const error = useSelector((state: RootState) => state.getAllExamQuestion.error);
+  
 
   const [currentView, setCurrentView] = useState<ViewMode>("list");
   const [selectedExam, setSelectedExam] = useState<AllExamQuestionType | null>(null);

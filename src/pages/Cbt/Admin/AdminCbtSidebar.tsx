@@ -134,22 +134,22 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
         link: "/cbt/teacher/subject",
         icon: <BookOpen size={20} />,
       },
-      {
-        id: "questions",
-        label: "Manage Questions",
-        link: "/cbt/teacher/exams",
-        icon: <FileText size={20} />,
-        subItems: [
-          { id: "all-questions", label: "All Questions", link: "/cbt/teacher/questions", icon: <FileText size={18} /> },
-          { id: "create-question", label: "Create Question", link: "/cbt/teacher/questions/create", icon: <FileText size={18} /> },
-        ]
-      },
-      {
-        id: "students",
-        label: "My Students",
-        link: "/cbt/teacher/students",
-        icon: <GraduationCap size={20} />,
-      },
+      // {
+      //   id: "questions",
+      //   label: "Manage Questions",
+      //   link: "/cbt/teacher/exams",
+      //   icon: <FileText size={20} />,
+      //   subItems: [
+      //     { id: "all-questions", label: "All Questions", link: "/cbt/teacher/questions", icon: <FileText size={18} /> },
+      //     { id: "create-question", label: "Create Question", link: "/cbt/teacher/questions/create", icon: <FileText size={18} /> },
+      //   ]
+      // },
+      // {
+      //   id: "students",
+      //   label: "My Students",
+      //   link: "/cbt/teacher/students",
+      //   icon: <GraduationCap size={20} />,
+      // },
     ],
 
     SchoolAdmin: [
