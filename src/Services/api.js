@@ -29,7 +29,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://educat.codeweb.com.ng",
+  baseURL: "https://scrmapi-lpkm.onrender.com",
+  // baseURL: "https://educat.codeweb.com.ng",
 });
 
 // REQUEST interceptor — attach access token
@@ -80,7 +81,8 @@ api.interceptors.response.use(
 
       try {
         const { data } = await axios.post(
-          "https://educat.codeweb.com.ng/api/Login/RefreshToken",
+          "https://scrmapi-lpkm.onrender.com/api/Login/RefreshToken",
+          // "https://educat.codeweb.com.ng/api/Login/RefreshToken",
           { accessToken, refreshToken },
         );
 

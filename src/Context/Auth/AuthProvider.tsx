@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           schoolId: decoded.schoolId || "",
           currentTerm: decoded.term || "",
           termId: decoded.termId || "",
-          // sessionId: decoded.sessionId || "",
+          sessionId: decoded.sessionId || "",
         };
 
         // restore both user types
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || "",
           schoolReg: decoded.schoolReg || "",
           schoolName: decoded.schoolName || "",
-          schoolId: decoded.schoolId || "",
+          schoolId: decoded.schoolId || ""
         };
         setCbtUser(cbtUserData);
       } catch (error) {
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       schoolId: decoded.schoolId || "",
       currentTerm: decoded.term || "",
       termId: decoded.termId || "",
-      // sessionId: decoded.sessionId || "",
+      sessionId: decoded.sessionId || "",
     });
 
     setIsAuthenticated(true);
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   //CBT LOGIN (uses plain field names, because your CBT token does not use Microsoft claims)
   const cbtLogin = (token: string) => {
     localStorage.setItem("cbtToken", token);
-    
+
     const decoded = jwtDecode<Partial<any>>(token);
     localStorage.setItem("schoolId", decoded.schoolId);
 
