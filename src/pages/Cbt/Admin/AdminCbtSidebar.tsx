@@ -183,16 +183,16 @@ const AdminCbtSidebar: React.FC<AdminCbtSidebarProps> = ({ isSidebarOpen, onClos
         link: "/cbt/admin/students",
         icon: <Icons.Students />,
       },
-      {
-        id: "settings",
-        label: "Settings",
-        link: "/cbt/admin/settings",
-        icon: <Settings size={20} />,
-        subItems: [
-          { id: "general", label: "General", link: "/cbt/admin/settings/general", icon: <Settings size={18} /> },
-          { id: "security", label: "Security", link: "/cbt/admin/settings/security", icon: <ShieldUserIcon size={18} /> },
-        ]
-      },
+      // {
+      //   id: "settings",
+      //   label: "Settings",
+      //   link: "/cbt/admin/settings",
+      //   icon: <Settings size={20} />,
+      //   subItems: [
+      //     { id: "general", label: "General", link: "/cbt/admin/settings/general", icon: <Settings size={18} /> },
+      //     { id: "security", label: "Security", link: "/cbt/admin/settings/security", icon: <ShieldUserIcon size={18} /> },
+      //   ]
+      // },
     ],
   };
 

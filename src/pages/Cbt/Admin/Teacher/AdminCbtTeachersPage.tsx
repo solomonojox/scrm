@@ -6,6 +6,7 @@ import AdminCbtTeachersForm from "./AdminCbtTeachersForm";
 import { useAuth } from "../../../../Context/Auth/useAuth";
 import { AdminCbtTeacherService } from "../../../../Services/Cbt/Admin/teacher/AdminCbtTeacherService";
 import { AppContext } from "../../../../Context/AppContext";
+import { Building2, CalendarCheck, ListFilter, Users2 } from "lucide-react";
 
 export interface Teacher {
   teacherId: string;
@@ -160,6 +161,51 @@ export default function AdminCbtTeachersPage() {
     }
   };
 
+  const statCards = [
+    {
+      id: 1,
+      title: "Total Teachers",
+      value: activeCount,
+      icon: Users2,
+      borderClass: "border-orange-500",
+      bgClass: "bg-orange-50",
+      iconTextClass: "text-orange-500",
+      description: "Registered teaching staff",
+    },
+    {
+      id: 2,
+      title: "Shown",
+      value: filtered.length,
+      icon: ListFilter,
+      borderClass: "border-slate-400",
+      bgClass: "bg-slate-50",
+      iconTextClass: "text-slate-500",
+      description: "Matching current search",
+    },
+    {
+      id: 3,
+      title: "This School",
+      value: teachers.filter((t) => t.schoolId === cbtUser?.schoolId).length,
+      icon: Building2,
+      borderClass: "border-blue-500",
+      bgClass: "bg-blue-50",
+      iconTextClass: "text-blue-500",
+      description: "Assigned to your school",
+    },
+    {
+      id: 4,
+      title: "Recent",
+      value: teachers.filter(
+        (t) => t.employmentDate && new Date(t.employmentDate) > new Date(Date.now() - 90 * 86400000),
+      ).length,
+      icon: CalendarCheck,
+      borderClass: "border-emerald-500",
+      bgClass: "bg-emerald-50",
+      iconTextClass: "text-emerald-500",
+      description: "Hired in the last 90 days",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50/60 font-sans">
       <div className="mx-auto max-w-6xl space-y-6 p-6">
@@ -179,65 +225,24 @@ export default function AdminCbtTeachersPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            {
-              label: "Total Teachers",
-              value: activeCount,
-              icon: "ti-users",
-              accent: "bg-orange-500",
-              ring: "ring-orange-100",
-              text: "text-orange-600",
-              bg: "bg-orange-50",
-            },
-            {
-              label: "Shown",
-              value: filtered.length,
-              icon: "ti-layout-list",
-              accent: "bg-slate-400",
-              ring: "ring-slate-100",
-              text: "text-slate-500",
-              bg: "bg-slate-50",
-            },
-            {
-              label: "This School",
-              value: teachers.filter((t) => t.schoolId === cbtUser?.schoolId).length,
-              icon: "ti-building-school",
-              accent: "bg-blue-500",
-              ring: "ring-blue-100",
-              text: "text-blue-600",
-              bg: "bg-blue-50",
-            },
-            {
-              label: "Recent",
-              value: teachers.filter(
-                (t) =>
-                  t.employmentDate &&
-                  new Date(t.employmentDate) > new Date(Date.now() - 90 * 86400000),
-              ).length,
-              icon: "ti-calendar-check",
-              accent: "bg-emerald-500",
-              ring: "ring-emerald-100",
-              text: "text-emerald-600",
-              bg: "bg-emerald-50",
-            },
-          ].map(({ label, value, icon, accent, ring, text, bg }) => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map(({ id, title, value, icon: Icon, borderClass, bgClass, iconTextClass, description }) => (
             <div
-              key={label}
-              className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              key={id}
+              className={`group w-full rounded-lg border-t-2 bg-white p-4 shadow-md transition-all duration-200 hover:shadow-lg ${borderClass}`}
             >
-              <div className={`absolute inset-x-0 top-0 h-1 rounded-t-2xl ${accent}`} />
-              <div className="mt-1 flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
-                    {label}
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="mb-2 flex items-center space-x-2">
+                    <div className={`rounded-lg p-2 ${bgClass}`}>
+                      <Icon className={`h-4 w-4 ${iconTextClass}`} />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-600">{title}</h2>
+                  </div>
+                  <p className="mt-2 text-2xl font-bold text-gray-800">
+                    {typeof value === "number" ? value.toLocaleString() : value}
                   </p>
-                  <p className="mt-1.5 text-3xl font-black tracking-tight text-gray-900">{value}</p>
-                </div>
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${bg} ring-4 ${ring}`}
-                >
-                  <i className={`ti ${icon} ${text}`} style={{ fontSize: 20 }} aria-hidden="true" />
+                  <p className="mt-1 text-xs text-gray-400">{description}</p>
                 </div>
               </div>
             </div>

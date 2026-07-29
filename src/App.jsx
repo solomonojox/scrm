@@ -113,6 +113,7 @@ import ExaminarDashboard from "./pages/Cbt/Examiner/dashboard/ExaminarDashboard"
 import ExaminarCbtExaminationsPage from "./pages/Cbt/Examiner/examination/AdminCbtExaminationsPage";
 import ExaminationAssignmentList from "./pages/Cbt/Teacher/dashboard/examination/ExaminationAssignmentList";
 import StudentCbtLogin from "./pages/Cbt/StudentCbtLogin";
+import InvoiceRecordsPage from "./pages/Admin/schoolFee/InvoiceRecordsPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -182,7 +183,7 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
         {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
-        <Route path="/admin/payment-record" element={<ManualFeeRecord />} />
+        <Route path="/admin/payment-record" element={<InvoiceRecordsPage />} />
       </Route>
 
       {/* All teachers routes here */}

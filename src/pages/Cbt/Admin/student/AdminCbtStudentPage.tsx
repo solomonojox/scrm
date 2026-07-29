@@ -11,6 +11,7 @@ import { AppContext } from "../../../../Context/AppContext";
 import { fetchAdminCbtStudentFailure, fetchAdminCbtStudentStart, fetchAdminCbtStudentSuccess } from "../../../../Store/cbt/admin/student/adminCbtStudentSlice";
 import { AppDispatch, RootState } from "../../../../Store/store";
 import { useDispatch, useSelector } from "react-redux";
+import { GraduationCap, ListFilter, User, UserRound } from "lucide-react";
 
 export interface Student {
   studentId: string;
@@ -186,6 +187,49 @@ export default function AdminCbtStudentPage() {
     }
   };
 
+  const statCards = [
+    {
+      id: 1,
+      title: "Total Students",
+      value: fetchedAdminCbtStudentRecord.length,
+      icon: GraduationCap,
+      borderClass: "border-orange-500",
+      bgClass: "bg-orange-50",
+      iconTextClass: "text-orange-500",
+      description: "Active enrolled students",
+    },
+    {
+      id: 2,
+      title: "Shown",
+      value: filtered.length,
+      icon: ListFilter,
+      borderClass: "border-slate-400",
+      bgClass: "bg-slate-50",
+      iconTextClass: "text-slate-500",
+      description: "Matching current search",
+    },
+    {
+      id: 3,
+      title: "Male",
+      value: fetchedAdminCbtStudentRecord.filter((s) => s.gender?.toLowerCase() === "male").length,
+      icon: User,
+      borderClass: "border-blue-500",
+      bgClass: "bg-blue-50",
+      iconTextClass: "text-blue-500",
+      description: "Male students",
+    },
+    {
+      id: 4,
+      title: "Female",
+      value: fetchedAdminCbtStudentRecord.filter((s) => s.gender?.toLowerCase() === "female").length,
+      icon: UserRound,
+      borderClass: "border-pink-500",
+      bgClass: "bg-pink-50",
+      iconTextClass: "text-pink-500",
+      description: "Female students",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50/60 font-sans">
       <div className="mx-auto max-w-6xl space-y-6 p-6">
@@ -204,61 +248,24 @@ export default function AdminCbtStudentPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            {
-              label: "Total Students",
-              value: fetchedAdminCbtStudentRecord.length,
-              icon: "ti-school",
-              accent: "bg-orange-500",
-              ring: "ring-orange-100",
-              text: "text-orange-600",
-              bg: "bg-orange-50",
-            },
-            {
-              label: "Shown",
-              value: filtered.length,
-              icon: "ti-layout-list",
-              accent: "bg-slate-400",
-              ring: "ring-slate-100",
-              text: "text-slate-500",
-              bg: "bg-slate-50",
-            },
-            {
-              label: "Male",
-              value: fetchedAdminCbtStudentRecord.filter((s) => s.gender?.toLowerCase() === "male").length,
-              icon: "ti-user",
-              accent: "bg-blue-500",
-              ring: "ring-blue-100",
-              text: "text-blue-600",
-              bg: "bg-blue-50",
-            },
-            {
-              label: "Female",
-              value: fetchedAdminCbtStudentRecord.filter((s) => s.gender?.toLowerCase() === "female").length,
-              icon: "ti-user",
-              accent: "bg-pink-500",
-              ring: "ring-pink-100",
-              text: "text-pink-600",
-              bg: "bg-pink-50",
-            },
-          ].map(({ label, value, icon, accent, ring, text, bg }) => (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map(({ id, title, value, icon: Icon, borderClass, bgClass, iconTextClass, description }) => (
             <div
-              key={label}
-              className="relative overflow-hidden rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              key={id}
+              className={`group w-full rounded-lg border-t-2 bg-white p-4 shadow-md transition-all duration-200 hover:shadow-lg ${borderClass}`}
             >
-              <div className={`absolute inset-x-0 top-0 h-1 rounded-t-2xl ${accent}`} />
-              <div className="mt-1 flex items-start justify-between">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
-                    {label}
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="mb-2 flex items-center space-x-2">
+                    <div className={`rounded-lg p-2 ${bgClass}`}>
+                      <Icon className={`h-4 w-4 ${iconTextClass}`} />
+                    </div>
+                    <h2 className="text-sm font-semibold text-gray-600">{title}</h2>
+                  </div>
+                  <p className="mt-2 text-2xl font-bold text-gray-800">
+                    {typeof value === "number" ? value.toLocaleString() : value}
                   </p>
-                  <p className="mt-1.5 text-3xl font-black tracking-tight text-gray-900">{value}</p>
-                </div>
-                <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-xl ${bg} ring-4 ${ring}`}
-                >
-                  <i className={`ti ${icon} ${text}`} style={{ fontSize: 20 }} aria-hidden="true" />
+                  <p className="mt-1 text-xs text-gray-400">{description}</p>
                 </div>
               </div>
             </div>
