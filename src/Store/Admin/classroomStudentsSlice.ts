@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { classrooms } from "../../Types/classroomTypes";
+import { classrooms, StudentRecord } from "../../Types/classroomTypes";
 
 interface ClassroomTypes {
-  listRecords: classrooms[];
+  listRecords: StudentRecord[];
   loading: boolean;
   error: string | null;
 }
@@ -21,7 +21,7 @@ export const classroomStudentsSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    fetchClassroomStudentsSuccess: (state, action: PayloadAction<classrooms[]>) => {
+    fetchClassroomStudentsSuccess: (state, action: PayloadAction<StudentRecord[]>) => {
       state.loading = false;
       state.listRecords = action.payload;
     },
