@@ -184,7 +184,7 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
         {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
-        <Route path="/admin/payment-record" element={<ManualFeeRecord />} />
+        <Route path="/admin/payment-record" element={<InvoiceRecordsPage />} />
       </Route>
 
       {/* All teachers routes here */}
