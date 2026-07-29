@@ -114,6 +114,7 @@ import ExaminarCbtExaminationsPage from "./pages/Cbt/Examiner/examination/AdminC
 import ExaminationAssignmentList from "./pages/Cbt/Teacher/dashboard/examination/ExaminationAssignmentList";
 import StudentCbtLogin from "./pages/Cbt/StudentCbtLogin";
 import StudentPromotion from "./pages/Admin/student/StudentPromotion";
+import InvoiceRecordsPage from "./pages/Admin/schoolFee/InvoiceRecordsPage";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
