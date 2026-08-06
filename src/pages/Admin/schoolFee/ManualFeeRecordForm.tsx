@@ -193,7 +193,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
 
     return (
         <Paper elevation={3} sx={{ p: 3, maxWidth: '100%', mx: 'auto' }}>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'orange' }}>
                 Record Manual Fee Payment
             </Typography>
             <Divider sx={{ mb: 3 }} />
@@ -204,6 +204,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                     <FormControl fullWidth error={!!errors.sessionId}>
                         <InputLabel id="session-select-label">Session</InputLabel>
                         <Controller
+                            style={{border: '1px solid orange'}}
                             name="sessionId"
                             control={control}
                             rules={{ required: 'Session is required' }}
@@ -418,6 +419,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                             </Typography>
                                             <Typography variant="body1">
                                                 {selectedStudent.classroomName}
+                                   
                                             </Typography>
                                         </div>
                                     </Grid>
@@ -430,6 +432,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                     </Grid> */}
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
                             <Button
+                                style={{border: "1px solid orange", color: "orange"}}
                                 type="button"
                                 variant="outlined"
                                 onClick={() => {
@@ -442,6 +445,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                 Clear
                             </Button>
                             <Button
+                                style={{backgroundColor: "orange"}}
                                 type="submit"
                                 variant="contained"
                                 disabled={isSubmitting || isLoading}
