@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Btn, Input } from "../../../../components/ui/CbtSharedComponents";
+import PasswordField from "../../../../components/ui/PasswordField";
 import { StudentForm } from "./AdminCbtStudentPage";
 import { Teacher } from "../Teacher/AdminCbtTeachersPage";
 
@@ -266,9 +267,8 @@ export default function AdminCbtStudentsForm({
       </div>
 
       {!editing && (
-        <Input
+        <PasswordField
           label="Password"
-          type="password"
           required
           value={form.password}
           disabled={submitting}

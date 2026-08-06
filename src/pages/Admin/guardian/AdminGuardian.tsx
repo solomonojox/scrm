@@ -42,16 +42,26 @@ const AdminGuardian: React.FC = () => {
     }
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((g: Guardian) =>
-        g.firstname?.toLowerCase().includes(query) ||
-        g.lastname?.toLowerCase().includes(query) ||
-        g.phone?.toLowerCase().includes(query) ||
-        g.email?.toLowerCase().includes(query) ||
-        g.nationality?.toLowerCase().includes(query) ||
-        g.stateOfOrigin?.toLowerCase().includes(query) ||
-        g.religion?.toLowerCase().includes(query) ||
-        g.homeAddress?.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter((g: Guardian) => {
+        const searchableText = [
+          g.firstname,
+          g.lastname,
+          g.phone,
+          g.email,
+          g.nationality,
+          g.stateOfOrigin,
+          g.religion,
+          g.homeAddress,
+          g.relationship,
+          g.occupation,
+          g.workAddress,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
     }
     return filtered;
   }, [fetchedRecord, searchQuery, religionFilter]);

@@ -1,6 +1,7 @@
 import { GraduationCap, Lock, Mail } from 'lucide-react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import PasswordField from '../../components/ui/PasswordField'
 
 const NappsLogin = () => {
     const navigate = useNavigate()
@@ -33,7 +34,7 @@ const NappsLogin = () => {
 
                         <div className='relative mt-1'>
                             <Lock className='text-gray-400 absolute top-3 left-2' size={20} />
-                            <input type="password" placeholder='Enter your password' className='rounded-xl border w-full outline-none p-2 pl-10 bg-white text-gray-400' />
+                            <PasswordField placeholder='Enter your password' inputClassName='rounded-xl border w-full outline-none p-2 pl-10 bg-white text-gray-400' className='w-full' />
                         </div>
                     </div>
 

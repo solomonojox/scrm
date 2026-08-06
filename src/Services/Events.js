@@ -11,7 +11,7 @@ export const eventsService = {
       const response = await api.post(`/api/Event/AddEvent`, eventsData);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
+      throw error;
     }
   },
 
@@ -24,8 +24,7 @@ export const eventsService = {
       const response = await api.get(`/api/Event/GetAllEvents`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllEventserror:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch news");
+      throw error;
     }
   },
 };

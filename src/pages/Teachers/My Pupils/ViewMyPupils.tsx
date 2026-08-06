@@ -21,14 +21,14 @@ const ViewMyPupils = () => {
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Header with Back Button */}
-      <div className="relative bg-gradient-to-r from-orange-400 to-orange-600">
+      <div className="relative bg-linear-to-r from-orange-400 to-orange-600">
         <div
           className="absolute top-4 left-4 text-white text-xl cursor-pointer bg-black/20 p-2 rounded-full shrink-0 h-10 w-10 hover:bg-black/30 transition-all flex items-center justify-center"
           onClick={() => window.history.back()}
         >
           ←
         </div>
-        <div className="h-40 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+        <div className="h-40 bg-linear-to-r from-orange-400 to-orange-600 flex items-center justify-center">
           <h1 className="text-white text-2xl font-bold">Student Profile</h1>
         </div>
       </div>

@@ -7,10 +7,7 @@ export const subjectService = {
       const response = await api.post(`/api/Result/AddSubject`, subjectData);
       return response.data;
     } catch (error) {
-      console.error("AddSubject error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add session"
-      );
+      throw error;
     }
   },
   delete: async (subjectData) => {
@@ -18,10 +15,7 @@ export const subjectService = {
       const response = await api.post(`/api/Session/delete`, subjectData);
       return response.data;
     } catch (error) {
-      console.error("DeleteSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add session"
-      );
+      throw error;
     }
   },
 
@@ -32,8 +26,7 @@ export const subjectService = {
       
       return response.data.data;
     } catch (error) {
-      console.error("GetAllsubject error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch sessions");
+      throw error;
     }
   },
 };

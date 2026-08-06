@@ -21,9 +21,9 @@ export const loginService = {
             console.log(error.response);
 
             if (error.response.data.data.title === 'Client Error') {
-                throw new Error(error?.response?.data?.responseMessage);
+                throw error;
             } else {
-                throw new Error('Something went wrong, pls try again');
+                throw error;
             }
         }
     }

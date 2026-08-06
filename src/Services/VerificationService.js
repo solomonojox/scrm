@@ -10,7 +10,7 @@ export const VerificationService = {
             return res.data
         } catch (error) {
             console.log(error);
-            throw new Error(error);
+            throw error;
         }
     },
     verifyUser: async (enteredCode, email) => {
@@ -21,9 +21,9 @@ export const VerificationService = {
             console.log(error.response);
 
             if (error.response.data.data.title === 'Client Error') {
-                throw new Error(error?.response?.data?.responseMessage);
+                throw error;
             } else {
-                throw new Error('Something went wrong, pls try again');
+                throw error;
             }
         }
     }

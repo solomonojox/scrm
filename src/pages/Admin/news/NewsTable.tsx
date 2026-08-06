@@ -119,8 +119,8 @@ const NewsTable: React.FC<NewsTableProps> = ({
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-          <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+          {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+          {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
           <div className="flex items-center rounded-full px-3 py-1 space-x-2">
             <img
               src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
@@ -248,7 +248,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
             <tr>
-              <th className="p-3 min-w-[50px]">
+              <th className="p-3 min-w-12.5">
                 <input
                   type="checkbox"
                   checked={selectAll}
@@ -257,11 +257,11 @@ const NewsTable: React.FC<NewsTableProps> = ({
                 />
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              <th className="p-3 min-w-[120px]">News Id</th>
-              <th className="p-3 min-w-[120px]">Title</th>
-              <th className="p-3 min-w-[120px]">Content </th>
-              <th className="p-3 min-w-[200px]">Published Date</th>
-              <th className="p-3 min-w-[120px]">Actions</th>
+              <th className="p-3 min-w-30">News Id</th>
+              <th className="p-3 min-w-30">Title</th>
+              <th className="p-3 min-w-30">Content </th>
+              <th className="p-3 min-w-50">Published Date</th>
+              <th className="p-3 min-w-30">Actions</th>
             </tr>
           </thead>
           <tbody>

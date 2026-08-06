@@ -8,7 +8,7 @@ export const messageService = {
       // console.log("GetAllTeachers success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -18,7 +18,7 @@ export const messageService = {
       // console.log("GetAllTeachers success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -29,7 +29,7 @@ export const messageService = {
       //   console.log("Message success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("Message error:", error?.response?.data?.message || error.message);
+      // console.error("Message error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -42,11 +42,11 @@ export const messageService = {
     const responses = await Promise.all(requests); 
  
     const allMessages = responses.flatMap(res => res.data.data || []); 
-    console.log("Messages from all contacts:", allMessages); 
+    // console.log("Messages from all contacts:", allMessages); 
  
     return allMessages; 
   } catch (error) { 
-    console.error("getMessagesByContactIds error:", error?.response?.data?.message || error.message); 
+    // console.error("getMessagesByContactIds error:", error?.response?.data?.message || error.message); 
     throw error; 
   }
 },

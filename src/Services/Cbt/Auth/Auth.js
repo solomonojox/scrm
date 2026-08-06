@@ -7,7 +7,7 @@ export const cbtAuthService = {
       const response = await cbtApi.post(`/api/School/RegisterSchool`, eventsData);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to register school");
+      throw error;
     }
   },
 
@@ -16,7 +16,7 @@ export const cbtAuthService = {
       const response = await cbtApi.post(`/api/SchoolAdmin/Register`, eventsData);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to register admin");
+      throw error;
     }
   },
 

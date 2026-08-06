@@ -140,7 +140,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow-md rounded-xl p-1 mb-4">
           <div className="w-full sm:w-auto mb-4 sm:mb-0">
-            <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
+            {/* <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-full sm:w-80">
               <FaSearch className="text-gray-400 text-lg" />
               <input
                 type="text"
@@ -149,11 +149,11 @@ export default function AdminDashboard() {
                 // onChange={(e) => setSearchQuery(e.target.value)}
                 className="ml-2 bg-transparent outline-none w-full text-sm"
               />
-            </div>
+            </div> */}
           </div>
           <div className="flex items-center space-x-4">
-            <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-            <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+            {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+            {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
             <div className="flex items-center rounded-full px-3 py-1 space-x-2">
               <img
                 src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
@@ -459,7 +459,7 @@ function UpcomingClasses() {
             className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
           >
             <div
-              className={`w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-lg ${cls.color}`}
+              className={`w-8 h-8 shrink-0 flex items-center justify-center rounded-lg ${cls.color}`}
             >
               <img
                 src={cls.imgSrc}

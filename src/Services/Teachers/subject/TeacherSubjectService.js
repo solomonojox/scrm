@@ -10,7 +10,7 @@ export const teacherSubjectService = {
       // console.log("GetAllSubjects success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllSubjects error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllSubjects error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -21,7 +21,7 @@ export const teacherSubjectService = {
       // console.log("AddTeacherTeacher success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("Add Teacher Subject error:", error?.response?.data?.message || error.message);
+      // console.error("Add Teacher Subject error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -32,7 +32,7 @@ export const teacherSubjectService = {
       // console.log("UpdateSubject success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("UpdateSubject error:", error?.response?.data?.message || error.message);
+      // console.error("UpdateSubject error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -43,7 +43,7 @@ export const teacherSubjectService = {
       // console.log("success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -54,7 +54,7 @@ export const teacherSubjectService = {
       // console.log("success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -65,7 +65,7 @@ export const teacherSubjectService = {
       // console.log("DeleteSubject success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("DeleteSubject error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteSubject error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },

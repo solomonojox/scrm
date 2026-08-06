@@ -3,6 +3,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
+import PasswordField from "../../components/ui/PasswordField";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const RegistrationForm = () => {
   const [fullName, setFullName] = useState("");
@@ -13,6 +15,25 @@ const RegistrationForm = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    if (!fullName.trim()) {
+      setErrorMsg("Full name is required.");
+      return false;
+    }
+    if (fullName.trim().length < 2) {
+      setErrorMsg("Full name must be at least 2 characters.");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setErrorMsg("Please enter a valid email address.");
+      return false;
+    }
+    if (password.length < 6) {
+      setErrorMsg("Password must be at least 6 characters.");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -21,20 +42,23 @@ const RegistrationForm = () => {
     setSuccessMsg("");
     setErrorMsg("");
 
-    const schoolId = localStorage.getItem("schoolIdOnRegistration");
-
-    if (!schoolId) {
-      setErrorMsg("School ID not found. Please complete previous steps.");
-
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
 
+    const schoolId = localStorage.getItem("schoolIdOnRegistration");
+
+    if (!schoolId) {
+      setErrorMsg("School ID not found. Please complete previous steps.");
+      setLoading(false);
+      return;
+    }
 
     const payload = {
       schoolId,
-      fullName,
-      email,
+      fullName: fullName.trim(),
+      email: email.trim(),
       password,
     };
 
@@ -51,7 +75,7 @@ const RegistrationForm = () => {
         navigate("/login");
       }, 1500);
     } catch (error: any) {
-      const err = error.response?.data?.title || "Registration failed. Please try again.";
+      const err = getErrorMessage(error);
       setErrorMsg(`❌ ${err}`);
 
     } finally {
@@ -133,18 +157,13 @@ const RegistrationForm = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-
-                placeholder="Enter Password"
-                className="w-full mt-1 border border-orange-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-orange-400"
-                required
-              />
-            </div>
+            <PasswordField
+              label="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Password"
+              required
+            />
 
             <button
               type="submit"

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { cbtTeacherExamService } from "../../../../../Services/Cbt/Teacher/cbtTeacherExamService";
 import { toast } from "react-toastify";
+
 import AddExamQuestions from "./AddExamQuestions"; // adjust path as needed
+import { getErrorMessage } from "../../../../../utils/getErrorMessage";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -182,7 +184,7 @@ const ExaminationAssignmentList: React.FC = () => {
         fetchAssignments();
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.responseMessage || "Something went wrong. Please try again.");
+      toast.error(getErrorMessage(err))
     } finally {
       setActionLoading(false);
     }

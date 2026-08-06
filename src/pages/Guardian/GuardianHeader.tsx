@@ -130,7 +130,7 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
   return (
     <div
       className="
-      fixed top-0 z-50 h-[70px] 
+      fixed top-0 z-50 h-17.5
       w-full lg:w-[calc(100%-14.5rem)]   /* subtract sidebar width (48 = 12rem) */ 
       transition-all duration-300
     "
@@ -151,10 +151,10 @@ const GuardianHeader: React.FC<GuardianHeaderProps> = ({ onToggleSidebar }) => {
           <p className="text-xs bg-orange-50 p-2 rounded-lg">
             <span className="text-xs">Active Term: {user?.currentTerm} - {user?.sessionId}</span>
           </p>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <p className="cursor-pointer">{icons.notificationBell}</p>
             <p className="cursor-pointer">{icons.message}</p>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-2 cursor-pointer">
             <img

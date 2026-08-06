@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import AddQuestion from "../../../../components/Cbt/teacher/AddQuestion";
 import AddExam from "../../../../components/Cbt/teacher/AddExam";
 import AddClassModal from "../../../../components/Cbt/teacher/AddClassModal";
+import { getErrorMessage } from "../../../../utils/getErrorMessage";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 interface OptionType {
@@ -216,9 +217,9 @@ const CreateExamForm: React.FC = () => {
           window.location.reload();
         }, 1000);
       }
-      console.log("Questions response:", res);
+      // console.log("Questions response:", res);
     } catch (err: any) {
-      toast.error(err?.message ?? "An error occurred while saving questions.");
+      toast.error(getErrorMessage(err));
     } finally {
       setIsSaving(false);
     }

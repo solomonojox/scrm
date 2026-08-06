@@ -8,7 +8,7 @@ export const guardianService = {
       // console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -19,7 +19,7 @@ export const guardianService = {
       // console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -30,7 +30,7 @@ export const guardianService = {
       // console.log("GetAllGuardians success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -41,7 +41,7 @@ export const guardianService = {
       // console.log("AddStudentGuardian success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("AddStudentGuardian error:", error?.response?.data?.message || error.message);
+      // console.error("AddStudentGuardian error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -52,7 +52,7 @@ export const guardianService = {
       console.log("UpdateGuardian success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("UpdateGuardian error:", error?.response?.data?.message || error.message);
+      // console.error("UpdateGuardian error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -62,7 +62,7 @@ export const guardianService = {
       const res = await api.post(`/api/Account/SetUpAccount`, data)
       return res.data
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw error
     }
   },
@@ -73,7 +73,7 @@ export const guardianService = {
       console.log("DeleteGuardian success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("DeleteGuardian error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteGuardian error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },

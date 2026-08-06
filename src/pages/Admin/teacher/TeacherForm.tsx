@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { teacherService } from "../../../Services/Teachers/TeacherService";
 import { useAuth } from "../../../Context/Auth/useAuth";
 
@@ -9,23 +13,52 @@ interface TeacherFormProps {
   editData: any;
 }
 
+const teacherSchema = z.object({
+  firstName: z.string().trim().min(1, "First name is required").min(2, "First name must be at least 2 characters"),
+  lastName: z.string().trim().min(1, "Last name is required").min(2, "Last name must be at least 2 characters"),
+  phone: z.string().trim().min(1, "Phone number is required").regex(/^[0-9+\-\s()]{10,}$/, "Please enter a valid phone number"),
+  address: z.string().trim().min(1, "Home address is required"),
+  nationality: z.string().trim().min(1, "Nationality is required"),
+  state: z.string().trim().min(1, "State of origin is required"),
+  religion: z.string().trim().min(1, "Religion is required"),
+  email: z.string().trim().email("Please enter a valid email address").or(z.literal("")),
+  username: z.string().trim().min(1, "Username is required").optional().or(z.literal("")),
+  employmentDate: z.string().min(1, "Employment date is required"),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
+});
+
+type TeacherFormValues = z.infer<typeof teacherSchema>;
+
+const defaultValues: TeacherFormValues = {
+  firstName: "",
+  lastName: "",
+  phone: "",
+  address: "",
+  nationality: "",
+  state: "",
+  religion: "",
+  email: "",
+  username: "",
+  employmentDate: "",
+  dateOfBirth: "",
+};
+
 const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, editData }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    address: "",
-    nationality: "",
-    state: "",
-    religion: "",
-    email: "",
-    username: "",
-    employmentDate: "",
-    dateOfBirth: "",
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<TeacherFormValues>({
+    resolver: zodResolver(teacherSchema),
+    defaultValues,
+    mode: "onBlur",
   });
 
   // Helper function to format date for input[type="date"]
@@ -54,7 +87,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
   // Set initial form data when editData changes
   useEffect(() => {
     if (editData) {
-      setFormData({
+      reset({
         firstName: editData.firstname || "",
         lastName: editData.lastname || "",
         phone: editData.phone || "",
@@ -70,16 +103,10 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
       if (editData.imageUrl) {
         setImagePreview(editData.imageUrl);
       }
+    } else {
+      reset(defaultValues);
     }
-  }, [editData]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  }, [editData, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -93,58 +120,23 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
     }
   };
 
-  const validateForm = () => {
-    if (!formData.firstName || !formData.lastName) {
-      setFormError("First name and last name are required");
-      return false;
-    }
-    if (!formData.phone) {
-      setFormError("Phone number is required");
-      return false;
-    }
-    
-    // Validate phone number format (basic validation)
-    const phoneRegex = /^[0-9+\-\s()]{10,}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      setFormError("Please enter a valid phone number");
-      return false;
-    }
-    
-    // Validate email if provided
-    if (formData.email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        setFormError("Please enter a valid email address");
-        return false;
-      }
-    }
-    
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
+  const onSubmit = async (values: TeacherFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
       schoolId: user?.schoolId,
-      firstname: formData.firstName.trim(),
-      lastname: formData.lastName.trim(),
-      phone: formData.phone.trim(),
-      homeAddress: formData.address.trim(),
-      nationality: formData.nationality.trim(),
-      stateOfOrigin: formData.state.trim(),
-      religion: formData.religion.trim(),
-      email: formData.email.trim(),
-      username: formData.username.trim(),
-      employmentDate: formData.employmentDate.trim(),
-      dateOfBirth: formData.dateOfBirth.trim()
+      firstname: values.firstName.trim(),
+      lastname: values.lastName.trim(),
+      phone: values.phone.trim(),
+      homeAddress: values.address.trim(),
+      nationality: values.nationality.trim(),
+      stateOfOrigin: values.state.trim(),
+      religion: values.religion.trim(),
+      email: values.email.trim(),
+      username: values.username?.trim() || "",
+      employmentDate: values.employmentDate.trim(),
+      dateOfBirth: values.dateOfBirth.trim(),
     };
 
     try {
@@ -159,24 +151,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
 
       onSubmitSuccess();
       if (!editData) {
-        setFormData({
-          firstName: "",
-          lastName: "",
-          phone: "",
-          address: "",
-          nationality: "",
-          state: "",
-          religion: "",
-          email: "",
-          username: "",
-          employmentDate: "",
-          dateOfBirth: "",
-        });
+        reset(defaultValues);
         setImagePreview(null);
       }
     } catch (err: any) {
-      const msg =
-        err.response?.data?.responseMessage || (editData ? "Update failed" : "Submission failed");
+      const msg = getErrorMessage(err);
       setFormError(msg);
       toast.error(msg);
     } finally {
@@ -200,7 +179,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
               {formError}
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer hover:border-orange-500 transition-colors">
                 <input
@@ -224,13 +203,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="text"
-                  name="firstName"
                   placeholder="Enter first name"
-                  required
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.firstName ? "border-red-500" : ""}`}
+                  {...register("firstName")}
                 />
+                {errors.firstName && <p className="text-red-600 text-xs mt-1">{errors.firstName.message}</p>}
               </div>
 
               <div className="col-span-1">
@@ -239,13 +216,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="text"
-                  name="lastName"
                   placeholder="Enter last name"
-                  required
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.lastName ? "border-red-500" : ""}`}
+                  {...register("lastName")}
                 />
+                {errors.lastName && <p className="text-red-600 text-xs mt-1">{errors.lastName.message}</p>}
               </div>
 
               <div className="col-span-1">
@@ -254,61 +229,55 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="tel"
-                  name="phone"
                   placeholder="Enter phone number"
-                  required
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.phone}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.phone ? "border-red-500" : ""}`}
+                  {...register("phone")}
                 />
+                {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone.message}</p>}
               </div>
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                   type="email"
-                  name="email"
                   placeholder="Enter email address"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.email ? "border-red-500" : ""}`}
+                  {...register("email")}
                 />
+                {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email.message}</p>}
               </div>
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                 <input
                   type="text"
-                  name="username"
                   placeholder="Enter username"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.username}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.username ? "border-red-500" : ""}`}
+                  {...register("username")}
                 />
+                {errors.username && <p className="text-red-600 text-xs mt-1">{errors.username.message}</p>}
               </div>
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Home Address</label>
                 <input
                   type="text"
-                  name="address"
                   placeholder="Enter home address"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.address}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.address ? "border-red-500" : ""}`}
+                  {...register("address")}
                 />
+                {errors.address && <p className="text-red-600 text-xs mt-1">{errors.address.message}</p>}
               </div>
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
                 <input
                   type="text"
-                  name="nationality"
                   placeholder="Enter nationality"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.nationality}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.nationality ? "border-red-500" : ""}`}
+                  {...register("nationality")}
                 />
+                {errors.nationality && <p className="text-red-600 text-xs mt-1">{errors.nationality.message}</p>}
               </div>
 
               <div className="col-span-1">
@@ -317,24 +286,22 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="text"
-                  name="state"
                   placeholder="Enter state of origin"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.state}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.state ? "border-red-500" : ""}`}
+                  {...register("state")}
                 />
+                {errors.state && <p className="text-red-600 text-xs mt-1">{errors.state.message}</p>}
               </div>
 
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Religion</label>
                 <input
                   type="text"
-                  name="religion"
                   placeholder="Enter religion"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.religion}
-                  onChange={handleInputChange}
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.religion ? "border-red-500" : ""}`}
+                  {...register("religion")}
                 />
+                {errors.religion && <p className="text-red-600 text-xs mt-1">{errors.religion.message}</p>}
               </div>
 
               <div className="col-span-1">
@@ -343,12 +310,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="date"
-                  name="employmentDate"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.employmentDate}
-                  onChange={handleInputChange}
-                  max={new Date().toISOString().split('T')[0]} // Can't be in the future
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.employmentDate ? "border-red-500" : ""}`}
+                  max={new Date().toISOString().split('T')[0]}
+                  {...register("employmentDate")}
                 />
+                {errors.employmentDate && <p className="text-red-600 text-xs mt-1">{errors.employmentDate.message}</p>}
               </div>
 
               <div className="col-span-1">
@@ -357,12 +323,11 @@ const TeacherForm: React.FC<TeacherFormProps> = ({ onClose, onSubmitSuccess, edi
                 </label>
                 <input
                   type="date"
-                  name="dateOfBirth"
-                  className="border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  value={formData.dateOfBirth}
-                  onChange={handleInputChange}
-                  max={new Date().toISOString().split('T')[0]} // Can't be in the future
+                  className={`border border-gray-300 px-3 py-2 rounded text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${errors.dateOfBirth ? "border-red-500" : ""}`}
+                  max={new Date().toISOString().split('T')[0]}
+                  {...register("dateOfBirth")}
                 />
+                {errors.dateOfBirth && <p className="text-red-600 text-xs mt-1">{errors.dateOfBirth.message}</p>}
               </div>
             </div>
 

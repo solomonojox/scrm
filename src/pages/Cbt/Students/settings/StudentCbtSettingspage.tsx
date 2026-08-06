@@ -121,10 +121,9 @@ const StudentCbtSettingsPage: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 {label}
               </label>
-              <input
-                type="password"
+              <PasswordField
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-100 focus:border-orange-400 focus:outline-none text-sm transition-colors bg-gray-50 focus:bg-white"
+                inputClassName="px-4 py-2.5 rounded-xl border-2 border-gray-100 focus:border-orange-400 focus:outline-none text-sm transition-colors bg-gray-50 focus:bg-white"
               />
             </div>
           ))}

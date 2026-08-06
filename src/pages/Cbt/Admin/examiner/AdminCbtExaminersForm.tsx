@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Btn, Input } from "../../../../components/ui/CbtSharedComponents";
+import PasswordField from "../../../../components/ui/PasswordField";
 
 import { Examiner, ExaminerForm } from "./AdminCbtExaminersPage";
 
@@ -50,9 +51,8 @@ export default function AdminCbtExaminersForm({
 
       {/* Password — only shown when creating */}
       {!editing && (
-        <Input
+        <PasswordField
           label="Password"
-          type="password"
           required
           value={form.password}
           disabled={submitting}

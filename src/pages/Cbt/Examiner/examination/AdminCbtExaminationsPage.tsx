@@ -9,6 +9,7 @@ import { AdminCbtExaminerService } from "../../../../Services/Cbt/Admin/examiner
 import { AppContext } from "../../../../Context/AppContext";
 import { ExaminerExamService } from "../../../../Services/Cbt/Examiner/examinations";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../../utils/getErrorMessage";
 import AssignTeachers from "./modals/AssignTeachers";
 import AssignStudents from "./modals/AssignStudents";
 import ExamQuestionsModal, { ExamQuestion } from "./modals/ExamQuestionsModal";
@@ -153,7 +154,8 @@ export default function ExaminarCbtExaminationsPage() {
       const res = await ExaminerExamService.getMyExams();
       setExaminations(res);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
+      getErrorMessage(err);
     } finally {
       setFetching(false);
     }
@@ -176,7 +178,8 @@ export default function ExaminarCbtExaminationsPage() {
         setSubjects(res);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      getErrorMessage(error);
     }
   };
 

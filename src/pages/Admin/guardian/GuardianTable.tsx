@@ -113,8 +113,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                     </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-                    <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+                    {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+                    {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
                     <div className="flex items-center rounded-full px-3 py-1 space-x-2">
                         <img
                             src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}

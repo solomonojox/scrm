@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
 import { AppContext } from "../../Context/AppContext";
+import PasswordField from "../../components/ui/PasswordField";
 
 const RegisterSchool = () => {
   // const { login } = useAuth();
@@ -411,15 +412,12 @@ const RegisterSchool = () => {
 
                   <div>
                     <label className="block text-gray-700 mb-1">Password *</label>
-                    <input
-                      type="password"
+                    <PasswordField
                       name="password"
                       value={schoolData.password}
                       onChange={handleSchoolChange}
                       placeholder="Enter password"
-                      className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none ${
-                        errors.password ? "border-red-500" : "border-gray-200"
-                      }`}
+                      inputClassName={`${errors.password ? "border-red-500" : "border-gray-200"}`}
                     />
                     {errors.password && (
                       <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -428,15 +426,12 @@ const RegisterSchool = () => {
 
                   <div>
                     <label className="block text-gray-700 mb-1">Confirm Password *</label>
-                    <input
-                      type="password"
+                    <PasswordField
                       name="confirmPassword"
                       value={schoolData.confirmPassword}
                       onChange={handleSchoolChange}
                       placeholder="Re-enter password"
-                      className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none ${
-                        errors.confirmPassword ? "border-red-500" : "border-gray-200"
-                      }`}
+                      inputClassName={`${errors.confirmPassword ? "border-red-500" : "border-gray-200"}`}
                     />
                     {errors.confirmPassword && (
                       <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
@@ -528,15 +523,12 @@ const RegisterSchool = () => {
 
                   <div>
                     <label className="block text-gray-700 mb-1">Password *</label>
-                    <input
-                      type="password"
+                    <PasswordField
                       name="password"
                       value={adminData.password}
                       onChange={handleAdminChange}
                       placeholder="Enter password"
-                      className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none ${
-                        errors.password ? "border-red-500" : "border-gray-200"
-                      }`}
+                      inputClassName={`${errors.password ? "border-red-500" : "border-gray-200"}`}
                     />
                     {errors.password && (
                       <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -545,15 +537,12 @@ const RegisterSchool = () => {
 
                   <div>
                     <label className="block text-gray-700 mb-1">Confirm Password *</label>
-                    <input
-                      type="password"
+                    <PasswordField
                       name="confirmPassword"
                       value={adminData.confirmPassword}
                       onChange={handleAdminChange}
                       placeholder="Re-enter password"
-                      className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none ${
-                        errors.confirmPassword ? "border-red-500" : "border-gray-200"
-                      }`}
+                      inputClassName={`${errors.confirmPassword ? "border-red-500" : "border-gray-200"}`}
                     />
                     {errors.confirmPassword && (
                       <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>

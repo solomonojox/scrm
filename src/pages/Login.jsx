@@ -7,6 +7,8 @@ import { AppContext } from "../Context/AppContext";
 import { useAuth } from "../Context/Auth/useAuth";
 import logo from "../assets/looogo.png";
 import useTawkTo from "../Context/useTawkTo";
+import PasswordField from "../components/ui/PasswordField";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -110,13 +112,9 @@ const LoginPage = () => {
         navigate("/teacher/dashboard");
       }
     } catch (err) {
-      setError(
-        err.response?.data.responseMessage ||
-        err?.message ||
-        "Login failed. Please check your credentials."
-      );
-      console.log(err.response)
-      notifyError(err.response?.data.responseMessage || "Login failed. Please try again.");
+      const msg = getErrorMessage(err)
+      setError(msg);
+      notifyError(msg);
     } finally {
       setLoading(false);
     }
@@ -190,16 +188,15 @@ const LoginPage = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
-              <input
+              <PasswordField
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   validatePassword(e.target.value);
                 }}
                 placeholder="Enter Password"
-                className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                inputClassName="border-orange-300 focus:ring-orange-500"
                 onBlur={() => validatePassword(password)}
               />
               {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}

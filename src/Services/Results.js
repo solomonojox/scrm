@@ -6,8 +6,7 @@ export const resultService = {
       const response = await api.post(`/api/Result/AddSubjectScores`, subjectData);
       return response.data;
     } catch (error) {
-      console.error("AddResult error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add session");
+      throw error;
     }
   },
 
@@ -16,8 +15,7 @@ export const resultService = {
       const response = await api.post(`/api/Result/UpdateSubjectScores`, subjectData);
       return response.data;
     } catch (error) {
-      console.error("UpdateResult error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add session");
+      throw error;
     }
   },
 
@@ -30,8 +28,7 @@ export const resultService = {
 
       return response.data;
     } catch (error) {
-      console.error("GetAllsubject error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch sessions");
+      throw error;
     }
   },
 
@@ -40,8 +37,7 @@ export const resultService = {
       const response = await api.post(`/api/Session/delete`, subjectData);
       return response.data;
     } catch (error) {
-      console.error("DeleteSession error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add session");
+      throw error;
     }
   },
 
@@ -52,7 +48,7 @@ export const resultService = {
   //       return response.data.data;
   //     } catch (error) {
   //       console.error("GetAllsubject error:", error);
-  //       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch sessions");
+  //       throw error;
   //     }
   //   },
 };

@@ -11,8 +11,7 @@ export const schoolFeeService = {
       const response = await api.post(`/api/SchoolFee/AddSchoolFee`, feeData);
       return response.data;
     } catch (error) {
-      console.error("AddSchoolFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
+      throw error;
     }
   },
 
@@ -25,8 +24,7 @@ export const schoolFeeService = {
       const response = await api.get(`/api/SchoolFee/GetAllSchoolFees`);
       return response.data.data; // ✅ get the array inside `data`
     } catch (error) {
-      console.error("GetAllSchoolFees error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -35,8 +33,7 @@ export const schoolFeeService = {
       const response = await api.get(`/api/SchoolFee/GetClassFeeForSession?classId=${classId}&sessionId=${sessionId}`);
       return response.data.data; // ✅ get the array inside `data`
     } catch (error) {
-      console.error("GetClassFeeForSession error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -45,8 +42,7 @@ export const schoolFeeService = {
       const response = await api.put(`/api/SchoolFee/UpdateSchoolFee?id=${id}`, feeData);
       return response.data;
     } catch (error) {
-      console.error("UpdateSchoolFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to update school fee");
+      throw error;
     }
   },
 
@@ -56,8 +52,7 @@ export const schoolFeeService = {
       const response = await api.get(`/api/SchoolFee/GetSchoolFeesBySchoolId?schoolId=${id}`);
       return response.data.data; // ✅ get the array inside `data`
     } catch (error) {
-      console.error("GetAllSchoolFeesBySchoolId error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 };
