@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { guardianService } from "../../../Services/Guardian/guardian";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
 import {
     Box,
     Button,
@@ -59,9 +60,9 @@ const AccountSetup = () => {
             setNin("");
             navigate("/guardian/dashboard");
         } catch (error: any) {
-            console.error(error.response.data);
-            const err = error.response.data
-            toast.error(err === "An unexpected error occurred." ? "Please enter valid details" : "Failed to set up account");
+           
+            const err = getErrorMessage(error)
+            toast.error(err);
         } finally {
             setLoading(false);
         }

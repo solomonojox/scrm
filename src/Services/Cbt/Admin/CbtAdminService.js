@@ -6,7 +6,7 @@ export const cbtAdminService = {
   //     const response = await cbtApi.post(`/api/School/RegisterSchool`, eventsData);
   //     return response.data;
   //   } catch (error) {
-  //     throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
+  //     throw error;
   //   }
   // },
 
@@ -15,7 +15,7 @@ export const cbtAdminService = {
       const response = await cbtApi.post(`/api/Student`, eventsData);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
+      throw error;
     }
   },
 

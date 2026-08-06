@@ -8,7 +8,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.get(API);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch students");
+      throw error;
     }
   },
 
@@ -17,7 +17,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.get(`${API}/school/${schoolId}`);
       return response?.data?.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch students");
+      throw error;
     }
   },
 
@@ -26,7 +26,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.get(`${API}/${id}`);
       return response?.data?.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch student");
+      throw error;
     }
   },
 
@@ -35,7 +35,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.post(API, data);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to create student");
+      throw error;
     }
   },
 
@@ -44,7 +44,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.put(`${API}/${id}`, data);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to update student");
+      throw error;
     }
   },
 
@@ -53,7 +53,7 @@ export const AdminCbtStudentService = {
       const response = await cbtApi.delete(`${API}/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to delete student");
+      throw error;
     }
   },
 };

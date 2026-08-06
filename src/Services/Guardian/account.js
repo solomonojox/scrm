@@ -8,7 +8,7 @@ export const guardianAccountService = {
         // console.log("GetAllGuardians success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -19,7 +19,7 @@ export const guardianAccountService = {
         console.log("GetAllGuardians success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllGuardians error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },

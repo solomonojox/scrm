@@ -11,8 +11,7 @@ export const classroomService = {
       const response = await api.post(`/api/Classroom/AddClassroom`, classroomData);
       return response.data;
     } catch (error) {
-      console.error("AddClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add classroom");
+      throw error
     }
   },
 
@@ -21,8 +20,7 @@ export const classroomService = {
       const response = await api.put(`/api/Classroom/${id}`, data);
       return response.data;
     } catch (error) {
-      console.error("Error while Updating Classroom:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add classroom");
+      throw error
     }
   },
 
@@ -35,8 +33,7 @@ export const classroomService = {
       const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${id}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+      throw error
     }
   },
 
@@ -45,8 +42,7 @@ export const classroomService = {
       const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classroomId}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+      throw error
     }
   },
 
@@ -55,8 +51,7 @@ export const classroomService = {
       const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${schoolId}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+      throw error
     }
   },
 
@@ -65,8 +60,7 @@ export const classroomService = {
       const response = await api.get(`/api/Classroom/GetClassroomByTeacherId/${teacherId}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+      throw error
     }
   },
 
@@ -75,8 +69,7 @@ export const classroomService = {
       const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classId}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllClassroom error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch classrooms");
+      throw error
     }
   },
 };

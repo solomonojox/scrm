@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { studentService } from "../../../Services/Student/StudentService";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Select from "react-select";
+import { studentService } from "../../../Services/Student/StudentService";
 import { RootState } from "../../../Store/store";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../../Context/Auth/useAuth";
@@ -17,37 +21,83 @@ interface OptionType {
   label: string;
 }
 
+// ---------- Validation schema ----------
+const studentSchema = z.object({
+  firstname: z
+    .string()
+    .trim()
+    .min(1, "First name is required")
+    .min(2, "First name must be at least 2 characters"),
+  lastname: z
+    .string()
+    .trim()
+    .min(1, "Last name is required")
+    .min(2, "Last name must be at least 2 characters"),
+  dateOfBirth: z
+    .string()
+    .min(1, "Date of birth is required")
+    .refine((val) => new Date(val) <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    }),
+  homeAddress: z.string().trim().min(1, "Home address is required"),
+  guardianId: z.string().min(1, "Please select a guardian"),
+  teacherId: z.string().optional(),
+  currentTerm: z.string().min(1, "Please select a term"),
+  sessionId: z.string().min(1, "Please select a session"),
+  classroomId: z.string().min(1, "Please select a classroom"),
+  gender: z.enum(["Male", "Female"], {
+    message: "Please select a gender",
+  }),
+});
+
+type StudentFormValues = z.infer<typeof studentSchema>;
+
+const emptyValues: StudentFormValues = {
+  firstname: "",
+  lastname: "",
+  dateOfBirth: "",
+  homeAddress: "",
+  guardianId: "",
+  teacherId: "",
+  currentTerm: "1",
+  sessionId: "",
+  classroomId: "",
+  gender: "" as any, // cleared by validation; kept empty for controlled Select
+};
+
 const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, editData }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isDataReady, setIsDataReady] = useState(false);
+  const [isDataReady, setIsDataReady] = useState(!editData);
+  const [file, setFile] = useState<File | null>(null);
 
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    dateOfBirth: "",
-    homeAddress: "",
-    guardianId: "",
-    teacherId: "",
-    currentTerm: "1",
-    sessionId: "",
-    classroomId: "",
-    gender: "",
-  });
-
-  // Get data from Redux store
+  // Redux-sourced option data
   const guardians = useSelector((state: RootState) => state.getGuardian.listRecords || []);
-  const teachers = useSelector((state: RootState) => (Array.isArray(state.getTeacher.listRecords) ? state.getTeacher.listRecords : []));
+  const teachers = useSelector((state: RootState) =>
+    Array.isArray(state.getTeacher.listRecords) ? state.getTeacher.listRecords : []
+  );
   const sessions = useSelector((state: RootState) => state.getSession.listRecords || []);
   const classrooms = useSelector((state: RootState) => state.getClassrooms.listRecords || []);
 
-  // Set initial form data when editing
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<StudentFormValues>({
+    resolver: zodResolver(studentSchema),
+    defaultValues: emptyValues,
+    mode: "onBlur",
+  });
+
+  // Prefill form when editing
   useEffect(() => {
     if (editData) {
       const timer = setTimeout(() => {
-        setFormData({
+        reset({
           firstname: editData.firstname || "",
           lastname: editData.lastname || "",
           dateOfBirth: editData.dateOfBirth ? editData.dateOfBirth.split("T")[0] : "",
@@ -59,14 +109,13 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
               ? String(editData.teacher.teacherId)
               : "",
           currentTerm: editData.currentTerm ? String(editData.currentTerm) : "1",
-          sessionId:
-            editData.sessionId
-              ? String(editData.sessionId)
-              : editData.currentSession
-                ? String(editData.currentSession)
-                : editData.session?.sessionId
-                  ? String(editData.session.sessionId)
-                  : "",
+          sessionId: editData.sessionId
+            ? String(editData.sessionId)
+            : editData.currentSession
+              ? String(editData.currentSession)
+              : editData.session?.sessionId
+                ? String(editData.session.sessionId)
+                : "",
           classroomId: editData.classroomId ? String(editData.classroomId) : "",
           gender: editData.gender || "",
         });
@@ -79,11 +128,12 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
 
       return () => clearTimeout(timer);
     } else {
+      reset(emptyValues);
       setIsDataReady(true);
     }
-  }, [editData]);
+  }, [editData, reset]);
 
-  // Prepare options for react-select (normalize value to string)
+  // ---------- Options ----------
   const guardianOptions: OptionType[] = guardians.map((guardian) => ({
     value: String(guardian.guardianId),
     label: `${guardian.firstname} ${guardian.lastname} (${guardian.phone})`,
@@ -112,87 +162,57 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
 
   const genderOptions: OptionType[] = [
     { value: "Male", label: "Male" },
-    { value: "Female", label: "Female" }
+    { value: "Female", label: "Female" },
   ];
 
-  const getSelectedOption = (value: string, options: OptionType[]) => {
+  const getSelectedOption = (value: string | undefined, options: OptionType[]) => {
     if (!value) return null;
     return options.find((option) => option.value === String(value)) || null;
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSelectChange = (name: string, selectedOption: OptionType | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOption ? selectedOption.value : "",
-    }));
-  };
-
-  const [file, setFile] = useState<File | null>(null);
-  console.log(file)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      if (selected.size > 2 * 1024 * 1024) {
         toast.error("Image size should be less than 2MB");
         return;
       }
-      setImagePreview(URL.createObjectURL(file));
-      setFile(file);
+      setImagePreview(URL.createObjectURL(selected));
+      setFile(selected);
     }
   };
 
-  const validateForm = () => {
-    if (!formData.firstname || !formData.lastname) {
-      setFormError("First name and last name are required");
-      return false;
+  const handleUploadImage = async () => {
+    if (!file || !editData) return;
+    try {
+      const uploadData = new FormData();
+      uploadData.append("file", file);
+
+      const res = await studentService.uploadPhoto(editData.studentId, uploadData);
+      toast.success(res.responseMessage || "Image uploaded successfully!");
+    } catch (err: any) {
+      const msg = getErrorMessage(err);
+      setFormError(msg);
+      toast.error(msg);
     }
-    if (!formData.guardianId) {
-      setFormError("Please select a guardian");
-      return false;
-    }
-    if (!formData.classroomId) {
-      setFormError("Please select a classroom");
-      return false;
-    }
-    if (!formData.sessionId) {
-      setFormError("Please select a session");
-      return false;
-    }
-    if (!formData.gender) {
-      setFormError("Please select a gender");
-      return false;
-    }
-    return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
+  const onSubmit = async (values: StudentFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
       schoolId: user?.schoolId,
-      firstname: formData.firstname.trim(),
-      lastname: formData.lastname.trim(),
-      dateOfBirth: formData.dateOfBirth,
-      homeAddress: formData.homeAddress.trim(),
-      guardianId: formData.guardianId,
-      teacherId: formData.teacherId,
-      currentTerm: Number(formData.currentTerm),
-      sessionId: formData.sessionId,
-      classroomId: formData.classroomId,
-      gender: formData.gender,
+      firstname: values.firstname.trim(),
+      lastname: values.lastname.trim(),
+      dateOfBirth: values.dateOfBirth,
+      homeAddress: values.homeAddress.trim(),
+      guardianId: values.guardianId,
+      teacherId: values.teacherId,
+      currentTerm: Number(values.currentTerm),
+      sessionId: values.sessionId,
+      classroomId: values.classroomId,
+      gender: values.gender,
     };
 
     try {
@@ -206,43 +226,18 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
 
       onSubmitSuccess();
       if (!editData) {
-        setFormData({
-          firstname: "",
-          lastname: "",
-          dateOfBirth: "",
-          homeAddress: "",
-          guardianId: "",
-          teacherId: "",
-          currentTerm: "1",
-          sessionId: "",
-          classroomId: "",
-          gender: "",
-        });
+        reset(emptyValues);
         setImagePreview(null);
+        setFile(null);
       }
     } catch (err: any) {
-      const msg =
-        err.response?.data?.responseMessage || (editData ? "Update failed" : "Submission failed");
+      const msg = getErrorMessage(err);
       setFormError(msg);
       toast.error(msg);
     } finally {
       setLoading(false);
     }
   };
-
-  const handleUploadImage = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file!);
-
-      const res = await studentService.uploadPhoto(editData.studentId, formData);
-      toast.success(res.responseMessage || "Image uploaded successfully!");
-    } catch (err: any) {
-      const msg = err.response?.data?.responseMessage || "Image upload failed";
-      setFormError(msg);
-      toast.error(msg);
-    }
-  }
 
   if (!isDataReady && editData) {
     return (
@@ -266,7 +261,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
             {editData ? "Edit Student" : "Add Student"}
           </h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
               {/* Image Upload */}
               {editData && (
@@ -287,7 +282,13 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                     )}
                   </label>
                   {file && (
-                    <button type="button" className="absolute bg-primary hover:bg-amber-700 px-2 py-1 rounded-lg text-white top-12 right-1/2 translate-x-3/2" onClick={handleUploadImage}>Upload</button>
+                    <button
+                      type="button"
+                      className="absolute bg-primary hover:bg-amber-700 px-2 py-1 rounded-lg text-white top-12 right-1/2 translate-x-3/2"
+                      onClick={handleUploadImage}
+                    >
+                      Upload
+                    </button>
                   )}
                 </>
               )}
@@ -297,13 +298,15 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                 <label className="block text-sm font-medium text-gray-700 mb-1">First name*</label>
                 <input
                   type="text"
-                  name="firstname"
-                  required
                   placeholder="First Name"
-                  className="border px-3 py-2 rounded text-sm w-full"
-                  value={formData.firstname}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm w-full ${
+                    errors.firstname ? "border-red-500" : ""
+                  }`}
+                  {...register("firstname")}
                 />
+                {errors.firstname && (
+                  <p className="text-red-600 text-xs mt-1">{errors.firstname.message}</p>
+                )}
               </div>
 
               {/* Last name */}
@@ -311,83 +314,111 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                 <label className="block text-sm font-medium text-gray-700 mb-1">Last name*</label>
                 <input
                   type="text"
-                  name="lastname"
-                  required
                   placeholder="Last Name"
-                  className="border px-3 py-2 rounded text-sm w-full"
-                  value={formData.lastname}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm w-full ${
+                    errors.lastname ? "border-red-500" : ""
+                  }`}
+                  {...register("lastname")}
                 />
+                {errors.lastname && (
+                  <p className="text-red-600 text-xs mt-1">{errors.lastname.message}</p>
+                )}
               </div>
 
               {/* Date of Birth */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date of Birth
+                  Date of Birth*
                 </label>
                 <input
                   type="date"
-                  name="dateOfBirth"
-                  className="border px-3 py-2 rounded text-sm w-full"
-                  value={formData.dateOfBirth}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm w-full ${
+                    errors.dateOfBirth ? "border-red-500" : ""
+                  }`}
                   max={new Date().toISOString().split("T")[0]}
-                  required
+                  {...register("dateOfBirth")}
                 />
+                {errors.dateOfBirth && (
+                  <p className="text-red-600 text-xs mt-1">{errors.dateOfBirth.message}</p>
+                )}
               </div>
 
               {/* Home Address */}
               <div className="col-span-1">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Home Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Home Address*</label>
                 <input
                   type="text"
-                  name="homeAddress"
                   placeholder="Home Address"
-                  className="border px-3 py-2 rounded text-sm w-full"
-                  value={formData.homeAddress}
-                  onChange={handleInputChange}
-                  required
+                  className={`border px-3 py-2 rounded text-sm w-full ${
+                    errors.homeAddress ? "border-red-500" : ""
+                  }`}
+                  {...register("homeAddress")}
                 />
+                {errors.homeAddress && (
+                  <p className="text-red-600 text-xs mt-1">{errors.homeAddress.message}</p>
+                )}
               </div>
 
               {/* Gender */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gender*</label>
-                <Select
-                  options={genderOptions}
-                  value={getSelectedOption(formData.gender, genderOptions)}
-                  onChange={(selected) => handleSelectChange("gender", selected)}
-                  placeholder="Select Gender"
-                  className="text-sm"
-                  isSearchable
-                  required
+                <Controller
+                  name="gender"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={genderOptions}
+                      value={getSelectedOption(field.value, genderOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Gender"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
+                {errors.gender && (
+                  <p className="text-red-600 text-xs mt-1">{errors.gender.message}</p>
+                )}
               </div>
 
               {/* Guardian */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Guardian*</label>
-                <Select
-                  options={guardianOptions}
-                  value={getSelectedOption(formData.guardianId, guardianOptions)}
-                  onChange={(selected) => handleSelectChange("guardianId", selected)}
-                  placeholder="Select Guardian"
-                  className="text-sm"
-                  isSearchable
-                  required
+                <Controller
+                  name="guardianId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={guardianOptions}
+                      value={getSelectedOption(field.value, guardianOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Guardian"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
+                {errors.guardianId && (
+                  <p className="text-red-600 text-xs mt-1">{errors.guardianId.message}</p>
+                )}
               </div>
 
               {/* Teacher */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
-                <Select
-                  options={teacherOptions}
-                  value={getSelectedOption(formData.teacherId, teacherOptions)}
-                  onChange={(selected) => handleSelectChange("teacherId", selected)}
-                  placeholder="Select Teacher"
-                  className="text-sm"
-                  isSearchable
+                <Controller
+                  name="teacherId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={teacherOptions}
+                      value={getSelectedOption(field.value, teacherOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Teacher"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
               </div>
 
@@ -396,42 +427,66 @@ const StudentForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, edi
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Current Term*
                 </label>
-                <Select
-                  options={termOptions}
-                  value={getSelectedOption(formData.currentTerm, termOptions)}
-                  onChange={(selected) => handleSelectChange("currentTerm", selected)}
-                  placeholder="Select Term"
-                  className="text-sm"
-                  required
+                <Controller
+                  name="currentTerm"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={termOptions}
+                      value={getSelectedOption(field.value, termOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Term"
+                      className="text-sm"
+                    />
+                  )}
                 />
+                {errors.currentTerm && (
+                  <p className="text-red-600 text-xs mt-1">{errors.currentTerm.message}</p>
+                )}
               </div>
 
               {/* Session */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Session*</label>
-                <Select
-                  options={sessionOptions}
-                  value={getSelectedOption(formData.sessionId, sessionOptions)}
-                  onChange={(selected) => handleSelectChange("sessionId", selected)}
-                  placeholder="Select Session"
-                  className="text-sm"
-                  isSearchable
-                  required
+                <Controller
+                  name="sessionId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={sessionOptions}
+                      value={getSelectedOption(field.value, sessionOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Session"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
+                {errors.sessionId && (
+                  <p className="text-red-600 text-xs mt-1">{errors.sessionId.message}</p>
+                )}
               </div>
 
               {/* Classroom */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Classroom*</label>
-                <Select
-                  options={classroomOptions}
-                  value={getSelectedOption(formData.classroomId, classroomOptions)}
-                  onChange={(selected) => handleSelectChange("classroomId", selected)}
-                  placeholder="Select Classroom"
-                  className="text-sm"
-                  isSearchable
-                  required
+                <Controller
+                  name="classroomId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={classroomOptions}
+                      value={getSelectedOption(field.value, classroomOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select Classroom"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
+                {errors.classroomId && (
+                  <p className="text-red-600 text-xs mt-1">{errors.classroomId.message}</p>
+                )}
               </div>
             </div>
 

@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { cbtAuthService } from "../../Services/Cbt/Auth/Auth";
 import { useAuth } from "../../Context/Auth/useAuth";
 import { useNavigate } from "react-router-dom";
+import PasswordField from "../../components/ui/PasswordField";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const EducatLogin = () => {
   const navigate = useNavigate();
@@ -165,7 +167,7 @@ const EducatLogin = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-orange-50 font-sans">
       {/* Header Tabs */}
-      <div className="flex space-x-4 mb-8 w-[800px] items-center justify-center bg-white shadow-md rounded-full px-4 py-2">
+      <div className="flex space-x-4 mb-8 w-full max-w-4xl items-center justify-center bg-white shadow-md rounded-full px-4 py-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -189,7 +191,7 @@ const EducatLogin = () => {
       </div>
 
       {/* Login Card */}
-      <div className="bg-white w-[800px] shadow-lg rounded-2xl p-8 border border-orange-100">
+      <div className="bg-white w-full max-w-4xl shadow-lg rounded-2xl p-8 border border-orange-100">
         <h2 className="text-2xl font-bold text-orange-600 mb-2 capitalize">
           {activeTab} Login
         </h2>
@@ -243,16 +245,12 @@ const EducatLogin = () => {
           {/* Password */}
           <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-1">Password</label>
-            <input
-              type="password"
+            <PasswordField
               placeholder="Enter your password"
               value={password}
               onChange={(e) => handleChange("password", e.target.value)}
               onBlur={() => handleBlur("password")}
-              className={`w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-orange-400 outline-none transition-colors ${touched.password && errors.password
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200"
-                }`}
+              inputClassName={`${touched.password && errors.password ? "border-red-500 bg-red-50" : "border-gray-200"}`}
             />
             {touched.password && errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>

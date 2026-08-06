@@ -17,6 +17,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.6",
     "@heroicons/react": "^1.0.6",
+    "@hookform/resolvers": "^5.7.1",
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
     "@react-pdf/renderer": "^4.3.2",
@@ -35,7 +36,7 @@
     "react-countup": "^6.5.3",
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.0.0",
-    "react-hook-form": "^7.71.1",
+    "react-hook-form": "^7.84.0",
     "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
     "react-redux": "^9.2.0",
@@ -46,7 +47,8 @@
     "recharts": "^2.15.3",
     "swiper": "^11.2.10",
     "tailwindcss": "^4.1.1",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

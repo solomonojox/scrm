@@ -8,7 +8,7 @@ export const teacherService = {
       // console.log("GetAllTeachers success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
+      // console.error("GetAllTeachers error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -19,7 +19,7 @@ export const teacherService = {
       // console.log("AddTeacherTeacher success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("AddTeacherTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("AddTeacherTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -30,7 +30,7 @@ export const teacherService = {
       console.log("UpdateTeacher success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("UpdateTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("UpdateTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -41,7 +41,7 @@ export const teacherService = {
       // console.log("success:", res.data.data);
       return res.data.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -52,7 +52,7 @@ export const teacherService = {
       // console.log("success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -63,7 +63,7 @@ export const teacherService = {
       // console.log("success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -80,10 +80,10 @@ export const teacherService = {
 
       return data;
     } catch (error) {
-      console.error(
-        "getArrayOfTeachersById error:",
-        error?.response?.data?.message || error.message
-      );
+      // console.error(
+      //   "getArrayOfTeachersById error:",
+      //   error?.response?.data?.message || error.message
+      // );
       throw error;
     }
   },
@@ -94,7 +94,7 @@ export const teacherService = {
       console.log("DeleteTeacher success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteTeacher error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },

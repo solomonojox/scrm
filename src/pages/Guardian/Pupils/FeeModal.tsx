@@ -11,6 +11,7 @@ import {
 import { X } from "lucide-react";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
 import { paymentService } from "../../../Services/Payment";
 
 interface Props {
@@ -57,7 +58,7 @@ const FeeModal: React.FC<Props> = ({
       toast.success("Fees settled successfully!");
       onClose();
     } catch (err: any) {
-      toast.error(err?.message || "Failed to settle fees. Please try again later.");
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -6,8 +6,7 @@ export const attendanceService = {
       const response = await api.post(`/api/Attendance/SaveAttendance`, attendance);
       return response.data;
     } catch (error) {
-      console.error("AddSchoolFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
+      throw error;
     }
   },
   getAttendanceByClassroomIdAndSchoolId: async (schoolId, classroomId, termId) => {
@@ -17,8 +16,7 @@ export const attendanceService = {
       );
       return response.data.data; 
     } catch (error) {
-      console.error("GetClassFeeForSession error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -27,28 +25,16 @@ export const attendanceService = {
   //       const response = await api.get(`/api/SchoolFee/GetAllSchoolFees`);
   //       return response.data.data; // ✅ get the array inside `data`
   //     } catch (error) {
-  //       console.error("GetAllSchoolFees error:", error);
-  //       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+  //       throw error;
   //     }
   //   },
-
-    update: async (attendanceData) => {
-      try {
-        const response = await api.put(`/api/Attendance/EditAttendance`, attendanceData);
-        return response.data;
-      } catch (error) {
-        console.error("UpdateAttendance error:", error);
-        throw new Error(error?.response?.data?.responseMessage || "Failed to update attendance");
-      }
-    },
-
   //   getAllSchoolFeesBySchoolId: async (id) => {
   //     try {
   //       const response = await api.get(`/api/SchoolFee/GetSchoolFeesBySchoolId?schoolId=${id}`);
   //       return response.data.data; // ✅ get the array inside `data`
   //     } catch (error) {
   //       console.error("GetAllSchoolFeesBySchoolId error:", error);
-  //       throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+  //       throw error;
   //     }
   //   },
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCamera, FaEdit, FaSpinner } from "react-icons/fa";
 import imageAssets from "../../../assets/imageAssets";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,12 +11,17 @@ import {
   fetchTeacherStart,
   fetchTeacherSuccess,
 } from "../../../Store/Teachers/teacherSlice";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import toast from 'react-toastify';
+import { AppContext } from "../../../Context/AppContext";
 
 export default function TeacherProfile() {
   const { user } = useAuth();
+  const { notifySuccess, notifyError } = useContext(AppContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
+  console.log(fetchedRecord);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
 
@@ -35,7 +40,16 @@ export default function TeacherProfile() {
     religion: "",
     email: "",
     username: "",
+    schoolId: "",
+    dateOfBirth: "",
+    employmentDate: "",
   });
+
+  // helper: format ISO date strings for <input type="date">
+  const toDateInputValue = (value?: string | null) => {
+    if (!value) return "";
+    return value.split("T")[0];
+  };
 
   // populate form when data fetched
   useEffect(() => {
@@ -51,6 +65,9 @@ export default function TeacherProfile() {
         religion: fetchedRecord?.religion || "",
         email: fetchedRecord?.email || "",
         username: fetchedRecord?.username || "",
+        schoolId: fetchedRecord?.schoolId || "",
+        dateOfBirth: toDateInputValue(fetchedRecord?.dateOfBirth),
+        employmentDate: toDateInputValue(fetchedRecord?.employmentDate),
       });
     }
   }, [fetchedRecord]);
@@ -92,21 +109,71 @@ export default function TeacherProfile() {
     }));
   };
 
+  // client-side validation mirroring backend rules, to avoid round-tripping
+  // on SchoolId / Username / DateOfBirth / HomeAddress / EmploymentDate
+  const validateForm = (): string | null => {
+    if (!formData.schoolId || !formData.schoolId.trim()) {
+      return "School ID is required";
+    }
+
+    if (!formData.username || !formData.username.trim()) {
+      return "Username is required";
+    }
+    if (formData.username.trim().length < 3) {
+      return "Username must be at least 3 characters long";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username.trim())) {
+      return "Username can only contain letters, numbers, and underscores";
+    }
+
+    if (!formData.dateOfBirth) {
+      return "Date of birth is required";
+    } else {
+      const dob = new Date(formData.dateOfBirth);
+      const hundredYearsAgo = new Date();
+      hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
+      if (isNaN(dob.getTime()) || dob < hundredYearsAgo || dob > new Date()) {
+        return "Date of birth must be within the last 100 years";
+      }
+    }
+
+    if (!formData.homeAddress || !formData.homeAddress.trim()) {
+      return "Home address is required";
+    }
+    if (formData.homeAddress.trim().length < 10) {
+      return "Home address must be at least 10 characters long";
+    }
+
+    if (!formData.employmentDate) {
+      return "Employment date is required";
+    }
+
+    return null;
+  };
+
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const validationError = validateForm();
+    if (validationError) {
+      notifyError(validationError);
+      return;
+    }
+
     setLoading(true);
 
     try {
       // call API to update
       await teacherService.update(user?.id, formData);
 
-      // after success, re-fetch guardian to update redux state
+      notifySuccess("Profile updated successfully");
       fetchTeacher();
       setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating guardian:", error);
-    } finally{
+    } catch (error: any) {
+      const msg = getErrorMessage(error)
+      notifyError(msg);
+    } finally {
       setLoading(false);
     }
   };
@@ -121,22 +188,22 @@ export default function TeacherProfile() {
             <img
               src={imageAssets.color}
               alt="Orange gradient banner"
-              className="w-full h-[150px] object-cover bg-[#EE7306]"
+              className="w-full h-37.5 object-cover bg-[#EE7306]"
             />
           </div>
 
           {/* Profile + Name + Actions */}
-          <div className="flex items-center justify-between px-4 md:px-6 mt-[-50px]">
+          <div className="flex items-center justify-between px-4 md:px-6 mt-12.5">
             {/* Picture + Info */}
             <div className="flex flex-col md:flex-row items-center space-x-4">
-              <div className="w-[200px] h-[200px] md:w-[100px] md:h-[100px] rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
+              <div className="w-50 h-50 md:w-25 md:h-25 rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
                 <img
                   src={imageAssets.man}
                   alt="Profile"
                   className="w-full h-full object-cover z-0"
                 />
                 <div
-                  className="absolute bottom-6 md:bottom-2 right-6 md:right-2 z-10 bg-[#EE7306] rounded-full p-[8px] border-2 border-white cursor-pointer"
+                  className="absolute bottom-6 md:bottom-2 right-6 md:right-2 z-10 bg-[#EE7306] rounded-full p-2 border-2 border-white cursor-pointer"
                   title="Change profile picture"
                   onClick={handleCameraClick}
                 >
@@ -205,7 +272,10 @@ export default function TeacherProfile() {
                 { label: "Role", id: "role", type: "text" },
                 { label: "Religion", id: "religion", type: "text" },
                 { label: "Email", id: "email", type: "email", disable: true },
-                { label: "Username", id: "username", type: "text", },
+                { label: "Username", id: "username", type: "text" },
+                // { label: "School ID", id: "schoolId", type: "text", disable: true },
+                { label: "Date of Birth", id: "dateOfBirth", type: "date" },
+                { label: "Employment Date", id: "employmentDate", type: "date", disable: true },
               ].map((field) => (
                 <div key={field.id}>
                   <label

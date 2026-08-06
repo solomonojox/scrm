@@ -127,7 +127,7 @@ export default function PupilsList({ classrooms }: any) {
             }}
           >
             <Box display="flex" alignItems="center" gap={2}>
-              <Box display="flex" gap={2}>
+              {/* <Box display="flex" gap={2}>
                 <FolderIcon
                   onClick={() => setOpenFolderModal(true)}
                   sx={{ cursor: "pointer" }}
@@ -136,8 +136,8 @@ export default function PupilsList({ classrooms }: any) {
                   onClick={() => setOpenDownloadModal(true)}
                   sx={{ cursor: "pointer" }}
                 />
-              </Box>
-              All Pupils | All Folder
+              </Box> */}
+              All Pupils 
             </Box>
 
             <Box display="flex" alignItems="center" gap={1}>
@@ -317,10 +317,10 @@ export default function PupilsList({ classrooms }: any) {
           <UserCheck size={16} style={{ marginRight: 8 }} />
           View Student
         </MenuItem>
-        <MenuItem onClick={handleMessaging}>
+        {/* <MenuItem onClick={handleMessaging}>
           <Users size={16} style={{ marginRight: 8 }} />
           Messaging
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <User size={16} style={{ marginRight: 8 }} />
           Delete

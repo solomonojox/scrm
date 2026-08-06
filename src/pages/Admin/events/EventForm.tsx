@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { eventsService } from "../../../Services/Events";
 import Select from "react-select";
 
@@ -23,21 +27,42 @@ const eventTypeOptions: OptionType[] = [
   { value: "Other", label: "Other" },
 ];
 
+const eventSchema = z.object({
+  title: z.string().trim().min(1, "Event title is required").min(3, "Event title must be at least 3 characters"),
+  description: z.string().trim().min(1, "Description is required").min(10, "Description must be at least 10 characters"),
+  venue: z.string().trim().min(1, "Venue is required"),
+  date: z.string().min(1, "Event date is required"),
+  time: z.string().min(1, "Event time is required"),
+  type: z.string().min(1, "Please select an event type"),
+});
+
+type EventFormValues = z.infer<typeof eventSchema>;
+
+const defaultValues: EventFormValues = {
+  title: "",
+  description: "",
+  venue: "",
+  date: "",
+  time: "",
+  type: "",
+};
+
 const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    venue: "",
-    date: "",
-    time: "",
-    type: "",
-  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<EventFormValues>({
+    resolver: zodResolver(eventSchema),
+    defaultValues,
+    mode: "onBlur",
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,45 +73,30 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
     return options.find((option) => option.value === value) || null;
   };
 
-  const handleSelectChange = (name: string, selectedOption: OptionType | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: selectedOption ? selectedOption.value : "",
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: EventFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
-      eventTitle: formData.title,
-      eventDescription: formData.description,
-      eventVenue: formData.venue,
-      eventDate: formData.date,
-      eventTime: formData.time,
-      eventType: formData.type,
+      eventTitle: values.title.trim(),
+      eventDescription: values.description.trim(),
+      eventVenue: values.venue.trim(),
+      eventDate: values.date,
+      eventTime: values.time,
+      eventType: values.type,
     };
 
     try {
       const res = await eventsService.addEvent(payload);
-      toast.success(res.responseMessage || "Event added!");
+      toast.success((res as any)?.responseMessage || "Event added!");
       onEventAdded();
       setTimeout(() => {
         onClose();
-        setFormData({
-          title: "",
-          description: "",
-          venue: "",
-          date: "",
-          time: "",
-          type: "",
-        });
+        reset(defaultValues);
         setImagePreview(null);
       }, 2000);
     } catch (err: any) {
-      const msg = err.response?.data?.responseMessage || "Submission failed";
+      const msg = getErrorMessage(err);
       setFormError(msg);
       toast.error(msg);
     } finally {
@@ -104,7 +114,7 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
         <div className="p-4 sm:p-6">
           <h2 className="text-lg font-semibold mb-4 text-center">Add Event</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 gap-4">
             {/* Avatar upload */}
             <label className="relative w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
               <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -126,13 +136,11 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
                 <input
                   id="title"
                   type="text"
-                  name="title"
                   placeholder="Enter event title"
-                  required
-                  className="border px-3 py-2 rounded text-sm"
-                  value={formData.title}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm ${errors.title ? "border-red-500" : ""}`}
+                  {...register("title")}
                 />
+                {errors.title && <p className="text-red-600 text-xs mt-1">{errors.title.message}</p>}
               </div>
 
               {/* Venue */}
@@ -143,13 +151,11 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
                 <input
                   id="venue"
                   type="text"
-                  name="venue"
                   placeholder="Enter event venue"
-                  required
-                  className="border px-3 py-2 rounded text-sm"
-                  value={formData.venue}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm ${errors.venue ? "border-red-500" : ""}`}
+                  {...register("venue")}
                 />
+                {errors.venue && <p className="text-red-600 text-xs mt-1">{errors.venue.message}</p>}
               </div>
 
               {/* Date */}
@@ -160,12 +166,10 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
                 <input
                   id="date"
                   type="date"
-                  name="date"
-                  required
-                  className="border px-3 py-2 rounded text-sm"
-                  value={formData.date}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm ${errors.date ? "border-red-500" : ""}`}
+                  {...register("date")}
                 />
+                {errors.date && <p className="text-red-600 text-xs mt-1">{errors.date.message}</p>}
               </div>
 
               {/* Time */}
@@ -176,25 +180,30 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
                 <input
                   id="time"
                   type="time"
-                  name="time"
-                  required
-                  className="border px-3 py-2 rounded text-sm"
-                  value={formData.time}
-                  onChange={handleInputChange}
+                  className={`border px-3 py-2 rounded text-sm ${errors.time ? "border-red-500" : ""}`}
+                  {...register("time")}
                 />
+                {errors.time && <p className="text-red-600 text-xs mt-1">{errors.time.message}</p>}
               </div>
 
               {/* Type (Select) */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Event Type</label>
-                <Select
-                  options={eventTypeOptions}
-                  value={getSelectedOption(formData.type, eventTypeOptions)}
-                  onChange={(selected) => handleSelectChange("type", selected)}
-                  placeholder="Select event type"
-                  className="text-sm"
-                  isSearchable
+                <Controller
+                  name="type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={eventTypeOptions}
+                      value={getSelectedOption(field.value, eventTypeOptions)}
+                      onChange={(selected) => field.onChange(selected ? selected.value : "")}
+                      placeholder="Select event type"
+                      className="text-sm"
+                      isSearchable
+                    />
+                  )}
                 />
+                {errors.type && <p className="text-red-600 text-xs mt-1">{errors.type.message}</p>}
               </div>
 
               {/* Description */}
@@ -204,14 +213,12 @@ const EventForm: React.FC<EventFormProps> = ({ onClose, onEventAdded }) => {
                 </label>
                 <textarea
                   id="description"
-                  name="description"
                   placeholder="Enter event description"
-                  required
-                  className="border px-3 py-2 rounded text-sm resize-none"
+                  className={`border px-3 py-2 rounded text-sm resize-none ${errors.description ? "border-red-500" : ""}`}
                   rows={3}
-                  value={formData.description}
-                  onChange={handleInputChange}
+                  {...register("description")}
                 />
+                {errors.description && <p className="text-red-600 text-xs mt-1">{errors.description.message}</p>}
               </div>
             </div>
 

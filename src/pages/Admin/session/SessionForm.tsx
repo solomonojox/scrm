@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { sessionService } from "../../../Services/Session";
 import { useAuth } from "../../../Context/Auth/useAuth";
 
@@ -9,78 +13,78 @@ interface SessionFormProps {
   editData?: any;
 }
 
+const sessionSchema = z
+  .object({
+    sessionId: z.string().trim().min(1, "Session ID is required"),
+    startDate: z.string().min(1, "Start date is required"),
+    endDate: z.string().min(1, "End date is required"),
+  })
+  .refine((data) => !data.startDate || !data.endDate || new Date(data.endDate) >= new Date(data.startDate), {
+    message: "End date must be on or after start date",
+    path: ["endDate"],
+  });
+
+type SessionFormValues = z.infer<typeof sessionSchema>;
+
+const defaultValues: SessionFormValues = {
+  sessionId: "",
+  startDate: "",
+  endDate: "",
+};
+
 const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, editData }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-  const [formData, setFormData] = useState({
-    sessionId: "",
-    // sessionName: "",
-    startDate: "",
-    endDate: ""
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SessionFormValues>({
+    resolver: zodResolver(sessionSchema),
+    defaultValues,
+    mode: "onBlur",
   });
-
-  // console.log(editData)
-
-  const sessionNameOptions = [
-    { value: "First term", label: "First Term" },
-    { value: "Second term", label: "Second Term" },
-    { value: "Third term", label: "Third Term" }
-  ];
 
   useEffect(() => {
     if (editData) {
-      setFormData({
+      reset({
         sessionId: editData.sessionId || "",
-        // sessionName: editData.sessionName || "",
-        startDate: editData.startDate || "",
-        endDate: editData.endDate || ""
+        startDate: editData.startDate ? editData.startDate.split("T")[0] : "",
+        endDate: editData.endDate ? editData.endDate.split("T")[0] : "",
       });
+    } else {
+      reset(defaultValues);
     }
-  }, [editData]);
+  }, [editData, reset]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (selectedOption: any) => {
-    setFormData(prev => ({ ...prev, sessionName: selectedOption.value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: SessionFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
       schoolId: user?.schoolId,
-      sessionId: formData.sessionId,
-      // sessionName: formData.sessionName,
-      startDate: new Date(formData.startDate).toISOString(),
-      endDate: new Date(formData.endDate).toISOString()
+      sessionId: values.sessionId.trim(),
+      startDate: new Date(values.startDate).toISOString(),
+      endDate: new Date(values.endDate).toISOString(),
     };
 
     try {
       if (editData) {
         toast.info("Edit service unavailable. Please try again later.");
       } else {
-
         const res = await sessionService.addSession(payload);
         toast.success(res.responseMessage || "Session added successfully!");
         onSessionAdded();
         setTimeout(() => {
           onClose();
-          setFormData({
-            sessionId: "",
-            // sessionName: "",
-            startDate: "",
-            endDate: ""
-          });
+          reset(defaultValues);
         }, 2000);
       }
     } catch (err: any) {
-      const msg = err.response?.data?.responseMessage || "Submission failed";
+      const msg = getErrorMessage(err);
       setFormError(msg);
       toast.error(msg);
     } finally {
@@ -96,57 +100,38 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
       >
         <div className="bg-orange-500 h-2 rounded-t-lg" />
         <div className="p-4 sm:p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">Add Session</h2>
+          <h2 className="text-lg font-semibold mb-4 text-center">{editData ? "Edit Session" : "Add Session"}</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Session ID</label>
               <input
                 type="text"
-                name="sessionId"
                 placeholder="Session ID eg. 2023/2024"
-                required
-                className="border px-3 py-2 rounded text-sm w-full"
-                value={formData.sessionId}
-                onChange={handleInputChange}
+                className={`border px-3 py-2 rounded text-sm w-full ${errors.sessionId ? "border-red-500" : ""}`}
+                {...register("sessionId")}
               />
+              {errors.sessionId && <p className="text-red-600 text-xs mt-1">{errors.sessionId.message}</p>}
             </div>
-
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Term</label>
-              <Select
-                options={sessionNameOptions}
-                value={sessionNameOptions.find(opt => opt.value === formData.sessionName)}
-                name="sessionName"
-                onChange={handleSelectChange}
-                placeholder="Select Term"
-                className="text-sm"
-                required
-              />
-            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
               <input
                 type="date"
-                name="startDate"
-                required
-                className="border px-3 py-2 rounded text-sm w-full"
-                value={formData.startDate}
-                onChange={handleInputChange}
+                className={`border px-3 py-2 rounded text-sm w-full ${errors.startDate ? "border-red-500" : ""}`}
+                {...register("startDate")}
               />
+              {errors.startDate && <p className="text-red-600 text-xs mt-1">{errors.startDate.message}</p>}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
               <input
                 type="date"
-                name="endDate"
-                required
-                className="border px-3 py-2 rounded text-sm w-full"
-                value={formData.endDate}
-                onChange={handleInputChange}
+                className={`border px-3 py-2 rounded text-sm w-full ${errors.endDate ? "border-red-500" : ""}`}
+                {...register("endDate")}
               />
+              {errors.endDate && <p className="text-red-600 text-xs mt-1">{errors.endDate.message}</p>}
             </div>
 
             <div className="col-span-2 flex justify-end gap-3 mt-4">
@@ -162,7 +147,7 @@ const SessionForm: React.FC<SessionFormProps> = ({ onClose, onSessionAdded, edit
                 disabled={loading}
                 className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 disabled:opacity-50"
               >
-                {loading ? "Saving…" : "Submit"}
+                {loading ? "Saving…" : editData ? "Update" : "Submit"}
               </button>
             </div>
           </form>

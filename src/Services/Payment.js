@@ -11,8 +11,7 @@ export const paymentService = {
       const response = await api.post(`/api/Payment/AddStudentSchoolFee`, feeData);
       return response.data;
     } catch (error) {
-      console.error(" AddStudentSchoolFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
+      throw error;
     }
   },
 
@@ -25,8 +24,7 @@ export const paymentService = {
       const response = await api.get(`/api/Payment/GetPaymentsBySchoolId?schoolId=${schoolId}`);
       return response.data.data;
     } catch (error) {
-      console.error("GetPaymentsBySchoolId error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school payments");
+      throw error;
     }
   },
 
@@ -35,8 +33,7 @@ export const paymentService = {
       const response = await api.get(`/api/Payment/GetStudentPayment/${studentId}`);
       return response.data.data; // ✅ get the array inside `data`
     } catch (error) {
-      console.error("GetStudentPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -47,8 +44,7 @@ export const paymentService = {
       );
       return response.data.data;
     } catch (error) {
-      console.error("GetStudentPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -59,8 +55,7 @@ export const paymentService = {
       );
       return response.data.data;
     } catch (error) {
-      console.error("GetStudentPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -71,8 +66,7 @@ export const paymentService = {
       );
       return response.data.data;
     } catch (error) {
-      console.error("GetStudentPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school fees");
+      throw error;
     }
   },
 
@@ -84,7 +78,7 @@ export const paymentService = {
       return response.data.data;
     } catch (error) {
       console.log("GetStudentTermFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch term fee");
+      throw error;
     }
   },
 
@@ -93,41 +87,7 @@ export const paymentService = {
       const response = await api.post(`/api/Payment/StudentSchoolFeePayment`, data);
       return response.data;
     } catch (error) {
-      console.error("AddStudentSchoolFee error:", error);
-      throw error?.response?.data?.responseMessage || "Failed to add school fee";
-    }
-  },
-
-  payStudentSchoolFeeManually: async (data) => {
-    try {
-      const response = await api.post(`/api/Payment/ManualStudentSchoolFeePayment`, data);
-      return response.data;
-    } catch (error) {
-      console.error("AddStudentSchoolFee error:", error);
-      throw error?.response?.data?.responseMessage || "Failed to add school fee";
-    }
-  },
-
-  generateInvoince: async (data) => {
-    try {
-      const response = await api.post(`/api/SchoolInvoice/generate`, data);
-      // console.log(response.headers["content-disposition"]);
-      return response.data;
-    } catch (error) {
-      console.error("AddStudentSchoolFee error:", error);
-      throw error?.response?.data?.responseMessage || "Failed to add school fee";
-    }
-  },
-  // ── Payment Endpoints ───────────────────────────────────────────────────────
-
-  // POST /api/Payment/InitiateSchoolFeeGatewayPayment
-  initiateSchoolFeeGatewayPayment: async (data) => {
-    try {
-      const response = await api.post("/api/Payment/InitiateSchoolFeeGatewayPayment", data);
-      return response.data;
-    } catch (error) {
-      console.error("InitiateSchoolFeeGatewayPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to initiate payment");
+      throw error;
     }
   },
 
@@ -137,10 +97,7 @@ export const paymentService = {
       const response = await api.post("/api/Payment/InitiateSchoolFeeGatewayPaymentAdvance", data);
       return response.data;
     } catch (error) {
-      console.error("InitiateSchoolFeeGatewayPaymentAdvance error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to initiate advance payment",
-      );
+      throw error;
     }
   },
 
@@ -151,8 +108,7 @@ export const paymentService = {
       const response = await api.post("/api/Payment/StudentSchoolFeePayment", data);
       return response.data;
     } catch (error) {
-      console.error("StudentSchoolFeePayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to process payment");
+      throw error;
     }
   },
 
@@ -164,8 +120,7 @@ export const paymentService = {
       const response = await api.post("/api/Payment/ManualStudentSchoolFeePayment", data);
       return response.data;
     } catch (error) {
-      console.error("ManualStudentSchoolFeePayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to record manual payment");
+      throw error;
     }
   },
 
@@ -176,8 +131,7 @@ export const paymentService = {
       const response = await api.post("/api/Payment/AddStudentSchoolFee", data);
       return response.data;
     } catch (error) {
-      console.error("AddStudentSchoolFee error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add school fee");
+      throw error;
     }
   },
 
@@ -188,8 +142,7 @@ export const paymentService = {
       const response = await api.get(`/api/Payment/GetStudentPayment/${studentId}`);
       return response.data;
     } catch (error) {
-      console.error("GetStudentPayment error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch student payments");
+      throw error;
     }
   },
 
@@ -201,8 +154,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentPaymentBalance error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch payment balance");
+      throw error;
     }
   },
 
@@ -214,10 +166,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentPaymentBalanceByTermId error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payment balance by term",
-      );
+      throw error;
     }
   },
 
@@ -230,10 +179,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentPaymentBalanceByTerm error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payment balance by term name",
-      );
+      throw error;
     }
   },
 
@@ -246,10 +192,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentTotalFeePayment error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch total fee payment",
-      );
+      throw error;
     }
   },
 
@@ -262,10 +205,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentPaymentForSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payments for session",
-      );
+      throw error;
     }
   },
 
@@ -278,8 +218,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetClassFeeBySession error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch class fee");
+      throw error;
     }
   },
 
@@ -292,10 +231,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetTotalClassPaymentBySession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch total class payment",
-      );
+      throw error;
     }
   },
 
@@ -308,8 +244,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetClassAllFeePerSesson error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch all class fees");
+      throw error;
     }
   },
 
@@ -322,10 +257,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentPaymentForTerm error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payments for term",
-      );
+      throw error;
     }
   },
 
@@ -338,10 +270,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetStudentTotalFeePaymentForTerm error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch total fee for term",
-      );
+      throw error;
     }
   },
 
@@ -354,10 +283,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetPaymentsBySchoolAndSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payments by school and session",
-      );
+      throw error;
     }
   },
 
@@ -370,10 +296,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetPaymentsBySchoolId error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payments by school",
-      );
+      throw error;
     }
   },
 
@@ -387,10 +310,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetPaymentsByActiveSession error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch payments by active session",
-      );
+      throw error;
     }
   },
 
@@ -403,8 +323,7 @@ export const paymentService = {
       const response = await api.get(`/api/SchoolInvoice/school/${schoolId}`);
       return response.data;
     } catch (error) {
-      console.error("GetInvoicesBySchool error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch school invoices");
+      throw error;
     }
   },
 
@@ -415,8 +334,7 @@ export const paymentService = {
       const response = await api.get(`/api/SchoolInvoice/${invoiceId}`);
       return response.data;
     } catch (error) {
-      console.error("GetInvoiceById error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch invoice");
+      throw error;
     }
   },
 
@@ -427,10 +345,7 @@ export const paymentService = {
       const response = await api.get("/api/SchoolInvoice/analytics");
       return response.data;
     } catch (error) {
-      console.error("GetInvoiceAnalytics error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch invoice analytics",
-      );
+      throw error;
     }
   },
 
@@ -442,8 +357,7 @@ export const paymentService = {
       const response = await api.post("/api/SchoolInvoice/generate", data);
       return response.data;
     } catch (error) {
-      console.error("GenerateInvoice error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to generate invoice");
+      throw error;
     }
   },
 
@@ -454,8 +368,7 @@ export const paymentService = {
       const response = await api.put(`/api/SchoolInvoice/${invoiceId}/mark-paid`, data);
       return response.data;
     } catch (error) {
-      console.error("MarkInvoicePaid error:", error);
-      throw new Error(error?.response?.data?.responseMessage || "Failed to mark invoice as paid");
+      throw error;
     }
   },
 
@@ -467,10 +380,7 @@ export const paymentService = {
       const response = await api.post("/api/SchoolInvoice/GenerateSessionInvoice", data);
       return response.data;
     } catch (error) {
-      console.error("GenerateSessionInvoice error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to generate session invoice",
-      );
+      throw error;
     }
   },
 
@@ -482,10 +392,7 @@ export const paymentService = {
       });
       return response.data;
     } catch (error) {
-      console.error("GetInvoicesBySchoolId error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch invoices by school",
-      );
+      throw error;
     }
   },
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
 import { studentService } from "../../../Services/Student/StudentService";
 import Select from "react-select";
 import { RootState } from "../../../Store/store";
@@ -105,17 +106,42 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
     if (file) setImagePreview(URL.createObjectURL(file));
   };
 
+  const validateForm = () => {
+    if (!formData.amount || Number(formData.amount) <= 0) {
+      setFormError("Amount must be greater than 0.");
+      return false;
+    }
+    if (!formData.sessionId) {
+      setFormError("Please select a session.");
+      return false;
+    }
+    if (!formData.termId) {
+      setFormError("Please select a term.");
+      return false;
+    }
+    if (!formData.className) {
+      setFormError("Please select a classroom.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setFormError("");
+
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
 
     const payload = {
       schoolId: localStorage.getItem("schoolId"),
       classroomId: classroomId,
       sessionId: formData.sessionId,
       termId: formData.termId,
-      amount: formData.amount,
+      amount: Number(formData.amount),
       className: formData.className,
     };
 
@@ -139,10 +165,10 @@ const SchoolFeeForm: React.FC<StudentFormProps> = ({ onClose, onSubmitSuccess, e
       }
       setImagePreview(null);
     } catch (err: any) {
-      const msg =
-        err.response?.data?.responseMessage || (editData ? "Update failed" : "Submission failed");
-      setFormError(msg);
+      const msg = getErrorMessage(err)
       toast.error(msg);
+      setFormError(msg);
+      
     } finally {
       setLoading(false);
     }

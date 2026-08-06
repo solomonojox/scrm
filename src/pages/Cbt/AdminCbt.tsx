@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Edit, Trash2, UserPlus, Users, X } from "lucide-react";
+import PasswordField from "../../components/ui/PasswordField";
 
 const EducatAdmin = () => {
   const [activeTab, setActiveTab] = useState("students");
@@ -219,7 +220,15 @@ const EducatAdmin = () => {
               <input type="text" name="guardianName" placeholder="Guardian Name *" value={formData.guardianName} onChange={handleChange} className="col-span-2 border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" required />
               <input type="email" name="guardianEmail" placeholder="Guardian Email" value={formData.guardianEmail} onChange={handleChange} className="border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
               <input type="text" name="guardianPhone" placeholder="Guardian Phone" value={formData.guardianPhone} onChange={handleChange} className="border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
-              <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="col-span-2 border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
+              <div className="col-span-2">
+                <PasswordField
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  inputClassName="border-orange-200 focus:ring-orange-400"
+                />
+              </div>
               <p className="text-sm text-gray-500 col-span-2">
                 This password will be sent to the guardian’s email.
               </p>
@@ -260,7 +269,15 @@ const EducatAdmin = () => {
               <input type="text" name="lastname" placeholder="Last Name *" value={formData.lastname} onChange={handleChange} required className="border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
               <input type="email" name="email" placeholder="Email *" value={formData.email} onChange={handleChange} required className="border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
               <input type="text" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
-              <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="col-span-2 border border-orange-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 outline-none" />
+              <div className="col-span-2">
+                <PasswordField
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  inputClassName="border-orange-200 focus:ring-orange-400"
+                />
+              </div>
 
               <div className="flex justify-end space-x-3 col-span-2">
                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 border border-orange-300 text-orange-600 rounded-lg hover:bg-orange-100">

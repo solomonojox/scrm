@@ -6,6 +6,7 @@ import Select from "react-select";
 import Header from "../Header";
 import Footer from "../Footer";
 import { onboardingService } from "../../Services/Auth/onboarding";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 import { AppDispatch, RootState } from "../../Store/store";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -118,11 +119,72 @@ const AddSchoolForm = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!formData.schoolName?.trim()) {
+      setError("School name is required.");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.schoolEmail?.trim() || "")) {
+      setError("Please enter a valid school email.");
+      return false;
+    }
+    if (!/^[0-9+\-\s()]{10,}$/.test(formData.schoolPhone?.trim() || "")) {
+      setError("Please enter a valid school phone number.");
+      return false;
+    }
+    if (!formData.address?.trim()) {
+      setError("School address is required.");
+      return false;
+    }
+    if (!formData.state?.trim()) {
+      setError("State is required.");
+      return false;
+    }
+    if (!formData.city?.trim()) {
+      setError("City is required.");
+      return false;
+    }
+    if (!formData.ownerName?.trim()) {
+      setError("Owner name is required.");
+      return false;
+    }
+    if (!/^[0-9+\-\s()]{10,}$/.test(formData.ownerPhone?.trim() || "")) {
+      setError("Please enter a valid owner phone number.");
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.ownerEmail?.trim() || "")) {
+      setError("Please enter a valid owner email.");
+      return false;
+    }
+    if (!formData.password || formData.password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return false;
+    }
+    if (!formData.typeOfSchool) {
+      setError("Please select the type of school.");
+      return false;
+    }
+    if (!formData.countryId) {
+      setError("Please select a country.");
+      return false;
+    }
+    if (!formData.hasAgreedToTerms) {
+      setError("You must agree to the Terms & Conditions.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setSuccess("");
+
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await onboardingService.addSchool(formData);

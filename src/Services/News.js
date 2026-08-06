@@ -12,10 +12,7 @@ export const newsService = {
       console.log(response.data.data)
       return response.data;
     } catch (error) {
-      console.error("AddNews error:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to add news"
-      );
+      throw error;
     }
   },
 
@@ -28,10 +25,7 @@ export const newsService = {
       const response = await api.get(`/api/News/GetAllNews`);
       return response.data.data;
     } catch (error) {
-      console.error("GetAllRegisteredNewserror:", error);
-      throw new Error(
-        error?.response?.data?.responseMessage || "Failed to fetch news"
-      );
+      throw error;
     }
   },
 };

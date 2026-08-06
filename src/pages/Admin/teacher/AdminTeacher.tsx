@@ -40,16 +40,24 @@ const AdminTeacher: React.FC = () => {
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((t: TeacherType) =>
-        t.firstname?.toLowerCase().includes(query) ||
-        t.lastname?.toLowerCase().includes(query) ||
-        t.phone?.toLowerCase().includes(query) ||
-        t.email?.toLowerCase().includes(query) ||
-        t.nationality?.toLowerCase().includes(query) ||
-        t.stateOfOrigin?.toLowerCase().includes(query) ||
-        t.religion?.toLowerCase().includes(query) ||
-        t.homeAddress?.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter((t: TeacherType) => {
+        const searchableText = [
+          t.firstname,
+          t.lastname,
+          t.phone,
+          t.email,
+          t.nationality,
+          t.stateOfOrigin,
+          t.religion,
+          t.homeAddress,
+          t.employmentDate,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
     }
 
     return filtered;

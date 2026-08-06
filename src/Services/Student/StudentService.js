@@ -8,7 +8,7 @@ export const studentService = {
       // console.log("GetAllStudents success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("GetAllStudents error:", error);
+      // console.error("GetAllStudents error:", error);
       throw error;
     }
   },
@@ -19,7 +19,7 @@ export const studentService = {
       console.log("AddStudentStudent success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("AddStudentStudent error:", error?.response?.data?.message || error.message);
+      // console.error("AddStudentStudent error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -30,7 +30,7 @@ export const studentService = {
       console.log("UpdateStudent success:", res.data);
       return res.data.data;
     } catch (error) {
-      console.error("UpdateStudent error:", error?.response?.data?.message || error.message);
+      // console.error("UpdateStudent error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -41,7 +41,7 @@ export const studentService = {
       console.log("DeleteStudent success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("DeleteStudent error:", error?.response?.data?.message || error.message);
+      // console.error("DeleteStudent error:", error?.response?.data?.message || error.message);
       throw error;
     }
   },
@@ -52,7 +52,7 @@ export const studentService = {
       console.log("UploadStudentPhoto success:", res.data);
       return res.data;
     } catch (error) {
-      console.error("UploadStudentPhoto error:", error?.response?.data?.message || error.message);
+      // console.error("UploadStudentPhoto error:", error?.response?.data?.message || error.message);
       throw error;
     }
   }

@@ -51,15 +51,24 @@ const AdminStudents: React.FC = () => {
       );
     }
 
-    // Apply search query
+    // Apply search query using values shown in the school-fee table
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((student: any) =>
-        student.firstname?.toLowerCase().includes(query) ||
-        student.lastname?.toLowerCase().includes(query) ||
-        student.homeAddress?.toLowerCase().includes(query) ||
-        student.guardianId?.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter((student: any) => {
+        const searchableText = [
+          student.amount,
+          student.sessionId,
+          student.termId,
+          student.classroomName,
+          student.classroomId,
+          student.schoolId,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+
+        return searchableText.includes(query);
+      });
     }
 
     return filtered;
@@ -129,8 +138,8 @@ const AdminStudents: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-            <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+            {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+            {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
             <div className="flex items-center rounded-full px-3 py-1 space-x-2">
               <img
                 src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}

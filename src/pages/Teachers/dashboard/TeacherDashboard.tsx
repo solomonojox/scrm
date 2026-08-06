@@ -92,8 +92,8 @@ export default function TeacherDashboard() {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-            <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+            {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+            {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
             <div className="flex items-center rounded-full pr-3 py-1">
               <img
                 src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${fetchedTeacherRecord?.email}`}
@@ -132,7 +132,7 @@ export default function TeacherDashboard() {
               iconColor="text-blue-700"
             />
             <StatCard
-              label="Attendace taken this week"
+              label="Attendance taken this week"
               value={"0"}
               icon={<FaChalkboardTeacher />}
               bgColor="bg-[#E9B6B6]"

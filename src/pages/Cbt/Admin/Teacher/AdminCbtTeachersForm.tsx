@@ -1,5 +1,6 @@
 import React from "react";
 import { Btn, Input } from "../../../../components/ui/CbtSharedComponents";
+import PasswordField from "../../../../components/ui/PasswordField";
 import { TeacherForm } from "./AdminCbtTeachersPage";
 
 interface Props {
@@ -31,7 +32,7 @@ export default function AdminCbtTeachersForm({ form, setForm, editing, onCancel,
         <Input label="Religion"       value={form.religion}      disabled={submitting} onChange={set("religion")}      placeholder="Christianity" />
         {/* <Input label="Username" required value={form.username} disabled={submitting} onChange={set("username")} placeholder="sunday.iniobong" /> */}
         {!editing && (
-          <Input label="Password" type="password" required value={form.password} disabled={submitting} onChange={set("password")} placeholder="Set password" />
+          <PasswordField label="Password" required value={form.password} disabled={submitting} onChange={set("password")} placeholder="Set password" />
         )}
       </div>
 

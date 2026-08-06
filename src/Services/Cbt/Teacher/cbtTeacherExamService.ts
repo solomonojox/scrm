@@ -14,7 +14,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.post(`/api/Examination`, examData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to create exam");
+      throw error;
     }
   },
 
@@ -23,7 +23,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.put(`/api/QuizQuestion/Update?id=${id}`, examData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to update exam");
+      throw error;
     }
   },
 
@@ -32,7 +32,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.post(`/api/TeacherExam/questions/submit`, examData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add exam questions");
+      throw error;
     }
   },
 
@@ -41,7 +41,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.post(`/api/TeacherExam/questions/submit/bulk`, examData);
       return response.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add exam questions");
+      throw error;
     }
   },
 
@@ -50,7 +50,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.get(`/api/TeacherExam/assignments`, { params });
       return response?.data?.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch exams");
+      throw error;
     }
   },
 
@@ -59,7 +59,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.patch(`/api/TeacherExam/assignments/${assignmentId}/respond`, payload);
       return response.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to respond to assignment");
+      throw error;
     }
   },
 
@@ -68,7 +68,7 @@ export const cbtTeacherExamService = {
       const response = await cbtApi.get(`/api/QuizQuestion/GetById?id=${id}`);
       return response.data?.data;
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch exam");
+      throw error;
     }
   },
 
@@ -78,7 +78,7 @@ export const cbtTeacherExamService = {
       // console.log(response)
       return response.data ?? response.data?.data ?? [];
     } catch (error: any) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to fetch exam questions");
+      throw error;
     }
   },
 };

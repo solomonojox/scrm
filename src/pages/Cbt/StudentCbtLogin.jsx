@@ -173,16 +173,15 @@ const StudentCbtLogin = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
-              <input
+              <PasswordField
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   validatePassword(e.target.value);
                 }}
                 placeholder="Enter Password"
-                className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                inputClassName="border-orange-300 focus:ring-orange-500"
                 onBlur={() => validatePassword(password)}
               />
               {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}

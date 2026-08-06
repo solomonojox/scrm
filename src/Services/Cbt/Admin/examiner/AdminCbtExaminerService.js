@@ -8,7 +8,7 @@ export const AdminCbtExaminerService = {
   //     const response = await cbtApi.post(`/api/School/RegisterSchool`, eventsData);
   //     return response.data;
   //   } catch (error) {
-  //     throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
+  //     throw error;
   //   }
   // },
 
@@ -17,7 +17,7 @@ export const AdminCbtExaminerService = {
       const response = await cbtApi.post(API, data);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to add news");
+      throw error;
     }
   },
 
@@ -26,7 +26,7 @@ export const AdminCbtExaminerService = {
       const response = await cbtApi.get(`${API}/school/${schoolId}`);
       return response?.data?.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to get examiner");
+      throw error;
     }
   },
 
@@ -35,7 +35,7 @@ export const AdminCbtExaminerService = {
       const response = await cbtApi.put(`${API}/${id}`, data);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to update examiner");
+      throw error;
     }
   },
 
@@ -44,7 +44,7 @@ export const AdminCbtExaminerService = {
       const response = await cbtApi.delete(`${API}/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(error?.response?.data?.responseMessage || "Failed to delete examiner");
+      throw error;
     }
   },
 };

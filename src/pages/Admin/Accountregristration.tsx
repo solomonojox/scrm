@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
 import { onboardingService } from "../../Services/Auth/onboarding";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
@@ -25,9 +26,35 @@ export default function RegistrationForm() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
+  const validateForm = () => {
+    if (!formData.accountName.trim()) {
+      return "Account name is required.";
+    }
+    if (!formData.bankName.trim()) {
+      return "Bank name is required.";
+    }
+    if (!/^[0-9]{10,}$/.test(formData.accountNumber.trim())) {
+      return "Account number must contain only digits and at least 10 characters.";
+    }
+    if (!formData.branchName.trim()) {
+      return "Branch name is required.";
+    }
+    if (!formData.accountType.trim()) {
+      return "Account type is required.";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
+
+    const validationError = validateForm();
+    if (validationError) {
+      console.error(validationError);
+      setLoading(false);
+      return;
+    }
 
     try {
       const schoolId = localStorage.getItem("schoolIdOnRegistration");
@@ -39,9 +66,13 @@ export default function RegistrationForm() {
 
       const payload = {
         schoolId,
-        accountName: formData.accountName,
-        accountNumber: formData.accountNumber,
-        bankName: formData.bankName,
+        accountName: formData.accountName.trim(),
+        accountNumber: formData.accountNumber.trim(),
+        bankName: formData.bankName.trim(),
+        branchName: formData.branchName.trim(),
+        accountType: formData.accountType.trim(),
+        sortCode: formData.sortCode.trim(),
+        swiftCode: formData.swiftCode.trim(),
         bankCode: "", // Optional
         isDefault: true,
       };
@@ -57,6 +88,8 @@ export default function RegistrationForm() {
       setSaved(true);
       // setTimeout(() => navigate("/AddAdmin"), 1000);
     } catch (error) {
+      setSaved(false);
+      setLoading(false);
       console.error("Submission failed:", error);
     } finally {
       setLoading(false);

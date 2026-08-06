@@ -113,8 +113,8 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
-          <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" />
+          {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
+          {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
           <div className="flex items-center rounded-full px-3 py-1 space-x-2">
             <img
               src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
@@ -239,7 +239,7 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
         <table className="w-full text-sm text-left whitespace-nowrap">
           <thead className="bg-gray-200 text-gray-700 sticky top-0 z-10">
             <tr>
-              <th className="p-3 min-w-[50px]">
+              <th className="p-3 min-w-12.5">
                 <input
                   type="checkbox"
                   checked={selectAll}
@@ -249,10 +249,10 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
               {/* <th className="p-3 min-w-[120px]">School Id</th> */}
-              <th className="p-3 min-w-[120px]">Name</th>
-              <th className="p-3 min-w-[120px]">Teacher Id</th>
-              <th className="p-3 min-w-[100px]">Capacity</th>
-              <th className="p-3 min-w-[100px]">Actions</th>
+              <th className="p-3 min-w-30">Name</th>
+              <th className="p-3 min-w-30">Teacher Id</th>
+              <th className="p-3 min-w-25">Capacity</th>
+              <th className="p-3 min-w-25">Actions</th>
             </tr>
           </thead>
           <tbody>

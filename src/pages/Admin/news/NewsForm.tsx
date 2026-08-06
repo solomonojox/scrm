@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { FaComment } from "react-icons/fa";
 import { toast } from "react-toastify";
-// import { guardianService } from "../../../Services/Guardian/guardian";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { newsService } from "../../../Services/News";
 
 interface NewsFormProps {
@@ -9,43 +11,55 @@ interface NewsFormProps {
   onNewsAdded: () => void;
 }
 
+const newsSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").min(3, "Title must be at least 3 characters"),
+  content: z.string().trim().min(1, "Content is required").min(10, "Content must be at least 10 characters"),
+});
+
+type NewsFormValues = z.infer<typeof newsSchema>;
+
+const defaultValues: NewsFormValues = {
+  title: "",
+  content: "",
+};
+
 const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<NewsFormValues>({
+    resolver: zodResolver(newsSchema),
+    defaultValues,
+    mode: "onBlur",
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: NewsFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
-      title: formData.title,
-      content: formData.content,
+      title: values.title.trim(),
+      content: values.content.trim(),
     };
 
     try {
       const res = await newsService.addNews(payload);
-      toast.success(res.responseMessage || "News added!");
+      toast.success((res as any)?.responseMessage || "News added!");
       onNewsAdded();
       setTimeout(() => {
         onClose();
-        setFormData({
-          title: "",
-          content: "",
-        });
+        reset(defaultValues);
         setImagePreview(null);
       }, 2000);
     } catch (err: any) {
@@ -67,7 +81,7 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
         <div className="p-4 sm:p-6">
           <h2 className="text-lg font-semibold mb-4 text-center">Add News</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             {/* Avatar upload */}
             <label className="relative w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
               <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -88,13 +102,11 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
               <input
                 id="title"
                 type="text"
-                name="title"
                 placeholder="Title"
-                required
-                className="border px-3 py-3 rounded text-sm w-full"
-                value={formData.title || ""}
-                onChange={handleInputChange}
+                className={`border px-3 py-3 rounded text-sm w-full ${errors.title ? "border-red-500" : ""}`}
+                {...register("title")}
               />
+              {errors.title && <p className="text-red-600 text-xs mt-1">{errors.title.message}</p>}
             </div>
 
             {/* Content field (full width) */}
@@ -104,13 +116,11 @@ const NewsForm: React.FC<NewsFormProps> = ({ onClose, onNewsAdded }) => {
               </label>
               <textarea
                 id="content"
-                name="content"
                 placeholder="Enter your content..."
-                required
-                className="border px-3 py-2 rounded text-sm w-full resize-none min-h-[120px]"
-                value={formData.content || ""}
-                onChange={handleInputChange}
+                className={`border px-3 py-2 rounded text-sm w-full resize-none min-h-30 ${errors.content ? "border-red-500" : ""}`}
+                {...register("content")}
               />
+              {errors.content && <p className="text-red-600 text-xs mt-1">{errors.content.message}</p>}
             </div>
 
             {/* Action buttons */}
