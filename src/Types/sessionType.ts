@@ -7,4 +7,5 @@ export interface Session{
     endDate: string;
     classrooms: []
     sessionKey?: string;    
+    sessionTerms?: string
 }

@@ -1,157 +1,149 @@
-import React from 'react';
-import { FaSyncAlt, FaDownload, FaEye } from 'react-icons/fa';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { CircularProgress } from '@mui/material';
-import InvoicePDF from './InvoicePDF';
-import { GeneratedInvoiceData, PaymentRecordType } from '../../../Types/Admin/InvoiceRecordType';
+// InvoiceActionsCell.tsx
+//
+// The three small circular icon-button row actions for one payment row:
+// generate/regenerate, download, preview. Matches the real call site in
+// InvoiceRecordsPage: <InvoiceActionsCell payment generatedInvoice
+// isGenerating schoolInfo formatDate onGenerate onPreview />.
+//
+// Download is handled entirely in here — it rebuilds the same InvoicePDF
+// element used for preview via pdf(...).toBlob() and triggers a save, so
+// there's no separate "download" state to thread back up to the page.
 
-interface SchoolInfo {
-    name: string;
-    address: string;
-    phone: string;
-    email: string;
-    registrationNumber?: string;
-    ownerName?: string;
-    city?: string;
-    state?: string;
-    typeOfSchool?: string;
-}
+import React, { useCallback, useState } from 'react';
+import { FiRefreshCw, FiDownload, FiEye } from 'react-icons/fi';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
+import { pdf } from '@react-pdf/renderer';
+import { toast } from 'react-toastify';
+import { GeneratedInvoiceData, PaymentRecordType } from '../../../Types/Admin/InvoiceRecordType';
+import InvoicePDF, { type SchoolInfoForPDF, type StudentInfoForPDF } from './InvoicePDF';
 
 interface InvoiceActionsCellProps {
-    payment: PaymentRecordType;
-    generatedInvoice?: GeneratedInvoiceData;
-    isGenerating: boolean;
-    schoolInfo: SchoolInfo;
-    formatDate: (dateString: string) => string;
-    onGenerate: (payment: PaymentRecordType) => void;
-    onPreview: (payment: PaymentRecordType) => void;
+  payment: PaymentRecordType;
+  generatedInvoice: GeneratedInvoiceData | undefined;
+  isGenerating: boolean;
+  schoolInfo: SchoolInfoForPDF;
+  formatDate: (dateString: string) => string;
+  onGenerate: (payment: PaymentRecordType) => void;
+  onPreview: (payment: PaymentRecordType) => void;
 }
 
-/**
- * Small round icon button, styled to match the orange/white CBT admin
- * design language. Shows a disabled state, a hover state, and an optional
- * inline loading spinner.
- */
-const ActionIconButton: React.FC<{
-    label: string;
-    onClick?: () => void;
-    disabled?: boolean;
-    loading?: boolean;
-    variant: 'primary' | 'success' | 'info';
-    children: React.ReactNode;
-}> = ({ label, onClick, disabled, loading, variant, children }) => {
-    const variantClasses: Record<typeof variant, string> = {
-        primary: 'bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white',
-        success: 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white',
-        info: 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white',
-    };
+const baseIconBtn =
+  'flex h-8 w-8 items-center justify-center rounded-full transition-all duration-150 ' +
+  'disabled:cursor-not-allowed disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1';
 
-    return (
-        <button
+function buildStudentInfo(payment: PaymentRecordType): StudentInfoForPDF {
+  return {
+    name: payment.studentName,
+    guardianName: 'N/A',
+    classroom: payment.className,
+    studentId: payment.studentId,
+    registrationNumber: 'N/A',
+  };
+}
+
+export default function InvoiceActionsCell({
+  payment,
+  generatedInvoice,
+  isGenerating,
+  schoolInfo,
+  formatDate,
+  onGenerate,
+  onPreview,
+}: InvoiceActionsCellProps) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const hasInvoice = Boolean(generatedInvoice?.invoiceId);
+
+  const handleDownload = useCallback(async () => {
+    if (!generatedInvoice) {
+      toast.error('No invoice to download. Please generate one first.');
+      return;
+    }
+    
+    setIsDownloading(true);
+    try {
+      const blob = await pdf(
+        <InvoicePDF
+          invoiceData={generatedInvoice}
+          schoolInfo={schoolInfo}
+          studentInfo={buildStudentInfo(payment)}
+          formatDate={formatDate}
+        />
+      ).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${generatedInvoice.invoiceNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL after download
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 100);
+      
+      toast.success('Invoice downloaded successfully');
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Could not download the invoice PDF. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [generatedInvoice, schoolInfo, payment, formatDate]);
+
+  return (
+    <div className="flex items-center gap-2">
+      <Tooltip title={hasInvoice ? 'Regenerate invoice' : 'Generate invoice'}>
+        <span>
+          <button
             type="button"
-            title={label}
-            aria-label={label}
-            onClick={onClick}
-            disabled={disabled || loading}
-            className={`
-                inline-flex items-center justify-center w-9 h-9 rounded-full
-                transition-colors duration-150 ease-in-out
-                disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:text-gray-400
-                ${disabled ? 'bg-gray-100 text-gray-400' : variantClasses[variant]}
-            `}
-        >
-            {loading ? <CircularProgress size={16} color="inherit" /> : children}
-        </button>
-    );
-};
-
-const InvoiceActionsCell: React.FC<InvoiceActionsCellProps> = ({
-    payment,
-    generatedInvoice,
-    isGenerating,
-    schoolInfo,
-    formatDate,
-    onGenerate,
-    onPreview,
-}) => {
-    const generated = Boolean(generatedInvoice?.invoiceId && generatedInvoice?.invoiceNumber);
-
-    const studentInfo = {
-        name: payment.studentName,
-        guardianName: 'N/A',
-        classroom: payment.className,
-        studentId: payment.studentId,
-        registrationNumber: 'N/A',
-    };
-
-    return (
-        <div className="flex items-center gap-2">
-            {/* Generate Invoice */}
-            <ActionIconButton
-                label={generated ? 'Regenerate Invoice' : 'Generate Invoice'}
-                variant="primary"
-                loading={isGenerating}
-                onClick={() => onGenerate(payment)}
-            >
-                <FaSyncAlt className="text-sm" />
-            </ActionIconButton>
-
-            {/* Download PDF - disabled until generated */}
-            {generated && generatedInvoice ? (
-                <PDFDownloadLink
-                    document={
-                        <InvoicePDF
-                            invoiceData={{
-                                invoiceId: generatedInvoice.invoiceId,
-                                schoolId: generatedInvoice.schoolId,
-                                schoolName: generatedInvoice.schoolName,
-                                sessionTermId: generatedInvoice.sessionTermId,
-                                studentCount: generatedInvoice.studentCount,
-                                amountPerStudent: generatedInvoice.amountPerStudent,
-                                totalAmount: generatedInvoice.totalAmount,
-                                invoiceDate: generatedInvoice.invoiceDate,
-                                dueDate: generatedInvoice.dueDate,
-                                isPaid: generatedInvoice.isPaid,
-                                paidDate: generatedInvoice.paidDate,
-                                paymentReference: generatedInvoice.paymentReference,
-                                emailSent: generatedInvoice.emailSent,
-                                emailSentDate: generatedInvoice.emailSentDate as string,
-                                invoiceNumber: generatedInvoice.invoiceNumber,
-                                paymentInstructions: generatedInvoice.paymentInstructions,
-                                school: generatedInvoice.school,
-                                sessionTerm: generatedInvoice.sessionTerm,
-                            }}
-                            schoolInfo={schoolInfo}
-                            studentInfo={studentInfo}
-                            formatDate={formatDate}
-                        />
-                    }
-                    fileName={`${generatedInvoice.invoiceNumber}.pdf`}
-                    className="no-underline"
-                >
-                    {({ loading }) => (
-                        <ActionIconButton label="Download PDF" variant="success" loading={loading}>
-                            <FaDownload className="text-sm" />
-                        </ActionIconButton>
-                    )}
-                </PDFDownloadLink>
+            onClick={() => onGenerate(payment)}
+            disabled={isGenerating}
+            aria-label={hasInvoice ? 'Regenerate invoice' : 'Generate invoice'}
+            className={`${baseIconBtn} bg-orange-50 text-orange-600 hover:bg-orange-100 focus-visible:ring-orange-400`}
+          >
+            {isGenerating ? (
+              <CircularProgress size={14} thickness={5} sx={{ color: 'inherit' }} />
             ) : (
-                <ActionIconButton label="Download PDF (generate invoice first)" variant="success" disabled>
-                    <FaDownload className="text-sm" />
-                </ActionIconButton>
+              <FiRefreshCw size={14} />
             )}
+          </button>
+        </span>
+      </Tooltip>
 
-            {/* Preview Invoice - disabled until generated */}
-            <ActionIconButton
-                label={generated ? 'Preview Invoice' : 'Preview Invoice (generate invoice first)'}
-                variant="info"
-                disabled={!generated}
-                onClick={() => onPreview(payment)}
-            >
-                <FaEye className="text-sm" />
-            </ActionIconButton>
-        </div>
-    );
-};
+      <Tooltip title={hasInvoice ? 'Download PDF' : 'Generate the invoice first'}>
+        <span>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={!hasInvoice || isDownloading}
+            aria-label="Download invoice PDF"
+            className={`${baseIconBtn} bg-blue-50 text-blue-600 hover:bg-blue-100 focus-visible:ring-blue-400`}
+          >
+            {isDownloading ? (
+              <CircularProgress size={14} thickness={5} sx={{ color: 'inherit' }} />
+            ) : (
+              <FiDownload size={14} />
+            )}
+          </button>
+        </span>
+      </Tooltip>
 
-export default InvoiceActionsCell;
+      <Tooltip title={hasInvoice ? 'Preview invoice' : 'Generate the invoice first'}>
+        <span>
+          <button
+            type="button"
+            onClick={() => onPreview(payment)}
+            disabled={!hasInvoice}
+            aria-label="Preview invoice"
+            className={`${baseIconBtn} bg-green-50 text-green-600 hover:bg-green-100 focus-visible:ring-green-400`}
+          >
+            <FiEye size={14} />
+          </button>
+        </span>
+      </Tooltip>
+    </div>
+  );
+}
