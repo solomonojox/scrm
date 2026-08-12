@@ -117,6 +117,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" onClose={onClose} />
           <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/guardians" onClose={onClose} />
           <SidebarButton icon={<FaUserFriends />} label="Promotions" to="/admin/promotions" onClose={onClose} />
+          <SidebarButton icon={<CoinsIcon />} label="Discounts" to="/admin/discounts" onClose={onClose} />
 
           <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Academics

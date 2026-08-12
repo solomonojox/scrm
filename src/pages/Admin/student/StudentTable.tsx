@@ -256,7 +256,7 @@ const StudentTable: React.FC<StudentTableProps> = ({
                                         </span>
                                         <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border border-gray-300 rounded-md px-2 py-1 hover:bg-gray-100" onClick={() => onViewStudent(student)}>
                                             View
-                                            <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
+                                            <FaEye className="cursor-pointer text-primary hover:text-primary/90" />
                                         </span>
                                         {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
                                     </td>
