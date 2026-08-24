@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import imageAssets from "../assets/imageAssets";
 import { loginService } from "../Services/Auth/loginService";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 import { useAuth } from "../Context/Auth/useAuth";
 import logo from "../assets/looogo.png";
@@ -131,7 +131,9 @@ const LoginPage = () => {
 
       {/* Logo at Top Right on large screens */}
       <div className="hidden lg:block absolute top-6 left-6">
-        <img src={logo} alt="EduCat logo" className="h-12.5" />
+        <Link to={"/"}>
+          <img src={logo} alt="EduCat logo" className="h-12.5" />
+        </Link>
       </div>
 
       {/* Logo at Top Center on small screens */}
