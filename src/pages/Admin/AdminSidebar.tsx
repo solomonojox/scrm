@@ -134,6 +134,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <SidebarButton icon={<FaNewspaper />} label="News" to="/admin/news" onClose={onClose} />
           <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/admin/events" onClose={onClose} />
           <SidebarButton icon={<FaFileInvoiceDollar />} label="School Fee" to="/admin/schoolfee" onClose={onClose} />
+          <SidebarButton icon={<FaFileInvoiceDollar />} label="Other Fees" to="/admin/otherfee" onClose={onClose} />
           <SidebarButton icon={<CoinsIcon />} label="Record payment" to="/admin/payment-record" onClose={onClose} />
         </div>
 
