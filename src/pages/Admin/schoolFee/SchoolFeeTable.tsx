@@ -50,7 +50,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
        fetchSession();
      }
    }, [dispatch]);
- 
+
    const fetchSession = async () => {
      dispatch(fetchSessionTermStart());
      try {
@@ -71,7 +71,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
     if (selectAll) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(schoolFee.map((s) => s.id));
+      setSelectedIds(schoolFee.map((s) => s.classFeeId));
     }
     setSelectAll(!selectAll);
   };
@@ -251,7 +251,7 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
             ) : (
               schoolFee.map((student, index) => (
                 <tr
-                  key={student.id}
+                  key={student.classFeeId}
                   className={`border-t hover:bg-gray-100 ${
                     index % 2 === 0 ? "bg-white" : "bg-gray-50"
                   }`}
@@ -259,14 +259,14 @@ const SchoolFeeTable: React.FC<StudentTableProps> = ({
                   <td className="p-3">
                     <input
                       type="checkbox"
-                      checked={selectedIds.includes(student.id)}
-                      onChange={() => toggleCheckbox(student.id)}
+                      checked={selectedIds.includes(student.classFeeId)}
+                      onChange={() => toggleCheckbox(student.classFeeId)}
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
                   <td className="p-3">
                     <img
-                      src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${student.id}`}
+                      src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${student.classFeeId}`}
                       alt="avatar"
                       className="w-10 h-10 rounded-full"
                     />

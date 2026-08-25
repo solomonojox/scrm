@@ -161,7 +161,7 @@ function App() {
       <Route path="/get-started" element={<GetStarted />} />
       <Route path="/add-school-form" element={<Addschoolform />} />
       <Route path="/upload-license" element={<AddSchoolLisence />} />
-      <Route path="/account-registration" element={<Accountregistration />} />
+      {/* <Route path="/account-registration" element={<Accountregistration />} /> */}
       <Route path="/add-admin" element={<AddAdmin />} />
       <Route path="/login" element={<Login />} />
       <Route path="/terms" element={<Terms />} />

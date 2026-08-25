@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
@@ -24,7 +24,8 @@ const AdminSessionTerm: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<SessionTerm | null>(null);
+  const [loadingRowId, setLoadingRowId] = useState<string | null>(null);
 
   const recordsPerPage = 5;
 
@@ -41,7 +42,7 @@ const AdminSessionTerm: React.FC = () => {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((term: SessionTerm) =>
         term.sessionTermId?.toLowerCase().includes(query) ||
-        term.schoolId?.toLowerCase().includes(query) ||
+        term.sessionId?.toLowerCase().includes(query) ||
         term.termName?.toLowerCase().includes(query) ||
         term.startDate?.toLowerCase().includes(query) ||
         term.endDate?.toLowerCase().includes(query)
@@ -56,21 +57,26 @@ const AdminSessionTerm: React.FC = () => {
   const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
-  useEffect(() => {
-    if (!fetchedLoading) {
-      fetchSession();
+  const fetchSession = useCallback(async () => {
+    const schoolId = localStorage.getItem('schoolId');
+    if (!schoolId) {
+      toast.error("School ID not found");
+      return;
     }
-  }, [dispatch]);
 
-  const fetchSession = async () => {
     dispatch(fetchSessionTermStart());
     try {
-      const data = await sessionTermService.getAllRegisteredSessionTerm(localStorage.getItem('schoolId'));
+      const data = await sessionTermService.getAllRegisteredSessionTerm(schoolId);
       dispatch(fetchSessionTermSuccess(data));
     } catch (err) {
       dispatch(fetchSessionTermFailure((err as Error).message));
+      toast.error("Failed to fetch sessions");
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -112,15 +118,50 @@ const AdminSessionTerm: React.FC = () => {
     try {
       await sessionTermService.delete(id);
       await fetchSession();
-      toast.success("Deleted!");
+      toast.success("Deleted successfully!");
     } catch (error) {
       toast.error("Delete failed");
     }
   };
 
+  const handleSetCurrentTerm = async (sessionTermId: string) => {
+    const schoolId = localStorage.getItem('schoolId');
+    if (!schoolId) {
+      toast.error("School ID not found");
+      return;
+    }
+
+    setLoadingRowId(sessionTermId);
+    try {
+      await sessionTermService.setCurrentTerm(schoolId, sessionTermId);
+      toast.success("Current term set successfully!");
+      await fetchSession();
+    } catch (error) {
+      toast.error("Failed to set current term");
+      console.error("Error setting current term:", error);
+    } finally {
+      setLoadingRowId(null);
+    }
+  };
+
+  const handleAddSession = () => {
+    setEditData(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditSession = (data: SessionTerm) => {
+    setEditData(data);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditData(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="max-w-full mx-auto">
         <SessionTermTable
           records={currentRecords}
@@ -132,6 +173,7 @@ const AdminSessionTerm: React.FC = () => {
           religionFilter={religionFilter}
           selectedIds={selectedIds}
           selectAll={selectAll}
+          loadingRowId={loadingRowId}
           onPageChange={handlePageChange}
           onSearchChange={handleSearchChange}
           onHeaderSearchChange={handleHeaderSearchChange}
@@ -139,14 +181,15 @@ const AdminSessionTerm: React.FC = () => {
           onToggleSelectAll={toggleSelectAll}
           onToggleCheckbox={toggleCheckbox}
           onDelete={handleDelete}
-          onAddSession={() => setIsModalOpen(true)}
+          onAddSession={handleAddSession}
           onRefresh={fetchSession}
-          setEditData={setEditData}
+          onEditSession={handleEditSession}
+          onSetCurrentTerm={handleSetCurrentTerm}
         />
 
         {isModalOpen && (
           <SessionTermForm
-            onClose={() => setIsModalOpen(false)}
+            onClose={handleCloseModal}
             onSessionAdded={fetchSession}
             editData={editData}
           />

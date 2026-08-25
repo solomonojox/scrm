@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { CreateOtherFeePayload } from './OtherFees';
+import { Classroom, CreateOtherFeePayload } from './OtherFees';
+import { classrooms } from '../../../Types/classroomTypes';
 
 interface CreateOtherFeeModalProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface CreateOtherFeeModalProps {
   schoolId: string;
   sessionId: string;
   termId: string;
+  classrooms: classrooms[]
 }
 
 const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
@@ -16,14 +18,17 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
   onSubmit,
   schoolId,
   sessionId,
-  termId
+  termId,
+  classrooms
 }) => {
   const [formData, setFormData] = useState({
+    classroomId: '',
     feeName: '',
     amount: 0,
     isMandatory: true,
     description: ''
   });
+  const [selectedClassroom, setSelectedClassroom] = useState<string>('');
 
   const [errors, setErrors] = useState<{
     feeName?: string;
@@ -93,6 +98,7 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
 
     const payload: CreateOtherFeePayload = {
       schoolId,
+      classroomId: selectedClassroom,
       feeName: formData.feeName.trim(),
       amount: formData.amount,
       isMandatory: formData.isMandatory,
@@ -108,6 +114,7 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
       await onSubmit(payload);
       // Reset form on success
       setFormData({
+        classroomId: '',
         feeName: '',
         amount: 0,
         isMandatory: true,
@@ -126,6 +133,11 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
       onClose();
     }
   };
+
+  const classroomOptions = classrooms.map((classroom: Classroom) => ({
+    value: classroom.classroomId,
+    label: classroom.name
+  }));
 
   return (
     <div
@@ -180,6 +192,41 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
             )}
           </div>
 
+          <div className="relative mb-4">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+            <select
+              value={selectedClassroom}
+              onChange={(e) => setSelectedClassroom(e.target.value)}
+              className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent appearance-none bg-white"
+            >
+              <option value="">All Classrooms</option>
+              {classroomOptions.map((classroom) => (
+                <option key={classroom.value} value={classroom.value}>
+                  {classroom.label}
+                </option>
+              ))}
+            </select>
+            {selectedClassroom && (
+              <button
+                onClick={() => setSelectedClassroom('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
           {/* Amount */}
           <div className="mb-4">
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
@@ -211,7 +258,7 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
                 type="checkbox"
                 checked={formData.isMandatory}
                 onChange={handleInputChange}
-                className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                className="w-4 h-4 accent-primary"
                 disabled={isLoading}
               />
               <span className="text-sm font-medium text-gray-700">Mandatory Fee</span>
@@ -269,7 +316,7 @@ const CreateOtherFeeModal: React.FC<CreateOtherFeeModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/80 rounded-md transition-colors flex items-center justify-center min-w-[120px]"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/80 rounded-md transition-colors flex items-center justify-center min-w-30"
               disabled={isLoading}
             >
               {isLoading ? (

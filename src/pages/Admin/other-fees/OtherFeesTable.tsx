@@ -156,10 +156,11 @@ const OtherFeesTable: React.FC<OtherFeesTableProps> = ({
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${fee.isMandatory
+                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      fee.isMandatory
                         ? 'bg-blue-100 text-blue-800'
                         : 'bg-gray-100 text-gray-800'
-                      }`}>
+                    }`}>
                       {fee.isMandatory ? 'Mandatory' : 'Optional'}
                     </span>
                   </td>

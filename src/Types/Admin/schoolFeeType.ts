@@ -1,5 +1,5 @@
 export interface schoolFee {
-  id: string;
+  classFeeId: string;
   schoolId: string;
   classroomId: string;
   sessionId: string;

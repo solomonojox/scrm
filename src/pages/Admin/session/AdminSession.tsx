@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
@@ -23,7 +23,8 @@ const AdminSession: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
-  const [editData, setEditData] = useState<any>(null);
+  const [editData, setEditData] = useState<Session | null>(null);
+  const [loadingRowId, setLoadingRowId] = useState<string | null>(null);
 
   const recordsPerPage = 5;
 
@@ -56,21 +57,26 @@ const AdminSession: React.FC = () => {
   const currentRecords = filteredRecords.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
 
-  useEffect(() => {
-    if (!fetchedLoading) {
-      fetchSession();
+  const fetchSession = useCallback(async () => {
+    const schoolId = localStorage.getItem('schoolId');
+    if (!schoolId) {
+      toast.error("School ID not found");
+      return;
     }
-  }, [dispatch]);
 
-  const fetchSession = async () => {
     dispatch(fetchSessionStart());
     try {
-      const data = await sessionService.getAllRegisteredSessions(localStorage.getItem('schoolId'));
+      const data = await sessionService.getAllRegisteredSessions(schoolId);
       dispatch(fetchSessionSuccess(data));
     } catch (err) {
       dispatch(fetchSessionFailure((err as Error).message));
+      toast.error("Failed to fetch sessions");
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSession();
+  }, [fetchSession]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -112,15 +118,50 @@ const AdminSession: React.FC = () => {
     try {
       await sessionService.delete(id);
       await fetchSession();
-      toast.success("Deleted!");
+      toast.success("Deleted successfully!");
     } catch (error) {
       toast.error("Delete failed");
     }
   };
 
+  const handleSetCurrentSession = async (sessionId: string | undefined) => {
+    const schoolId = localStorage.getItem('schoolId');
+    if (!schoolId) {
+      toast.error("School ID not found");
+      return;
+    }
+
+    setLoadingRowId(sessionId!);
+    try {
+      await sessionService.setCurrentSession(schoolId, sessionId);
+      toast.success("Current session set successfully!");
+      await fetchSession();
+    } catch (error) {
+      toast.error("Failed to set current session");
+      console.error("Error setting current session:", error);
+    } finally {
+      setLoadingRowId(null);
+    }
+  };
+
+  const handleAddSession = () => {
+    setEditData(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditSession = (data: Session) => {
+    setEditData(data);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditData(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="max-w-full mx-auto">
         <SessionTable
           records={currentRecords}
@@ -132,6 +173,7 @@ const AdminSession: React.FC = () => {
           religionFilter={religionFilter}
           selectedIds={selectedIds}
           selectAll={selectAll}
+          loadingRowId={loadingRowId}
           onPageChange={handlePageChange}
           onSearchChange={handleSearchChange}
           onHeaderSearchChange={handleHeaderSearchChange}
@@ -139,14 +181,15 @@ const AdminSession: React.FC = () => {
           onToggleSelectAll={toggleSelectAll}
           onToggleCheckbox={toggleCheckbox}
           onDelete={handleDelete}
-          onAddSession={() => setIsModalOpen(true)}
+          onAddSession={handleAddSession}
           onRefresh={fetchSession}
-          setEditData={setEditData}
+          onEditSession={handleEditSession}
+          onSetCurrentSession={handleSetCurrentSession}
         />
 
         {isModalOpen && (
           <SessionForm
-            onClose={() => setIsModalOpen(false)}
+            onClose={handleCloseModal}
             onSessionAdded={fetchSession}
             editData={editData}
           />
