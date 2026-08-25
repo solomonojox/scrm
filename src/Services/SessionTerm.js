@@ -7,20 +7,12 @@ export const sessionTermService = {
    * @returns {Promise<Object>}
    */
   addSessionTerm: async (sessionData) => {
-    try {
-      const response = await api.post(`/api/Session/AddSessionTerm`, sessionData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.post(`/api/Session/AddSessionTerm`, sessionData);
+    return response.data;
   },
   delete: async (sessionData) => {
-    try {
-      const response = await api.post(`/api/Session/delete`, sessionData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.post(`/api/Session/delete`, sessionData);
+    return response.data;
   },
 
   /**
@@ -28,12 +20,8 @@ export const sessionTermService = {
    * @returns {Promise<Array>} - List of sessions
    */
   getAllRegisteredSessionTerm: async (id) => {
-    try {
-      const response = await api.get(`/api/Session/GetSessionTermBySchoolId?schoolId=${id}`);
-      return response.data.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.get(`/api/Session/GetSessionTermBySchoolId?schoolId=${id}`);
+    return response.data.data;
   },
 
   setCurrentTerm: async (schoolId, sessionTermId) => {

@@ -107,7 +107,7 @@ const RegistrationForm = () => {
           <nav className="flex justify-between text-sm text-orange-600 font-medium mb-6">
             <Link to="/add-school-form" className="hover:underline">Add School</Link>
             <Link to="/upload-license" className="hover:underline">Upload School License</Link>
-            <Link to="/account-registration" className="hover:underline">Add Account details</Link>
+            {/* <Link to="/account-registration" className="hover:underline">Add Account details</Link> */}
             <Link to="/add-admin" className="underline">Add School Admin</Link>
           </nav>
 

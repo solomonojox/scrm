@@ -6,8 +6,8 @@ export const OtherFeeService = {
     return response.data;
   },
 
-  getOtherFees: async (schoolId) => {
-    const response = await api.get(`/api/OtherFee/GetOtherFees/${schoolId}`);
+  getOtherFees: async (schoolId, classroomId) => {
+    const response = await api.get(`/api/OtherFee/GetOtherFees/${schoolId}?activeOnly=true&classroomId=${classroomId}`);
     return response.data.data;
   },
 

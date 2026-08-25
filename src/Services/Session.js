@@ -7,20 +7,18 @@ export const sessionService = {
    * @returns {Promise<any>}
    */
   addSession: async (sessionData) => {
-    try {
-      const response = await api.post(`/api/Session/AddSession`, sessionData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.post(`/api/Session/AddSession`, sessionData);
+    return response.data;
   },
+
+  setCurrentSession: async (schoolId, sessionId) => {
+    const response = await api.post(`/api/Session/SetActiveSession?schoolId=${schoolId}&sessionKey=${sessionId}`, {});
+    return response.data;
+  },
+
   delete: async (sessionData) => {
-    try {
-      const response = await api.post(`/api/Session/delete`, sessionData);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await api.post(`/api/Session/delete`, sessionData);
+    return response.data;
   },
 
   /**
@@ -28,12 +26,8 @@ export const sessionService = {
    * @returns {Promise<Array>} - List of sessions
    */
   getAllRegisteredSessions: async (id) => {
-    try {
-      const response = await api.get(`/api/Session/GetSessionsBySchoolId?schoolId=${id}`);
-      // console.log("session:", response.data);
-      return response.data.data;
-    } catch (error) {
-      // throw error;
-    }
+    const response = await api.get(`/api/Session/GetSessionsBySchoolId?schoolId=${id}`);
+    // console.log("session:", response.data);
+    return response.data.data;
   },
 };

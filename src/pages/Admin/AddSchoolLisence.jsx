@@ -63,16 +63,17 @@ const AddSchoolLicense = () => {
         formData.append('file', file);
       });
 
-      const response = await axios.post(
+      await axios.post(
         `${baseUrl}/api/School/UploadDocument/${schoolId}`,
         formData
       );
 
-      console.log('Upload success:', response.data);
-      localStorage.setItem("continueRegistration", 'account-registration');
+      // console.log('Upload success:', response.data);
+      // localStorage.setItem("continueRegistration", 'account-registration');
+      localStorage.setItem("continueRegistration", 'add-admin');
       setShowModal(true);
       setFiles([]);
-      navigate('/account-registration');
+      navigate('/add-admin');
     } catch (err) {
       console.error('Upload failed:', err.response?.data || err.message);
       const msg = err.response?.data?.message || err.message;
@@ -118,7 +119,7 @@ const AddSchoolLicense = () => {
           <nav className="mt-6 flex space-x-6 text-sm font-bold text-orange-700 justify-center uppercase">
             <Link to="/add-school-form" className="hover:underline">Add School</Link>
             <Link to="/upload-license" className="underline">Upload School License</Link>
-            <Link to="/account-registration" className="hover:underline">Add Account details</Link>
+            {/* <Link to="/account-registration" className="hover:underline">Add Account details</Link> */}
             <Link to="/add-admin" className="hover:underline">Add School Admin</Link>
           </nav>
 
@@ -174,7 +175,7 @@ const AddSchoolLicense = () => {
                       ) : (
                         <FontAwesomeIcon icon={faFileAlt} className="text-gray-800 text-lg" />
                       )}
-                      <span className="text-sm font-medium text-gray-700 truncate max-w-[120px]">{file.name}</span>
+                      <span className="text-sm font-medium text-gray-700 truncate max-w-30">{file.name}</span>
                     </div>
                     <div className="flex items-center space-x-3 text-sm text-gray-500">
                       <span>{(file.size / (1024 * 1024)).toFixed(1)}MB</span>

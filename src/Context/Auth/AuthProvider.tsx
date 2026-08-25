@@ -7,6 +7,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [cbtUser, setCbtUser] = useState<CbtUserData | null>(null);
+  console.log(user)
+  console.log(localStorage.getItem("scrmToken"))
 
   useEffect(() => {
     const token = localStorage.getItem("scrmToken");
