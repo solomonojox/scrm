@@ -7,12 +7,14 @@ interface OtherFeesTableProps {
   otherFees: OtherFee[];
   onDeactivate: (feeId: string) => Promise<void>;
   onActivate?: (feeId: string) => Promise<void>;
+  searchTerm?: string;
 }
 
 const OtherFeesTable: React.FC<OtherFeesTableProps> = ({
   otherFees,
   onDeactivate,
-  onActivate
+  onActivate,
+  searchTerm = ''
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedFee, setSelectedFee] = useState<OtherFee | null>(null);
@@ -73,10 +75,37 @@ const OtherFeesTable: React.FC<OtherFeesTableProps> = ({
     });
   };
 
+  // Function to highlight matching text
+  const highlightText = (text: string, highlight: string) => {
+    if (!highlight.trim()) {
+      return <span>{text}</span>;
+    }
+
+    const parts = text.split(new RegExp(`(${highlight.trim()})`, 'gi'));
+    return (
+      <span>
+        {parts.map((part, index) =>
+          part.toLowerCase() === highlight.trim().toLowerCase() ? (
+            <span key={index} className="bg-yellow-200 font-medium">{part}</span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </span>
+    );
+  };
+
   if (otherFees.length === 0) {
     return (
       <div className="text-center py-12 bg-gray-50 rounded-lg">
-        <p className="text-gray-500">No other fees found</p>
+        <p className="text-gray-500">
+          {searchTerm ? 'No fees found matching your search' : 'No other fees found'}
+        </p>
+        {searchTerm && (
+          <p className="text-sm text-gray-400 mt-2">
+            Try adjusting your search terms
+          </p>
+        )}
       </div>
     );
   }
@@ -112,9 +141,13 @@ const OtherFeesTable: React.FC<OtherFeesTableProps> = ({
               {otherFees.map((fee) => (
                 <tr key={fee.otherFeeId} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">{fee.feeName}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {highlightText(fee.feeName, searchTerm)}
+                    </div>
                     {fee.description && (
-                      <div className="text-sm text-gray-500">{fee.description}</div>
+                      <div className="text-sm text-gray-500">
+                        {highlightText(fee.description, searchTerm)}
+                      </div>
                     )}
                   </td>
                   <td className="px-6 py-4">
