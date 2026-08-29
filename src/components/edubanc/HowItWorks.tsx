@@ -5,7 +5,7 @@ const steps = [
     number: "01",
     title: "School Signs Up on Educat",
     description:
-      "Your school creates an account on Educat and manages student records, fees, and reports — all in one dashboard.",
+      "Your school creates an account on Educat and manages student records, fees, and reports - all in one dashboard.",
   },
   {
     number: "02",
@@ -17,7 +17,7 @@ const steps = [
     number: "03",
     title: "Parents Apply for EdPay",
     description:
-      "Parents apply for a school fee loan directly — no collateral, no stress. Funds are disbursed straight to the school.",
+      "Parents apply for a school fee loan directly - no collateral, no stress. Funds are disbursed straight to the school.",
   },
   {
     number: "04",
