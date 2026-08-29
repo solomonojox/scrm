@@ -40,13 +40,13 @@ export default function TwoPlatforms() {
             <p className="mt-3 text-sm text-neutral-500">
               Educat is a comprehensive school management system that helps
               Nigerian schools manage student records, staff, fee invoicing,
-              academic calendars, and financial reporting — all from one
+              academic calendars, and financial reporting - all from one
               powerful platform.
             </p>
             <ul className="mt-6 space-y-3">
               {educatFeatures.map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-neutral-700">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                  <Check className="mt-0.5 h-6 w-6 shrink-0 text-orange-500 rounded-full bg-primary/20 p-1" />
                   {feature}
                 </li>
               ))}
@@ -56,7 +56,7 @@ export default function TwoPlatforms() {
           {/* Edubanc card */}
           <div className="relative overflow-hidden rounded-3xl bg-primary p-8 text-left text-white">
             <div className="pointer-events-none absolute -top-10 right-10 h-40 w-40 rounded-full bg-white/10" />
-            <p className="text-xs font-semibold text-orange-100">edubanc</p>
+            <p className="text-xs font-semibold text-orange-100"><img src="/edbanc.svg" alt="" className="w-30" /></p>
             <h3 className="mt-2 text-xl font-bold">
               Education Financing for Every Family
             </h3>
@@ -69,7 +69,7 @@ export default function TwoPlatforms() {
             <ul className="mt-6 space-y-3">
               {edubancFeatures.map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-white" />
+                  <Check className="mt-0.5 h-6 w-6 shrink-0 text-white bg-white/20 p-1 rounded-full" />
                   {feature}
                 </li>
               ))}

@@ -13,7 +13,7 @@ export default function CTASection() {
           </h3>
           <p className="mt-3 text-sm text-orange-50/90">
             Get the full Educat management suite and automatically unlock
-            Edubanc fee financing for all your parents — at zero cost to
+            Edubanc fee financing for all your parents - at zero cost to
             your school.
           </p>
           <Link to={'/get-started'} className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-primary transition hover:bg-orange-50">
@@ -23,13 +23,13 @@ export default function CTASection() {
         </div>
 
         <div className="p-10">
-          <p className="text-sm font-bold text-neutral-900">edubanc</p>
+          <p className="text-sm font-bold text-neutral-900"><img src="/edbanc.svg" alt="" className="w-34" /></p>
           <h3 className="mt-3 text-xl font-bold text-neutral-900 sm:text-2xl">
             Apply for an EdPay school fee loan
           </h3>
           <p className="mt-3 text-sm text-neutral-500">
             Pay your child's school fees today and repay in comfortable
-            monthly installments. No collateral, no stress — just peace of
+            monthly installments. No collateral, no stress - just peace of
             mind.
           </p>
           <a href="https://edubanc.ng" target="_blank" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/80">

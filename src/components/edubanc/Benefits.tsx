@@ -21,9 +21,9 @@ const content: Record<
       "Guaranteed full fee collection every term",
       "Reduce student dropout due to unpaid fees",
       "Automated invoicing and payment tracking on Educat",
-      "Access to Orbit school cash-flow solution — up to ₦5M",
+      "Access to Orbit school cash-flow solution - up to ₦5M",
       "Real-time financial reports via your Educat dashboard",
-      "Zero integration cost — completely free for schools",
+      "Zero integration cost - completely free for schools",
     ],
   },
   parents: {
