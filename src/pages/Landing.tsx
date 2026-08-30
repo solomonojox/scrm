@@ -207,11 +207,11 @@ const Landing = () => {
             {/* Text */}
             <div className="max-w-xl text-center md:text-left">
               <span className="mb-3 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white">
-                Available on Android
+                Available on Codeweb Store
               </span>
 
               <h2 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
-                Get our app on the Play Store
+                Get our app on the Codeweb Store
               </h2>
 
               <p className="mt-4 text-base leading-7 text-gray-300 md:text-lg">
@@ -233,20 +233,23 @@ const Landing = () => {
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    d="M3.5 2.8L14.1 13.4L3.6 21.2C3.2 20.7 3 20 3 19.2V4.8C3 4 3.2 3.3 3.5 2.8Z"
-                    fill="#00D2FF"
+                    d="M12 3V15"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
                   />
                   <path
-                    d="M3.5 2.8L14.1 13.4L17.7 9.8L5.2 2.7C4.6 2.4 4 2.5 3.5 2.8Z"
-                    fill="#00F076"
+                    d="M7 10L12 15L17 10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
-                    d="M14.1 13.4L17.7 17L5.2 21.3C4.5 21.5 3.9 21.4 3.6 21.2L14.1 13.4Z"
-                    fill="#FFCF00"
-                  />
-                  <path
-                    d="M17.7 9.8L20.2 11.2C21.3 11.8 21.3 13.2 20.2 13.8L17.7 15.2L14.1 13.4L17.7 9.8Z"
-                    fill="#FF3D00"
+                    d="M4 20H20"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
                   />
                 </svg>
 
@@ -255,7 +258,7 @@ const Landing = () => {
                     GET IT ON
                   </span>
                   <span className="block text-lg font-semibold">
-                    Google Play
+                    Codeweb Store
                   </span>
                 </div>
               </a>
