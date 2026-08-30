@@ -200,6 +200,100 @@ const Landing = () => {
         </main>
       </div>
 
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-linear-to-br from-gray-900 to-gray-800 px-8 py-12 md:px-14">
+          <div className="flex flex-col items-center justify-between gap-10 md:flex-row">
+
+            {/* Text */}
+            <div className="max-w-xl text-center md:text-left">
+              <span className="mb-3 inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white">
+                Available on Codeweb Store
+              </span>
+
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+                Get our app on the Codeweb Store
+              </h2>
+
+              <p className="mt-4 text-base leading-7 text-gray-300 md:text-lg">
+                Enjoy a faster, simpler and more convenient experience right from
+                your mobile device. Download our app today and stay connected
+                wherever you go.
+              </p>
+
+              {/* Play Store Button */}
+              <a
+                href="https://appstore.codeweb.com.ng#"
+                className="mt-7 inline-flex items-center gap-3 rounded-xl bg-white px-5 py-3 text-gray-900 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                {/* Play Store Icon */}
+                <svg
+                  className="h-9 w-9"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 3V15"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M7 10L12 15L17 10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M4 20H20"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+
+                <div className="text-left leading-tight">
+                  <span className="block text-[11px] text-gray-500">
+                    GET IT ON
+                  </span>
+                  <span className="block text-lg font-semibold">
+                    Codeweb Store
+                  </span>
+                </div>
+              </a>
+            </div>
+
+            {/* Phone Mockup */}
+            <div className="relative shrink-0">
+              <div className="relative h-82.5 w-41.25 rounded-4xl border-[6px] border-gray-700 bg-white shadow-2xl">
+                {/* Notch */}
+                <div className="absolute left-1/2 top-0 z-10 h-5 w-20 -translate-x-1/2 rounded-b-xl bg-gray-700" />
+
+                {/* App Screen */}
+                <div className="flex h-full items-center justify-center overflow-hidden rounded-3xl bg-gray-100">
+                  <div className="text-center">
+                    <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-900 text-2xl font-bold text-white">
+                      A
+                    </div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      Your App
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Mobile experience
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative Circle */}
+              <div className="absolute -bottom-5 -right-5 z-0 h-20 w-20 rounded-full bg-white/10 blur-xl" />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* What You Get From Us */}
       <section className="relative bg-linear-to-b bg-gray-200">
         <div className="pt-1 mt-[-37.4px] pb-8 text-center px-4">
