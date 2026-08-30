@@ -37,6 +37,24 @@ const Landing = () => {
   // Duplicate for infinite scroll effect
   const allSlides = [...slides, ...slides];
 
+  type Partner = {
+    src: string;
+    alt: string;
+  };
+
+  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
+
+  const partners: Partner[] = [
+    {
+      src: "/hygeiapart.jpeg",
+      alt: "Hygeia HMO",
+    },
+    {
+      src: "/edubancpart.jpeg",
+      alt: "Edubanc",
+    },
+  ];
+
   return (
     <>
       {/* Optimized Header */}
@@ -444,6 +462,74 @@ const Landing = () => {
           </div>
         </div>
       </section>
+
+      {/* Partnership */}
+      {/* ─── Our Partners ─── */}
+      <section className="bg-white py-16 px-4" id="partners">
+        <div className="max-w-6xl mx-auto">
+
+          {/* Heading */}
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
+              Our Partners
+            </h2>
+
+            <p className="mt-3 text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
+              We are proud to collaborate with organizations that share our vision
+              for transforming education through technology.
+            </p>
+          </div>
+
+          {/* Flyers */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {partners.map((partner, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => setSelectedPartner(partner)}
+                className="group overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-300 focus:outline-none"
+              >
+                <img
+                  src={partner.src}
+                  alt={partner.alt}
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </button>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ─── Partner Flyer Modal ─── */}
+      {selectedPartner && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setSelectedPartner(null)}
+        >
+          {/* Close Button */}
+          <button
+            type="button"
+            onClick={() => setSelectedPartner(null)}
+            className="absolute top-5 right-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-2xl text-gray-800 shadow-lg hover:bg-white transition"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+
+          {/* Full Flyer */}
+          <div
+            className="relative max-h-[95vh] max-w-5xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedPartner.src || ""}
+              alt={selectedPartner.alt}
+              className="max-h-[90vh] max-w-full rounded-lg object-contain shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Contact Us */}
       <section className="max-w-7xl mx-auto px-4 py-16 bg-gray-50" id="contact">
