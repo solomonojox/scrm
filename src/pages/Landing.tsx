@@ -222,7 +222,7 @@ const Landing = () => {
 
               {/* Play Store Button */}
               <a
-                href="https://appstore.codeweb.com.ng#"
+                href="https://appstore.codeweb.com.ng" target='_blank'
                 className="mt-7 inline-flex items-center gap-3 rounded-xl bg-white px-5 py-3 text-gray-900 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
               >
                 {/* Play Store Icon */}
