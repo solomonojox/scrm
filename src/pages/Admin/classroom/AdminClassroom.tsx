@@ -14,6 +14,7 @@ import {
   fetchClassroomsStart,
   fetchClassroomsSuccess,
 } from "../../../Store/Admin/classroomSlice";
+import EditClassroomModal from "./EditClassroomModal";
 
 type ReligionFilter = "all" | "christian" | "muslim";
 
@@ -24,6 +25,7 @@ const AdminClassroom: React.FC = () => {
   const error = useSelector((state: RootState) => state.getClassrooms.error);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // New state
   const [openViewDetailModal, setOpenViewDetailModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -32,6 +34,7 @@ const AdminClassroom: React.FC = () => {
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>("all");
   const [classroomDetails, setClassroomDetails] = useState<classrooms>();
+  const [editingClassroom, setEditingClassroom] = useState<classrooms | null>(null); // New state
 
   const recordsPerPage = 5;
 
@@ -114,15 +117,43 @@ const AdminClassroom: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
+  // Updated delete handler
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this guardian?")) return;
+    if (!window.confirm("Are you sure you want to delete this classroom?")) return;
     try {
-      await guardianService.delete(id);
+      await classroomService.deleteClassroom(id);
       await fetchClassroom();
-      toast.success("Deleted!");
+      toast.success("Classroom deleted successfully!");
     } catch (error) {
-      toast.error("Delete failed");
+      toast.error("Delete failed. Please try again.");
     }
+  };
+
+  // New handler for bulk delete
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) {
+      toast.warning("Please select at least one classroom to delete");
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to delete ${selectedIds.length} classroom(s)?`)) return;
+
+    try {
+      // Delete all selected classrooms
+      await Promise.all(selectedIds.map(id => classroomService.deleteClassroom(id)));
+      await fetchClassroom();
+      setSelectedIds([]);
+      setSelectAll(false);
+      toast.success(`${selectedIds.length} classroom(s) deleted successfully!`);
+    } catch (error) {
+      toast.error("Bulk delete failed. Please try again.");
+    }
+  };
+
+  // New handler for editing
+  const handleEdit = (classroom: classrooms) => {
+    setEditingClassroom(classroom);
+    setIsEditModalOpen(true);
   };
 
   const handleViewDetails = (classroom: classrooms) => {
@@ -152,13 +183,26 @@ const AdminClassroom: React.FC = () => {
           onToggleSelectAll={toggleSelectAll}
           onToggleCheckbox={toggleCheckbox}
           onDelete={handleDelete}
-          onAddGuardian={() => setIsModalOpen(true)}
+          onEdit={handleEdit} // New prop
+          onBulkDelete={handleBulkDelete} // New prop
+          onAddClassroom={() => setIsModalOpen(true)}
           onRefresh={fetchClassroom}
           viewDetails={handleViewDetails}
         />
 
         {isModalOpen && (
-          <ClassroomForm onClose={() => setIsModalOpen(false)} onGuardianAdded={fetchClassroom} />
+          <ClassroomForm onClose={() => setIsModalOpen(false)} onClassroomAdded={fetchClassroom} />
+        )}
+
+        {isEditModalOpen && editingClassroom && (
+          <EditClassroomModal
+            classroom={editingClassroom}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setEditingClassroom(null);
+            }}
+            onClassroomUpdated={fetchClassroom}
+          />
         )}
 
         {openViewDetailModal && (

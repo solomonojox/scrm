@@ -14,7 +14,6 @@ import "../../../Styles/customScrollBar.css";
 type ReligionFilter = "all" | "christian" | "muslim";
 
 interface GuardianTableProps {
-
   allRecords: classrooms[]
   records: any[];
   totalRecords: number;
@@ -32,10 +31,11 @@ interface GuardianTableProps {
   onToggleSelectAll: () => void;
   onToggleCheckbox: (id: string) => void;
   onDelete: (id: string) => void;
-  onAddGuardian: () => void;
+  onEdit: (classroom: classrooms) => void; // New prop
+  onBulkDelete: () => void; // New prop
+  onAddClassroom: () => void;
   onRefresh: () => void
   viewDetails: (classroom: classrooms) => void;
-
 }
 
 const ClassroomTable: React.FC<GuardianTableProps> = ({
@@ -56,14 +56,14 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
   onToggleSelectAll,
   onToggleCheckbox,
   onDelete,
-  onAddGuardian,
+  onEdit,
+  onBulkDelete,
+  onAddClassroom,
   onRefresh,
   viewDetails,
 }) => {
-
   const { user } = useAuth();
   const [showReligionFilter, setShowReligionFilter] = React.useState(false);
-
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(allRecords);
@@ -113,8 +113,6 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
-          {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
           <div className="flex items-center rounded-full px-3 py-1 space-x-2">
             <img
               src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
@@ -137,6 +135,16 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
           Home <span className="text-orange-500 font-semibold">: All Classrooms</span>
         </p>
         <div className="gap-4 flex items-center sm:flex-wrap">
+          {/* Bulk Delete Button */}
+          {selectedIds.length > 0 && (
+            <button
+              onClick={onBulkDelete}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600"
+            >
+              Delete Selected ({selectedIds.length})
+            </button>
+          )}
+
           <div className="relative">
             <button
               onClick={() => setShowReligionFilter(!showReligionFilter)}
@@ -214,7 +222,7 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
           </button>
 
           <button
-            onClick={onAddGuardian}
+            onClick={onAddClassroom}
             className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow hover:bg-orange-600 w-full sm:w-auto"
           >
             Add Classroom
@@ -247,12 +255,10 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
                   className="cursor-pointer w-4 h-4"
                 />
               </th>
-              {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              {/* <th className="p-3 min-w-[120px]">School Id</th> */}
               <th className="p-3 min-w-30">Name</th>
               <th className="p-3 min-w-30">Teacher Id</th>
               <th className="p-3 min-w-25">Capacity</th>
-              <th className="p-3 min-w-25">Actions</th>
+              <th className="p-3 min-w-32">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -278,23 +284,33 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
-                  {/* <td className="p-3">
-                                        <img
-                                            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${c.name}`}
-                                            alt="avatar"
-                                            className="w-10 h-10 rounded-full"
-                                        />
-                                    </td> */}
-
-                  {/* <td className="p-3">{c.schoolId}</td> */}
                   <td className="p-3">{c.name}</td>
                   <td className="p-3">{c?.teacher?.firstname + " " + c?.teacher?.lastname}</td>
                   <td className="p-3">{c.capacity}</td>
                   <td className="p-3">
-                    <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border rounded-lg justify-center p-1.5" onClick={() => viewDetails(c)}>
-                      <FaEye />
-                      view
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="flex items-center cursor-pointer hover:text-orange-500 gap-1 border rounded-lg justify-center p-1.5"
+                        onClick={() => viewDetails(c)}
+                      >
+                        <FaEye />
+                        view
+                      </span>
+                      <span
+                        className="flex items-center cursor-pointer hover:text-blue-500 gap-1 border rounded-lg justify-center p-1.5"
+                        onClick={() => onEdit(c)}
+                      >
+                        <FaEdit />
+                        edit
+                      </span>
+                      <span
+                        className="flex items-center cursor-pointer hover:text-red-500 gap-1 border rounded-lg justify-center p-1.5"
+                        onClick={() => onDelete(c.classroomId)}
+                      >
+                        <FaTrash />
+                        delete
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -331,7 +347,6 @@ const ClassroomTable: React.FC<GuardianTableProps> = ({
             Next
           </button>
         </div>
-
       )}
     </>
   );
