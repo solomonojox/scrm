@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,10 +8,12 @@ import Select from "react-select";
 import { RootState } from "../../../Store/store";
 import { useSelector } from "react-redux";
 import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { classrooms } from "../../../Types/classroomTypes";
 
-interface ClassroomFormProps {
+interface EditClassroomModalProps {
+  classroom: classrooms;
   onClose: () => void;
-  onClassroomAdded: () => void;
+  onClassroomUpdated: () => void;
 }
 
 interface OptionType {
@@ -27,17 +29,14 @@ const classroomSchema = z.object({
 
 type ClassroomFormValues = z.infer<typeof classroomSchema>;
 
-const defaultValues: ClassroomFormValues = {
-  name: "",
-  teacherId: "",
-  capacity: "",
-};
-
-const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded }) => {
+const EditClassroomModal: React.FC<EditClassroomModalProps> = ({
+  classroom,
+  onClose,
+  onClassroomUpdated
+}) => {
   const teachers = useSelector((state: RootState) => state.getTeacher.listRecords || []);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     register,
@@ -47,9 +46,24 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
     formState: { errors },
   } = useForm<ClassroomFormValues>({
     resolver: zodResolver(classroomSchema),
-    defaultValues,
+    defaultValues: {
+      name: classroom.name || "",
+      teacherId: classroom.teacherId || "",
+      capacity: String(classroom.capacity || ""),
+    },
     mode: "onBlur",
   });
+
+  // Reset form when classroom prop changes
+  useEffect(() => {
+    if (classroom) {
+      reset({
+        name: classroom.name || "",
+        teacherId: classroom.teacherId || "",
+        capacity: String(classroom.capacity || ""),
+      });
+    }
+  }, [classroom, reset]);
 
   const teacherOptions: OptionType[] = teachers.map((teacher: any) => ({
     value: String(teacher?.teacherId ?? ""),
@@ -60,30 +74,22 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
     return options.find((option) => option.value === value) || null;
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setImagePreview(URL.createObjectURL(file));
-  };
-
   const onSubmit = async (values: ClassroomFormValues) => {
     setLoading(true);
     setFormError("");
 
     const payload = {
-      schoolId: localStorage.getItem("schoolId"),
       name: values.name.trim(),
       teacherId: values.teacherId,
-      capacity: values.capacity,
+      capacity: parseInt(values.capacity, 10),
     };
 
     try {
-      const res = await classroomService.addClassroom(payload);
-      toast.success("Classroom added!");
-      onClassroomAdded();
+      await classroomService.updateClassroom(classroom.classroomId, payload);
+      toast.success("Classroom updated successfully!");
+      onClassroomUpdated();
       setTimeout(() => {
         onClose();
-        reset(defaultValues);
-        setImagePreview(null);
       }, 1500);
     } catch (err: any) {
       const msg = getErrorMessage(err);
@@ -102,19 +108,9 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
       >
         <div className="bg-orange-500 h-2 rounded-t-lg" />
         <div className="p-4 sm:p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">Add Classroom</h2>
+          <h2 className="text-lg font-semibold mb-4 text-center">Edit Classroom</h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
-              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-              {imagePreview ? (
-                <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
-              ) : (
-                <span className="flex items-center justify-center h-full text-orange-400 font-bold text-xl">
-                  +
-                </span>
-              )}
-            </label>
             <div className="col-span-1">
               <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
               <input
@@ -155,6 +151,7 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
               />
               {errors.teacherId && <p className="text-red-600 text-xs mt-1">{errors.teacherId.message}</p>}
             </div>
+
             <div className="col-span-2 flex justify-end gap-3 mt-4">
               <button
                 type="button"
@@ -168,7 +165,7 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
                 disabled={loading}
                 className="px-4 py-2 bg-orange-500 text-white rounded text-sm hover:bg-orange-600 disabled:opacity-50"
               >
-                {loading ? "Saving…" : "Submit"}
+                {loading ? "Updating…" : "Update"}
               </button>
             </div>
           </form>
@@ -178,4 +175,4 @@ const ClassroomForm: React.FC<ClassroomFormProps> = ({ onClose, onClassroomAdded
   );
 };
 
-export default ClassroomForm;
+export default EditClassroomModal;

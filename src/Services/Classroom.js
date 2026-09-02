@@ -7,21 +7,13 @@ export const classroomService = {
    * @returns {Promise<Object>}
    */
   addClassroom: async (classroomData) => {
-    try {
-      const response = await api.post(`/api/Classroom/AddClassroom`, classroomData);
-      return response.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.post(`/api/Classroom/AddClassroom`, classroomData);
+    return response.data;
   },
 
   updateClassroom: async (id, data) => {
-    try {
-      const response = await api.put(`/api/Classroom/${id}`, data);
-      return response.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.put(`/api/Classroom/UpdateClassroom/${id}`, data);
+    return response.data;
   },
 
   /**
@@ -29,47 +21,32 @@ export const classroomService = {
    * @returns {Promise<Array>} - List of classrooms
    */
   getAllClassrooms: async (id) => {
-    try {
-      const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${id}`);
-      return response.data.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${id}`);
+    return response.data.data;
   },
 
   getStudentsByClassroomId: async (classroomId) => {
-    try {
-      const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classroomId}`);
-      return response.data.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classroomId}`);
+    return response.data.data;
   },
 
   getClassroomBySchoolId: async (schoolId) => {
-    try {
-      const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${schoolId}`);
-      return response.data.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.get(`/api/Classroom/GetClassroomsBySchoolId?schoolId=${schoolId}`);
+    return response.data.data;
   },
 
   getClassroomByTeacherId: async (teacherId) => {
-    try {
-      const response = await api.get(`/api/Classroom/GetClassroomByTeacherId/${teacherId}`);
-      return response.data.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.get(`/api/Classroom/GetClassroomByTeacherId/${teacherId}`);
+    return response.data.data;
   },
 
   getClassroomTudentsByClassId: async (classId) => {
-    try {
-      const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classId}`);
-      return response.data.data;
-    } catch (error) {
-      throw error
-    }
+    const response = await api.get(`/api/Classroom/GetStudentsByClassId/${classId}`);
+    return response.data.data;
+  },
+
+  deleteClassroom: async (classroomId) => {
+    const response = await api.delete(`/api/Classroom/DeleteClassroom/${classroomId}`);
+    return response.data;
   },
 };
