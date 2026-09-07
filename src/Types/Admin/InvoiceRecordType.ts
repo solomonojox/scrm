@@ -12,6 +12,8 @@ export interface PaymentRecordType {
     sessionId: string;
     amount: number;
     paymentDate: string;
+    guardianName?: string;
+    registrationNumber?: string;
 }
 
 export interface PaymentsApiResponse {

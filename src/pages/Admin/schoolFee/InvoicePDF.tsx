@@ -25,10 +25,10 @@ export interface SchoolInfoForPDF {
 
 export interface StudentInfoForPDF {
   name: string;
-  guardianName: string;
+  guardianName?: string;
   classroom: string;
   studentId: string;
-  registrationNumber: string;
+  registrationNumber?: string;
 }
 
 interface InvoicePDFProps {
@@ -237,7 +237,7 @@ export default function InvoicePDF({ invoiceData, schoolInfo, studentInfo, forma
     const term = invoiceData.sessionTerm as any;
     sessionTermName = term.term || term.name || term.sessionTermName || 'School Fees';
   }
-  
+
   const lineDescription = sessionTermName ? `${sessionTermName} Fees` : 'School Fees';
 
   return (

@@ -446,12 +446,15 @@ const InvoiceRecordsPage = () => {
 
   // Get active session info
   const activeSessionInfo = useMemo(() => {
-    if (!sessions || sessions.length === 0) return null;
+    const sessionRecords = Array.isArray(sessions) ? sessions : [];
+    if (sessionRecords.length === 0) return null;
 
-    const activeSession = sessions.find((s: any) => s.isActive);
+    const activeSession = sessionRecords.find((s: any) => s.isActive);
     if (!activeSession) return null;
 
-    const activeTerm = activeSession.sessionTerms?.find((t: any) => t.isActive);
+    const activeTerm = Array.isArray(activeSession.sessionTerms)
+      ? activeSession.sessionTerms.find((t: any) => t.isActive)
+      : undefined;
 
     return {
       sessionId: activeSession.sessionId,
@@ -673,7 +676,7 @@ const InvoiceRecordsPage = () => {
                     key={page}
                     type="button"
                     onClick={() => setCurrentPage(page)}
-                    className={`min-w-[32px] h-8 px-2 rounded-md text-sm font-medium transition-colors ${
+                    className={`min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors ${
                       page === currentPage
                         ? "bg-orange-500 text-white"
                         : "text-gray-600 hover:bg-orange-50 hover:text-orange-500"
@@ -703,8 +706,8 @@ const InvoiceRecordsPage = () => {
       <Dialog
         open={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
-        maxWidth="md"
-        fullWidth
+        // maxWidth="md"
+        // fullWidth
       >
         <DialogTitle sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
           <IconButton onClick={() => setIsPaymentModalOpen(false)}>
