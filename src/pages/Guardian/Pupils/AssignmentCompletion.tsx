@@ -31,9 +31,6 @@ const AssignmentCompletion: React.FC = () => {
     <div className="bg-white p-4 rounded-2xl shadow-md">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Assignment Completion</h2>
-        <button className="bg-orange-500 text-white text-sm px-4 py-1 rounded-full">
-          Weekly
-        </button>
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
