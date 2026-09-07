@@ -1,20 +1,39 @@
 import React, { useContext, useState } from "react";
-import imageAssets from "../assets/imageAssets";
-import { loginService } from "../Services/Auth/loginService";
 import { jwtDecode } from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
+import { loginService } from "../Services/Auth/loginService";
 import { AppContext } from "../Context/AppContext";
 import { useAuth } from "../Context/Auth/useAuth";
-import logo from "../assets/looogo.png";
 import useTawkTo from "../Context/useTawkTo";
 import PasswordField from "../components/ui/PasswordField";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import logo from "../assets/looogo.png";
+import heroImage from "../assets/image.avif"; // swap for your own school/student photo
+
+const ROLES = [
+  {
+    key: "admin",
+    label: "School Admin",
+    detail: "Run enrolment, staff and fees from one dashboard.",
+  },
+  {
+    key: "teacher",
+    label: "Teacher",
+    detail: "Manage classes, attendance and grade entry.",
+  },
+  {
+    key: "guardian",
+    label: "Guardian",
+    detail: "Track your ward's attendance, results and fees.",
+  },
+];
 
 const LoginPage = () => {
   const { login } = useAuth();
   useTawkTo();
   const navigate = useNavigate();
   const { notifySuccess, notifyError } = useContext(AppContext);
+
   const [schoolRegistrationNumber, setSchoolRegistrationNumber] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,10 +46,8 @@ const LoginPage = () => {
   const [passwordError, setPasswordError] = useState("");
   const [regNumberError, setRegNumberError] = useState("");
 
-  // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Input validation handlers
   const validateEmail = (value) => {
     if (!value) {
       setEmailError("Email is required");
@@ -67,7 +84,6 @@ const LoginPage = () => {
     }
   };
 
-  // Combined form validity: use error states and field values
   const isFormValid =
     !emailError &&
     !passwordError &&
@@ -121,36 +137,95 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative">
-      {/* Background Image */}
-      <img
-        src={imageAssets.loginImage}
-        alt="login image"
-        className="hidden lg:block w-[35vw] object-cover fixed top-[10%] left-[10%] -z-11"
-      />
+    <div className="min-h-screen w-full bg-white/40 flex">
+      {/* Left brand panel */}
+      <div className="hidden lg:flex lg:w-[44%] relative bg-[#1B1207] overflow-hidden flex-col justify-between px-12 py-10">
+        {/* Decorative rings + student photo inset — the photo sits inside the ring motif */}
+        <div className="absolute -top-24 -right-32 w-[520px] h-[520px]">
+          <svg
+            className="absolute inset-0 w-full h-full opacity-90"
+            viewBox="0 0 520 520"
+            fill="none"
+          >
+            <circle cx="260" cy="260" r="259" stroke="#EE7306" strokeOpacity="0.35" />
+            <circle cx="260" cy="260" r="190" stroke="#EE7306" strokeOpacity="0.5" />
+          </svg>
 
-      {/* Logo at Top Right on large screens */}
-      <div className="hidden lg:block absolute top-6 left-6">
-        <Link to={"/"}>
-          <img src={logo} alt="EduCat logo" className="h-12.5" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[240px] w-[240px] rounded-full overflow-hidden ring-1 ring-[#EE7306]/40">
+            <img
+              src={heroImage}
+              alt="Students at school"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-[#1B1207]/70 via-[#EE7306]/10 to-transparent" />
+          </div>
+        </div>
+
+        <Link to="/" className="relative z-30 inline-flex w-fit">
+          <img src={logo} alt="EduCat logo" className="h-10 brightness-4 invert" />
         </Link>
+
+        <div className="relative z-10 max-w-md">
+          <h1 className="text-[2.35rem] leading-[1.15] font-semibold text-white tracking-tight">
+            Every role, one login.
+          </h1>
+          <p className="mt-4 text-[#D8CFC5] text-[15px] leading-relaxed">
+            Admins, teachers and guardians sign in here. Attendance,
+            results and fees stay in sync the moment you log in.
+          </p>
+
+          <ul className="mt-9 space-y-4">
+            {ROLES.map((r) => (
+              <li key={r.key} className="flex gap-3.5">
+                <span className="mt-0.5 h-5 w-5 shrink-0 rounded-full bg-[#EE7306]/20 flex items-center justify-center">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#EE7306]" />
+                </span>
+                <div>
+                  <p className="text-white text-sm font-medium">{r.label}</p>
+                  <p className="text-[#B9AE9F] text-[13px] mt-0.5">{r.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="relative z-10 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+          <p className="text-white text-sm font-medium">Logging in as a student?</p>
+          <p className="text-[#B9AE9F] text-[13px] mt-1 leading-relaxed">
+            Exams are handled on the CBT portal, separate from staff and
+            guardian access.
+          </p>
+          <Link
+            to="/cbt/login"
+            className="mt-3 inline-flex items-center gap-1.5 text-[#EE7306] text-sm font-semibold"
+          >
+            Go to CBT student login
+            <span aria-hidden="true">›</span>
+          </Link>
+        </div>
       </div>
 
-      {/* Logo at Top Center on small screens */}
-      <div className="lg:hidden flex justify-center absolute top-[2vh] md:top-[10vh] left-0 right-0">
-        <img src={logo} alt="EduCat logo" className="h-12.5" />
-      </div>
+      {/* Right form panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12 sm:px-10 ">
+        <div className="w-full max-w-105 md:border md:rounded-2xl md:border-[#E7DFD4] bg-white px-0 py-0 sm:px-6 sm:py-8">
+          <div className="lg:hidden flex justify-center mb-8">
+            <img src={logo} alt="EduCat logo" className="h-10" />
+          </div>
 
-      {/* Login Form Section */}
-      <div className="h-screen w-full flex items-center justify-center lg:justify-end lg:pr-[10%]">
-        <div className="bg-white backdrop-blur-md rounded-lg shadow-lg px-8 py-10 w-134.75 max-w-md">
-          <h2 className="text-2xl font-bold text-center mb-1 text-gray-800">Welcome Back!</h2>
-          <p className="text-center text-gray-600 mb-6">Please Login</p>
+          <h2 className="text-[1.7rem] font-semibold text-[#1B1207] tracking-tight">
+            Welcome back
+          </h2>
+          <p className="mt-1.5 text-[#7A6F63] text-[15px]">
+            Sign in with your school registration number and email.
+          </p>
 
-          <form onSubmit={handleLogin}>
-            <div className="mb-4">
-              <label htmlFor="regNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                School Registration Number
+          <form onSubmit={handleLogin} className="mt-7 space-y-5">
+            <div>
+              <label
+                htmlFor="regNumber"
+                className="block text-[13px] font-medium text-[#4A4038] mb-1.5"
+              >
+                School registration number
               </label>
               <input
                 id="regNumber"
@@ -160,15 +235,24 @@ const LoginPage = () => {
                   setSchoolRegistrationNumber(e.target.value);
                   validateRegNumber(e.target.value);
                 }}
-                placeholder="Enter Number"
-                className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 onBlur={() => validateRegNumber(schoolRegistrationNumber)}
+                placeholder="e.g. EDU-2026-0142"
+                className={`w-full rounded-md border bg-[#FBF9F6] px-4 py-3 text-[15px] text-[#1B1207] placeholder:text-[#B5AA9C] outline-none transition-colors focus:bg-white focus:ring-2 ${
+                  regNumberError
+                    ? "border-red-300 focus:ring-red-200"
+                    : "border-[#E7DFD4] focus:border-[#EE7306] focus:ring-[#EE7306]/20"
+                }`}
               />
-              {regNumberError && <p className="text-red-500 text-xs mt-1">{regNumberError}</p>}
+              {regNumberError && (
+                <p className="text-red-500 text-xs mt-1.5">{regNumberError}</p>
+              )}
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-[13px] font-medium text-[#4A4038] mb-1.5"
+              >
                 Email
               </label>
               <input
@@ -179,17 +263,26 @@ const LoginPage = () => {
                   setEmail(e.target.value);
                   validateEmail(e.target.value);
                 }}
-                placeholder="Enter Email"
-                className="w-full border border-orange-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 onBlur={() => validateEmail(email)}
+                placeholder="you@school.edu"
+                className={`w-full rounded-md border bg-[#FBF9F6] px-4 py-3 text-[15px] text-[#1B1207] placeholder:text-[#B5AA9C] outline-none transition-colors focus:bg-white focus:ring-2 ${
+                  emailError
+                    ? "border-red-300 focus:ring-red-200"
+                    : "border-[#E7DFD4] focus:border-[#EE7306] focus:ring-[#EE7306]/20"
+                }`}
               />
-              {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+              {emailError && <p className="text-red-500 text-xs mt-1.5">{emailError}</p>}
             </div>
 
-            <div className="mb-6">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label htmlFor="password" className="block text-[13px] font-medium text-[#4A4038]">
+                  Password
+                </label>
+                <Link to="/forgot-password" className="text-[13px] font-medium text-[#EE7306]">
+                  Forgot password?
+                </Link>
+              </div>
               <PasswordField
                 id="password"
                 value={password}
@@ -197,78 +290,75 @@ const LoginPage = () => {
                   setPassword(e.target.value);
                   validatePassword(e.target.value);
                 }}
-                placeholder="Enter Password"
-                inputClassName="border-orange-300 focus:ring-orange-500"
                 onBlur={() => validatePassword(password)}
+                placeholder="Enter password"
+                inputClassName={`bg-[#FBF9F6] focus:bg-white ${
+                  passwordError
+                    ? "border-red-300 focus:ring-red-200"
+                    : "border-[#E7DFD4] focus:border-[#EE7306] focus:ring-[#EE7306]/20"
+                }`}
               />
-              {passwordError && <p className="text-red-500 text-xs mt-1">{passwordError}</p>}
+              {passwordError && (
+                <p className="text-red-500 text-xs mt-1.5">{passwordError}</p>
+              )}
             </div>
 
-            {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-            {successMessage && <p className="text-green-600 text-sm mb-4">{successMessage}</p>}
+            {error && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">
+                {error}
+              </p>
+            )}
+            {successMessage && (
+              <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-600">
+                {successMessage}
+              </p>
+            )}
 
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
               disabled={loading || !isFormValid}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#EE7306] py-3 text-[15px] font-semibold text-white transition-colors hover:bg-[#D96504] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading && (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
                   <circle
-                    className="opacity-20"
+                    className="opacity-25"
                     cx="12"
                     cy="12"
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                  />
                   <path
-                    className="opacity-75"
+                    className="opacity-90"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  ></path>
+                  />
                 </svg>
               )}
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Logging in…" : "Log in"}
             </button>
 
-            <p className="text-xs text-center text-gray-600 mt-4">
-              By signing in, you confirm our{" "}
-              <a href="#" className="text-orange-500 font-semibold underline">
-                Terms of Use
-              </a>{" "}
+            <p className="text-[13px] text-center text-[#8C8074] leading-relaxed">
+              By signing in, you agree to our{" "}
+              <a href="#" className="text-[#EE7306] font-medium">Terms of Use</a>{" "}
               and{" "}
-              <a href="#" className="text-orange-500 font-semibold underline">
-                Privacy Policy
-              </a>
+              <a href="#" className="text-[#EE7306] font-medium">Privacy Policy</a>.
             </p>
           </form>
-        </div>
-      </div>
 
-      {/* Orange Curved Background */}
-      <div className="fixed top-0 left-0 w-full h-screen overflow-hidden -z-10">
-        <svg
-          viewBox="0 0 1438 953"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid slice"
-          className="w-full h-full"
-        >
-          <path
-            d="M954.001 0H1438V953H954.001C954.001 953 674 755 901.5 464.5C1129 174 954.001 0 954.001 0Z"
-            fill="#EE7306"
-          />
-          <path
-            d="M954 630V960H1L-33 807C-33 807 -39.5 840 132 731C303.5 622 458.5 813 539 731C619.5 649 694.5 593.5 773.5 590C852.5 586.5 954 630 954 630Z"
-            fill="#EE7306"
-          />
-        </svg>
+          {/* Mobile-only CBT hand-off (left panel is hidden below lg) */}
+          <div className="lg:hidden mt-6 rounded-2xl border border-[#E7DFD4] bg-[#FBF9F6] px-4 py-3.5">
+            <p className="text-[#1B1207] text-sm font-medium">Logging in as a student?</p>
+            <Link
+              to="/cbt/login"
+              className="mt-1.5 inline-flex items-center gap-1.5 text-[#EE7306] text-sm font-semibold"
+            >
+              Go to CBT student login
+              <span aria-hidden="true">›</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

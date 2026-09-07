@@ -48,7 +48,7 @@ const FeeModal: React.FC<Props> = ({
       sessionId,
       guardianId: user?.id, // from logged-in user
       amount: Number(amount),
-      paymentTerm,
+      paymentTerm: 'First term',
       schoolId: user?.schoolId,
     };
 
@@ -108,7 +108,7 @@ const FeeModal: React.FC<Props> = ({
 
         {/* Body */}
         <Box sx={{ p: 3, overflowY: "auto" }}>
-          <Typography sx={{ mb: 1 }}>Student ID</Typography>
+          {/* <Typography sx={{ mb: 1 }}>Student ID</Typography>
           <TextField
             fullWidth
             value={studentId}
@@ -122,9 +122,9 @@ const FeeModal: React.FC<Props> = ({
               },
             }}
             sx={{ mb: 1 }}
-          />
+          /> */}
 
-          <Typography sx={{ mb: 1 }}>Classroom ID</Typography>
+          {/* <Typography sx={{ mb: 1 }}>Classroom ID</Typography>
           <TextField
             fullWidth
             value={classroomId}
@@ -138,9 +138,9 @@ const FeeModal: React.FC<Props> = ({
               },
             }}
             sx={{ mb: 1 }}
-          />
+          /> */}
 
-          <Typography sx={{ mb: 1 }}>Session ID</Typography>
+          {/* <Typography sx={{ mb: 1 }}>Session ID</Typography>
           <TextField
             fullWidth
             value={sessionId}
@@ -154,7 +154,7 @@ const FeeModal: React.FC<Props> = ({
               },
             }}
             sx={{ mb: 1 }}
-          />
+          /> */}
 
           <Typography sx={{ mb: 1 }}>Amount</Typography>
           <TextField
@@ -201,7 +201,7 @@ const FeeModal: React.FC<Props> = ({
             sx={{ mb: 1 }}
           />
 
-          <Typography sx={{ mb: 1 }}>Guardian ID</Typography>
+          {/* <Typography sx={{ mb: 1 }}>Guardian ID</Typography>
           <TextField
             fullWidth
             value={user?.id || ""}
@@ -215,7 +215,7 @@ const FeeModal: React.FC<Props> = ({
               },
             }}
             sx={{ mb: 2 }}
-          />
+          /> */}
 
           {/* Submit Button */}
           <Button
