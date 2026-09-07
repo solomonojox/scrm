@@ -75,6 +75,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
     const [selectedSession, setSelectedSession] = useState<Session | null>(null);
     const [filteredStudents, setFilteredStudents] = useState<StudentType[]>(students);
     const [filteredGuardians, setFilteredGuardians] = useState<Guardian[]>([]);
+    // console.log(paymentTerms)
 
     const {
         control,
@@ -204,7 +205,6 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                     <FormControl fullWidth error={!!errors.sessionId}>
                         <InputLabel id="session-select-label">Session</InputLabel>
                         <Controller
-                            style={{border: '1px solid orange'}}
                             name="sessionId"
                             control={control}
                             rules={{ required: 'Session is required' }}
@@ -419,7 +419,7 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
                                             </Typography>
                                             <Typography variant="body1">
                                                 {selectedStudent.classroomName}
-                                   
+
                                             </Typography>
                                         </div>
                                     </Grid>
