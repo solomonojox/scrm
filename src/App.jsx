@@ -118,6 +118,9 @@ import InvoiceRecordsPage from "./pages/Admin/schoolFee/InvoiceRecordsPage";
 import DiscountPage from "./pages/Admin/student/DiscountPage";
 import OtherFees from "./pages/Admin/other-fees/OtherFees";
 import Edubanc from "./pages/Edubanc";
+import { AdminTeacherAttendance } from "./pages/Admin/staffAttendance/AdminTeacherAttendance";
+
+
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("scrmToken");
@@ -180,6 +183,7 @@ function App() {
         <Route path="/admin/students" element={<AdminStudents />} />
         <Route path="/admin/teachers" element={<AdminTeacher />} />
         <Route path="/admin/guardians" element={<AdminGuardian />} />
+        <Route path="/admin/staff-attendance" element={<AdminTeacherAttendance />} />
         <Route path="/admin/promotions" element={<StudentPromotion />} />
         <Route path="/admin/discounts" element={<DiscountPage />} />
         <Route path="/admin/classrooms" element={<AdminClassroom />} />

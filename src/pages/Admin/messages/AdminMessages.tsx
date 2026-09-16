@@ -93,7 +93,7 @@ const AdminMessages: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-[450px] px-2 md:px-4 lg:px-0">
+    <div className="flex flex-col lg:flex-row h-112.5 px-2 md:px-4 lg:px-0">
       {/* Contact list */}
       <div
         className={`${
