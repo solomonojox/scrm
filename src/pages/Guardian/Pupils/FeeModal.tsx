@@ -20,7 +20,7 @@ interface Props {
   studentId: string; // single student ID
   classroomId: string;
   sessionId: string;
-  paymentTerm: number;
+  paymentTermId: string;
 }
 
 const FeeModal: React.FC<Props> = ({
@@ -29,7 +29,7 @@ const FeeModal: React.FC<Props> = ({
   studentId,
   classroomId,
   sessionId,
-  paymentTerm,
+  paymentTermId,
 }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const FeeModal: React.FC<Props> = ({
       sessionId,
       guardianId: user?.id, // from logged-in user
       amount: Number(amount),
-      paymentTerm: 'First term',
+      paymentTermId: 'dc7a5c06-a05b-492a-eace-08def6bf080f',
       schoolId: user?.schoolId,
     };
 
@@ -188,7 +188,7 @@ const FeeModal: React.FC<Props> = ({
           <Typography sx={{ mb: 1 }}>Payment Terms</Typography>
           <TextField
             fullWidth
-            value={paymentTerm}
+            value={paymentTermId}
             disabled
             variant="outlined"
             InputProps={{

@@ -895,7 +895,7 @@ const MyPupils = () => {
                 sessionId={
                     selectedStudent?.currentSession
                 }
-                paymentTerm={
+                paymentTermId={
                     selectedStudent?.currentTerm
                 }
             />
