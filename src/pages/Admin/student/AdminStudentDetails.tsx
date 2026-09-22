@@ -1,6 +1,7 @@
-import { Coins } from "lucide-react";
+import { Coins, Plus } from "lucide-react";
 import React, { useState } from "react";
 import AddDiscount from "./AddDiscount";
+import AssignClassroom from "./AssignClassroom";
 
 interface Student {
   studentId: string;
@@ -79,6 +80,7 @@ const AdminStudentDetails: React.FC<Props> = ({ student, onBack, onEdit, onDelet
   const color = AVATAR_COLORS[colorIndex];
   const photoUrl = resolveImage(student.imagePath);
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState<boolean>(false)
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -140,6 +142,11 @@ const AdminStudentDetails: React.FC<Props> = ({ student, onBack, onEdit, onDelet
           <button className="bg-primary hover:bg-primary/80 rounded-lg p-2 text-white font-medium flex items-center gap-1 text-sm hover:bg-primary-dark transition-colors" onClick={() => setIsDiscountModalOpen(true)}>
             <Coins className="text-white mr-1" size={16} />
             Add discount
+          </button>
+
+          <button className="bg-primary hover:bg-primary/80 rounded-lg p-2 text-white font-medium flex items-center gap-1 text-sm hover:bg-primary-dark transition-colors" onClick={() => setIsAssignModalOpen(true)}>
+            <Plus className="text-white mr-1" size={16} />
+            Assign class
           </button>
         </div>
 
@@ -267,6 +274,12 @@ const AdminStudentDetails: React.FC<Props> = ({ student, onBack, onEdit, onDelet
       </div>
 
       {isDiscountModalOpen && <AddDiscount onClose={() => setIsDiscountModalOpen(false)} studentId={student.studentId} />}
+      {isAssignModalOpen && (
+        <AssignClassroom
+          onClose={() => setIsAssignModalOpen(false)}
+          studentId={student.studentId}
+        />
+      )}
     </div>
   );
 };
