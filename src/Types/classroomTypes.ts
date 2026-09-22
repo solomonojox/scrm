@@ -6,7 +6,7 @@ export interface classrooms {
   name: string;
   capacity: number;
   teacherId: string;
-  teacher: string | null;
+  teacher?: Teacher | null | undefined;
   schoolFee: string;
   firstname?: string;
   gender?: string;
@@ -14,7 +14,7 @@ export interface classrooms {
   students?: [];
   subjects?: [];
   assignment?: [];
-  currentSession?: string
+  currentSession?: string;
 }
 
 export interface StudentRecord {
@@ -49,4 +49,41 @@ export interface StudentRecord {
   attendances: any[];
   assignmentSubmissions?: any[] | null;
   result?: any | null;
+}
+
+interface Teacher {
+  teacherId: string;
+  schoolId: string;
+  firstname: string;
+  lastname: string;
+  phone: string;
+  homeAddress: string;
+  nationality: string;
+  stateOfOrigin: string;
+  religion: string;
+  email: string;
+  username: string;
+  dateOfBirth: string;
+  employmentDate: string;
+  passwordHash: string;
+  imagePath: string | null;
+  role: string;
+  resetStatus: number;
+  assignments: unknown[];
+  subjects: unknown[];
+  classroom: unknown | null;
+  salary: unknown | null;
+  payrollRecords: unknown | null;
+  earnings: unknown | null;
+  deductions: unknown | null;
+  personalQRCode: unknown | null;
+  lastAttendanceDate: string | null;
+  defaultDeviceId: string | null;
+  yearToDateAttendance: unknown | null;
+  statsLastUpdated: string | null;
+  isDeleted: boolean;
+  deletedAt: string | null;
+  isActive: boolean;
+  deactivatedAt: string | null;
+  subjectTeachers: unknown | null;
 }

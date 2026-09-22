@@ -95,7 +95,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
         </select>
         {fromClass && (
           <p className="text-xs text-muted-foreground mt-1.5">
-            Class teacher: <span className="font-medium text-foreground">{fromClass.teacher}</span>
+            Class teacher: <span className="font-medium text-foreground">{fromClass.teacher?.firstname} {fromClass.teacher?.lastname}</span>
           </p>
         )}
       </div>
@@ -126,7 +126,7 @@ export const ClassSelector: React.FC<ClassSelectorProps> = ({
         </select>
         {toClass && (
           <p className="text-xs text-muted-foreground mt-1.5">
-            Class teacher: <span className="font-medium text-foreground">{toClass.teacher}</span>
+            Class teacher: <span className="font-medium text-foreground">{toClass.teacher?.firstname} {toClass.teacher?.lastname}</span>
           </p>
         )}
       </div>
