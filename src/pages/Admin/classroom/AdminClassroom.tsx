@@ -36,7 +36,7 @@ const AdminClassroom: React.FC = () => {
   const [classroomDetails, setClassroomDetails] = useState<classrooms>();
   const [editingClassroom, setEditingClassroom] = useState<classrooms | null>(null); // New state
 
-  const recordsPerPage = 5;
+  const recordsPerPage = 20;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;

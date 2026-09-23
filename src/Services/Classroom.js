@@ -49,4 +49,10 @@ export const classroomService = {
     const response = await api.delete(`/api/Classroom/DeleteClassroom/${classroomId}`);
     return response.data;
   },
+
+  assignStudent: async (classroomId, studentId) => {
+    const response = await api.post(`/api/Classroom/AddStudentToClass`, { classroomId, studentId });
+    return response.data;
+
+  },
 };
