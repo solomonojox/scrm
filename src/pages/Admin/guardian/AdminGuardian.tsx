@@ -31,7 +31,7 @@ const AdminGuardian: React.FC = () => {
   const [editData, setEditData] = useState<Guardian | null>(null);
   const [viewData, setViewData] = useState<Guardian | null>(null);  // ← new
 
-  const recordsPerPage = 5;
+  const recordsPerPage = 15;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;

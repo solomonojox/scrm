@@ -1,14 +1,15 @@
 // components/AdminTeacherAttendanceHistory.tsx
 import { useEffect, useMemo, useState } from 'react';
-import { AttendanceHistoryFilters, AttendanceHistoryStatusFilter, PaginatedAttendanceHistory } from '../../../Types/Admin/attendance';
+import { AttendanceHistoryFilters, AttendanceHistoryStatusFilter } from '../../../Types/Admin/attendance';
 import { formatClockTime, formatHistoryDate, formatLateMinutes, formatHoursWorked } from '../../../utils/duration';
 import { Skeleton } from '../../../components/Admin/Skeleton';
 import { exportAttendanceToExcel, exportAttendanceToPdf } from '../../../utils/exportAttendance';
 import { FaChevronLeft, FaChevronRight, FaFileExcel, FaFilePdf, FaSearch, FaTimes } from 'react-icons/fa';
-import { teacherAttendanceService } from '../../../Services/Admin/teacherAttendanceService';
-
-
-
+import {
+  AttendanceHistoryResult,
+  teacherAttendanceService,
+} from '../../../Services/Admin/teacherAttendanceService';
+import { useAuth } from '../../../Context/Auth/useAuth';
 
 const STATUS_OPTIONS: AttendanceHistoryStatusFilter[] = [
   "All",
@@ -49,13 +50,23 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+/** .NET TimeSpan ("2.12:43:28.4882660") -> "60h 43m". */
+function formatTotalHours(timeSpan: string | undefined): string {
+  if (!timeSpan) return "—";
+  const m = /^(?:(\d+)\.)?(\d{1,2}):(\d{2}):(\d{2})/.exec(timeSpan);
+  if (!m) return "—";
+  const hours = Number(m[1] ?? 0) * 24 + Number(m[2]);
+  return `${hours}h ${Number(m[3])}m`;
+}
+
 const SEARCH_DEBOUNCE_MS = 300;
 const PAGE_SIZE = 20;
 
 export function AdminTeacherAttendanceHistory() {
   // Search filters live as the admin types (debounced). Date range and
   // status stay a draft/applied pair — they only take effect once
-  // "Apply Filters" is clicked, same as before.
+  // "Apply Filters" is clicked.
+  const { user } = useAuth()
   const [searchInput, setSearchInput] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
 
@@ -69,7 +80,7 @@ export function AdminTeacherAttendanceHistory() {
 
   const [page, setPage] = useState(1);
 
-  const [result, setResult] = useState<PaginatedAttendanceHistory | null>(null);
+  const [result, setResult] = useState<AttendanceHistoryResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState<"excel" | "pdf" | null>(null);
@@ -98,7 +109,7 @@ export function AdminTeacherAttendanceHistory() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await teacherAttendanceService.getAttendanceHistory(activeFilters, pageToLoad, PAGE_SIZE);
+      const res = await teacherAttendanceService.getAttendanceHistory(activeFilters, pageToLoad, PAGE_SIZE, user?.schoolId);
       setResult(res);
     } catch {
       setError("Unable to load teacher attendance.\nPlease try again.");
@@ -132,6 +143,7 @@ export function AdminTeacherAttendanceHistory() {
   }
 
   const records = result?.records ?? [];
+  const summary = result?.summary;
   const total = result?.pagination.totalRecords ?? 0;
   const rangeStart = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const rangeEnd = Math.min(page * PAGE_SIZE, total);
@@ -143,7 +155,7 @@ export function AdminTeacherAttendanceHistory() {
     if (total === 0 || isExporting) return;
     setIsExporting(kind);
     try {
-      const full = await teacherAttendanceService.getAttendanceHistory(filters, 1, total);
+      const full = await teacherAttendanceService.getAttendanceHistory(filters, 1, total, user?.schoolId);
       if (kind === "excel") {
         exportAttendanceToExcel(full.records, {
           includeDate: true,
@@ -195,6 +207,23 @@ export function AdminTeacherAttendanceHistory() {
         </div>
       </div>
 
+      {/* Summary (from the history endpoint, covers the whole date range) */}
+      {summary && (
+        <div className="grid grid-cols-2 gap-3 border-b border-gray-200 p-4 lg:grid-cols-4">
+          {[
+            { label: "Total Records", value: summary.totalRecords, tone: "text-gray-900" },
+            { label: "Present", value: summary.totalPresent, tone: "text-green-700" },
+            { label: "Late", value: summary.totalLate, tone: "text-amber-700" },
+            { label: "Total Hours Worked", value: formatTotalHours(summary.totalHoursWorked), tone: "text-gray-900" },
+          ].map((card) => (
+            <div key={card.label} className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+              <p className="text-xs font-medium text-gray-500">{card.label}</p>
+              <p className={`mt-1 text-lg font-semibold ${card.tone}`}>{card.value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Filters */}
       <div className="grid grid-cols-1 gap-3 border-b border-gray-200 p-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="relative sm:col-span-2 lg:col-span-1 mt-5">
@@ -203,7 +232,7 @@ export function AdminTeacherAttendanceHistory() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search teacher by name or email..."
+            placeholder="Search teacher by name..."
             className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
           />
         </div>
@@ -246,7 +275,7 @@ export function AdminTeacherAttendanceHistory() {
         <div className="flex items-end gap-2">
           <button
             onClick={handleApply}
-            className="flex-1 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600"
+            className="flex-1 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 truncate"
           >
             Apply Filters
           </button>
@@ -274,7 +303,6 @@ export function AdminTeacherAttendanceHistory() {
                 {[
                   "Date",
                   "Teacher",
-                  "Email",
                   "Clock In",
                   "Clock Out",
                   "Status",
@@ -296,17 +324,18 @@ export function AdminTeacherAttendanceHistory() {
                   <td className="whitespace-nowrap px-4 py-3 text-gray-600">
                     {formatHistoryDate(r.date)}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                    {r.teacher.teacherName}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-gray-600">
-                    {r.teacher.teacherEmail}
+                  <td className="whitespace-nowrap px-4 py-3 font-medium capitalize text-gray-900">
+                    {r.teacher.teacherName.toLowerCase()}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-gray-600">
                     {formatClockTime(r.clockInTime)}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-gray-600">
-                    {formatClockTime(r.clockOutTime)}
+                    {r.clockOutTime ? (
+                      formatClockTime(r.clockOutTime)
+                    ) : (
+                      <span className="text-xs italic text-gray-400">No clock-out</span>
+                    )}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <StatusBadge status={r.status} />
