@@ -27,8 +27,8 @@
 
 import axios from "axios";
 
-const BASE_URL = "https://scrmapi-lpkm.onrender.com";
-// const BASE_URL = "https://educat.codeweb.com.ng";
+// const BASE_URL = "https://scrmapi-lpkm.onrender.com";
+const BASE_URL = "https://educat.codeweb.com.ng";
 
 const api = axios.create({
   baseURL: BASE_URL,

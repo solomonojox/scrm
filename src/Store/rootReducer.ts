@@ -30,6 +30,7 @@ import StudentDashboardSlice from "./cbt/student/studentDashboardSlice";
 import StudentExamResultSlice from "./cbt/student/studentExamResultSlice";
 import StudentCatalogSlice from "./cbt/student/studentCatalogSlice";
 import StudentPerformanceSlice from "./cbt/student/studentPerformanceSlice";
+import SchoolAccountSlice from "./Admin/schoolAccountSlice";
 
 
 
@@ -63,4 +64,5 @@ export const rootReducer = combineReducers({
   getStudentExamResult: StudentExamResultSlice,
   getStudentCatalog: StudentCatalogSlice,
   getStudentPerformance: StudentPerformanceSlice,
+  getSchoolAccounts: SchoolAccountSlice,
 });

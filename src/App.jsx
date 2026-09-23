@@ -119,6 +119,7 @@ import DiscountPage from "./pages/Admin/student/DiscountPage";
 import OtherFees from "./pages/Admin/other-fees/OtherFees";
 import Edubanc from "./pages/Edubanc";
 import { AdminTeacherAttendance } from "./pages/Admin/staffAttendance/AdminTeacherAttendance";
+import AdminSchoolAccount from "./pages/Admin/schoolAccount/AdminSchoolAccount";
 
 
 
@@ -194,7 +195,7 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
         <Route path="/admin/otherfee" element={<OtherFees />} />
-        {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
+        <Route path="/admin/accounts" element={<AdminSchoolAccount />} />
         <Route path="/admin/payment-record" element={<InvoiceRecordsPage />} />
       </Route>
 

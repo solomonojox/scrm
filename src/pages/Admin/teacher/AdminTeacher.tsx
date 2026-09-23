@@ -27,7 +27,7 @@ const AdminTeacher: React.FC = () => {
   const [editData, setEditData] = useState<TeacherType | null>(null);
   const [viewData, setViewData] = useState<TeacherType | null>(null);  // ← new
 
-  const recordsPerPage = 5;
+  const recordsPerPage = 15;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;

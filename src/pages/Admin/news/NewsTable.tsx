@@ -257,7 +257,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
                 />
               </th>
               {/* <th className="p-3 min-w-[80px]">Photo</th> */}
-              <th className="p-3 min-w-30">News Id</th>
+              {/* <th className="p-3 min-w-30">News Id</th> */}
               <th className="p-3 min-w-30">Title</th>
               <th className="p-3 min-w-30">Content </th>
               <th className="p-3 min-w-50">Published Date</th>
@@ -287,7 +287,7 @@ const NewsTable: React.FC<NewsTableProps> = ({
                       className="cursor-pointer w-4 h-4"
                     />
                   </td>
-                  <td className="p-3">{n.newsId}</td>
+                  {/* <td className="p-3">{n.newsId}</td> */}
                   <td className="p-3">{n.title}</td>
                   <td className="p-3">{n.content}</td>
                   <td className="p-3">{formatDateTime(n.publishedDate)}</td>

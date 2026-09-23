@@ -25,7 +25,7 @@ const AdminNews: React.FC = () => {
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
 
-  const recordsPerPage = 5;
+  const recordsPerPage = 15;
 
   const filteredRecords = useMemo(() => {
   const validFetched = Array.isArray(fetchedRecord) ? fetchedRecord : [];
