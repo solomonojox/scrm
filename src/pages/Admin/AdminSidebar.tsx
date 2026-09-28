@@ -16,6 +16,7 @@ import {
   FaClipboardCheck,
 } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
+import { GraduationCap } from "lucide-react";
 import { useAuth } from "../../Context/Auth/useAuth";
 import "../../Styles/customScrollBar.css";
 import { CoinsIcon, Megaphone, MessageCircleDashed } from "lucide-react";
@@ -119,6 +120,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" onClose={onClose} />
           <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/guardians" onClose={onClose} />
           <SidebarButton icon={<FaUserAstronaut />} label="Staff Attendance" to="/admin/staff-attendance" onClose={onClose} />
+          <SidebarButton icon={<GraduationCap  />} label="Student Attendance" to="/admin/student-attendance" onClose={onClose} />
           <SidebarButton icon={<Megaphone />} label="Promotions" to="/admin/promotions" onClose={onClose} />
           <SidebarButton icon={<CoinsIcon />} label="Discounts" to="/admin/discounts" onClose={onClose} />
 

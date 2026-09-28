@@ -116,16 +116,25 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
 
     try {
       if (editData) {
-        toast.info("Service unavailable. Please try again later.");
-      } else {
-        const res = await guardianService.create(payload);
-        toast.success(res.responseMessage || "Guardian added!");
+        // ✅ UPDATE existing guardian — actually hits the API now
+        const res = await guardianService.update(editData.guardianId, payload);
+        toast.success(res?.responseMessage || "Guardian updated successfully!");
         onGuardianAdded();
         setTimeout(() => {
           onClose();
           reset(defaultValues);
           setImagePreview(null);
-        }, 2000);
+        }, 1500);
+      } else {
+        // CREATE new guardian
+        const res = await guardianService.create(payload);
+        toast.success(res?.responseMessage || "Guardian added!");
+        onGuardianAdded();
+        setTimeout(() => {
+          onClose();
+          reset(defaultValues);
+          setImagePreview(null);
+        }, 1500);
       }
     } catch (err: any) {
       const msg = getErrorMessage(err);
@@ -161,16 +170,13 @@ const GuardianForm: React.FC<GuardianFormProps> = ({ onClose, onGuardianAdded, e
       >
         <div className="bg-orange-500 h-2 rounded-t-lg" />
         <div className="p-4 sm:p-6">
-          <h2 className="text-lg font-semibold mb-4 text-center">{editData ? "Edit Guardian" : "Add Guardian"}</h2>
+          <h2 className="text-lg font-semibold mb-4 text-center">
+            {editData ? "Edit Guardian" : "Add Guardian"}
+          </h2>
           {formError && <p className="text-red-600 mb-4 text-center">{formError}</p>}
           <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <label className="relative col-span-2 w-20 h-20 mx-auto mb-4 rounded-full bg-orange-100 border-2 border-orange-400 overflow-hidden cursor-pointer">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
               {imagePreview ? (
                 <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
               ) : (
