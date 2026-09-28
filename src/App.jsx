@@ -122,6 +122,8 @@ import { AdminTeacherAttendance } from "./pages/Admin/staffAttendance/AdminTeach
 import AdminSchoolAccount from "./pages/Admin/schoolAccount/AdminSchoolAccount";
 import AdminStudentAttendance from "./pages/Admin/studentAttendance/AdminStudentAttendance";
 import SubjectTeachers from "./pages/Teachers/subjectTeacher/SubjectTeachers";
+import AdminRecordOtherFees from "./pages/Admin/other-fees/RecordOtherFeePayment/AdminRecordOtherFees";
+import RecordPaymentsTabs from "./pages/Admin/payment/RecordPaymentsTabs";
 
 
 
@@ -199,7 +201,8 @@ function App() {
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
         <Route path="/admin/otherfee" element={<OtherFees />} />
         <Route path="/admin/accounts" element={<AdminSchoolAccount />} />
-        <Route path="/admin/payment-record" element={<InvoiceRecordsPage />} />
+        <Route path="/admin/payment-record" element={<RecordPaymentsTabs />} />
+        {/* <Route path="/admin/other-payment-record" element={<AdminRecordOtherFees />} /> */}
       </Route>
 
       {/* All teachers routes here */}

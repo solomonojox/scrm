@@ -1,6 +1,12 @@
+// src/Pages/Admin/Payments/InvoiceRecordsPage.tsx
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { BiMessageAlt } from "react-icons/bi";
-import { FaRegBell, FaSearch, FaPlus, FaFileInvoiceDollar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaSearch,
+  FaPlus,
+  FaFileInvoiceDollar,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import ManualFeeRecordForm, { PaymentTerm } from "./ManualFeeRecordForm";
 import InvoiceActionsCell from "./InvoiceActionsCell";
@@ -49,9 +55,7 @@ import { teacherService } from "../../../Services/Teachers/TeacherService";
 import { sessionService } from "../../../Services/Session";
 import { paymentService } from "../../../Services/Payment";
 import { toast } from "react-toastify";
-import { getErrorMessage } from "../../../utils/getErrorMessage";
-import { Dialog, DialogContent, DialogTitle, IconButton, CircularProgress } from "@mui/material";
-import { Close as CloseIcon } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import InvoicePDF from "./InvoicePDF";
 import { deriveInvoiceStatusFromPaid, formatCurrencyPlain } from "../../../utils/invoiceUtils";
 import { schoolService } from "../../../Services/Admin/schoolService";
@@ -702,31 +706,20 @@ const InvoiceRecordsPage = () => {
         )}
       </div>
 
-      {/* Record Payment Modal */}
-      <Dialog
-        open={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        // maxWidth="md"
-        // fullWidth
-      >
-        <DialogTitle sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
-          <IconButton onClick={() => setIsPaymentModalOpen(false)}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <ManualFeeRecordForm
-            onSubmit={recordPayment}
-            students={students}
-            classrooms={classrooms}
-            paymentTerms={paymentTerms}
-            guardians={guardians}
-            isLoading={false}
-            schoolId={user?.schoolId || ""}
-            sessionId={sessions}
-          />
-        </DialogContent>
-      </Dialog>
+      {/* Record Payment Modal — the form itself now provides the overlay */}
+      {isPaymentModalOpen && (
+        <ManualFeeRecordForm
+          onSubmit={recordPayment}
+          students={students}
+          classrooms={classrooms}
+          paymentTerms={paymentTerms}
+          guardians={guardians}
+          isLoading={false}
+          schoolId={user?.schoolId || ""}
+          sessionId={sessions}
+          onClose={() => setIsPaymentModalOpen(false)}
+        />
+      )}
 
       {/* Invoice Preview */}
       {previewPayment && previewInvoice && (
