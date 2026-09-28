@@ -1,30 +1,3 @@
-// import axios from "axios";
-
-// const api = axios.create({
-//   baseURL: "https://educat.codeweb.com.ng",
-// });
-
-// // Attach token to every request
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem("scrmToken"); // ✅ match login
-//     const refreshToken = localStorage.getItem("scrmRefreshToken"); // ✅ match login
-
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     if (refreshToken) {
-//       config.headers.refreshToken = `Bearer ${refreshToken}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error),
-// );
-
-// export default api;
-
-
-
 import axios from "axios";
 
 const BASE_URL = "https://scrmapi-lpkm.onrender.com";
@@ -34,6 +7,8 @@ const api = axios.create({
   baseURL: BASE_URL,
 });
 
+
+// REQUEST INTERCEPTOR
 
 api.interceptors.request.use(
   (config) => {
@@ -49,16 +24,18 @@ api.interceptors.request.use(
 );
 
 
+// REFRESH TOKEN STATE
+
 let isRefreshing = false;
 
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((promise) => {
+  failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
-      promise.reject(error);
+      reject(error);
     } else {
-      promise.resolve(token);
+      resolve(token);
     }
   });
 
@@ -66,92 +43,214 @@ const processQueue = (error, token = null) => {
 };
 
 
+// RESPONSE INTERCEPTOR
+
 api.interceptors.response.use(
   (response) => response,
 
   async (error) => {
     const originalRequest = error.config;
 
-    // Prevent refresh for authentication endpoints
-    const authEndpoints = [
-      "/api/Login/Login",
-      "/api/Login/RefreshToken",
-    ];
-
-    const shouldSkipRefresh = authEndpoints.some((endpoint) =>
-      originalRequest?.url?.includes(endpoint),
-    );
-
-    const accessToken = localStorage.getItem("scrmToken");
-    const refreshToken = localStorage.getItem("scrmRefreshToken");
-
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !shouldSkipRefresh &&
-      refreshToken
-    ) {
-      // If another refresh request is already running,
-      // wait until it finishes.
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return api(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
-      }
-
-      originalRequest._retry = true;
-      isRefreshing = true;
-
-      try {
-        const { data } = await axios.post(
-          `${BASE_URL}/api/Login/RefreshToken`,
-          {
-            accessToken,
-            refreshToken,
-          },
-        );
-
-        // Save new tokens
-        localStorage.setItem("scrmToken", data.accessToken);
-
-        if (data.refreshToken) {
-          localStorage.setItem(
-            "scrmRefreshToken",
-            data.refreshToken,
-          );
-        }
-
-        // Update axios defaults
-        api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
-
-        // Retry original request
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-
-        // Retry queued requests
-        processQueue(null, data.accessToken);
-
-        return api(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-
-        localStorage.removeItem("scrmToken");
-        localStorage.removeItem("scrmRefreshToken");
-
-        // Optional: redirect to login
-        // window.location.href = "/login";
-
-        return Promise.reject(refreshError);
-      } finally {
-        isRefreshing = false;
-      }
+    if (!originalRequest) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    const isRefreshRequest =
+      originalRequest.url?.includes(
+        "/api/Login/RefreshToken",
+      );
+
+    const isLoginRequest =
+      originalRequest.url?.includes(
+        "/api/Login/Login",
+      );
+
+
+    // Only refresh on 401
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      isRefreshRequest ||
+      isLoginRequest
+    ) {
+      return Promise.reject(error);
+    }
+
+
+    // Get refresh token
+    const refreshToken =
+      localStorage.getItem("scrmRefreshToken");
+
+    const accessToken =
+      localStorage.getItem("scrmToken");
+
+
+    // No refresh token
+    if (!refreshToken) {
+      localStorage.removeItem("scrmToken");
+      localStorage.removeItem("scrmRefreshToken");
+
+      return Promise.reject(error);
+    }
+
+
+    // ANOTHER REQUEST IS ALREADY REFRESHING
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve,
+          reject,
+        });
+      })
+        .then((newToken) => {
+          originalRequest.headers.Authorization =
+            `Bearer ${newToken}`;
+
+          return api(originalRequest);
+        })
+        .catch((refreshError) => {
+          return Promise.reject(refreshError);
+        });
+    }
+
+
+    // START REFRESH
+
+    originalRequest._retry = true;
+    isRefreshing = true;
+
+
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/api/Login/RefreshToken`,
+        {
+          accessToken,
+          refreshToken,
+        },
+      );
+
+
+      console.log(
+        "Refresh token response:",
+        response.data,
+      );
+
+
+
+      // IMPORTANT:
+      //
+      // Backend response:
+      //
+      // {
+      //   status: true,
+      //   responseCode: "00",
+      //   responseMessage: "...",
+      //   data: {
+      //      accessToken: "...",
+      //      refreshToken: "..."
+      //   }
+      // }
+
+
+      const newAccessToken =
+        response.data.data.accessToken;
+
+      const newRefreshToken =
+        response.data.data.refreshToken;
+
+
+      if (!newAccessToken) {
+        throw new Error(
+          "Refresh endpoint did not return an access token",
+        );
+      }
+
+
+
+      // SAVE NEW TOKENS
+
+
+      localStorage.setItem(
+        "scrmToken",
+        newAccessToken,
+      );
+
+      if (newRefreshToken) {
+        localStorage.setItem(
+          "scrmRefreshToken",
+          newRefreshToken,
+        );
+      }
+
+
+
+      // UPDATE AXIOS DEFAULT TOKEN
+
+
+      api.defaults.headers.common.Authorization =
+        `Bearer ${newAccessToken}`;
+
+
+
+      // UPDATE ORIGINAL REQUEST
+
+
+      originalRequest.headers.Authorization =
+        `Bearer ${newAccessToken}`;
+
+
+
+      // RETRY QUEUED REQUESTS
+
+
+      processQueue(
+        null,
+        newAccessToken,
+      );
+
+
+
+      // RETRY ORIGINAL REQUEST
+
+
+      return api(originalRequest);
+
+
+    } catch (refreshError) {
+
+      console.error(
+        "Refresh token failed:",
+        refreshError,
+      );
+
+
+      processQueue(
+        refreshError,
+        null,
+      );
+
+
+
+      // CLEAR TOKENS
+
+
+      localStorage.removeItem("scrmToken");
+      localStorage.removeItem("scrmRefreshToken");
+
+
+      // Optional:
+      // window.location.href = "/login";
+
+
+      return Promise.reject(refreshError);
+
+
+    } finally {
+
+      isRefreshing = false;
+
+    }
   },
 );
 

@@ -48,8 +48,8 @@ export const guardianService = {
 
   update: async (id, data) => {
     try {
-      const res = await api.put(`/api/Guardian/${id}`, data);
-      console.log("UpdateGuardian success:", res.data);
+      const res = await api.put(`/api/Guardian/UpdateGuardian/${id}`, data);
+      // console.log("UpdateGuardian success:", res.data);
       return res.data.data;
     } catch (error) {
       // console.error("UpdateGuardian error:", error?.response?.data?.message || error.message);
@@ -69,8 +69,8 @@ export const guardianService = {
 
   delete: async (id) => {
     try {
-      const res = await api.delete(`/api/Guardian/${id}`);
-      console.log("DeleteGuardian success:", res.data);
+      const res = await api.delete(`/api/Guardian/DeleteGuardian/${id}`);
+      // console.log("DeleteGuardian success:", res.data);
       return res.data;
     } catch (error) {
       // console.error("DeleteGuardian error:", error?.response?.data?.message || error.message);

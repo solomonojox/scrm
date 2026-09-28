@@ -12,6 +12,7 @@ import {
   FaFileInvoiceDollar,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { Presentation } from "lucide-react";
 import { FiChevronRight } from "react-icons/fi";
 import { useAuth } from "../../Context/Auth/useAuth";
 import "../../Styles/customScrollBar.css";
@@ -84,6 +85,91 @@ const iconsSvg = {
       />
     </svg>
   ),
+
+   subjectTeacher: (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Teacher */}
+      <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M2.5 20c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      {/* Board */}
+      <rect
+        x="13"
+        y="4"
+        width="9"
+        height="7"
+        rx="1"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M15.5 7.5h4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.5 11v3M15.5 14h4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+
+  subjectTeacherActive: (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Teacher */}
+      <circle cx="8" cy="8" r="3" fill="currentColor" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M2.5 20c0-3.04 2.46-5.5 5.5-5.5s5.5 2.46 5.5 5.5z"
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      {/* Board */}
+      <rect
+        x="13"
+        y="4"
+        width="9"
+        height="7"
+        rx="1"
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M15.5 7.5h4"
+        stroke="#fff"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.5 11v3M15.5 14h4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+
   attendance: (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M23 3H1V13H3V5H21V21H23V3Z" fill="black" />
@@ -348,7 +434,14 @@ const TeacherSidebar = () => {
           label="My Pupils"
           to="/teacher/pupil"
         />
-        {/* <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/teacher/guardians" /> */}
+
+        <SidebarButton
+          nonActiveIcon={iconsSvg.subjectTeacher}
+          activeIcon={iconsSvg.subjectTeacherActive}
+          label="Subject Teacher"
+          to="/teacher/subjects/:subjectId/teachers"
+        />
+        {/* <SidebarButton icon={<Presentation  />} label="Subject Teacher" to="/teacher/subject-teacher" /> */}
 
         <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Academics

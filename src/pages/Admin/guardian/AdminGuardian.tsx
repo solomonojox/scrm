@@ -9,9 +9,10 @@ import {
 } from "../../../Store/Guardian/guardianSlice";
 import { guardianService } from "../../../Services/Guardian/guardian";
 import GuardianTable from "./GuardianTable";
-import GuardianForm from "./GuardianForm";;   // ← new import
+import GuardianForm from "./GuardianForm";
 import { Guardian } from "../../../Types/Guardian/guardianTypes";
 import AdminGuardianDetails from "./AdminGuardianDetails";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
 
 type ReligionFilter = 'all' | 'christian' | 'muslim';
 
@@ -29,7 +30,7 @@ const AdminGuardian: React.FC = () => {
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
   const [religionFilter, setReligionFilter] = useState<ReligionFilter>('all');
   const [editData, setEditData] = useState<Guardian | null>(null);
-  const [viewData, setViewData] = useState<Guardian | null>(null);  // ← new
+  const [viewData, setViewData] = useState<Guardian | null>(null);
 
   const recordsPerPage = 15;
 
@@ -115,18 +116,22 @@ const AdminGuardian: React.FC = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this guardian?")) return;
+  // Performs the delete. No confirmation here: the table's modal (or the details view) asks first.
+  // Resolves true on success so the caller knows whether to close its UI.
+  const deleteGuardian = async (id: string): Promise<boolean> => {
     try {
       await guardianService.delete(id);
+      setSelectedIds((prev) => prev.filter((sid) => sid !== id));
       await fetchGuardian();
-      toast.success("Deleted!");
-    } catch {
-      toast.error("Delete failed");
+      toast.success("Guardian deleted!");
+      return true;
+    } catch (err) {
+      toast.error(getErrorMessage(err) || "Delete failed");
+      return false;
     }
   };
 
-  // ← open edit from details view
+  // open edit from details view
   const handleEditFromDetails = (guardian: Guardian) => {
     setEditData(guardian);
     setViewData(null);
@@ -138,15 +143,16 @@ const AdminGuardian: React.FC = () => {
       <ToastContainer />
       <div className="max-w-full mx-auto">
 
-        {/* ← show details panel when a guardian is selected for viewing */}
+        {/* show details panel when a guardian is selected for viewing */}
         {viewData ? (
           <AdminGuardianDetails
             guardian={viewData}
             onBack={() => setViewData(null)}
             onEdit={handleEditFromDetails}
             onDelete={async (id: any) => {
-              await handleDelete(id);
-              setViewData(null);
+              if (!window.confirm("Are you sure you want to delete this guardian?")) return;
+              const ok = await deleteGuardian(id);
+              if (ok) setViewData(null);
             }}
           />
         ) : (
@@ -166,11 +172,11 @@ const AdminGuardian: React.FC = () => {
             onReligionFilterChange={setReligionFilter}
             onToggleSelectAll={toggleSelectAll}
             onToggleCheckbox={toggleCheckbox}
-            onDelete={handleDelete}
+            onDelete={deleteGuardian}
             onAddGuardian={() => setIsModalOpen(true)}
             onRefresh={fetchGuardian}
             setEditData={setEditData}
-            onViewGuardian={setViewData}   // ← pass down to table
+            onViewGuardian={setViewData}
           />
         )}
 
