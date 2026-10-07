@@ -13,8 +13,10 @@ import {
   FaSignOutAlt,
   FaClipboard,
   FaUserAstronaut,
+  FaClipboardCheck,
 } from "react-icons/fa";
 import { FiChevronRight } from "react-icons/fi";
+import { GraduationCap } from "lucide-react";
 import { useAuth } from "../../Context/Auth/useAuth";
 import "../../Styles/customScrollBar.css";
 import { CoinsIcon, Megaphone, MessageCircleDashed } from "lucide-react";
@@ -118,6 +120,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <SidebarButton icon={<FaChalkboardTeacher />} label="Teachers" to="/admin/teachers" onClose={onClose} />
           <SidebarButton icon={<FaUserFriends />} label="Guardians" to="/admin/guardians" onClose={onClose} />
           <SidebarButton icon={<FaUserAstronaut />} label="Staff Attendance" to="/admin/staff-attendance" onClose={onClose} />
+          <SidebarButton icon={<GraduationCap  />} label="Student Attendance" to="/admin/student-attendance" onClose={onClose} />
           <SidebarButton icon={<Megaphone />} label="Promotions" to="/admin/promotions" onClose={onClose} />
           <SidebarButton icon={<CoinsIcon />} label="Discounts" to="/admin/discounts" onClose={onClose} />
 
@@ -131,7 +134,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
           <h3 className="px-4 mt-6 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Operations
           </h3>
-          {/* <SidebarButton icon={<CoinsIcon />} label="Payroll" to="/admin/payroll" onClose={onClose} /> */}
+          <SidebarButton icon={<CoinsIcon />} label="School Accounts" to="/admin/accounts" onClose={onClose} />
           <SidebarButton icon={<MessageCircleDashed />} label="Messages" to="/admin/messages" onClose={onClose} />
           <SidebarButton icon={<FaNewspaper />} label="News" to="/admin/news" onClose={onClose} />
           <SidebarButton icon={<FaCalendarAlt />} label="Events" to="/admin/events" onClose={onClose} />

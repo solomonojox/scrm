@@ -17,7 +17,7 @@ import { Skeleton } from "../../../components/Admin/Skeleton";
 
 const TABS: { id: AttendanceTab; label: string }[] = [
   { id: "today", label: "Today's Attendance" },
-  // { id: "history", label: "Attendance History" },
+  { id: "history", label: "Attendance History" },
 ];
 
 interface SummaryCardConfig {

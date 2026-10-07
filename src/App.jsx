@@ -119,6 +119,11 @@ import DiscountPage from "./pages/Admin/student/DiscountPage";
 import OtherFees from "./pages/Admin/other-fees/OtherFees";
 import Edubanc from "./pages/Edubanc";
 import { AdminTeacherAttendance } from "./pages/Admin/staffAttendance/AdminTeacherAttendance";
+import AdminSchoolAccount from "./pages/Admin/schoolAccount/AdminSchoolAccount";
+import AdminStudentAttendance from "./pages/Admin/studentAttendance/AdminStudentAttendance";
+import SubjectTeachers from "./pages/Teachers/subjectTeacher/SubjectTeachers";
+import AdminRecordOtherFees from "./pages/Admin/other-fees/RecordOtherFeePayment/AdminRecordOtherFees";
+import RecordPaymentsTabs from "./pages/Admin/payment/RecordPaymentsTabs";
 
 
 
@@ -184,6 +189,7 @@ function App() {
         <Route path="/admin/teachers" element={<AdminTeacher />} />
         <Route path="/admin/guardians" element={<AdminGuardian />} />
         <Route path="/admin/staff-attendance" element={<AdminTeacherAttendance />} />
+        <Route path="/admin/student-attendance" element={<AdminStudentAttendance />} />
         <Route path="/admin/promotions" element={<StudentPromotion />} />
         <Route path="/admin/discounts" element={<DiscountPage />} />
         <Route path="/admin/classrooms" element={<AdminClassroom />} />
@@ -194,8 +200,9 @@ function App() {
         <Route path="/admin/events" element={<AdminEvents />} />
         <Route path="/admin/schoolfee" element={<AdminSchoolFee />} />
         <Route path="/admin/otherfee" element={<OtherFees />} />
-        {/* <Route path="/admin/payroll" element={<Payroll />} /> */}
-        <Route path="/admin/payment-record" element={<InvoiceRecordsPage />} />
+        <Route path="/admin/accounts" element={<AdminSchoolAccount />} />
+        <Route path="/admin/payment-record" element={<RecordPaymentsTabs />} />
+        {/* <Route path="/admin/other-payment-record" element={<AdminRecordOtherFees />} /> */}
       </Route>
 
       {/* All teachers routes here */}
@@ -208,6 +215,7 @@ function App() {
       >
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/subjects/:subjectId/teachers" element={<SubjectTeachers />} />
         <Route path="/teacher/assignments" element={<TeacherAssignment />} />
         <Route path="/teacher/attendance" element={<TeacherAttendance />} />
         <Route path="/teacher/new-attendance" element={<NewAttendance />} />

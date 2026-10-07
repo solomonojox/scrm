@@ -36,7 +36,7 @@ const AdminStudents: React.FC = () => {
   const [editData, setEditData] = useState<any>(null);
   const [viewData, setViewData] = useState<any>(null);   // ← new
 
-  const recordsPerPage = 5;
+  const recordsPerPage = 15;
 
   const filteredRecords = useMemo(() => {
     let filtered = fetchedRecord;
