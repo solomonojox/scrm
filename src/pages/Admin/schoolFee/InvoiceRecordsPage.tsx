@@ -7,6 +7,8 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import ManualFeeRecordForm, { PaymentTerm } from "./ManualFeeRecordForm";
 import InvoiceActionsCell from "./InvoiceActionsCell";
