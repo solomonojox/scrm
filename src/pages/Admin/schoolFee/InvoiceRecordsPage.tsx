@@ -222,6 +222,7 @@ const InvoiceRecordsPage = () => {
   };
 
   const recordPayment = async (data: any) => {
+    
     try {
       await paymentService.payStudentSchoolFeeManually(data);
       toast.success("Fee payment recorded successfully");
