@@ -15,20 +15,65 @@ import {
 } from "../../Types/Admin/attendance";
 
 // ---------------------------------------------------------------------------
+// History endpoint types (kept local so the shared Types file stays untouched)
+// ---------------------------------------------------------------------------
+
+export interface AttendanceHistorySummary {
+  totalRecords: number;
+  totalPresent: number;
+  totalLate: number;
+  totalHoursWorked: string; // TimeSpan with days, e.g. "2.12:43:28.4882660"
+}
+
+interface RawAttendanceHistoryResponse {
+  status: boolean;
+  responseCode: string;
+  responseMessage: string;
+  data: {
+    summary: AttendanceHistorySummary;
+    records: RawTeacherAttendanceRecord[];
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    totalPages: number;
+    from: string;
+    to: string;
+  };
+}
+
+export type AttendanceHistoryResult = PaginatedAttendanceHistory & {
+  summary?: AttendanceHistorySummary;
+};
+
+// TODO: replace with however you get the school id (auth store, localStorage, etc.)
+const getSchoolId = (): string => localStorage.getItem("schoolId") ?? "";
+
+// ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
 /**
- * Parses a .NET TimeSpan string ("00:00:07.1615505" or "05:48:41.5125251")
- * into hours, minutes and seconds.
+ * Parses a .NET TimeSpan string ("00:00:07.1615505", "05:48:41.5125251" or
+ * with days: "2.12:43:28.4882660") into hours, minutes and seconds.
+ * Days are folded into hours.
  */
-function parseTimeSpan(timeSpan: string): { hours: number; minutes: number; seconds: number } {
+function parseTimeSpan(
+  timeSpan: string | null | undefined
+): { hours: number; minutes: number; seconds: number } {
   if (!timeSpan) return { hours: 0, minutes: 0, seconds: 0 };
 
-  const parts = timeSpan.split(":");
+  let days = 0;
+  let rest = timeSpan;
+  const dayMatch = timeSpan.match(/^(\d+)\.(\d{1,2}:.*)$/);
+  if (dayMatch) {
+    days = parseInt(dayMatch[1], 10) || 0;
+    rest = dayMatch[2];
+  }
+
+  const parts = rest.split(":");
   if (parts.length < 2) return { hours: 0, minutes: 0, seconds: 0 };
 
-  const hours = parseInt(parts[0], 10) || 0;
+  const hours = (parseInt(parts[0], 10) || 0) + days * 24;
   const minutes = parseInt(parts[1], 10) || 0;
   const secondsPart = parts[2] ? parts[2].split(".")[0] : "0";
   const seconds = parseInt(secondsPart, 10) || 0;
@@ -37,13 +82,15 @@ function parseTimeSpan(timeSpan: string): { hours: number; minutes: number; seco
 }
 
 /** TimeSpan -> total minutes (rounded). */
-function timeSpanToTotalMinutes(timeSpan: string): number {
+function timeSpanToTotalMinutes(timeSpan: string | null | undefined): number {
   const { hours, minutes, seconds } = parseTimeSpan(timeSpan);
   return hours * 60 + minutes + Math.round(seconds / 60);
 }
 
 /** TimeSpan -> { hours, minutes }. */
-function timeSpanToHoursMinutes(timeSpan: string): { hours: number; minutes: number } {
+function timeSpanToHoursMinutes(
+  timeSpan: string | null | undefined
+): { hours: number; minutes: number } {
   const { hours, minutes, seconds } = parseTimeSpan(timeSpan);
   const totalMinutes = minutes + Math.round(seconds / 60);
   return {
@@ -66,7 +113,7 @@ function normalizeRecord(raw: RawTeacherAttendanceRecord): TeacherAttendanceReco
   const teacher: TeacherSummary = {
     teacherId: raw.teacherId,
     teacherName: raw.teacherName,
-    // The AllTodayAttendance endpoint does not return email/avatar.
+    // The attendance endpoints do not return email/avatar.
     // Leave them blank so the UI renders cleanly; merge from a teacher
     // lookup later if you need them.
     teacherEmail: "",
@@ -85,6 +132,20 @@ function normalizeRecord(raw: RawTeacherAttendanceRecord): TeacherAttendanceReco
   };
 }
 
+/**
+ * The records endpoint sometimes returns the same clock-in twice under
+ * different attendanceIds. Keep the first one.
+ */
+function dedupeRaw(records: RawTeacherAttendanceRecord[]): RawTeacherAttendanceRecord[] {
+  const seen = new Set<string>();
+  return records.filter((r) => {
+    const key = `${r.teacherId}|${r.clockInTime}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -92,7 +153,7 @@ function normalizeRecord(raw: RawTeacherAttendanceRecord): TeacherAttendanceReco
 export const teacherAttendanceService = {
   /**
    * Today's attendance for every teacher in a school.
-   * GET /TeacherAttendance/AllTodayAttendance?schoolId={schoolId}
+   * GET /api/TeacherAttendance/AllTodayAttendance?schoolId={schoolId}
    */
   getTodayAttendance: async (schoolId: string): Promise<TeacherAttendanceRecord[]> => {
     try {
@@ -147,37 +208,51 @@ export const teacherAttendanceService = {
 
   /**
    * Filtered + paginated attendance history.
-   * NOTE: backend endpoint not live yet — will throw if called.
-   * Wire this up once `/TeacherAttendance/History` (or equivalent) ships.
+   * GET /api/TeacherAttendance/Records?schoolId&from&to&teacherId&status&page&pageSize
+   *
+   * - The API has no name/email search, so `filters.search` is applied
+   *   client-side to the records of the requested page.
+   * - `to` is sent as end-of-day so the selected date is included.
    */
   getAttendanceHistory: async (
     filters: AttendanceHistoryFilters,
     page: number,
-    pageSize = 20
-  ): Promise<PaginatedAttendanceHistory> => {
+    pageSize = 20,
+    schoolId: string
+  ): Promise<AttendanceHistoryResult> => {
     try {
-      const params = new URLSearchParams();
-      if (filters.search) params.set("search", filters.search);
-      if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
-      if (filters.dateTo) params.set("dateTo", filters.dateTo);
+      const params: Record<string, string | number> = { schoolId, page, pageSize };
+      if (filters.dateFrom) params.from = `${filters.dateFrom}T00:00:00`;
+      if (filters.dateTo) params.to = `${filters.dateTo}T23:59:59`;
       if (filters.status && filters.status !== "All") {
-        params.set("status", filters.status);
+        params.status = filters.status;
       }
-      params.set("page", String(page));
-      params.set("pageSize", String(pageSize));
 
-      const res = await api.get<{
-        status: boolean;
-        data: { records: RawTeacherAttendanceRecord[]; totalRecords: number };
-      }>(`/TeacherAttendance/History?${params.toString()}`);
+      const res = await api.get<RawAttendanceHistoryResponse>(
+        "/api/TeacherAttendance/Records",
+        { params }
+      );
 
       const payload = res.data;
-      const rawRecords = payload?.data?.records ?? [];
-      const totalRecords = payload?.data?.totalRecords ?? 0;
+      if (!payload?.status || !payload.data) {
+        throw new Error(payload?.responseMessage || "Failed to load attendance history");
+      }
+
+      let records = dedupeRaw(payload.data.records ?? []).map(normalizeRecord);
+
+      const q = filters.search?.trim().toLowerCase();
+      if (q) {
+        records = records.filter((r) => r.teacher.teacherName.toLowerCase().includes(q));
+      }
 
       return {
-        records: rawRecords.map(normalizeRecord),
-        pagination: { page, pageSize, totalRecords },
+        records,
+        pagination: {
+          page: payload.data.page ?? page,
+          pageSize: payload.data.pageSize ?? pageSize,
+          totalRecords: payload.data.totalCount ?? 0,
+        },
+        summary: payload.data.summary,
       };
     } catch (error: any) {
       console.error(

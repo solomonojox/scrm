@@ -28,7 +28,7 @@ interface GuardianTableProps {
     onReligionFilterChange: (filter: ReligionFilter) => void;
     onToggleSelectAll: () => void;
     onToggleCheckbox: (id: string) => void;
-    onDelete: (id: string) => void;
+    onDelete: (id: string) => Promise<boolean>;
     onAddGuardian: () => void;
     onRefresh: () => void;
     setEditData: (data: any) => void;
@@ -59,6 +59,8 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
 }) => {
     const { user } = useAuth();
     const [showReligionFilter, setShowReligionFilter] = React.useState(false);
+    const [guardianToDelete, setGuardianToDelete] = React.useState<Guardian | null>(null);
+    const [isDeleting, setIsDeleting] = React.useState(false);
 
     const exportToExcel = () => {
         const ws = XLSX.utils.json_to_sheet(records);
@@ -96,6 +98,34 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
         doc.save("guardians.pdf");
     };
 
+    const closeDeleteModal = () => {
+        if (!isDeleting) setGuardianToDelete(null);
+    };
+
+    const handleDelete = async () => {
+        if (!guardianToDelete) return;
+        setIsDeleting(true);
+        try {
+            const ok = await onDelete(guardianToDelete.guardianId);
+            if (ok) setGuardianToDelete(null);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    React.useEffect(() => {
+        if (!guardianToDelete) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && !isDeleting) setGuardianToDelete(null);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [guardianToDelete, isDeleting]);
+
+    const deleteName = guardianToDelete
+        ? `${guardianToDelete.firstname ?? ""} ${guardianToDelete.lastname ?? ""}`.trim()
+        : "";
+
     return (
         <>
             {/* Header */}
@@ -113,8 +143,6 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                     </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                    {/* <FaRegBell className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
-                    {/* <BiMessageAlt className="text-gray-500 text-2xl hover:text-orange-500 cursor-pointer" /> */}
                     <div className="flex items-center rounded-full px-3 py-1 space-x-2">
                         <img
                             src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.email}`}
@@ -296,16 +324,19 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                                     <td className="p-3">{g.nationality}</td>
                                     <td className="p-3">{g.stateOfOrigin}</td>
                                     <td className="p-3">{g.religion}</td>
-                                    <td className="p-3 ">
-                                        <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => onViewGuardian(g)}>
+                                    <td className="p-3 flex items-center gap-4 ">
+                                        <span className="flex items-center cursor-pointer text-blue-400 hover:text-blue-600 gap-1" onClick={() => onViewGuardian(g)}>
                                             View
-                                            <FaEye className="cursor-pointer text-blue-600 hover:text-blue-800" />
+                                            <FaEye className="cursor-pointer" />
                                         </span>
-                                        {/* <span className="flex items-center cursor-pointer hover:text-orange-500 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
+                                        <span className="flex items-center cursor-pointer text-orange-400 hover:text-orange-600 gap-1" onClick={() => { setEditData(g); onAddGuardian(); }}>
                                             Edit
                                             <FaEdit />
-                                        </span> */}
-                                        {/* <FaTrash className="cursor-pointer text-red-600 hover:text-red-800" /> */}
+                                        </span>
+                                        <span className="flex items-center cursor-pointer text-red-400 hover:text-red-600 gap-1" onClick={() => setGuardianToDelete(g)}>
+                                            Delete
+                                            <FaTrash />
+                                        </span>
                                     </td>
                                 </tr>
                             ))
@@ -341,6 +372,94 @@ const GuardianTable: React.FC<GuardianTableProps> = ({
                     >
                         Next
                     </button>
+                </div>
+            )}
+
+            {guardianToDelete && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-[fadeIn_150ms_ease-out]"
+                    onClick={closeDeleteModal}
+                >
+                    <style>{`
+                        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+                        @keyframes popIn {
+                            from { opacity: 0; transform: translateY(12px) scale(0.95) }
+                            to { opacity: 1; transform: translateY(0) scale(1) }
+                        }
+                    `}</style>
+
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="delete-guardian-title"
+                        aria-describedby="delete-guardian-desc"
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative w-full max-w-md overflow-hidden bg-white shadow-2xl rounded-2xl ring-1 ring-black/5 animate-[popIn_200ms_cubic-bezier(0.16,1,0.3,1)]"
+                    >
+                        <div className="h-1.5 w-full bg-orange-400" />
+
+                        <button
+                            type="button"
+                            aria-label="Close"
+                            disabled={isDeleting}
+                            onClick={closeDeleteModal}
+                            className="absolute p-2 transition-colors rounded-full top-4 right-4 text-slate-400 hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 disabled:opacity-40"
+                        >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <div className="px-6 pt-8 pb-6 text-center">
+                            <div className="relative flex items-center justify-center mx-auto mb-5 w-16 h-16">
+                                <span className="absolute inset-0 rounded-full bg-red-100 animate-ping opacity-60" />
+                                <span className="relative flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-red-50 to-red-100 ring-8 ring-red-50">
+                                    <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M14.74 9l-.35 9m-4.78 0L9.26 9m9.97-3.21c.34.05.68.11 1.02.17m-1.02-.17L18.16 19.67a2.25 2.25 0 01-2.24 2.08H8.08a2.25 2.25 0 01-2.24-2.08L4.77 5.79m14.46 0a48.11 48.11 0 00-3.48-.4m-12 .57c.34-.06.68-.12 1.02-.17m0 0a48.11 48.11 0 013.48-.4m7.5 0v-.92c0-1.18-.91-2.16-2.09-2.2a51.96 51.96 0 00-3.32 0c-1.18.04-2.09 1.02-2.09 2.2v.92m7.5 0a48.66 48.66 0 00-7.5 0"
+                                        />
+                                    </svg>
+                                </span>
+                            </div>
+
+                            <h3 id="delete-guardian-title" className="text-xl font-semibold tracking-tight text-slate-900">
+                                Delete Guardian?
+                            </h3>
+                            <p id="delete-guardian-desc" className="mt-2 text-sm leading-relaxed text-slate-500">
+                                This will permanently remove{" "}
+                                <span className="font-semibold text-slate-700">{deleteName || "this guardian"}</span>{" "}
+                                and their access.
+                                <span className="block mt-1 font-medium text-red-600">This action cannot be undone.</span>
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col-reverse gap-3 px-6 py-4 border-t bg-slate-50 border-slate-100 sm:flex-row sm:justify-end">
+                            <button
+                                type="button"
+                                disabled={isDeleting}
+                                onClick={closeDeleteModal}
+                                className="px-4 py-2.5 text-sm font-medium transition-colors bg-white border rounded-lg text-slate-700 border-slate-200 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 disabled:opacity-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isDeleting}
+                                onClick={handleDelete}
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white transition-all rounded-lg shadow-sm bg-linear-to-b from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-md active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                {isDeleting && (
+                                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" className="opacity-25" />
+                                        <path fill="currentColor" className="opacity-75" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                    </svg>
+                                )}
+                                {isDeleting ? "Deleting..." : "Yes, delete"}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
         </>

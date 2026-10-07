@@ -73,3 +73,27 @@ export interface RawAttendanceResponse {
   responseMessage: string;
   data: RawTeacherAttendanceRecord[];
 }
+
+
+export interface AttendanceRecord {
+  classroomId: string;
+  sessionId: string;
+  termId: string;
+  studentId: string;
+  firstName: string;
+  lastName: string;
+  timeIn: string | null;
+  attendanceDate: string;
+  status: number; // 1 = present, 0 = absent (confirm with backend)
+}
+
+export interface AttendanceResponse {
+  status: boolean;
+  responseCode: string;
+  responseMessage: string;
+  data: AttendanceRecord[];
+}
+
+export interface AttendanceRow extends AttendanceRecord {
+  className: string;
+}

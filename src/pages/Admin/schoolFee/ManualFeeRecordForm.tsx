@@ -22,7 +22,6 @@ import { StudentType } from '../../../Types/Student/studentTypes';
 import { Guardian } from '../../../Types/Guardian/guardianTypes';
 import { Session } from '../../../Types/sessionType';
 
-// Types
 interface Classroom {
   classroomId: string;
   schoolId: string;
@@ -31,14 +30,11 @@ interface Classroom {
   teacherId: string;
 }
 
-// ✅ Fix 1: PaymentTerm is now a proper object type (was incorrectly typed as string)
 export interface PaymentTerm {
   paymentTermId: string;
   name: string;
 }
 
-// ✅ Fix 2: ManualFeeRecordData now includes schoolId to match API body exactly:
-// { studentId, schoolId, classroomId, sessionId, amount, paymentTermId, guardianId }
 interface ManualFeeRecordData {
   studentId: string;
   classroomId: string;
@@ -59,6 +55,9 @@ interface ManualFeeRecordProps {
   schoolId: string;
   sessionId: Session[];
 }
+
+const inputClass =
+  "w-full border border-gray-300 px-3 py-2 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-50 disabled:text-gray-400";
 
 const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
   onSubmit,
