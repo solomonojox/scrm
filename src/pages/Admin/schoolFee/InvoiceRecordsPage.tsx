@@ -1,12 +1,6 @@
-// src/Pages/Admin/Payments/InvoiceRecordsPage.tsx
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  FaSearch,
-  FaPlus,
-  FaFileInvoiceDollar,
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
+import { BiMessageAlt } from "react-icons/bi";
+import { FaRegBell, FaSearch, FaPlus, FaFileInvoiceDollar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import ManualFeeRecordForm, { PaymentTerm } from "./ManualFeeRecordForm";
 import InvoiceActionsCell from "./InvoiceActionsCell";
@@ -55,7 +49,9 @@ import { teacherService } from "../../../Services/Teachers/TeacherService";
 import { sessionService } from "../../../Services/Session";
 import { paymentService } from "../../../Services/Payment";
 import { toast } from "react-toastify";
-import { CircularProgress } from "@mui/material";
+import { getErrorMessage } from "../../../utils/getErrorMessage";
+import { Dialog, DialogContent, DialogTitle, IconButton, CircularProgress } from "@mui/material";
+import { Close as CloseIcon } from "@mui/icons-material";
 import InvoicePDF from "./InvoicePDF";
 import { deriveInvoiceStatusFromPaid, formatCurrencyPlain } from "../../../utils/invoiceUtils";
 import { schoolService } from "../../../Services/Admin/schoolService";
@@ -226,7 +222,7 @@ const InvoiceRecordsPage = () => {
   };
 
   const recordPayment = async (data: any) => {
-    
+
     try {
       await paymentService.payStudentSchoolFeeManually(data);
       toast.success("Fee payment recorded successfully");
