@@ -252,7 +252,7 @@ export default function InvoicePDF({ invoiceData, schoolInfo, studentInfo, forma
             <Text style={styles.schoolMeta}>Reg. No: {schoolInfo.registrationNumber}</Text>
           </View>
           <View style={styles.invoiceMetaBlock}>
-            <Text style={styles.invoiceTitle}>INVOICE</Text>
+            <Text style={styles.invoiceTitle}>RECEIPT</Text>
             <StatusBadge status={status} />
             <Text style={styles.metaLine}>No: {invoiceData.invoiceNumber}</Text>
             <Text style={styles.metaLine}>Date: {formatDate(invoiceData.invoiceDate)}</Text>
