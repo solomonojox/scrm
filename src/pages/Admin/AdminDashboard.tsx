@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import React, { useEffect, useState } from 'react';
-import Adminheader from './Adminheader';
-import AdminSidebar from './AdminSidebar';
+import React, { useEffect, useMemo, useState } from 'react';
 import NotificationModal from './Notification';
-import log from '../../assets/imageAssets';
+import { useNavigate } from 'react-router-dom';
 import { paymentService } from "../../Services/Payment";
 import {
   FaUserGraduate,
@@ -52,6 +50,7 @@ import { studentService } from '../../Services/Student/StudentService';
 import { teacherService } from '../../Services/Teachers/TeacherService';
 import { guardianService } from '../../Services/Guardian/guardian';
 import { classroomService } from '../../Services/Classroom';
+import { formatNaira, formatDateTime } from '../../utils/formatters';
 
 // ─── Sample DATA ───────────────────────────────────────────────────────────────
 const analyticsData = [
@@ -212,13 +211,13 @@ export default function AdminDashboard() {
             <ProgressCircle />
           </div>
 
-          {/* SECOND ROW: TimeSpendingChart (3 cols) + UpcomingClasses (1 col) */}
+          {/* SECOND ROW: TimeSpendingChart (3 cols) + RecentPayments (1 col) */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <TimeSpendingChart />
             </div>
             <div>
-              <UpcomingClasses />
+              <RecentPayments />
             </div>
           </div>
         </main>
@@ -319,9 +318,9 @@ function ProgressCircle() {
     <div className="bg-white rounded-md p-6 shadow-sm relative h-full">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-medium text-gray-800">My Progress</h3>
-        <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
+        {/* <button className="bg-orange-600 text-white text-xs font-semibold rounded-full px-3 py-1 flex items-center">
           Weekly <FaChevronDown className="ml-1 text-[8px]" />
-        </button>
+        </button> */}
       </div>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
@@ -412,18 +411,15 @@ function TimeSpendingChart() {
   );
 }
 
-
-
-
-
-function UpcomingClasses() {
-  const [classes, setClasses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+// ─── RecentPayments ───────────────────────────────────────────────────────────
+// Shows the 5 most recent fee payments for the school. Field names are read
+// defensively since the payment DTO wasn't fully visible — see note below.
+function RecentPayments() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getPayment.listRecords);
   const fetchedLoading = useSelector((state: RootState) => state.getPayment.loading);
   const error = useSelector((state: RootState) => state.getPayment.error);
-  // console.log(fetchedRecord)
 
   useEffect(() => {
     if (!fetchedLoading) {
@@ -435,59 +431,81 @@ function UpcomingClasses() {
     dispatch(fetchPaymentStart());
     try {
       const data = await paymentService.getPaymentsBySchoolId(localStorage.getItem('schoolId'));
-      dispatch(fetchPaymentSuccess(data));
+      dispatch(fetchPaymentSuccess(data.data));
     } catch (err: any) {
       dispatch(fetchPaymentFailure(err.message));
     }
   };
 
+  // Newest first, capped at 5. Falls back to createdAt if paymentDate is missing.
+  const recentPayments = useMemo(() => {
+    return [...(fetchedRecord || [])]
+      .sort(
+        (a: any, b: any) =>
+          new Date(b.paymentDate ?? b.createdAt ?? 0).getTime() -
+          new Date(a.paymentDate ?? a.createdAt ?? 0).getTime(),
+      )
+      .slice(0, 5);
+  }, [fetchedRecord]);
+
   return (
     <div className="bg-white rounded-lg p-4 shadow-lg h-full w-full">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-base font-semibold text-gray-800">
-          Fee Payment History
-        </h3>
-        <button className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
+        <h3 className="text-base font-semibold text-gray-800">Recent Transactions</h3>
+        <button onClick={() => navigate("/admin/payment-record")} className="bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold rounded-full px-3 py-1 transition">
           See All
         </button>
       </div>
 
-      <ul className="space-y-3 flex-1">
-        {fetchedRecord.length > 0 ? (fetchedRecord.map((cls, i) => (
-          <li
-            key={i}
-            className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
-          >
-            <div
-              className={`w-8 h-8 shrink-0 flex items-center justify-center rounded-lg ${cls.color}`}
-            >
-              <img
-                src={cls.imgSrc}
-                alt={cls.name}
-                className="w-full h-full object-cover rounded-lg"
-              />
-            </div>
+      {fetchedLoading ? (
+        <p className="text-sm text-gray-500 text-center py-6">Loading…</p>
+      ) : error ? (
+        <p className="text-sm text-red-600 text-center py-6">{error}</p>
+      ) : recentPayments.length === 0 ? (
+        <p className="text-sm text-gray-500 text-center py-6">No payments recorded yet</p>
+      ) : (
+        <ul className="space-y-3">
+          {recentPayments.map((p: any) => {
+            const name = p.studentName || "Unknown student";
+            const amount = p.amount ?? p.amountPaid ?? 0;
+            const feeLabel = p.feeName || p.feeType || p.paymentFor || p.className || "Payment";
+            const initials =
+              name
+                .split(" ")
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((n: string) => n[0]?.toUpperCase())
+                .join("") || "?";
 
-            <div className="ml-3 w-full">
-              <div className="text-sm font-semibold text-gray-800">{cls.name}</div>
-              <div className="text-[11px] text-gray-500">{cls.amtpaid}</div>
-              <div className="flex justify-between items-center text-gray-500 text-[11px] mt-1">
-                <span>{cls.date}</span>
-                <div className="flex items-center space-x-1">
-                  <FaClock className="text-[12px]" />
-                  <span>{cls.time}</span>
+            return (
+              <li
+                key={p.paymentId ?? p.id}
+                className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
+              >
+                <div className="w-9 h-9 shrink-0 flex items-center justify-center rounded-full bg-orange-100 text-orange-700 text-xs font-semibold">
+                  {initials}
                 </div>
-              </div>
-            </div>
-          </li>
-        ))) : (
-          <li
-            className="flex items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition"
-          >
-            <div className="text-sm font-semibold text-gray-800">No Record found</div>
-          </li>
-        )}
-      </ul>
+
+                <div className="ml-3 w-full min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-gray-800 truncate">{name}</span>
+                    <span className="text-sm font-semibold text-green-700 shrink-0">
+                      {formatNaira(amount)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-500 text-[11px] mt-1">
+                    <span className="truncate">{feeLabel}</span>
+                    <span className="flex items-center gap-1 shrink-0">
+                      <FaClock className="text-[10px]" />
+                      {formatDateTime(p.paymentDate ?? p.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

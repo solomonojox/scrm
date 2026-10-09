@@ -1,36 +1,46 @@
-import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { byPrefixAndName } from '@awesome.me/kit-KIT_CODE/icons'
+import React, { useMemo } from 'react'
 import { FaUserGraduate } from 'react-icons/fa'
 import { IoMdMan, IoMdWoman } from 'react-icons/io'
 
-const MyPupilCards = () => {
+interface MyPupilCardsProps {
+    students: any[];
+}
+
+const MyPupilCards: React.FC<MyPupilCardsProps> = ({ students }) => {
+    const counts = useMemo(() => {
+        const list = students || [];
+        const male = list.filter((s) => s?.gender?.toLowerCase() === 'male').length;
+        const female = list.filter((s) => s?.gender?.toLowerCase() === 'female').length;
+        return { total: list.length, male, female };
+    }, [students]);
+
     return (
-        <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl p-4 bg-lime-200 space-y-6">
-                    <p className="text-lg font-medium">All Pupils</p>
-
-                    <div className="flex justify-between">
-                        <p className='text-[30px] font-semibold'>12</p>
-                        <FaUserGraduate className='text-5xl text-lime-500' />
-                    </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="p-4 space-y-6 shadow-sm rounded-xl bg-lime-100">
+                <p className="text-sm font-medium text-gray-600">All Pupils</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-[30px] font-semibold text-gray-800">{counts.total}</p>
+                    <span className="flex items-center justify-center w-12 h-12 text-2xl rounded-full bg-lime-200 text-lime-600">
+                        <FaUserGraduate />
+                    </span>
                 </div>
-                <div className="rounded-xl p-4 bg-sky-200 space-y-6">
-                    <p className="text-lg font-medium">All Pupils</p>
-
-                    <div className="flex justify-between">
-                        <p className='text-[30px] font-semibold'>12</p>
-                        <IoMdMan className='text-6xl text-sky-500' />
-                    </div>
+            </div>
+            <div className="p-4 space-y-6 shadow-sm rounded-xl bg-sky-100">
+                <p className="text-sm font-medium text-gray-600">Male Pupils</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-[30px] font-semibold text-gray-800">{counts.male}</p>
+                    <span className="flex items-center justify-center w-12 h-12 text-2xl rounded-full bg-sky-200 text-sky-600">
+                        <IoMdMan />
+                    </span>
                 </div>
-                <div className="rounded-xl p-4 bg-rose-200 space-y-6">
-                    <p className="text-lg font-medium">All Pupils</p>
-
-                    <div className="flex justify-between">
-                        <p className='text-[30px] font-semibold'>12</p>
-                        <IoMdWoman className='text-6xl text-rose-500' />
-                    </div>
+            </div>
+            <div className="p-4 space-y-6 shadow-sm rounded-xl bg-rose-100">
+                <p className="text-sm font-medium text-gray-600">Female Pupils</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-[30px] font-semibold text-gray-800">{counts.female}</p>
+                    <span className="flex items-center justify-center w-12 h-12 text-2xl rounded-full bg-rose-200 text-rose-600">
+                        <IoMdWoman />
+                    </span>
                 </div>
             </div>
         </div>

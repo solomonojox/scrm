@@ -37,6 +37,26 @@ interface Student {
   studentId: string;
 }
 
+
+
+const calculateAge = (dob?: string): number | null => {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return null;
+
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+const initials = (firstname?: string, lastname?: string) =>
+  `${firstname?.charAt(0) ?? ""}${lastname?.charAt(0) ?? ""}`.toUpperCase() || "?";
+
+
 export default function PupilsList({ classrooms }: any) {
   const navigate = useNavigate();
   const [openFolderModal, setOpenFolderModal] = useState(false);
@@ -200,12 +220,12 @@ export default function PupilsList({ classrooms }: any) {
                     <TableCell padding="checkbox">
                       <Checkbox />
                     </TableCell>
-                    <TableCell>Student ID</TableCell>
+                    <TableCell>Student No.</TableCell>
                     <TableCell>Photo</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Class</TableCell>
-                    <TableCell>Age/Gender</TableCell>
-                    <TableCell>Term/Session</TableCell>
+                    <TableCell>Age</TableCell>
+                    <TableCell>Session</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -214,77 +234,78 @@ export default function PupilsList({ classrooms }: any) {
                   {students.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={8} align="center">
-                        No students found
+                        {students.length === 0
+                          ? "No students found"
+                          : "No students match your search"}
                       </TableCell>
                     </TableRow>
                   ) : (
                     students
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((pupil: any, idx: number) => (
-                        <TableRow key={idx} hover>
-                          <TableCell padding="checkbox">
-                            <Checkbox />
-                          </TableCell>
-                          <TableCell>
-                            <Chip
-                              label={pupil.studentNo}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Avatar
-                              src={pupil.photo}
-                              alt="student"
-                              sx={{ width: 40, height: 40 }}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Box>
-                              <Typography variant="subtitle2">
-                                {pupil.firstname} {pupil.lastname}
-                              </Typography>
-                              <Typography variant="caption" color="textSecondary">
-                                DOB: {pupil.dob}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            <Typography variant="body2">
-                              {pupil.classroomId?.name || "N/A"}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            <Box>
+                      .map((pupil: any, idx: number) => {
+                        const age = calculateAge(pupil.dateOfBirth);
+                        return (
+                          <TableRow key={pupil.studentId ?? idx} hover>
+                            <TableCell padding="checkbox">
+                              <Checkbox />
+                            </TableCell>
+                            <TableCell>
+                              <Chip
+                                label={pupil.studentNo || "—"}
+                                size="small"
+                                sx={{ bgcolor: "#FDE7D3", color: "#EE7306", fontWeight: 600 }}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Avatar sx={{ width: 40, height: 40, bgcolor: "#EE7306", fontSize: 14 }}>
+                                {initials(pupil.firstname, pupil.lastname)}
+                              </Avatar>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Typography variant="subtitle2">
+                                  {pupil.firstname} {pupil.lastname}
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                  {pupil.dateOfBirth
+                                    ? `DOB: ${pupil.dateOfBirth.split("T")[0]}`
+                                    : "DOB: N/A"}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
                               <Typography variant="body2">
-                                {pupil.age || pupil.dateOfBirth?.slice(0, 10)}
+                                {selectedClassroom?.label || "N/A"}
                               </Typography>
-                              <Typography variant="caption" color="textSecondary">
-                                {pupil.gender}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            <Box>
-                              <Typography variant="body2">
-                                {pupil.currentTerm}
-                              </Typography>
-                              <Typography variant="caption" color="textSecondary">
-                                {pupil.sessionId}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            <IconButton
-                              size="small"
-                              onClick={(e) => handleMenuOpen(e, pupil)}
-                            >
-                              <MoreVertical size={16} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                <Typography variant="body2">
+                                  {age !== null ? `${age} yrs` : "N/A"}
+                                </Typography>
+                                {/* <Typography variant="caption" color="textSecondary">
+                                  {pupil.gender || "N/A"}
+                                </Typography> */}
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box>
+                                {/* <Typography variant="body2">
+                                  {pupil.currentTerm || "N/A"}
+                                </Typography> */}
+                                <Typography variant="caption" color="textSecondary">
+                                  {pupil.currentSession || "N/A"}
+                                </Typography>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <IconButton size="small" onClick={(e) => handleMenuOpen(e, pupil)}>
+                                <MoreVertical size={16} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
                   )}
                 </TableBody>
               </Table>

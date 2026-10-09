@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { FaCamera, FaEdit, FaSpinner } from "react-icons/fa";
+import { FaCamera, FaEdit, FaSpinner, FaCheck, FaTimes, FaUserTie } from "react-icons/fa";
 import imageAssets from "../../../assets/imageAssets";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
@@ -15,13 +15,50 @@ import { getErrorMessage } from "../../../utils/getErrorMessage";
 import toast from 'react-toastify';
 import { AppContext } from "../../../Context/AppContext";
 
+// Grouped fields for the sectioned layout. Same ids/types/disable flags as before.
+const fieldSections: {
+  title: string;
+  icon: string;
+  fields: { label: string; id: string; type: string; disable?: boolean }[];
+}[] = [
+  {
+    title: "Identity",
+    icon: "👤",
+    fields: [
+      { label: "First Name", id: "firstname", type: "text" },
+      { label: "Last Name", id: "lastname", type: "text" },
+      { label: "Role", id: "role", type: "text" },
+      { label: "Date of Birth", id: "dateOfBirth", type: "date" },
+    ],
+  },
+  {
+    title: "Contact",
+    icon: "📞",
+    fields: [
+      { label: "Phone Number", id: "phone", type: "text" },
+      { label: "Email", id: "email", type: "email", disable: true },
+      { label: "Username", id: "username", type: "text" },
+      { label: "Home Address", id: "homeAddress", type: "text" },
+    ],
+  },
+  {
+    title: "Background",
+    icon: "📋",
+    fields: [
+      { label: "Nationality", id: "nationality", type: "text" },
+      { label: "State of Origin", id: "stateOfOrigin", type: "text" },
+      { label: "Religion", id: "religion", type: "text" },
+      { label: "Employment Date", id: "employmentDate", type: "date", disable: true },
+    ],
+  },
+];
+
 export default function TeacherProfile() {
   const { user } = useAuth();
   const { notifySuccess, notifyError } = useContext(AppContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const fetchedRecord = useSelector((state: RootState) => state.getTeacher.selectedTeacher);
-  console.log(fetchedRecord);
   const fetchedLoading = useSelector((state: RootState) => state.getTeacher.loading);
   const error = useSelector((state: RootState) => state.getTeacher.error);
 
@@ -72,16 +109,18 @@ export default function TeacherProfile() {
     }
   }, [fetchedRecord]);
 
-  const handleCameraClick = () => {
-    fileInputRef.current?.click();
-  };
+  // ── Picture upload: commented out for now ──────────────────────────────
+  // const handleCameraClick = () => {
+  //   fileInputRef.current?.click();
+  // };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      console.log("Selected file:", file);
-    }
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     const file = e.target.files[0];
+  //     console.log("Selected file:", file);
+  //   }
+  // };
+
 
   useEffect(() => {
     if (user?.id && !fetchedLoading) {
@@ -178,11 +217,15 @@ export default function TeacherProfile() {
     }
   };
 
+  const initials =
+    `${formData.firstname?.[0] ?? ""}${formData.lastname?.[0] ?? ""}`.toUpperCase() || "T";
+
   return (
-    <div className="bg-white pt-2">
-      <div>
-        <h2 className="font-bold text-[16px] m-4">Personal Information</h2>
-        <div className=" bg-white  shadow overflow-hidden">
+    <div className="min-h-screen p-4 bg-gray-100 sm:p-6 md:p-8">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="mb-4 text-xl font-bold text-gray-800">Personal Information</h2>
+
+        <div className="overflow-hidden bg-white shadow-lg rounded-2xl ring-1 ring-black/5">
           {/* Banner */}
           <div className="relative w-full">
             <img
@@ -192,24 +235,25 @@ export default function TeacherProfile() {
             />
           </div>
 
-          {/* Profile + Name + Actions */}
-          <div className="flex items-center justify-between px-4 md:px-6 mt-12.5">
-            {/* Picture + Info */}
-            <div className="flex flex-col md:flex-row items-center space-x-4">
-              <div className="w-50 h-50 md:w-25 md:h-25 rounded-full border-4 border-white overflow-hidden bg-[#d9b89a] relative">
+          {/* Avatar + Name + Actions */}
+          <div className="flex flex-col items-center gap-4 px-4 -mt-14 sm:flex-row sm:items-end sm:justify-between md:px-8">
+            <div className="flex flex-col items-center gap-4 sm:flex-row">
+              {/* ── Picture area: commented out for now, initials shown instead ── */}
+              <div className="relative flex items-center justify-center w-28 h-28 text-3xl font-bold text-white bg-orange-400 border-4 border-white rounded-full shadow-md sm:w-24 sm:h-24">
+                {initials}
+                {/*
                 <img
                   src={imageAssets.man}
                   alt="Profile"
-                  className="w-full h-full object-cover z-0"
+                  className="w-full h-full object-cover rounded-full"
                 />
                 <div
-                  className="absolute bottom-6 md:bottom-2 right-6 md:right-2 z-10 bg-[#EE7306] rounded-full p-2 border-2 border-white cursor-pointer"
+                  className="absolute bottom-1 right-1 z-10 bg-[#EE7306] rounded-full p-2 border-2 border-white cursor-pointer"
                   title="Change profile picture"
                   onClick={handleCameraClick}
                 >
                   <FaCamera className="text-white text-sm" />
                 </div>
-                {/* Hidden File Input */}
                 <input
                   type="file"
                   accept="image/*"
@@ -217,17 +261,20 @@ export default function TeacherProfile() {
                   onChange={handleFileChange}
                   className="hidden"
                 />
+                */}
               </div>
 
-              {/* Name + Buttons */}
-              <div className="mt-19">
-                <p className="font-bold text-[15px] leading-none">
+
+              <div className="text-center sm:pb-1 sm:text-left">
+                <p className="text-lg font-bold leading-none text-gray-900">
                   {fetchedRecord?.firstname} {fetchedRecord?.lastname}
                 </p>
-                <p className="text-[12px] text-gray-600 font-semibold mb-2">
-                  {fetchedRecord?.role}
+                <p className="flex items-center justify-center gap-1 mt-3 md:mt-10 text-xs font-semibold text-gray-500 sm:justify-start">
+                  <FaUserTie className="text-orange-500" />
+                  {fetchedRecord?.role || "Teacher"}
                 </p>
-                <div className="flex space-x-3">
+                {/*
+                <div className="flex justify-center gap-3 mt-3 sm:justify-start">
                   <button
                     type="button"
                     onClick={handleCameraClick}
@@ -243,74 +290,97 @@ export default function TeacherProfile() {
                     Delete Picture
                   </button>
                 </div>
+                */}
               </div>
             </div>
 
             {/* Edit Profile Toggle */}
-            <div
-              className="text-[12px] md:text-[16px] text-[#EE7306] flex items-center cursor-pointer select-none"
+            <button
+              type="button"
               onClick={() => setIsEditing((prev) => !prev)}
+              className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-full transition-colors ${
+                isEditing
+                  ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  : "bg-orange-50 text-orange-600 hover:bg-orange-100"
+              }`}
             >
-              <FaEdit className="mr-1" />
+              {isEditing ? <FaTimes /> : <FaEdit />}
               {isEditing ? "Cancel" : "Edit Profile"}
-            </div>
+            </button>
           </div>
 
           {/* Form */}
-          <div className="p-4 md:p-6">
-            <form
-              onSubmit={handleSubmit}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 text-md gap-y-5"
-            >
-              {[
-                { label: "First Name", id: "firstname", type: "text" },
-                { label: "Last Name", id: "lastname", type: "text" },
-                { label: "Phone Number", id: "phone", type: "text" },
-                { label: "Home Address", id: "homeAddress", type: "text" },
-                { label: "Nationality", id: "nationality", type: "text" },
-                { label: "State of Origin", id: "stateOfOrigin", type: "text" },
-                { label: "Role", id: "role", type: "text" },
-                { label: "Religion", id: "religion", type: "text" },
-                { label: "Email", id: "email", type: "email", disable: true },
-                { label: "Username", id: "username", type: "text" },
-                // { label: "School ID", id: "schoolId", type: "text", disable: true },
-                { label: "Date of Birth", id: "dateOfBirth", type: "date" },
-                { label: "Employment Date", id: "employmentDate", type: "date", disable: true },
-              ].map((field) => (
-                <div key={field.id}>
-                  <label
-                    htmlFor={field.id}
-                    className="block text-[12px] text-gray-700 mb-1 font-bold"
-                  >
-                    {field.label}
-                  </label>
-                  <input
-                    id={field.id}
-                    type={field.type}
-                    value={(formData as any)[field.id] || ""}
-                    onChange={handleChange}
-                    readOnly={!isEditing || field.disable}
-                    className={`w-full rounded px-3 py-2 text-[12px]  ${isEditing
-                        ? `border focus:outline-none ${field.disable ? "text-gray-400" : "focus:ring-1 focus:ring-[#e67e22] border-[#EE7306]"}`
-                        : "bg-gray-100 cursor-not-allowed border border-gray-300 outline-none"
-                      }`}
-                  />
+          <div className="p-4 mt-6 md:p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {fieldSections.map((section) => (
+                <div key={section.title}>
+                  <h3 className="flex items-center gap-2 pb-2 mb-4 text-xs font-semibold tracking-wide text-orange-600 uppercase border-b border-gray-100">
+                    <span>{section.icon}</span>
+                    {section.title}
+                  </h3>
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+                    {section.fields.map((field) => (
+                      <div key={field.id}>
+                        <label
+                          htmlFor={field.id}
+                          className="flex items-center gap-1 mb-1 text-xs font-bold text-gray-700"
+                        >
+                          {field.label}
+                          {field.disable && (
+                            <span className="px-1.5 py-0.5 rounded-full bg-gray-100 text-[9px] font-medium text-gray-400 normal-case">
+                              Locked
+                            </span>
+                          )}
+                        </label>
+                        <input
+                          id={field.id}
+                          type={field.type}
+                          value={(formData as any)[field.id] || ""}
+                          onChange={handleChange}
+                          readOnly={!isEditing || field.disable}
+                          className={`w-full rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                            isEditing
+                              ? `border focus:outline-none ${
+                                  field.disable
+                                    ? "text-gray-400 border-gray-200 bg-gray-50"
+                                    : "focus:ring-2 focus:ring-orange-300 border-gray-300 focus:border-orange-400"
+                                }`
+                              : "bg-gray-50 cursor-not-allowed border border-gray-200 outline-none text-gray-700"
+                          }`}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
 
               {/* Save Button */}
               {isEditing && (
-                <div className="mt-6 col-span-2">
+                <div className="flex items-center justify-end gap-3 pt-4 mt-6 border-t border-gray-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    disabled={loading}
+                    className="px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
                   <button
                     type="submit"
-                    className="bg-[#EE7306] text-white text-[12px] px-5 py-2 rounded font-bold"
+                    disabled={loading}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-bold text-white rounded-lg shadow-sm bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 hover:shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed transition-all"
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2">
+                      <>
                         <FaSpinner className="animate-spin" />
                         Saving...
-                      </span>
-                    ) : "Save Changes"}
+                      </>
+                    ) : (
+                      <>
+                        <FaCheck className="text-xs" />
+                        Save Changes
+                      </>
+                    )}
                   </button>
                 </div>
               )}
