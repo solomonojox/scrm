@@ -228,17 +228,18 @@ const InvoiceRecordsPage = () => {
   };
 
   const recordPayment = async (data: any) => {
-    try {
-      await paymentService.payStudentSchoolFeeManually(data);
-      toast.success("Fee payment recorded successfully");
-      setIsPaymentModalOpen(false);
-      fetchPayments();
-    } catch (error: any) {
-      console.error("recordPayment error:", error);
-      const message = error?.response?.data?.responseMessage || "Failed to record fee payment";
-      toast.error(message);
-      throw message;
-    }
+    console.log(data);
+    // try {
+    //   await paymentService.payStudentSchoolFeeManually(data);
+    //   toast.success("Fee payment recorded successfully");
+    //   setIsPaymentModalOpen(false);
+    //   fetchPayments();
+    // } catch (error: any) {
+    //   console.error("recordPayment error:", error);
+    //   const message = error?.response?.data?.responseMessage || "Failed to record fee payment";
+    //   toast.error(message);
+    //   throw message;
+    // }
   };
 
   const handleInvoiceTypeChange = (paymentId: string, type: InvoiceTypeOption) => {
@@ -713,7 +714,7 @@ const InvoiceRecordsPage = () => {
       <Dialog
         open={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
-      // maxWidth="md"
+      maxWidth="md"
       // fullWidth
       >
         <DialogTitle sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
