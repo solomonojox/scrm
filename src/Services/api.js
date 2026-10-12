@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "https://scrmapi-lpkm.onrender.com";
+// const BASE_URL = "https://scrmapi-lpkm.onrender.com";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // const BASE_URL = "https://educat.codeweb.com.ng";
 
 const api = axios.create({
@@ -131,10 +132,10 @@ api.interceptors.response.use(
       );
 
 
-      console.log(
-        "Refresh token response:",
-        response.data,
-      );
+      // console.log(
+      //   "Refresh token response:",
+      //   response.data,
+      // );
 
 
 

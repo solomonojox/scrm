@@ -1,9 +1,26 @@
-// src/Pages/Admin/Payments/ManualFeeRecordForm.tsx
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { StudentType } from "../../../Types/Student/studentTypes";
-import { Guardian } from "../../../Types/Guardian/guardianTypes";
-import { Session } from "../../../Types/sessionType";
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography
+} from '@mui/material';
+import { Controller, useForm } from 'react-hook-form';
+import { StudentType } from '../../../Types/Student/studentTypes';
+import { Guardian } from '../../../Types/Guardian/guardianTypes';
+import { Session } from '../../../Types/sessionType';
+import { paymentService } from '../../../Services/Payment';
 
 interface Classroom {
   classroomId: string;
@@ -18,6 +35,7 @@ export interface PaymentTerm {
   name: string;
 }
 
+// What the parent receives on submit
 interface ManualFeeRecordData {
   studentId: string;
   classroomId: string;
@@ -28,6 +46,11 @@ interface ManualFeeRecordData {
   schoolId: string;
 }
 
+// Internal form state: amount can be '' while the user is typing/clearing the field
+interface FormValues extends Omit<ManualFeeRecordData, 'amount' | 'schoolId'> {
+  amount: number | '';
+}
+
 interface ManualFeeRecordProps {
   onSubmit: (data: ManualFeeRecordData) => Promise<void>;
   students: StudentType[];
@@ -36,13 +59,25 @@ interface ManualFeeRecordProps {
   guardians?: Guardian[];
   isLoading?: boolean;
   schoolId: string;
-  sessionId: Session[];
-  /** Called when user closes the modal (backdrop, ESC, or Clear button) */
-  onClose?: () => void;
+  sessionId: Session[]; // prop name kept so existing callers don't break
 }
 
-const inputClass =
-  "w-full border border-gray-300 px-3 py-2 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:bg-gray-50 disabled:text-gray-400";
+const DEFAULT_VALUES: FormValues = {
+  studentId: '',
+  classroomId: '',
+  sessionId: '',
+  paymentTermId: '',
+  guardianId: '',
+  amount: ''
+};
+
+const formatNaira = (value: number) => `₦${value.toLocaleString('en-NG')}`;
+
+// Adjust to whichever field your Session type uses for a readable label
+const getSessionLabel = (session: Session): string => {
+  const s = session as unknown as Record<string, unknown>;
+  return String(s.name ?? s.sessionName ?? session.sessionId);
+};
 
 const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
   onSubmit,
@@ -52,314 +87,458 @@ const ManualFeeRecordForm: React.FC<ManualFeeRecordProps> = ({
   guardians,
   isLoading = false,
   schoolId,
-  sessionId,
-  onClose,
+  sessionId: sessions // renamed locally: it's a list of sessions, and it no longer shadows other `sessionId`s
 }) => {
-  const [sessionValue, setSessionValue] = useState("");
-  const [classroomId, setClassroomId] = useState("");
-  const [studentId, setStudentId] = useState("");
-  const [guardianId, setGuardianId] = useState("");
-  const [paymentTermId, setPaymentTermId] = useState("");
-  const [amount, setAmount] = useState("");
+  const [classroomAmount, setClassroomAmount] = useState<number | null>(null);
+  const [feeLoading, setFeeLoading] = useState(false);
+  const [feeError, setFeeError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const [filteredStudents, setFilteredStudents] = useState<StudentType[]>(students);
-  const [filteredGuardians, setFilteredGuardians] = useState<Guardian[]>(guardians ?? []);
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    mode: 'onChange',
+    defaultValues: DEFAULT_VALUES
+  });
 
-  const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError] = useState("");
+  const watchedStudentId = watch('studentId');
+  const watchedClassroomId = watch('classroomId');
+  const watchedSessionId = watch('sessionId');
+  const watchedTermId = watch('paymentTermId');
 
-  const selectedStudent = students.find((s) => s.studentId === studentId) || null;
+  const busy = isLoading || isSubmitting;
 
-  // Filter students by classroom
-  useEffect(() => {
-    if (classroomId) {
-      const list = students.filter((s) => s.classroomId === classroomId);
-      setFilteredStudents(list);
-      if (studentId && !list.find((s) => s.studentId === studentId)) {
-        setStudentId("");
-      }
-    } else {
-      setFilteredStudents(students);
-    }
-  }, [classroomId, students, studentId]);
+  /* ---------- Derived data (no effect + state needed) ---------- */
 
-  // Auto-set guardian when student changes
-  useEffect(() => {
+  const filteredStudents = useMemo(
+    () =>
+      watchedClassroomId
+        ? students.filter((s) => s.classroomId === watchedClassroomId)
+        : [],
+    [students, watchedClassroomId]
+  );
+
+  const selectedStudent = useMemo(
+    () => students.find((s) => s.studentId === watchedStudentId) ?? null,
+    [students, watchedStudentId]
+  );
+
+  // If the student's guardian is found, show only them; otherwise fall back to all
+  // guardians so the required field can never get stuck with an empty list.
+  const guardianOptions = useMemo(() => {
+    const all = guardians ?? [];
     if (selectedStudent?.guardianId) {
-      setGuardianId(selectedStudent.guardianId);
+      const match = all.filter((g) => g.guardianId === selectedStudent.guardianId);
+      if (match.length) return match;
     }
-  }, [selectedStudent]);
+    return all;
+  }, [guardians, selectedStudent]);
 
-  // Filter guardians to the selected student's guardian
+  /* ---------- Auto-select the only payment term ---------- */
+
   useEffect(() => {
-    if (guardians && selectedStudent) {
-      const g = guardians.find((x) => x.guardianId === selectedStudent.guardianId);
-      setFilteredGuardians(g ? [g] : []);
-    } else {
-      setFilteredGuardians(guardians ?? []);
+    if (paymentTerms?.length === 1 && !watchedTermId) {
+      setValue('paymentTermId', paymentTerms[0].paymentTermId, { shouldValidate: true });
     }
-  }, [selectedStudent, guardians]);
+  }, [paymentTerms, watchedTermId, setValue]);
 
-  // Close on ESC key
+  /* ---------- Fetch the fee and pre-fill the (editable) amount ---------- */
+
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !submitting) {
-        onClose?.();
+    if (!watchedClassroomId || !watchedSessionId || !watchedTermId) {
+      setClassroomAmount(null);
+      setFeeError(null);
+      return;
+    }
+
+    let cancelled = false; // ignore stale responses if the selection changes mid-request
+
+    const loadFee = async () => {
+      setFeeLoading(true);
+      setFeeError(null);
+      try {
+        const res = await paymentService.getSchoolFeeByClassroomAndSession(
+          watchedClassroomId,
+          watchedSessionId,
+          watchedTermId
+        );
+        if (cancelled) return;
+
+        const fee = Number(res?.data);
+        if (!Number.isFinite(fee)) throw new Error('Invalid fee returned');
+
+        setClassroomAmount(fee);
+        // Pre-fill with the full fee; the user can still lower it for part payments
+        setValue('amount', fee, { shouldValidate: true, shouldDirty: true });
+      } catch (error) {
+        if (cancelled) return;
+        console.error('Error fetching classroom amount:', error);
+        setClassroomAmount(null);
+        setValue('amount', '');
+        setFeeError(
+          'Could not load the fee for this classroom, session and term. Enter the amount manually.'
+        );
+      } finally {
+        if (!cancelled) setFeeLoading(false);
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose, submitting]);
 
-  const resetForm = () => {
-    setSessionValue("");
-    setClassroomId("");
-    setStudentId("");
-    setGuardianId("");
-    setPaymentTermId("");
-    setAmount("");
-    setFormError("");
+    loadFee();
+    return () => {
+      cancelled = true;
+    };
+  }, [watchedClassroomId, watchedSessionId, watchedTermId, setValue]);
+
+  /* ---------- Handlers ---------- */
+
+  const handleClear = () => {
+    reset(DEFAULT_VALUES);
+    setClassroomAmount(null);
+    setFeeError(null);
+    setSubmitError(null);
   };
 
-  // close the modal
-  const closeModal = () => onClose?.();
-
-  // Backdrop click: close the modal
-  const handleBackdropClick = () => {
-    if (submitting) return;
-    onClose?.();
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError("");
-
-    const numericAmount = Number(amount);
-    if (!sessionValue) return setFormError("Please select a session");
-    if (!classroomId) return setFormError("Please select a classroom");
-    if (!studentId) return setFormError("Please select a student");
-    if (!guardianId) return setFormError("Please select a guardian");
-    if (!paymentTermId) return setFormError("Please select a payment term");
-    if (!amount || Number.isNaN(numericAmount) || numericAmount <= 0) {
-      return setFormError("Enter an amount greater than 0");
-    }
-
-    setSubmitting(true);
+  const handleFormSubmit = async (data: FormValues) => {
+    setSubmitError(null);
     try {
       await onSubmit({
-        studentId,
-        classroomId,
-        sessionId: sessionValue,
-        amount: numericAmount,
-        paymentTermId,
-        guardianId,
-        schoolId,
+        ...data,
+        amount: Number(data.amount),
+        schoolId
       });
-      resetForm();
-      onClose?.();
-    } catch (err: any) {
-      const msg =
-        err?.response?.data?.responseMessage ||
-        err?.message ||
-        "Failed to record fee payment";
-      setFormError(msg);
-      toast.error(msg);
-    } finally {
-      setSubmitting(false);
+      handleClear();
+    } catch (error) {
+      console.error('Error recording payment:', error);
+      setSubmitError('Payment could not be recorded. Please check the details and try again.');
     }
   };
 
+  /* ---------- Render ---------- */
+
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
-      onClick={handleBackdropClick}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="record-fee-title"
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white shadow-2xl rounded-2xl ring-1 ring-black/5"
-      >
-        <div className="h-1.5 w-full bg-linear-to-r from-orange-500 to-amber-400" />
+    <Paper elevation={3} sx={{ p: 3, maxWidth: '100%', mx: 'auto', position: 'relative' }}>
+      <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'orange' }}>
+        Record Manual Fee Payment
+      </Typography>
+      <Divider sx={{ mb: 3 }} />
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="px-6 pt-6 pb-2">
-            <h2 id="record-fee-title" className="text-xl font-semibold text-slate-900">
-              Record School Fee Payment
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Record a manual payment for a student's school fee.
-            </p>
+      {submitError && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setSubmitError(null)}>
+          {submitError}
+        </Alert>
+      )}
 
-            {formError && (
-              <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-                {formError}
-              </p>
-            )}
-
-            <div className="mt-5 space-y-4">
-              {/* Session */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Session</label>
-                <select
-                  value={sessionValue}
-                  onChange={(e) => setSessionValue(e.target.value)}
-                  disabled={submitting || isLoading}
-                  className={inputClass}
+      <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
+        <Box
+          sx={{
+            display: 'grid',
+            gap: 2,
+            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }
+          }}
+        >
+          {/* Session */}
+          <FormControl fullWidth error={!!errors.sessionId}>
+            <InputLabel id="session-select-label">Session</InputLabel>
+            <Controller
+              name="sessionId"
+              control={control}
+              rules={{ required: 'Session is required' }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="session-select-label"
+                  label="Session"
+                  disabled={busy}
                 >
-                  <option value="">Select session</option>
-                  {sessionId?.map((s) => (
-                    <option key={s.sessionId} value={s.sessionId}>
-                      {s.sessionId}
-                    </option>
+                  {sessions?.map((session) => (
+                    <MenuItem key={session.sessionId} value={session.sessionId}>
+                      {getSessionLabel(session)}
+                    </MenuItem>
                   ))}
-                </select>
-              </div>
-
-              {/* Classroom */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Classroom</label>
-                <select
-                  value={classroomId}
-                  onChange={(e) => setClassroomId(e.target.value)}
-                  disabled={submitting || isLoading}
-                  className={inputClass}
-                >
-                  <option value="">Select classroom</option>
-                  {classrooms?.map((c) => (
-                    <option key={c.classroomId} value={c.classroomId}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Student */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Student</label>
-                <select
-                  value={studentId}
-                  onChange={(e) => setStudentId(e.target.value)}
-                  disabled={!classroomId || submitting || isLoading}
-                  className={inputClass}
-                >
-                  <option value="">
-                    {!classroomId
-                      ? "Select a classroom first"
-                      : filteredStudents.length === 0
-                        ? "No students in this classroom"
-                        : "Select student"}
-                  </option>
-                  {filteredStudents.map((s) => (
-                    <option key={s.studentId} value={s.studentId}>
-                      {s.firstname} {s.lastname}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Guardian */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Guardian</label>
-                <select
-                  value={guardianId}
-                  onChange={(e) => setGuardianId(e.target.value)}
-                  disabled={submitting || isLoading}
-                  className={inputClass}
-                >
-                  <option value="">Select guardian</option>
-                  {filteredGuardians.map((g) => (
-                    <option key={g.guardianId} value={g.guardianId}>
-                      {g.firstname} {g.lastname}
-                      {g.phone ? ` (${g.phone})` : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Payment Term */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Term</label>
-                <select
-                  value={paymentTermId}
-                  onChange={(e) => setPaymentTermId(e.target.value)}
-                  disabled={submitting || isLoading}
-                  className={inputClass}
-                >
-                  <option value="">Select payment term</option>
-                  {paymentTerms?.map((term) => (
-                    <option key={term.paymentTermId} value={term.paymentTermId}>
-                      {term.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Amount */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₦)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  disabled={submitting || isLoading}
-                  placeholder="0.00"
-                  className={inputClass}
-                />
-              </div>
-
-              {/* Student Info Card */}
-              {selectedStudent && (
-                <div className="rounded-lg border border-gray-200 bg-slate-50 p-4">
-                  <p className="text-sm font-semibold text-slate-800 mb-3">Student Information</p>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <p className="text-xs text-gray-500">Name</p>
-                      <p className="text-gray-800">
-                        {selectedStudent.firstname} {selectedStudent.lastname}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Guardian</p>
-                      <p className="text-gray-800">{selectedStudent.guardianName || "—"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Guardian Phone</p>
-                      <p className="text-gray-800">{selectedStudent.guardianPhone || "—"}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Classroom</p>
-                      <p className="text-gray-800">{selectedStudent.classroomName || "—"}</p>
-                    </div>
-                  </div>
-                </div>
+                </Select>
               )}
-            </div>
-          </div>
+            />
+            {errors.sessionId && <FormHelperText>{errors.sessionId.message}</FormHelperText>}
+          </FormControl>
 
-          <div className="flex justify-end gap-3 px-6 py-4 mt-4 border-t bg-slate-50 border-slate-100">
-            <button
+          {/* Payment term */}
+          <FormControl fullWidth error={!!errors.paymentTermId}>
+            <InputLabel id="payment-term-select-label">Payment Term</InputLabel>
+            <Controller
+              name="paymentTermId"
+              control={control}
+              rules={{ required: 'Payment term is required' }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="payment-term-select-label"
+                  label="Payment Term"
+                  disabled={busy}
+                >
+                  {paymentTerms?.map((term) => (
+                    <MenuItem key={term.paymentTermId} value={term.paymentTermId}>
+                      {term.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.paymentTermId && (
+              <FormHelperText>{errors.paymentTermId.message}</FormHelperText>
+            )}
+          </FormControl>
+
+          {/* Classroom */}
+          <FormControl fullWidth error={!!errors.classroomId}>
+            <InputLabel id="classroom-select-label">Classroom</InputLabel>
+            <Controller
+              name="classroomId"
+              control={control}
+              rules={{ required: 'Classroom is required' }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="classroom-select-label"
+                  label="Classroom"
+                  disabled={busy}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    // A different classroom invalidates the student and guardian choice
+                    setValue('studentId', '');
+                    setValue('guardianId', '');
+                  }}
+                >
+                  {classrooms?.map((classroom) => (
+                    <MenuItem key={classroom.classroomId} value={classroom.classroomId}>
+                      {classroom.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.classroomId && <FormHelperText>{errors.classroomId.message}</FormHelperText>}
+          </FormControl>
+
+          {/* Student */}
+          <FormControl fullWidth error={!!errors.studentId} disabled={!watchedClassroomId}>
+            <InputLabel id="student-select-label">Student</InputLabel>
+            <Controller
+              name="studentId"
+              control={control}
+              rules={{ required: 'Student is required' }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="student-select-label"
+                  label="Student"
+                  disabled={!watchedClassroomId || busy}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    const student = students.find((s) => s.studentId === e.target.value);
+                    // Always sync guardian to the newly chosen student (clears a stale one)
+                    setValue('guardianId', student?.guardianId ?? '', {
+                      shouldValidate: !!student?.guardianId
+                    });
+                  }}
+                >
+                  {filteredStudents.map((student) => (
+                    <MenuItem key={student.studentId} value={student.studentId}>
+                      {student.firstname} {student.lastname}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.studentId ? (
+              <FormHelperText>{errors.studentId.message}</FormHelperText>
+            ) : (
+              !watchedClassroomId && <FormHelperText>Select a classroom first</FormHelperText>
+            )}
+          </FormControl>
+
+          {/* Guardian */}
+          <FormControl fullWidth error={!!errors.guardianId}>
+            <InputLabel id="guardian-select-label">Guardian</InputLabel>
+            <Controller
+              name="guardianId"
+              control={control}
+              rules={{ required: 'Guardian is required' }}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="guardian-select-label"
+                  label="Guardian"
+                  disabled={busy}
+                >
+                  {guardianOptions.map((guardian) => (
+                    <MenuItem key={guardian.guardianId} value={guardian.guardianId}>
+                      {guardian.firstname} {guardian.lastname} ({guardian.phone})
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.guardianId && <FormHelperText>{errors.guardianId.message}</FormHelperText>}
+          </FormControl>
+
+          {/* Amount: pre-filled from the classroom fee, but editable for part payments */}
+          <Controller
+            name="amount"
+            control={control}
+            rules={{
+              validate: (value) => {
+                const amount = Number(value);
+                if (value === '' || !Number.isFinite(amount) || amount <= 0) {
+                  return 'Amount must be greater than 0';
+                }
+                if (classroomAmount !== null && amount > classroomAmount) {
+                  return `Amount cannot exceed the fee of ${formatNaira(classroomAmount)}`;
+                }
+                return true;
+              }
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Amount"
+                type="number"
+                fullWidth
+                disabled={busy || feeLoading}
+                error={!!errors.amount}
+                helperText={
+                  errors.amount?.message ??
+                  (classroomAmount !== null
+                    ? `Full fee: ${formatNaira(classroomAmount)}. You can enter a lower amount for a part payment.`
+                    : undefined)
+                }
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  field.onChange(raw === '' ? '' : Number(raw));
+                }}
+                InputProps={{
+                  startAdornment: <Typography sx={{ mr: 1 }}>₦</Typography>,
+                  endAdornment:
+                    classroomAmount !== null && field.value !== classroomAmount ? (
+                      <Button
+                        size="small"
+                        onClick={() =>
+                          setValue('amount', classroomAmount, { shouldValidate: true })
+                        }
+                        sx={{ color: 'orange', whiteSpace: 'nowrap' }}
+                      >
+                        Use full fee
+                      </Button>
+                    ) : undefined
+                }}
+                inputProps={{ min: 0 }}
+              />
+            )}
+          />
+
+          {feeError && (
+            <Alert severity="warning" sx={{ gridColumn: '1 / -1' }}>
+              {feeError}
+            </Alert>
+          )}
+
+          {/* Selected student summary */}
+          {selectedStudent && (
+            <Card variant="outlined" sx={{ gridColumn: '1 / -1' }}>
+              <CardContent>
+                <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Student Information
+                </Typography>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: 2,
+                    gridTemplateColumns: { xs: '1fr 1fr', md: 'repeat(4, 1fr)' }
+                  }}
+                >
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Name
+                    </Typography>
+                    <Typography variant="body1">
+                      {selectedStudent.firstname} {selectedStudent.lastname}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Guardian
+                    </Typography>
+                    <Typography variant="body1">{selectedStudent.guardianName}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Guardian Phone
+                    </Typography>
+                    <Typography variant="body1">{selectedStudent.guardianPhone}</Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Classroom
+                    </Typography>
+                    <Typography variant="body1">{selectedStudent.classroomName}</Typography>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Actions */}
+          <Box
+            sx={{
+              gridColumn: '1 / -1',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2
+            }}
+          >
+            <Button
+              style={{ border: '1px solid orange', color: 'orange' }}
               type="button"
-              onClick={closeModal}
-              disabled={submitting || isLoading}
-              className="px-4 py-2 text-sm font-medium bg-white border rounded-lg text-slate-700 hover:bg-slate-100 disabled:opacity-50"
+              variant="outlined"
+              onClick={handleClear}
+              disabled={busy}
             >
-              Cancel
-            </button>
-            <button
+              Clear
+            </Button>
+            <Button
+              style={{ backgroundColor: 'orange' }}
               type="submit"
-              disabled={submitting || isLoading}
-              className="px-4 py-2 text-sm font-semibold text-white bg-orange-500 rounded-lg hover:bg-orange-600 disabled:opacity-60"
+              variant="contained"
+              disabled={busy || feeLoading}
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
             >
-              {submitting ? "Recording…" : "Record Payment"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+              {isSubmitting ? 'Submitting...' : 'Record Payment'}
+            </Button>
+          </Box>
+        </Box>
+      </form>
+
+      {/* Loading overlay (Paper is position: relative, so this now covers the form) */}
+      {(isLoading || feeLoading) && (
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'rgba(255,255,255,0.6)',
+            zIndex: 10
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+    </Paper>
   );
 };
 

@@ -47,7 +47,7 @@ const DiscountPage: React.FC = () => {
     setError(null);
     try {
       const response = await discountService.getDiscounts(schoolId);
-      console.log(response);
+      // console.log(response);
       setDiscounts(response);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching discounts');

@@ -395,4 +395,9 @@ export const paymentService = {
       throw error;
     }
   },
+
+  getSchoolFeeByClassroomAndSession: async (classroomId, sessionId, termId) => {
+    const response = await api.get(`https://educat.codeweb.com.ng/api/SchoolFee/GetClassFeeForTerm?classId=${classroomId}&sessionId=${sessionId}&termId=${termId}`);
+    return response.data;
+  }
 };

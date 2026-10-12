@@ -7,6 +7,8 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
+import { Close as CloseIcon } from "@mui/icons-material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { useAuth } from "../../../Context/Auth/useAuth";
 import ManualFeeRecordForm, { PaymentTerm } from "./ManualFeeRecordForm";
 import InvoiceActionsCell from "./InvoiceActionsCell";
@@ -226,17 +228,18 @@ const InvoiceRecordsPage = () => {
   };
 
   const recordPayment = async (data: any) => {
-    try {
-      await paymentService.payStudentSchoolFeeManually(data);
-      toast.success("Fee payment recorded successfully");
-      setIsPaymentModalOpen(false);
-      fetchPayments();
-    } catch (error: any) {
-      console.error("recordPayment error:", error);
-      const message = error?.response?.data?.responseMessage || "Failed to record fee payment";
-      toast.error(message);
-      throw message;
-    }
+    console.log(data);
+    // try {
+    //   await paymentService.payStudentSchoolFeeManually(data);
+    //   toast.success("Fee payment recorded successfully");
+    //   setIsPaymentModalOpen(false);
+    //   fetchPayments();
+    // } catch (error: any) {
+    //   console.error("recordPayment error:", error);
+    //   const message = error?.response?.data?.responseMessage || "Failed to record fee payment";
+    //   toast.error(message);
+    //   throw message;
+    // }
   };
 
   const handleInvoiceTypeChange = (paymentId: string, type: InvoiceTypeOption) => {
@@ -284,7 +287,7 @@ const InvoiceRecordsPage = () => {
           amountPerStudent: actualAmount,
           totalAmount: actualAmount,
           studentCount: 1,
-          isPaid: raw.isPaid || false,
+          isPaid: true, //raw.isPaid || false,
           paidDate: raw.paidDate || null,
           paymentReference: raw.paymentReference || null,
           emailSent: raw.emailSent || false,
@@ -296,6 +299,8 @@ const InvoiceRecordsPage = () => {
           school: raw.school ?? null,
           sessionTerm: raw.sessionTerm ?? null,
         };
+
+        // console.log(invoice)
 
         setGeneratedInvoices((prev) => ({
           ...prev,
@@ -504,7 +509,7 @@ const InvoiceRecordsPage = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
         <div className="flex items-center gap-2">
           <FaFileInvoiceDollar className="text-orange-500 text-2xl" />
-          <h2 className="text-xl font-semibold text-gray-800">Invoice Records</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Receipt Records</h2>
         </div>
         <button
           onClick={() => setIsPaymentModalOpen(true)}
@@ -537,10 +542,10 @@ const InvoiceRecordsPage = () => {
                   Payment Date
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Invoice Type
+                  Receipt Type
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Invoice
+                  Receipt
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Actions
@@ -566,7 +571,7 @@ const InvoiceRecordsPage = () => {
                   const generated = Boolean(invoice?.invoiceId);
                   return (
                     <tr key={payment.paymentId} className="hover:bg-orange-50/40 transition-colors">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-800 whitespace-nowrap">
+                      <td className="px-4 py-3 text-sm font-medium text-gray-800 whitespace-nowrap" onClick={() => console.log(payment)}>
                         {payment.studentName}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">
@@ -595,8 +600,8 @@ const InvoiceRecordsPage = () => {
                                                         focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400
                                                         disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <option value="term">Term Invoice</option>
-                          <option value="session">Full Session Invoice</option>
+                          <option value="term">Term Receipt</option>
+                          <option value="session">Full Session Receipt</option>
                         </select>
                       </td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap">
@@ -680,11 +685,10 @@ const InvoiceRecordsPage = () => {
                     key={page}
                     type="button"
                     onClick={() => setCurrentPage(page)}
-                    className={`min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors ${
-                      page === currentPage
-                        ? "bg-orange-500 text-white"
-                        : "text-gray-600 hover:bg-orange-50 hover:text-orange-500"
-                    }`}
+                    className={`min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors ${page === currentPage
+                      ? "bg-orange-500 text-white"
+                      : "text-gray-600 hover:bg-orange-50 hover:text-orange-500"
+                      }`}
                   >
                     {page}
                   </button>
@@ -706,20 +710,31 @@ const InvoiceRecordsPage = () => {
         )}
       </div>
 
-      {/* Record Payment Modal — the form itself now provides the overlay */}
-      {isPaymentModalOpen && (
-        <ManualFeeRecordForm
-          onSubmit={recordPayment}
-          students={students}
-          classrooms={classrooms}
-          paymentTerms={paymentTerms}
-          guardians={guardians}
-          isLoading={false}
-          schoolId={user?.schoolId || ""}
-          sessionId={sessions}
-          onClose={() => setIsPaymentModalOpen(false)}
-        />
-      )}
+      {/* Record Payment Modal */}
+      <Dialog
+        open={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+      maxWidth="md"
+      // fullWidth
+      >
+        <DialogTitle sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}>
+          <IconButton onClick={() => setIsPaymentModalOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <ManualFeeRecordForm
+            onSubmit={recordPayment}
+            students={students}
+            classrooms={classrooms}
+            paymentTerms={paymentTerms}
+            guardians={guardians}
+            isLoading={false}
+            schoolId={user?.schoolId || ""}
+            sessionId={sessions}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* Invoice Preview */}
       {previewPayment && previewInvoice && (
